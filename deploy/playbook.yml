@@ -1,2 +1,86 @@
 ---
-- hosts: all
+- hosts: staging-mindleaps-tracker
+  tasks:
+  - name: Install required packages
+    sudo: true
+    apt: pkg={{ item }} state=installed
+    with_items:
+      - git
+      - git-core 
+      - curl 
+      - zlib1g-dev 
+      - build-essential 
+      - libssl-dev 
+      - libreadline-dev 
+      - libyaml-dev 
+      - libsqlite3-dev 
+      - sqlite3 
+      - libxml2-dev 
+      - libxslt1-dev 
+      - libcurl4-openssl-dev 
+      - libpq-dev
+      - nginx
+      - libgmp3-dev
+
+  - name: Install rvm dependencies
+    sudo: true
+    apt: pkg={{ item }} update_cache=yes state=installed
+    with_items:
+      - libgdbm-dev 
+      - libncurses5-dev 
+      - automake 
+      - libtool 
+      - bison 
+      - libffi-dev
+
+  - name: Create the mindleaps user
+    sudo: true
+    user: name=mindleaps
+
+  - name: Trust RVM public key
+    sudo: true
+    sudo_user: mindleaps
+    shell: "\\gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3"
+  - name: Get rvm
+    sudo: true
+    sudo_user: mindleaps
+    shell: "\\curl -L https://get.rvm.io | bash -s stable --ignore-dotfiles"
+    args:
+      creates: "/home/mindleaps/.rvm"
+  - name: Dont install documentation with gems
+    sudo: true
+    sudo_user: mindleaps
+    command: 'echo "gem: --no-ri --no-rdoc" > ~/.gemrc creates=~/.gemrc'
+  - name: Add rvm to bashrc
+    sudo: true
+    sudo_user: mindleaps
+    lineinfile:
+      dest="~/.bashrc"
+      state=present
+      line="source ~/.rvm/scripts/rvm"
+      insertafter=EOF
+
+  - name: Copy the source to the machine
+    sudo: true
+    sudo_user: mindleaps
+    git: clone=yes dest=/home/mindleaps/tracker repo=https://github.com/MindLeaps/tracker.git
+    # synchronize: dest=/home/mindleaps/tracker src=../
+
+  - name: Install libs required by RVM
+    sudo: true
+    shell: /home/mindleaps/.rvm/bin/rvm --autolibs=enabled requirements `cat ~/tracker/.ruby-version`
+
+  - name: Install the ruby version needed by mindleaps
+    sudo: true
+    sudo_user: mindleaps
+    shell: ~/.rvm/bin/rvm install `cat ~/tracker/.ruby-version`
+
+  - name: Install Bundler
+    sudo: true
+    sudo_user: mindleaps
+    command: bash -lc "cd ~/tracker && gem install bundler"
+
+  - name: Install all gems
+    sudo: true
+    sudo_user: mindleaps
+    command: bash -lc "cd ~/tracker && bundle install --deployment"
