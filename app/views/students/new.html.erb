@@ -1,0 +1,12 @@
+<h1>New Student</h1>
+<fieldset>
+	<%= form_for :student, url: {action: "create"} do |form| %>
+		<%= form.label :first_name %>
+		<%= form.text_field :first_name %>
+		<%= form.label :last_name %>
+		<%= form.text_field :last_name %>
+		<%= form.label :dob %>
+		<%= form.date_select :dob %>
+		<%= form.submit 'Create' %>
+	<%- end %>
+</fieldset>
