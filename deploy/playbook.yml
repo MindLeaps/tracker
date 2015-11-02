@@ -63,7 +63,7 @@
   - name: Copy the source to the machine
     sudo: true
     sudo_user: mindleaps
-    git: clone=yes dest=/home/mindleaps/tracker repo=https://github.com/MindLeaps/tracker.git
+    git: clone=yes dest=/home/mindleaps/tracker repo=https://github.com/MindLeaps/tracker.git force=yes
     # synchronize: dest=/home/mindleaps/tracker src=../
 
   - name: Install libs required by RVM
