@@ -1,6 +1,7 @@
 <h1>New Student</h1>
 <fieldset>
 	<%= form_for :student, url: {action: "create"} do |form| %>
+		<%= render partial: 'shared/errors', locals: {subject: @student} %>
 		<%= form.label :first_name %>
 		<%= form.text_field :first_name %>
 		<%= form.label :last_name %>
