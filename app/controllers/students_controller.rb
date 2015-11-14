@@ -1,15 +1,15 @@
 class StudentsController < ApplicationController
-  def new
+  before_action do
     @students = Student.all
+  end
+
+  def index
     @student = Student.new
   end
 
   def create
     @student = Student.new(params.require(:student).permit(:first_name, :last_name, :dob))
-    if @student.save
-      redirect_to :new_student
-    else
-      render :new
-    end
+    @student.save
+    render :index
   end
 end
