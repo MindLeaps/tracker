@@ -11,3 +11,6 @@
 		<%= form.submit 'Create' %>
 	<%- end %>
 </fieldset>
+<% @students.each do |student| %>
+  <p><%= student.first_name %></p>
+<% end %>
