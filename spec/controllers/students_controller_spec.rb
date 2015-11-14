@@ -9,20 +9,20 @@ RSpec.describe StudentsController, type: :controller do
         first_name: 'Trevor',
         last_name: 'Noah',
         "dob(1i)" => "2015", "dob(2i)" => "11", "dob(3i)" => 17}
-      assert_response :success
+      expect(response).to be_success
 
       student = Student.last
-      assert_equal student.first_name, 'Trevor'
-      assert_equal student.last_name, 'Noah'
+      expect(student.first_name).to eql 'Trevor'
+      expect(student.last_name).to eql 'Noah'
     end
   end
 
   describe '#index' do
     it 'gets a list of students' do
       get :index
-      assert_response :success
+      expect(response).to be_success
 
-      assert_includes assigns(:students), students(:tomislav)
+      expect(assigns(:students)).to include students(:tomislav)
     end
   end
 end
