@@ -17,6 +17,7 @@ ActiveRecord::Schema.define(version: 20151101232844) do
     t.string   "first_name", null: false
     t.string   "last_name",  null: false
     t.date     "dob",        null: false
+    t.boolean "estimated_dob", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
