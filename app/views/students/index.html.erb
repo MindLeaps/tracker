@@ -7,7 +7,7 @@
 		<%= form.label :last_name %>
 		<%= form.text_field :last_name %>
 		<%= form.label :dob %>
-		<%= form.date_select :dob %>
+		<%= form.date_select :dob, {start_year: 1990, end_year: Date.today.year} %>
 		<%= form.submit 'Create' %>
 	<%- end %>
 </fieldset>
