@@ -1,2 +1,7 @@
 language: ruby
-before_install: gem install bundler -v 1.10.6
+env:
+  - DB=sqlite
+script: RAILS_ENV=test bundle exec rake --trace db:migrate test
+sqlite: &sqlite
+  adapter: sqlite3
+  database: db/<%= Rails.env %>.sqlite3
