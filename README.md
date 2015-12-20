@@ -1,4 +1,4 @@
-# Mindleaps Tracker
+# Mindleaps Tracker [![Build Status](https://travis-ci.org/MindLeaps/tracker.svg?branch=master)] (https://travis-ci.org/MindLeaps/tracker)
 
 This software is responsible for keeping track of Students and Groups and for facilitating grading.
 
