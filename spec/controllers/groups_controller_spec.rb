@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe GroupsController, type: :controller do
+  fixtures :groups
 
   describe '#new' do
     it 'create a group when supplied valid params' do
@@ -10,6 +11,15 @@ RSpec.describe GroupsController, type: :controller do
 
       group = Group.last
       expect(group.group_name).to eql 'Group A'
+    end
+  end
+
+  describe '#index' do
+    it 'gets a list of groups' do
+      get :index
+      expect(response).to be_success
+
+      expect(assigns(:groups)).to include groups(:group_a)
     end
   end
 end

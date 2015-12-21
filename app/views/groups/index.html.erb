@@ -7,3 +7,7 @@
     <%= form.submit 'Create' %>
   <%- end %>
 </fieldset>
+
+<% @groups.each do |group| %>
+  <p><%= group.group_name %>, Created: <%= group.created_at %></p>
+<% end %>
