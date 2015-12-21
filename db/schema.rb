@@ -11,20 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151221020928) do
+ActiveRecord::Schema.define(version: 20151221024455) do
 
   create_table "groups", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.string   "group_name", default: "", null: false
   end
 
   create_table "students", force: :cascade do |t|
-    t.string   "first_name",    null: false
-    t.string   "last_name",     null: false
-    t.date     "dob",           null: false
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
-    t.boolean  "estimated_dob", null: false
+    t.string   "first_name",                   null: false
+    t.string   "last_name",                    null: false
+    t.date     "dob",                          null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.boolean  "estimated_dob", default: true, null: false
   end
 
 end
