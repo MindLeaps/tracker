@@ -4,4 +4,4 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 
-tomislav: {first_name: "Tomislav", last_name: "Pesut", dob: "1980-2-1"}
+tomislav: {first_name: "Tomislav", last_name: "Pesut", dob: "1980-2-1", estimated_dob: true}

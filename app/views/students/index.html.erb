@@ -7,10 +7,12 @@
 		<%= form.label :last_name %>
 		<%= form.text_field :last_name %>
 		<%= form.label :dob %>
-		<%= form.date_select :dob %>
+		<%= form.date_select :dob, {start_year: 1990, end_year: Date.today.year} %>
+		<%= form.label :estimated_dob %>
+		<%= form.check_box :estimated_dob, {} %>
 		<%= form.submit 'Create' %>
 	<%- end %>
 </fieldset>
 <% @students.each do |student| %>
-  <p><%= student.first_name %></p>
+  <p><%= student.last_name %>, <%= student.first_name %> - DOB: <%= student.dob %> <%= student.estimated_dob ? "EST" : "" %></p>
 <% end %>

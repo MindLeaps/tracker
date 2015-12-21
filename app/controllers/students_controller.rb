@@ -8,7 +8,7 @@ class StudentsController < ApplicationController
   end
 
   def create
-    @student = Student.new(params.require(:student).permit(:first_name, :last_name, :dob))
+    @student = Student.new(params.require(:student).permit(:first_name, :last_name, :dob, :estimated_dob))
     @student.save
     render :index
   end

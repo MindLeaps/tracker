@@ -8,5 +8,6 @@ RSpec.describe "Create student" do
     click_button 'Create'
 
     expect(page).to have_content 'Rick'
+    expect(page).to have_content 'Sanchez'
   end
 end
