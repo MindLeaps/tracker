@@ -6,14 +6,14 @@ require File.expand_path('../config/application', __FILE__)
 Rails.application.load_tasks
 require 'rubocop/rake_task'
 
-desc "Run Rubocop for static analysis of Ruby code"
+desc 'Run Rubocop for static analysis of Ruby code'
 task :rubocop do
   RuboCop::RakeTask.new(:rubocop) do |task|
-    task.options = ["-RD"]
+    task.options = ['-RD']
   end
 end
 
-desc "Run Rubocop and then Spec"
-task :test => [:rubocop, :spec] do
-  puts "Tests OK"
+desc 'Run Rubocop and then Spec'
+task test: [:rubocop, :spec] do
+  puts 'Tests OK'
 end

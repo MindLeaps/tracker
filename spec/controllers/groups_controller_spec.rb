@@ -6,7 +6,7 @@ RSpec.describe GroupsController, type: :controller do
   describe '#new' do
     it 'create a group when supplied valid params' do
       post :create, group: {
-        group_name: 'Group A'}
+        group_name: 'Group A' }
       expect(response).to be_success
 
       group = Group.last
