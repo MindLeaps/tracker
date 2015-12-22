@@ -9,6 +9,7 @@ AllCops:
     - bin/setup
     - bin/rails
     - bin/rake
+    - vendor/**/* # Vendor gem dir in Travis CI
 
 Metrics/LineLength:
   Max: 120
