@@ -1,6 +1,7 @@
-<h1>New Student</h1>
+<h1>Edit Student</h1>
+
 <fieldset>
-  <%= form_for :student, url: {action: "create"} do |form| %>
+  <%= form_for @student do |form| %>
     <%= render partial: 'shared/errors', locals: {subject: @student} %>
     <%= form.label :first_name %>
     <%= form.text_field :first_name %>
@@ -10,9 +11,8 @@
     <%= form.date_select :dob, {start_year: 1990, end_year: Date.today.year} %>
     <%= form.label :estimated_dob %>
     <%= form.check_box :estimated_dob, {} %>
-    <%= form.submit 'Create' %>
+    <%= form.submit 'Update' %>
   <%- end %>
 </fieldset>
-<% @students.each do |student| %>
-  <p><a href="<%= url_for student %>"><%= student.last_name %>, <%= student.first_name %></a> - DOB: <%= student.dob %> <%= student.estimated_dob ? "EST" : "" %></p>
-<% end %>
+
+<p><a href="<%= url_for action: 'show' %>">Cancel</a></p>
