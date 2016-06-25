@@ -23,16 +23,14 @@ class StudentsController < ApplicationController
 
   def update
     @student = Student.find params[:id]
-    if @student.update_attributes student_params
-      return redirect_to @student
-    end
+    return redirect_to @student if @student.update_attributes student_params
+
     render :edit
   end
 
   private
 
-    def student_params
-      params.require(:student).permit(:first_name, :last_name, :dob, :estimated_dob)
-    end
-
+  def student_params
+    params.require(:student).permit(:first_name, :last_name, :dob, :estimated_dob)
+  end
 end
