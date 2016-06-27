@@ -7,7 +7,7 @@ RSpec.describe 'Edit student' do
     fill_in 'Last name', with: 'Zehcnas'
     click_button 'Create'
 
-    click_link 'Zehcnas, Rick'
+    click_link 'Zehcnas'
     click_link 'Edit'
     fill_in 'Last name', with: 'Sanchez'
     click_button 'Update'
