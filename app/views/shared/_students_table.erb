@@ -1,0 +1,12 @@
+<table class="table table-striped table-hover students-table">
+  <thead>
+    <tr>
+      <th>Last Name</th>
+      <th>First Name</th>
+      <th>Date of Birth</th>
+    </tr>
+  </thead>
+  <% students.each do |student| %>
+    <%= render partial: "shared/student_row", locals: {student: student} %>
+  <% end %>
+</table>

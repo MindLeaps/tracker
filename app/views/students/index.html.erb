@@ -13,6 +13,4 @@
     <%= form.submit 'Create' %>
   <%- end %>
 </fieldset>
-<% @students.each do |student| %>
-  <p><a href="<%= url_for student %>"><%= student.last_name %>, <%= student.first_name %></a> - DOB: <%= student.dob %> <%= student.estimated_dob ? "EST" : "" %></p>
-<% end %>
+<%= render partial: "shared/students_table", locals: {students: @students} %>
