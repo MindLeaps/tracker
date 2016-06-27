@@ -1,5 +1,5 @@
 ---
-- hosts: staging-mindleaps-tracker
+- hosts: server
   tasks:
   - name: Install required packages
     sudo: true
