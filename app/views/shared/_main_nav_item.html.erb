@@ -1,4 +1,4 @@
-<li class="nav_item <%= 'active' if current_page?(controller: controller, action: action) %>">
-  <a href="<%= url_for(controller: controller, action: action) unless current_page?(controller: controller, action: action) %>"
-    class="<%= 'disabled-link' if current_page?(controller: controller, action: action) %>"><%= name %></a>
+<li class="nav_item <%= 'active' if current_page?(url) %>">
+  <a href="<%= url unless current_page?(url) %>"
+    class="<%= 'disabled-link' if current_page?(url) %>"><%= name %></a>
 </li>
