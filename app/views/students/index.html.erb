@@ -10,7 +10,8 @@
     <%= form.date_select :dob, {start_year: 1990, end_year: Date.today.year} %>
     <%= form.label :estimated_dob %>
     <%= form.check_box :estimated_dob, {} %>
-    <%= form.collection_select :group_id, Group.all, :id, :group_name, prompt: true %>
+    <%= form.label :group %>
+    <%= form.collection_select :group_id, Group.all, :id, :group_name, include_blank: 'None' %>
     <%= form.submit 'Create' %>
   <%- end %>
 </fieldset>
