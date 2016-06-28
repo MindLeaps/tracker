@@ -5,33 +5,33 @@
     sudo: true
     apt: pkg={{ item }} state=installed
     with_items:
+      - build-essential
+      - curl
       - git
-      - git-core 
-      - curl 
-      - zlib1g-dev 
-      - build-essential 
-      - libssl-dev 
-      - libreadline-dev 
-      - libyaml-dev 
-      - libsqlite3-dev 
-      - sqlite3 
-      - libxml2-dev 
-      - libxslt1-dev 
-      - libcurl4-openssl-dev 
-      - libpq-dev
-      - nginx
+      - git-core
+      - libcurl4-openssl-dev
       - libgmp3-dev
+      - libpq-dev
+      - libreadline-dev
+      - libsqlite3-dev
+      - libssl-dev
+      - libxml2-dev
+      - libxslt1-dev
+      - libyaml-dev
+      - nginx
+      - sqlite3
+      - zlib1g-dev
 
   - name: Install rvm dependencies
     sudo: true
     apt: pkg={{ item }} update_cache=yes state=installed
     with_items:
-      - libgdbm-dev 
-      - libncurses5-dev 
-      - automake 
-      - libtool 
-      - bison 
+      - automake
+      - bison
       - libffi-dev
+      - libgdbm-dev
+      - libncurses5-dev
+      - libtool
 
   - name: Create the mindleaps user
     sudo: true
@@ -41,16 +41,19 @@
     sudo: true
     sudo_user: mindleaps
     shell: "\\gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3"
+
   - name: Get rvm
     sudo: true
     sudo_user: mindleaps
     shell: "\\curl -L https://get.rvm.io | bash -s stable --ignore-dotfiles"
     args:
       creates: "/home/mindleaps/.rvm"
+
   - name: Dont install documentation with gems
     sudo: true
     sudo_user: mindleaps
     command: 'echo "gem: --no-ri --no-rdoc" > ~/.gemrc creates=~/.gemrc'
+
   - name: Add rvm to bashrc
     sudo: true
     sudo_user: mindleaps
@@ -78,9 +81,9 @@
   - name: Install Bundler
     sudo: true
     sudo_user: mindleaps
-    command: bash -lc "cd ~/tracker && gem install bundler"
+    shell: ~/.rvm/bin/rvm all do gem install bundler chdir=/home/mindleaps/tracker
 
   - name: Install all gems
     sudo: true
     sudo_user: mindleaps
-    command: bash -lc "cd ~/tracker && bundle install --deployment"
+    shell: ~/.rvm/bin/rvm all do bundle install chdir=/home/mindleaps/tracker
