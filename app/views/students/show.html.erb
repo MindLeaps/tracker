@@ -1,6 +1,7 @@
 <h1><%= @student.last_name %>, <%= @student.first_name %></h1>
 <ul>
 <li>Date of Birth: <%= @student.estimated_dob ? "EST" : "" %> <%= @student.dob %></li>
+<li>Group: <%= student_group_name @student %></li>
 <ul>
 
 <p><a href="<%= url_for action: 'edit' %>">Edit</a> <a href="<%= url_for action: 'index' %>">Back</a></p>
