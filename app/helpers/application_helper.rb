@@ -1,5 +1,5 @@
 module ApplicationHelper
-  def display_student_group(student)
+  def student_group_name(student)
     student.group_name || 'None'
   end
 end

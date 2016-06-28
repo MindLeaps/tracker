@@ -15,7 +15,6 @@ class StudentsController < ApplicationController
 
   def show
     @student = Student.find params[:id]
-    @group = Group.where id: @student.group_id
   end
 
   def edit
