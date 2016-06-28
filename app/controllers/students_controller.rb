@@ -15,6 +15,7 @@ class StudentsController < ApplicationController
 
   def show
     @student = Student.find params[:id]
+    @group = Group.where id: @student.group_id
   end
 
   def edit
@@ -31,6 +32,6 @@ class StudentsController < ApplicationController
   private
 
   def student_params
-    params.require(:student).permit(:first_name, :last_name, :dob, :estimated_dob)
+    params.require(:student).permit(:first_name, :last_name, :dob, :estimated_dob, :group_id)
   end
 end
