@@ -66,8 +66,11 @@
   - name: Copy the source to the machine
     sudo: true
     sudo_user: mindleaps
-    git: clone=yes dest=/home/mindleaps/tracker repo=https://github.com/MindLeaps/tracker.git force=yes
-    # synchronize: dest=/home/mindleaps/tracker src=../
+    synchronize: dest=/home/mindleaps/tracker src=../../ owner=no group=no
+
+  - name: Grant the rails app access to tmp
+    sudo: true
+    file: dest=/home/mindleaps/tracker/tmp owner=mindleaps group=mindleaps mode=0700 state=directory recurse=yes
 
   - name: Install libs required by RVM
     sudo: true
@@ -87,3 +90,11 @@
     sudo: true
     sudo_user: mindleaps
     shell: ~/.rvm/bin/rvm all do bundle install chdir=/home/mindleaps/tracker
+
+  - name: Install the upstart script for tracker
+    sudo: true
+    template: src=tracker.conf dest=/etc/init/tracker.conf
+
+  - name: Start tracker
+    sudo: true
+    service: name=tracker state=started
