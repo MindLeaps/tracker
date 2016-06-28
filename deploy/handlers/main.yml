@@ -1,0 +1,6 @@
+---
+- name: Reload nginx config
+  service:
+    name: nginx
+    state: reload
+    enabled: yes
