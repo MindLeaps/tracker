@@ -10,7 +10,7 @@ RSpec.describe StudentsController, type: :controller do
         last_name: 'Noah',
         'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
         estimated_dob: true }
-      expect(response).to be_success
+      expect(response).to redirect_to controller: :students, action: :index
 
       student = Student.last
       expect(student.first_name).to eql 'Trevor'

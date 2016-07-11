@@ -10,6 +10,6 @@ class GroupsController < ApplicationController
   def create
     @group = Group.new(params.require(:group).permit(:group_name))
     @group.save
-    render :index
+    redirect_to groups_url
   end
 end

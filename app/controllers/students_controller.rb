@@ -10,7 +10,7 @@ class StudentsController < ApplicationController
   def create
     @student = Student.new student_params
     @student.save
-    render :index
+    redirect_to students_url
   end
 
   def show
