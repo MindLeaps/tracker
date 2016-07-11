@@ -1,5 +1,7 @@
 # Mindleaps Tracker [![Build Status](https://travis-ci.org/MindLeaps/tracker.svg?branch=master)] (https://travis-ci.org/MindLeaps/tracker)
 
+[![Join the chat at https://gitter.im/MindLeaps/tracker](https://badges.gitter.im/MindLeaps/tracker.svg)](https://gitter.im/MindLeaps/tracker?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 This software is responsible for keeping track of Students and Groups and for facilitating grading.
 
 ## Getting started
