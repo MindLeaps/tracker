@@ -124,7 +124,7 @@
 
   - name: Install the upstart script for tracker
     sudo: true
-    template: src=tracker.conf dest=/etc/init/tracker.conf
+    template: src=tracker.conf.j2 dest=/etc/init/tracker.conf
     notify: Restart tracker
 
   - name: Start tracker
