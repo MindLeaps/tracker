@@ -71,11 +71,32 @@
   - name: Copy the source to the machine
     sudo: true
     sudo_user: mindleaps
-    synchronize: dest=/home/mindleaps/tracker src=../../ owner=no group=no
+    synchronize:
+      dest: /home/mindleaps/tracker
+      src: ../../
+      owner: no
+      group: no
+      rsync_opts:
+        - "--exclude=.DS_Store"
+        - "--exclude=.git"
+        - "--exclude=.gitignore"
+        - "--exclude=.rspec"
+        - "--exclude=.rubocop.yml"
+        - "--exclude=.travis.yml"
+        - "--exclude=deploy"
+        - "--exclude=spec"
+        - "--exclude=db/*.sqlite3"
+        - "--exclude=log"
+        - "--exclude=tmp"
+        - "--exclude=vendor"
 
   - name: Grant the rails app access to tmp
     sudo: true
     file: dest=/home/mindleaps/tracker/tmp owner=mindleaps group=mindleaps mode=0700 state=directory recurse=yes
+
+  - name: Grant the rails app access to db
+    sudo: true
+    file: dest=/home/mindleaps/tracker/db owner=mindleaps group=mindleaps mode=0700 state=directory recurse=yes
 
   - name: Install libs required by RVM
     sudo: true
@@ -96,9 +117,15 @@
     sudo_user: mindleaps
     shell: ~/.rvm/bin/rvm all do bundle install chdir=/home/mindleaps/tracker
 
+  - name: Precompile the assets
+    sudo: true
+    sudo_user: mindleaps
+    shell: RAILS_ENV=production ~/.rvm/bin/rvm all do rails assets:precompile
+
   - name: Install the upstart script for tracker
     sudo: true
     template: src=tracker.conf dest=/etc/init/tracker.conf
+    notify: Restart tracker
 
   - name: Start tracker
     sudo: true

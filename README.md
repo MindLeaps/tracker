@@ -17,3 +17,11 @@ Starting the server
     rails s
 
 Then point your browser at http://localhost:3000
+
+## Deployment
+
+From the deploy directory:
+
+    ansible-playbook -i staging.ini playbook.yml
+
+This will deploy to staging, and expects you have credentials for the machine.

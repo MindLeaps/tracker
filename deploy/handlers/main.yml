@@ -4,3 +4,14 @@
     name: nginx
     state: reload
     enabled: yes
+
+- name: Restart tracker
+  service:
+    name: tracker
+    state: restarted
+    enabled: yes
+
+- name: Run DB migrations
+  sudo: true
+  sudo_user: mindleaps
+  shell: RAILS_ENV=production ~/.rvm/bin/rvm all do rake db:migrate
