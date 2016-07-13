@@ -5,3 +5,11 @@ script: RAILS_ENV=test bundle exec rake --trace db:migrate test
 sqlite: &sqlite
   adapter: sqlite3
   database: db/<%= Rails.env %>.sqlite3
+
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/2b5f267f968bbb52fee5
+    on_success: always  # options: [always|never|change] default: always
+    on_failure: always  # options: [always|never|change] default: always
+    on_start: never     # options: [always|never|change] default: always
