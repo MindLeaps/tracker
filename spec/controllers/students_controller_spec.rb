@@ -5,11 +5,12 @@ RSpec.describe StudentsController, type: :controller do
 
   describe '#new' do
     it 'create a student when supplied valid params' do
-      post :create, student: {
+      post :create, params: { student: {
         first_name: 'Trevor',
         last_name: 'Noah',
         'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
-        estimated_dob: true }
+        estimated_dob: true
+      } }
       expect(response).to redirect_to controller: :students, action: :index
 
       student = Student.last

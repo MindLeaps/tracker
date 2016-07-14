@@ -5,8 +5,7 @@ RSpec.describe GroupsController, type: :controller do
 
   describe '#new' do
     it 'create a group when supplied valid params' do
-      post :create, group: {
-        group_name: 'Group A' }
+      post :create, params: { group: { group_name: 'Group A' } }
       expect(response).to redirect_to controller: :groups, action: :index
 
       group = Group.last
