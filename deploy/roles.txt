@@ -1,0 +1,2 @@
+# roles.txt
+kamaln7.swapfile
