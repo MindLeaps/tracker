@@ -1,5 +1,0 @@
-# Put required ansible roles here
-# Install roles with
-# ansible-galaxy install -r requirements.yml
-- src: kamaln7.swapfile
-  path: ./roles/
