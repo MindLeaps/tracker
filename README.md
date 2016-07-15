@@ -22,7 +22,6 @@ Then point your browser at http://localhost:3000
 
 From the deploy directory:
 
-    ansible-galaxy install -r roles.txt
     ansible-playbook -i staging.ini playbook.yml
 
 This will deploy to staging, and expects you have credentials for the machine.
