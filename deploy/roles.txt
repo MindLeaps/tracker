@@ -1,2 +1,4 @@
-# roles.txt
+# Put required ansible roles here
+# Install roles with
+# ansible-galaxy install -r roles.txt
 kamaln7.swapfile
