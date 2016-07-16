@@ -1,5 +1,4 @@
 AllCops:
-  RunRailsCops: true
   Include:
     - Rakefile
     - config.ru
@@ -20,5 +19,8 @@ Metrics/LineLength:
     - http
     - https
 
-Syle/Documentation:
+Style/Documentation:
   Enabled: false
+
+Rails:
+   Enabled: true
