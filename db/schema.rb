@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -11,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160627235221) do
+ActiveRecord::Schema.define(version: 20160720015152) do
 
   create_table "groups", force: :cascade do |t|
     t.datetime "created_at",              null: false
@@ -27,8 +26,14 @@ ActiveRecord::Schema.define(version: 20160627235221) do
     t.datetime "updated_at",                   null: false
     t.boolean  "estimated_dob", default: true, null: false
     t.integer  "group_id"
+    t.index ["group_id"], name: "index_students_on_group_id"
   end
 
-  add_index "students", ["group_id"], name: "index_students_on_group_id"
+  create_table "users", force: :cascade do |t|
+    t.string   "uid"
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
 end
