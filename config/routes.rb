@@ -2,6 +2,8 @@ Rails.application.routes.draw do
   resources :groups, only: [:index, :create]
   resources :students, only: [:index, :create, :show, :edit, :update]
 
+  get '/auth/google_oauth2/callback', to: 'sessions#create'
+
   root to: 'home#index'
 
   # The priority is based upon order of creation: first created -> highest priority.

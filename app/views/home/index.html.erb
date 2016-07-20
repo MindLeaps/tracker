@@ -10,7 +10,11 @@
   <div class="home-container">
     <%= image_tag 'mindleaps_logo_transparent.png', class: 'home-mindleaps-logo' %>
     <h1>Tracker</h1>
-    <%= link_to 'Google Login', '/auth/google_oauth2', class: 'google-login btn', role: 'button' %>
+    <% if current_user %>
+      <p>Hi <%= current_user.name %>
+    <% else %>
+      <%= link_to 'Google Login', '/auth/google_oauth2', class: 'google-login btn', role: 'button' %>
+    <% end %>
   </div>
 </body>
 </html>
