@@ -1,4 +1,8 @@
 <header>
 <%= image_tag('MindLeapsSmallLogo.png', class: 'img_preview') %>
 <h1>Student Tracker</h1>
+<div class="current-user">
+  <p>Logged in as <%= current_user.name %></p>
+  <p><%= link_to 'Logout', '/logout', role: 'button' %></p>
+</div>
 </header>

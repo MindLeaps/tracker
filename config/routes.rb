@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   resources :students, only: [:index, :create, :show, :edit, :update]
 
   get '/auth/google_oauth2/callback', to: 'sessions#create'
+  get '/logout', to: 'sessions#destroy'
 
   root to: 'home#index'
 
