@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   resources :groups, only: [:index, :create]
   resources :students, only: [:index, :create, :show, :edit, :update]
+  resources :grades, only: [:index]
 
   root to: 'students#index'
 
