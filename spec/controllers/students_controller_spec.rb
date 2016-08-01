@@ -3,6 +3,11 @@ require 'rails_helper'
 RSpec.describe StudentsController, type: :controller do
   fixtures :students
 
+  before(:each) do
+    allow(controller).to receive(:current_user)
+      .and_return(instance_double 'User', name: 'User For Testing', uid: '000000000000')
+  end
+
   describe '#new' do
     it 'create a student when supplied valid params' do
       post :create, params: { student: {
