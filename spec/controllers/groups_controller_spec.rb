@@ -3,10 +3,7 @@ require 'rails_helper'
 RSpec.describe GroupsController, type: :controller do
   fixtures :groups
 
-  before(:each) do
-    allow(controller).to receive(:current_user)
-      .and_return(instance_double 'User', name: 'User For Testing', uid: '000000000000')
-  end
+  include_context 'controller_login'
 
   describe '#new' do
     it 'create a group when supplied valid params' do

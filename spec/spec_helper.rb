@@ -95,8 +95,8 @@ RSpec.configure do |config|
 end
 
 OmniAuth.config.test_mode = true
-OmniAuth.config.mock_auth[:twitter] = OmniAuth::AuthHash.new({
+OmniAuth.config.mock_auth[:twitter] = OmniAuth::AuthHash.new(
   provider: :google_oauth2,
   uid: '123545',
-  info: {name: 'Test User'}
-})
+  info: { name: 'Test User' }
+)
