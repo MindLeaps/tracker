@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -11,12 +10,33 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160627235221) do
+ActiveRecord::Schema.define(version: 20160802000354) do
+
+  create_table "grades", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "session_id"
+    t.index ["session_id"], name: "index_grades_on_session_id"
+  end
 
   create_table "groups", force: :cascade do |t|
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
     t.string   "group_name", default: "", null: false
+  end
+
+  create_table "sessions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "student_sessions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "student_id"
+    t.integer  "session_id"
+    t.index ["session_id"], name: "index_student_sessions_on_session_id"
+    t.index ["student_id"], name: "index_student_sessions_on_student_id"
   end
 
   create_table "students", force: :cascade do |t|
@@ -27,8 +47,7 @@ ActiveRecord::Schema.define(version: 20160627235221) do
     t.datetime "updated_at",                   null: false
     t.boolean  "estimated_dob", default: true, null: false
     t.integer  "group_id"
+    t.index ["group_id"], name: "index_students_on_group_id"
   end
-
-  add_index "students", ["group_id"], name: "index_students_on_group_id"
 
 end
