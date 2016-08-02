@@ -18,6 +18,7 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
 require 'capybara/poltergeist'
+require 'omniauth'
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
@@ -92,3 +93,10 @@ RSpec.configure do |config|
   # Use capybara webkit for feature tests
   Capybara.javascript_driver = :poltergeist
 end
+
+OmniAuth.config.test_mode = true
+OmniAuth.config.mock_auth[:twitter] = OmniAuth::AuthHash.new({
+  provider: :google_oauth2,
+  uid: '123545',
+  info: {name: 'Test User'}
+})

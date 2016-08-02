@@ -1,6 +1,8 @@
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe 'Create student' do
+  include_context 'login'
+
   it 'creates Rick', js: true do
     visit '/students'
     fill_in 'First name', with: 'Rick'
