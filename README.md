@@ -12,7 +12,7 @@ Things you'll need
 Starting the server
 
     bundle install
-    rails s
+    GOOGLE_CLIENT_ID={your_google_client_id} GOOGLE_CLIENT_SECRET={your_google_client_secret} rails s
 
 Then point your browser at http://localhost:3000
 
