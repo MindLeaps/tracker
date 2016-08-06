@@ -11,6 +11,7 @@
 /tmp/
 db/*.sqlite*
 log/
+playbook.retry
 
 ## Specific to RubyMotion:
 .dat*

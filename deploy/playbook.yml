@@ -1,7 +1,7 @@
 ---
 - hosts: server
   roles:
-    - { role: kamaln7.swapfile, swapfile_size: 2GB, swapfile_location: /mnt/swapfile }
+  - { role: kamaln7.swapfile, swapfile_size: 2GB, swapfile_location: /mnt/swapfile }
   tasks:
   - name: Install required packages
     sudo: true
@@ -132,3 +132,13 @@
   - name: Start tracker
     sudo: true
     service: name=tracker state=started
+
+  - name: Install Certbot
+    get_url: url=https://dl.eff.org/certbot-auto dest=/etc/certbot-auto mode=a+x
+
+  - name: Get SSL Certificate
+    sudo: true
+    shell: "/etc/certbot-auto certonly -n -m {{ letsencrypt_email }} --webroot -w /home/mindleaps/tracker/public -d {{ deploy_domain }}"
+
+  - name: Restart Nginx
+    service: name=nginx state=restarted
