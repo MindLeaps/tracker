@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.describe GroupsController, type: :controller do
   fixtures :groups
-
   include_context 'controller_login'
 
   describe '#new' do

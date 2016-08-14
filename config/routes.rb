@@ -1,9 +1,11 @@
 Rails.application.routes.draw do
+  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }, path: '/'
+  devise_scope :user do
+    get 'sign_out', to: 'devise/sessions#destroy', as: :destroy_user_session
+  end
+
   resources :groups, only: [:index, :create]
   resources :students, only: [:index, :create, :show, :edit, :update]
-
-  get '/auth/google_oauth2/callback', to: 'sessions#create'
-  get '/logout', to: 'sessions#destroy'
 
   root to: 'home#index'
 

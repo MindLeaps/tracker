@@ -1,5 +1,4 @@
 class StudentsController < ApplicationController
-  before_action :authenticate_user
   before_action do
     @students = Student.all
   end
