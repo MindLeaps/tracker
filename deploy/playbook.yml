@@ -76,6 +76,7 @@
     synchronize:
       dest: /home/mindleaps/tracker
       src: ../../
+      delete: yes
       owner: no
       group: no
       rsync_opts:
@@ -90,7 +91,6 @@
         - "--exclude=db/*.sqlite3"
         - "--exclude=log"
         - "--exclude=tmp"
-        - "--exclude=vendor"
 
   - name: Grant the rails app access to tmp
     sudo: true
