@@ -1,0 +1,17 @@
+<section>
+  <%- @students.each do |student| %>
+    <section>
+      <h1><%= student_name student %></h1>
+      <h2><%= student_group_name student %></h2>
+    </section>
+    <section>
+      <fieldset>
+        <%= form_for student do |form| %>
+          <%- student.current_session.grades.each do |grade| %>
+            <h1><%= grade.name %></h1>
+          <%- end %>
+        <%- end %>
+      </fieldset>
+    </section>
+  <%- end %>
+</section>

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-RSpec.describe 'Create student' do
-  it 'creates Rick', js: true do
+RSpec.describe 'Create Student' do
+  it 'Creates Rick', js: true do
     visit '/'
     fill_in 'First name', with: 'Rick'
     fill_in 'Last name', with: 'Sanchez'
