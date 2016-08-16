@@ -9,17 +9,28 @@ Things you'll need
     rbenv or rvm
     phantomjs
 
+Put your Google OAuth client id and secret in development.rb config
+
+```ruby
+config.google_client_id = 'YOUR_CLIENT_ID'
+config.google_client_secret = 'YOUR_CLIENT_SECRET'
+```
+
 Starting the server
 
-    bundle install
-    GOOGLE_CLIENT_ID={your_google_client_id} GOOGLE_CLIENT_SECRET={your_google_client_secret} rails s
+```shell
+bundle install
+rails s # if you have configured Google OAuth in the development.rb config file
+# if you haven't, or if you're in production then
+GOOGLE_CLIENT_ID={your_google_client_id} GOOGLE_CLIENT_SECRET={your_google_client_secret} rails s
+```
 
 Then point your browser at http://localhost:3000
 
 ## Deployment
 
 From the deploy directory:
-
-    ansible-playbook -i staging.ini playbook.yml
-
+```shell
+ansible-playbook -i staging.ini playbook.yml
+```
 This will deploy to staging, and expects you have credentials for the machine.

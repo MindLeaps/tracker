@@ -37,6 +37,11 @@ Rails.application.configure do
   # Raises helpful error messages.
   config.assets.raise_runtime_errors = true
 
+
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  # Uncomment and put your client id and secret here for easy authentication in development
+  # config.google_client_id = 'YOUR_CLIENT_ID'
+  # config.google_client_secret = 'YOUR_CLIENT_SECRET'
 end
