@@ -76,6 +76,7 @@
     synchronize:
       dest: /home/mindleaps/tracker
       src: ../../
+      delete: yes
       owner: no
       group: no
       rsync_opts:
@@ -90,7 +91,11 @@
         - "--exclude=db/*.sqlite3"
         - "--exclude=log"
         - "--exclude=tmp"
-        - "--exclude=vendor"
+
+  - name: Change ownership of destination directory
+    sudo: true
+    sudo_user: root
+    shell: chown -R mindleaps:mindleaps /home/mindleaps/tracker
 
   - name: Grant the rails app access to tmp
     sudo: true
@@ -122,7 +127,7 @@
   - name: Precompile the assets
     sudo: true
     sudo_user: mindleaps
-    shell: RAILS_ENV=production ~/.rvm/bin/rvm all do rails assets:precompile
+    shell: DEVISE_SECRET_KEY={{ devise_secret_key }} RAILS_ENV=production ~/.rvm/bin/rvm all do rails assets:precompile chdir=/home/mindleaps/tracker
 
   - name: Install the upstart script for tracker
     sudo: true

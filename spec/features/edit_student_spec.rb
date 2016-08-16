@@ -1,8 +1,10 @@
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe 'Edit student' do
+  include_context 'login'
+
   it 'creates Rick', js: true do
-    visit '/'
+    visit '/students'
     fill_in 'First name', with: 'Rick'
     fill_in 'Last name', with: 'Zehcnas'
     click_button 'Create'

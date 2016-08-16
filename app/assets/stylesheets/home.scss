@@ -1,0 +1,44 @@
+.home {
+  background: whitesmoke;
+
+  .home-container {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .home-mindleaps-logo {
+    position: relative;
+    left: -20%;
+    animation: fadein 1s;
+  }
+
+  h1 {
+    position: relative;
+    color: #682678;
+    font-size: 20rem;
+    animation: fadein-delay 2s;
+  }
+
+  .google-login {
+    background: #579f3d;
+    padding: 10px 16px;
+    font-size: 16px;
+    color: white;
+    animation: fadein-delay 2.5s;
+    position: relative;
+    left: 60%;
+  }
+}
+
+@keyframes fadein {
+  0% {opacity: 0}
+  100% {opacity: 1}
+}
+
+@keyframes fadein-delay {
+  0% {opacity: 0}
+  50% {opacity: 0}
+  100% {opacity: 1}
+}

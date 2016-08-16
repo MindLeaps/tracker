@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe StudentsController, type: :controller do
   fixtures :students
+  include_context 'controller_login'
 
   describe '#new' do
     it 'create a student when supplied valid params' do

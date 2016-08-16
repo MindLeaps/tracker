@@ -9,6 +9,10 @@ chdir /home/mindleaps/tracker
 
 # command to run, with Bundler support!
 env SECRET_KEY_BASE={{ secret_key_base }}
+env DEVISE_SECRET_KEY={{ devise_secret_key }}
+env GOOGLE_CLIENT_ID={{ google_client_id }}
+env GOOGLE_CLIENT_SECRET={{ google_client_secret }}
+env DOMAIN={{ deploy_domain }}
 env RAILS_ENV=production
 env HOME=/home/mindleaps
 exec /home/mindleaps/.rvm/bin/rvm all do rails s
