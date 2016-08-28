@@ -1,7 +1,11 @@
 module Api
   class StudentsController < ApiController
     def index
-      @students = Student.all
+      if not params[:group_id]
+        @students = Student.all
+      else
+        @students = Student.where group_id: params[:group_id]
+      end
       respond_with @students
     end
 
