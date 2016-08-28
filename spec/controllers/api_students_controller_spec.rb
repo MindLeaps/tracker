@@ -7,7 +7,6 @@ RSpec.describe Api::StudentsController, type: :controller do
   let(:group_a) { groups(:group_a) }
 
   describe '#index' do
-
     it 'gets a list of students' do
       get :index, format: :json
 
@@ -26,12 +25,6 @@ RSpec.describe Api::StudentsController, type: :controller do
 
       expect(json.count).to eq 2
       expect(json.map { |s| s['first_name'] }).to include 'Innocent', 'Rene'
-    end
-
-    it 'returns empty when group does not exist' do
-      get :index, params: { group_id: '123412341234' }, format: :json
-
-      expect(json.count).to eq 0
     end
   end
 end
