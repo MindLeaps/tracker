@@ -2,6 +2,6 @@
 <ul>
 <li>Date of Birth: <%= @student.estimated_dob ? "EST" : "" %> <%= @student.dob %></li>
 <li>Group: <%= student_group_name @student %></li>
-<ul>
+</ul>
 
-<p><a href="<%= url_for action: 'edit' %>">Edit</a> <a href="<%= url_for action: 'index' %>">Back</a></p>
+<p><%= link_to 'Edit', { action: :edit }, class: 'btn btn-default' %> <%= link_to 'Back to All Students', students_path %></p>

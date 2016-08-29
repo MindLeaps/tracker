@@ -1,18 +1,3 @@
-<h1>New Student</h1>
-<fieldset>
-  <%= form_for :student, url: {action: "create"} do |form| %>
-    <%= render partial: 'shared/errors', locals: {subject: @student} %>
-    <%= form.label :first_name %>
-    <%= form.text_field :first_name %>
-    <%= form.label :last_name %>
-    <%= form.text_field :last_name %>
-    <%= form.label :dob %>
-    <%= form.date_select :dob, {start_year: 1990, end_year: Date.today.year} %>
-    <%= form.label :estimated_dob %>
-    <%= form.check_box :estimated_dob, {} %>
-    <%= form.label :group %>
-    <%= form.collection_select :group_id, Group.all, :id, :group_name, include_blank: 'None' %>
-    <%= form.submit 'Create' %>
-  <%- end %>
-</fieldset>
+<h1>Students</h1>
+<%= link_to 'New Student', new_student_path, class: 'btn btn-default' %>
 <%= render partial: "shared/students_table", locals: {students: @students} %>

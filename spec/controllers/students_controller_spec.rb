@@ -4,7 +4,7 @@ RSpec.describe StudentsController, type: :controller do
   fixtures :students
   include_context 'controller_login'
 
-  describe '#new' do
+  describe '#create' do
     it 'create a student when supplied valid params' do
       post :create, params: { student: {
         first_name: 'Trevor',
