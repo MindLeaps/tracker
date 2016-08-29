@@ -4,6 +4,11 @@ Rails.application.routes.draw do
     get 'sign_out', to: 'devise/sessions#destroy', as: :destroy_user_session
   end
 
+  scope module: :api, as: :api, constraints: -> (req) { req.format == :json } do
+    resources :students, only: [:index, :show]
+    resources :groups, only: [:index, :show]
+  end
+
   resources :groups, only: [:index, :create]
   resources :students, only: [:index, :create, :show, :edit, :update]
 
