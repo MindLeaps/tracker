@@ -13,8 +13,8 @@ class StudentsController < ApplicationController
 
   def create
     @student = Student.new student_params
-    @student.save
-    redirect_to students_url
+    return redirect_to @student if @student.save
+    render :new
   end
 
   def show

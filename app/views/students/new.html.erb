@@ -1,19 +1,14 @@
 <h1>New Student</h1>
+<div class="container">
 <fieldset>
-  <%= form_for :student, url: {action: "create"} do |form| %>
+  <%= simple_form_for @student, wrapper: :horizontal_form, url: {action: "create"} do |f| %>
     <%= render partial: 'shared/errors', locals: {subject: @student} %>
-    <%= form.label :first_name %>
-    <%= form.text_field :first_name %>
-    <%= form.label :last_name %>
-    <%= form.text_field :last_name %>
-    <%= form.label :dob %>
-    <%= form.date_select :dob, {start_year: 1990, end_year: Date.today.year} %>
-    <%= form.label :estimated_dob %>
-    <%= form.check_box :estimated_dob, {} %>
-    <%= form.label :group %>
-    <%= form.collection_select :group_id, Group.all, :id, :group_name, include_blank: 'None' %>
-    <%= form.submit 'Create' %>
+    <%= f.input :first_name %>
+    <%= f.input :last_name %>
+    <%= f.input :dob, label: 'Date of Birth', start_year: 1990, end_year: Date.today.year %>
+    <%= f.input :estimated_dob, label: 'DOB estimated' %>
+    <%= f.association :group, label_method: :group_name, include_blank: 'None' %>
+    <%= f.button :submit, class: 'btn-outline-success' %>
   <%- end %>
 </fieldset>
-
-<p><%= link_to 'Back', students_path %></p>
+</div>

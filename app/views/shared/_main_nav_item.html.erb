@@ -1,4 +1,4 @@
-<li class="nav_item <%= 'active' if current_page?(url) %>">
+<li class="nav-item">
   <a href="<%= url unless current_page?(url) %>"
-    class="<%= 'disabled-link' if current_page?(url) %>"><%= name %></a>
+    class="nav-link <%= 'disabled' if current_page?(url) %> <%= 'active' if current_page?(url) %>"><%= name %></a>
 </li>
