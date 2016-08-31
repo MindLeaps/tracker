@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe 'Edit student' do
   include_context 'login'
 
-  it 'creates Rick', js: true do
+  it 'renames Pesut', js: true do
     visit '/students'
 
     click_link 'Pesut'

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160814164503) do
+ActiveRecord::Schema.define(version: 20160831223423) do
 
   create_table "groups", force: :cascade do |t|
     t.datetime "created_at",              null: false
@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 20160814164503) do
     t.datetime "updated_at",                   null: false
     t.boolean  "estimated_dob", default: true, null: false
     t.integer  "group_id"
+    t.integer  "gender",        default: 0,    null: false
     t.index ["group_id"], name: "index_students_on_group_id"
   end
 
