@@ -1,6 +1,7 @@
 <tr class="student-row">
     <td><a class="student-row-link" href="<%= url_for student %>"><%= student.last_name %></a></td>
     <td><a class="student-row-link" href="<%= url_for student %>"><%= student.first_name %></a></td>
+    <td><a class="student-row-link text-xs-center" href="<%= url_for student %>"><%= student.gender %></a></td>
     <td><a class="student-row-link" href="<%= url_for student %>"><%= student.dob %> <%= student.estimated_dob ? "EST" : "" %></a></td>
-    <td><a class="student-row-link" href="<%= url_for student %>"><%= student_group_name student %></a></td>
+    <td><a class="student-row-link text-xs-center" href="<%= url_for student %>"><%= student_group_name student %></a></td>
 </tr>
