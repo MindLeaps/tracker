@@ -37,6 +37,26 @@ RSpec.describe StudentsController, type: :controller do
       expect(student.gender).to eql 'F'
     end
 
+    it 'creates a student with guardian inormation' do
+      post :create, params: { student: {
+        first_name: 'Guardianed',
+        last_name: 'Guard',
+        'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
+        gender: 'F',
+        guardian_name: 'Guardian Omonzu',
+        guardian_occupation: 'Moto driver',
+        guardian_contact: '123-123-123 or email@example.com',
+        family_members: 'Brothers: Omonu and Umunzu'
+      } }
+      student = Student.last
+      expect(student.first_name).to eql 'Guardianed'
+      expect(student.last_name).to eql 'Guard'
+      expect(student.guardian_name).to eql 'Guardian Omonzu'
+      expect(student.guardian_occupation).to eql 'Moto driver'
+      expect(student.guardian_contact).to eql '123-123-123 or email@example.com'
+      expect(student.family_members).to eql 'Brothers: Omonu and Umunzu'
+    end
+
     it 'creates a student with health information' do
       post :create, params: { student: {
         first_name: 'Healthy',
@@ -76,7 +96,7 @@ RSpec.describe StudentsController, type: :controller do
       expect(student.reason_for_leaving).to eql 'Financial situation'
     end
 
-    it 'creates a student with school information' do
+    it 'creates a student with notes' do
       post :create, params: { student: {
         first_name: 'Prime',
         last_name: 'Noted',
