@@ -11,6 +11,10 @@
     <%= f.association :group, label_method: :group_name, include_blank: 'None' %>
     <hr />
     <%= f.input :quartier %>
+    <hr />
+    <%= f.input :health_insurance %>
+    <%= f.input :health_issues %>
+    <%= f.input :hiv_tested %>
     <%= f.button :submit, class: 'btn-outline-success' %>
   <%- end %>
 </fieldset>
