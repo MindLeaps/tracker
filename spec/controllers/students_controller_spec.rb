@@ -18,6 +18,22 @@ RSpec.describe StudentsController, type: :controller do
       expect(student.first_name).to eql 'Trevor'
       expect(student.last_name).to eql 'Noah'
     end
+
+    it 'create a female student when supplied valid params' do
+      post :create, params: { student: {
+        first_name: 'Ami',
+        last_name: 'Ayola',
+        'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
+        gender: 'F',
+        estimated_dob: true
+      } }
+      expect(response).to redirect_to student_path(assigns[:student])
+
+      student = Student.last
+      expect(student.first_name).to eql 'Ami'
+      expect(student.last_name).to eql 'Ayola'
+      expect(student.gender).to eql 'F'
+    end
   end
 
   describe '#index' do
