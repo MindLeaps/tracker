@@ -1,7 +1,9 @@
 <h1><%= @student.last_name %>, <%= @student.first_name %></h1>
 <ul>
 <li>Date of Birth: <%= @student.estimated_dob ? "EST" : "" %> <%= @student.dob %></li>
+<li>Gender: <%= @student.gender %></li>
 <li>Group: <%= student_group_name @student %></li>
+<li>Quartier: <%= @student.quartier %></li>
 </ul>
 
 <p><%= link_to 'Edit', { action: :edit }, class: 'btn btn-default' %> <%= link_to 'Back to All Students', students_path %></p>
