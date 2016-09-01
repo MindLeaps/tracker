@@ -12,6 +12,11 @@
     <hr />
     <%= f.input :quartier %>
     <hr />
+    <%= f.input :name_of_school %>
+    <%= f.input :school_level_completed %>
+    <%= f.input :year_of_dropout, input_html: {min: 1980, max: 2030, placeholder: 'YYYY'} %>
+    <%= f.input :reason_for_leaving %>
+    <hr />
     <%= f.input :health_insurance %>
     <%= f.input :health_issues %>
     <%= f.input :hiv_tested %>

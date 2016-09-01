@@ -55,6 +55,26 @@ RSpec.describe StudentsController, type: :controller do
       expect(student.health_issues).to eql 'In perfect health'
       expect(student.hiv_tested).to eql true
     end
+
+    it 'creates a student with school information' do
+      post :create, params: { student: {
+        first_name: 'Educated',
+        last_name: 'Dropout',
+        'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
+        gender: 'F',
+        name_of_school: 'Super School',
+        school_level_completed: 'B2-1',
+        year_of_dropout: 1995,
+        reason_for_leaving: 'Financial situation'
+      } }
+      student = Student.last
+      expect(student.first_name).to eql 'Educated'
+      expect(student.last_name).to eql 'Dropout'
+      expect(student.name_of_school).to eql 'Super School'
+      expect(student.school_level_completed).to eql 'B2-1'
+      expect(student.year_of_dropout).to eql 1995
+      expect(student.reason_for_leaving).to eql 'Financial situation'
+    end
   end
 
   describe '#index' do
