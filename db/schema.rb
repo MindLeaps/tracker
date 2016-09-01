@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160901202149) do
+ActiveRecord::Schema.define(version: 20160901210739) do
 
   create_table "groups", force: :cascade do |t|
     t.datetime "created_at",              null: false
@@ -35,6 +35,7 @@ ActiveRecord::Schema.define(version: 20160901202149) do
     t.string   "school_level_completed"
     t.integer  "year_of_dropout"
     t.string   "reason_for_leaving"
+    t.text     "notes"
     t.index ["group_id"], name: "index_students_on_group_id"
   end
 

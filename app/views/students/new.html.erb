@@ -20,6 +20,9 @@
     <%= f.input :health_insurance %>
     <%= f.input :health_issues %>
     <%= f.input :hiv_tested %>
+    <hr />
+    <%= f.input :notes, input_html: {rows: 5} %>
+    <hr />
     <%= f.button :submit, class: 'btn-outline-success' %>
   <%- end %>
 </fieldset>

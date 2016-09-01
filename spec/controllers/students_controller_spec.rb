@@ -75,6 +75,20 @@ RSpec.describe StudentsController, type: :controller do
       expect(student.year_of_dropout).to eql 1995
       expect(student.reason_for_leaving).to eql 'Financial situation'
     end
+
+    it 'creates a student with school information' do
+      post :create, params: { student: {
+        first_name: 'Prime',
+        last_name: 'Noted',
+        'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
+        gender: 'F',
+        notes: 'Prime is showing great promise despite the initial learning difficulties.'
+      } }
+      student = Student.last
+      expect(student.first_name).to eql 'Prime'
+      expect(student.last_name).to eql 'Noted'
+      expect(student.notes).to eql 'Prime is showing great promise despite the initial learning difficulties.'
+    end
   end
 
   describe '#index' do
