@@ -12,4 +12,8 @@ class GroupsController < ApplicationController
     @group.save
     redirect_to groups_url
   end
+
+  def show
+    @group = Group.find params[:id]
+  end
 end

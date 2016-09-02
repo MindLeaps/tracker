@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   end
 
   resources :chapters, only: [:index, :create]
-  resources :groups, only: [:index, :create]
+  resources :groups, only: [:index, :create, :show]
   resources :students, only: [:index, :new, :create, :show, :edit, :update]
 
   root to: 'home#index'
