@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     resources :groups, only: [:index, :show]
   end
 
+  resources :chapters, only: [:index, :create]
   resources :groups, only: [:index, :create]
   resources :students, only: [:index, :new, :create, :show, :edit, :update]
 
