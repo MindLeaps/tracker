@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe StudentsController, type: :controller do
-  fixtures :students
+  fixtures :students, :groups
   include_context 'controller_login'
 
   describe '#create' do
@@ -10,6 +10,7 @@ RSpec.describe StudentsController, type: :controller do
         first_name: 'Trevor',
         last_name: 'Noah',
         'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
+        group_id: groups(:group_a).id,
         gender: 'M',
         quartier: 'He lives somewhere...',
         estimated_dob: true
@@ -19,6 +20,7 @@ RSpec.describe StudentsController, type: :controller do
       student = Student.last
       expect(student.first_name).to eql 'Trevor'
       expect(student.last_name).to eql 'Noah'
+      expect(student.group.group_name).to eql groups(:group_a).group_name
       expect(student.gender).to eql 'M'
       expect(student.quartier).to eql 'He lives somewhere...'
     end
