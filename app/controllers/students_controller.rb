@@ -7,10 +7,14 @@ class StudentsController < ApplicationController
     @student = Student.new
   end
 
+  def new
+    @student = Student.new
+  end
+
   def create
     @student = Student.new student_params
-    @student.save
-    redirect_to students_url
+    return redirect_to @student if @student.save
+    render :new
   end
 
   def show
@@ -31,6 +35,6 @@ class StudentsController < ApplicationController
   private
 
   def student_params
-    params.require(:student).permit(:first_name, :last_name, :dob, :estimated_dob, :group_id)
+    params.require(:student).permit(*Student.permitted_params)
   end
 end

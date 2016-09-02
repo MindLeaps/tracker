@@ -10,7 +10,28 @@
  * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
  * file per style scope.
  *
- *= require bootstrap.min.css
- *= require_tree .
- *= require_self
  */
+
+@import 'bootstrap';
+
+@import 'common';
+@import 'header';
+@import 'groups';
+@import 'home';
+@import 'menu';
+@import 'students';
+
+.boolean {
+  label {
+    cursor: pointer;
+  }
+  .form-check label {
+    @extend .form-control-lg;
+    cursor: pointer;
+    input {
+      cursor: pointer;
+      width: 15px;
+      display: inline;
+    }
+  }
+}

@@ -1,16 +1,7 @@
 .home {
   background: whitesmoke;
 
-  .home-container {
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-
   .home-mindleaps-logo {
-    position: relative;
-    left: -20%;
     animation: fadein 1s;
   }
 

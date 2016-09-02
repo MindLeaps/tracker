@@ -4,7 +4,7 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 
-tomislav: {first_name: "Tomislav", last_name: "Pesut", dob: "1980-2-1", estimated_dob: true}
+tomislav: {first_name: "Tomislav", last_name: "Pesut", dob: "1980-2-1", estimated_dob: true, gender: 0}
 
-innocent: { first_name: 'Innocent', last_name: 'Ngabo', dob: '2003-01-01', estimated_dob: 'true', group: group_a }
-rene: { first_name: 'Rene', last_name: 'Uwase', dob: '1999-01-01', estimated_dob: 'true', group: group_a }
+innocent: { first_name: 'Innocent', last_name: 'Ngabo', dob: '2003-01-01', estimated_dob: 'true', group: group_a, gender: 0 }
+rene: { first_name: 'Rene', last_name: 'Uwase', dob: '1999-01-01', estimated_dob: 'true', group: group_a, gender: 0 }

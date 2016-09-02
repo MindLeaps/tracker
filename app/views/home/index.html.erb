@@ -7,7 +7,7 @@
   <%= csrf_meta_tags %>
 </head>
 <body class="home">
-  <div class="home-container">
+  <div class="container">
     <%= image_tag 'mindleaps_logo_transparent.png', class: 'home-mindleaps-logo' %>
     <h1>Tracker</h1>
     <%= link_to 'Google Login', omniauth_authorize_path(User, :google_oauth2), class: 'google-login btn', role: 'button' %>
