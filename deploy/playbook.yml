@@ -23,6 +23,7 @@
       - nginx-extras
       - sqlite3
       - zlib1g-dev
+      - nodejs
 
   - name: Install nginx config
     sudo: true
@@ -124,6 +125,11 @@
     sudo_user: mindleaps
     shell: ~/.rvm/bin/rvm all do bundle install chdir=/home/mindleaps/tracker
 
+  - name: Migrate the Database
+    sudo: true
+    sudo_user: mindleaps
+    shell: DEVISE_SECRET_KEY={{ devise_secret_key }} RAILS_ENV=production ~/.rvm/bin/rvm all do rails db:migrate chdir=/home/mindleaps/tracker
+
   - name: Precompile the assets
     sudo: true
     sudo_user: mindleaps
@@ -147,3 +153,6 @@
 
   - name: Restart Nginx
     service: name=nginx state=restarted
+
+  - name: Restart Tracker
+    service: name=tracker state=restarted
