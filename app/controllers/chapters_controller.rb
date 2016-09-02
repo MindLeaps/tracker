@@ -12,4 +12,8 @@ class ChaptersController < ApplicationController
     @chapter.save
     redirect_to chapters_url
   end
+
+  def show
+    @chapter = Chapter.find params[:id]
+  end
 end
