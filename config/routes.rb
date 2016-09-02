@@ -5,11 +5,13 @@ Rails.application.routes.draw do
   end
 
   scope module: :api, as: :api, constraints: -> (req) { req.format == :json } do
-    resources :students, only: [:index, :show]
+    resources :chapters, only: [:index, :show]
     resources :groups, only: [:index, :show]
+    resources :students, only: [:index, :show]
   end
 
-  resources :groups, only: [:index, :create]
+  resources :chapters, only: [:index, :create, :show]
+  resources :groups, only: [:index, :create, :show]
   resources :students, only: [:index, :new, :create, :show, :edit, :update]
 
   root to: 'home#index'

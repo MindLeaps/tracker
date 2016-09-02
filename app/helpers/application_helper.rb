@@ -2,4 +2,12 @@ module ApplicationHelper
   def student_group_name(student)
     student.group_name || 'None'
   end
+
+  def group_chapter_name(group)
+    group.chapter_name || 'None'
+  end
+
+  def chapter_students_number(chapter)
+    chapter.groups.reduce(0) { |a, e| a + e.students.length }
+  end
 end

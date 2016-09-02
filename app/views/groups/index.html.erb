@@ -1,13 +1,11 @@
 <h1>New Group</h1>
 <fieldset>
-  <%= form_for :group, url: {action: "create"} do |form| %>
+  <%= simple_form_for @group, wrapper: :horizontal_form, url: {action: 'create'} do |f| %>
     <%= render partial: 'shared/errors', locals: {subject: @group} %>
-    <%= form.label :group_name %>
-    <%= form.text_field :group_name %>
-    <%= form.submit 'Create' %>
+    <%= f.input :group_name %>
+    <%= f.association :chapter, label_method: :chapter_name, include_blank: 'None' %>
+    <%= f.button :submit, class: 'btn-outline-success' %>
   <%- end %>
 </fieldset>
 
-<% @groups.each do |group| %>
-  <p><%= group.group_name %>, Created: <%= group.created_at %></p>
-<% end %>
+<%= render partial: "shared/groups_table", locals: {groups: @groups} %>

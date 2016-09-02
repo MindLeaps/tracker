@@ -7,12 +7,16 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 # rubocop:disable Style/IndentArray
 
-groups = Group.create([
+chapters = Chapter.create([
+  { chapter_name: 'Kigali' }
+])
+
+chapters[0].groups.create([
   { group_name: 'A' },
   { group_name: 'B' }
 ])
 
-groups[0].students.create([
+chapters[0].groups[0].students.create([
   { first_name: 'Innocent', last_name: 'Ngabo', dob: '2003-01-01', estimated_dob: 'true' },
   { first_name: 'Emmanuel', last_name: 'Ishimwe', dob: '2007-01-01', estimated_dob: 'true' },
   { first_name: 'Eric', last_name: 'Manirakize', dob: '2005-01-01', estimated_dob: 'true' },
@@ -30,7 +34,7 @@ groups[0].students.create([
   { first_name: 'Pacifique', last_name: 'Munykazi', dob: '2001-01-01', estimated_dob: 'true' }
 ])
 
-groups[1].students.create([
+chapters[0].groups[1].students.create([
   { first_name: 'Simon', last_name: 'Nubgazo', dob: '2001-01-01', estimated_dob: 'true' },
   { first_name: 'Moise', last_name: 'Izombigaze', dob: '2002-01-01', estimated_dob: 'true' },
   { first_name: 'Pacifique', last_name: 'Manireba', dob: '2008-01-01', estimated_dob: 'true' },

@@ -1,0 +1,12 @@
+<table class="table table-striped table-hover resource-table groups-table">
+  <thead>
+    <tr>
+      <th>Group Name</th>
+      <th>Chapter</th>
+      <th class="text-xs-center">Number of Students</th>
+    </tr>
+  </thead>
+  <% groups.each do |group| %>
+    <%= render partial: "shared/group_row", locals: {group: group} %>
+  <% end %>
+</table>

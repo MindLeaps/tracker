@@ -10,12 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160901213654) do
+ActiveRecord::Schema.define(version: 20160902165536) do
+
+  create_table "chapters", force: :cascade do |t|
+    t.string   "chapter_name", null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
 
   create_table "groups", force: :cascade do |t|
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
     t.string   "group_name", default: "", null: false
+    t.integer  "chapter_id"
+    t.index ["chapter_id"], name: "index_groups_on_chapter_id"
   end
 
   create_table "students", force: :cascade do |t|

@@ -4,6 +4,4 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 
-group_a: {group_name: "Group A", chapter: kigali_chapter}
-group_b: {group_name: "Group B", chapter: kigali_chapter}
-group_c: {group_name: "Group C"}
+kigali_chapter: {chapter_name: "Kigali"}

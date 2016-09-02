@@ -8,8 +8,12 @@ class GroupsController < ApplicationController
   end
 
   def create
-    @group = Group.new(params.require(:group).permit(:group_name))
+    @group = Group.new(params.require(:group).permit(:group_name, :chapter_id))
     @group.save
     redirect_to groups_url
+  end
+
+  def show
+    @group = Group.find params[:id]
   end
 end
