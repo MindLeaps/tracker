@@ -85,10 +85,10 @@ SimpleForm.setup do |config|
     b.use :html5
     b.optional :readonly
 
-    b.use :label, class: 'col-sm-3 col-form-label-lg'
+    b.use :label, class: 'col-sm-3 col-form-label col-form-label-lg'
     b.wrapper tag: 'div', class: 'col-sm-9' do |wr|
       wr.wrapper tag: 'div', class: 'form-check' do |ba|
-        ba.use :input, class: 'form-check-input form-control form-control-lg'
+        ba.use :input, class: 'form-check-input form-control'
       end
 
       wr.use :error, wrap_with: { tag: 'span', class: 'help-block' }

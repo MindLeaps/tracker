@@ -5,7 +5,7 @@
     <%= f.input :last_name %>
     <%= f.input :gender, collection: Student.genders.map { |k, v| k.humanize }, include_blank: false %>
     <%= f.input :dob, label: 'Date of Birth', start_year: 1990, end_year: Date.today.year %>
-    <%= f.input :estimated_dob, label: 'DOB estimated' %>
+    <%= f.input :estimated_dob, label: 'DOB estimated', item_wrapper_class: 'form-control-lg' %>
     <%= f.association :group, label_method: :group_name, include_blank: 'None' %>
     <hr />
     <%= f.input :quartier %>
