@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe Api::GroupsController, type: :controller do
   fixtures :groups
   fixtures :students
+  fixtures :chapters
   let(:json) { JSON.parse(response.body) }
   let(:student_ids) { [students(:innocent), students(:rene)].map(&:id) }
 
@@ -20,6 +21,7 @@ RSpec.describe Api::GroupsController, type: :controller do
       expect(response).to be_success
       expect(json['group_name']).to eq 'Group A'
       expect(json['students'].map { |s| s['id'] }).to include(*student_ids)
+      expect(json['chapter_id']).to eq chapters(:kigali_chapter).id
     end
   end
 end

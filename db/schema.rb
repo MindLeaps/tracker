@@ -48,8 +48,6 @@ ActiveRecord::Schema.define(version: 20160902165536) do
     t.string   "guardian_occupation"
     t.string   "guardian_contact"
     t.text     "family_members"
-    t.integer  "chapter_id"
-    t.index ["chapter_id"], name: "index_students_on_chapter_id"
     t.index ["group_id"], name: "index_students_on_group_id"
   end
 
