@@ -7,7 +7,11 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 # rubocop:disable Style/IndentArray
 
-groups = Group.create([
+chapters = Chapter.create([
+  { chapter_name: 'Kigali' }
+])
+
+chapters[0].groups.create([
   { group_name: 'A' },
   { group_name: 'B' }
 ])
