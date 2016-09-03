@@ -1,8 +1,14 @@
 <header>
-<%= image_tag('MindLeapsSmallLogo.png', class: 'img_preview') %>
-<h1>Student Tracker</h1>
-<div class="current-user">
-  <p>Logged in as <%= current_user.name %></p>
-  <p><%= link_to 'Logout', '/sign_out', role: 'button' %></p>
-</div>
+  <div class="row">
+    <div class="col-sm-4">
+      <%= image_tag('MindLeapsSmallLogo.png', class: 'img_preview pull-xs-left') %>
+    </div>
+    <div class="col-sm-4">
+      TRACKER
+    </div>
+    <div class="col-sm-4">
+
+    <span class="pull-xs-right"><%= current_user.name %><img class="user-image" src="<%= user_image %>"><%= link_to 'Logout', '/sign_out', role: 'button' %></span>
+    </div>
+  </div>
 </header>

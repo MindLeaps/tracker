@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160902165536) do
+ActiveRecord::Schema.define(version: 20160903164035) do
 
   create_table "chapters", force: :cascade do |t|
     t.string   "chapter_name", null: false
@@ -63,6 +63,7 @@ ActiveRecord::Schema.define(version: 20160902165536) do
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
     t.string   "provider"
+    t.string   "image"
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 

@@ -9,8 +9,10 @@
 </head>
 <body>
   <%= render "shared/header" %>
-  <p class="notice"><%= notice %></p>
-  <p class="alert"><%= alert %></p>
+  <div class="notices">
+    <div class="notice"><%= notice %></div>
+    <p class="alert"><%= alert %></p>
+  </div>
   <section class="container">
     <%= render "shared/menu" %>
     <%= yield %>
