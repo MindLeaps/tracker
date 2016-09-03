@@ -36,3 +36,25 @@
     }
   }
 }
+
+.notices {
+  position: relative;
+  text-align: center;
+  margin-top: 1rem;
+  z-index: -1;
+  
+  animation: hideBehindHeader 1s 2s 1;
+  animation-fill-mode: forwards;
+  .notice {
+    display: inline-block;
+    border: 1px solid transparent;
+    @extend .alert-success;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+  }
+}
+
+@keyframes hideBehindHeader{
+  0% {transform: translateY(0px);}
+  100% {transform: translateY(-60px);}
+}

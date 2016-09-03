@@ -10,4 +10,8 @@ module ApplicationHelper
   def chapter_students_number(chapter)
     chapter.groups.reduce(0) { |a, e| a + e.students.length }
   end
+
+  def user_image(size = 40)
+    "#{current_user.image}?sz=#{size}"
+  end
 end
