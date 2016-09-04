@@ -9,11 +9,13 @@
 </head>
 <body>
   <%= render "shared/header" %>
-  <div class="notices">
-    <div class="notice"><%= notice %></div>
-    <p class="alert"><%= alert %></p>
-  </div>
-  <section class="container">
+  <% if notice or alert %>
+    <div class="notices">
+      <div class="notice"><%= notice %></div>
+      <p class="alert"><%= alert %></p>
+    </div>
+  <% end %>
+  <section class="container main-container">
     <%= render "shared/menu" %>
     <%= yield %>
   </section>
