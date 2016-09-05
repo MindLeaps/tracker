@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  rolify
   validates :email, presence: true
   validates :email, uniqueness: true, allow_blank: true
 
