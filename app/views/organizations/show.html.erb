@@ -1,0 +1,5 @@
+<h1>Organization: <%= @organization.organization_name %></h1>
+
+<h3>Chapters</h3>
+
+<%= render partial: "shared/chapters_table", locals: {chapters: @organization.chapters} %>

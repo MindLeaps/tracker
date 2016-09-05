@@ -9,4 +9,8 @@ class OrganizationsController < ApplicationController
     @organization.save
     redirect_to organizations_url
   end
+
+  def show
+    @organization = Organization.find params[:id]
+  end
 end
