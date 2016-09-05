@@ -1,0 +1,11 @@
+<table class="table table-striped table-hover resource-table organizations-table">
+  <thead>
+    <tr>
+      <th>Organization Name</th>
+      <th class="text-xs-center">Number of Chapters</th>
+    </tr>
+  </thead>
+  <% organizations.each do |organization| %>
+    <%= render partial: "shared/organization_row", locals: {organization: organization} %>
+  <% end %>
+</table>

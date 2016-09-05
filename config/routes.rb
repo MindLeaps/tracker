@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     resources :students, only: [:index, :show]
   end
 
+  resources :organizations, only: [:index, :create, :show]
   resources :chapters, only: [:index, :create, :show]
   resources :groups, only: [:index, :create, :show]
   resources :students, only: [:index, :new, :create, :show, :edit, :update]

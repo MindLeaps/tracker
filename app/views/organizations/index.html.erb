@@ -1,0 +1,10 @@
+<h1>New Organization</h1>
+<fieldset>
+  <%= simple_form_for @organization, wrapper: :horizontal_form, url: {action: 'create'} do |f| %>
+    <%= render partial: 'shared/errors', locals: {subject: @organization} %>
+    <%= f.input :organization_name %>
+    <%= f.button :submit, class: 'btn-outline-success' %>
+  <%- end %>
+</fieldset>
+
+<%= render partial: "shared/organizations_table", locals: {organizations: @organizations} %>

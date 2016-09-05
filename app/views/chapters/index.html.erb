@@ -3,6 +3,7 @@
   <%= simple_form_for @chapter, wrapper: :horizontal_form, url: {action: 'create'} do |f| %>
     <%= render partial: 'shared/errors', locals: {subject: @chapter} %>
     <%= f.input :chapter_name %>
+    <%= f.association :organization, label_method: :organization_name, include_blank: 'None' %>
     <%= f.button :submit, class: 'btn-outline-success' %>
   <%- end %>
 </fieldset>

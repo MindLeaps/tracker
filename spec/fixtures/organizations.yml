@@ -4,5 +4,5 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 
-kigali_chapter: {chapter_name: "Kigali"}
-good_test_chapter: {chapter_name: "Test Chapter 1", organization: good_test_organization}
+mindleaps_organization: {organization_name: "MindLeaps"}
+good_test_organization: {organization_name: "Good Test"}

@@ -8,9 +8,9 @@ class ChaptersController < ApplicationController
   end
 
   def create
-    @chapter = Chapter.new(params.require(:chapter).permit(:chapter_name))
-    @chapter.save
-    redirect_to chapters_url
+    @chapter = Chapter.new(params.require(:chapter).permit(:chapter_name, :organization_id))
+    return redirect_to chapters_url if @chapter.save
+    render :index
   end
 
   def show

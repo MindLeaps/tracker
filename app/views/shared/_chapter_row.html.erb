@@ -1,5 +1,6 @@
 <tr class="resource-row chapter-row">
     <td><a class="resource-row-link chapter-row-link" href="<%= url_for chapter %>"><%= chapter.chapter_name %></a></td>
+    <td><a class="resource-row-link chapter-row-link" href="<%= url_for chapter %>"><%= chapter_organization_name(chapter) %></a></td>
     <td><a class="resource-row-link chapter-row-link text-xs-center" href="<%= url_for chapter %>"><%= chapter.groups.length %></a></td>
     <td><a class="resource-row-link chapter-row-link text-xs-center" href="<%= url_for chapter %>"><%= chapter_students_number(chapter) %></a></td>
 </tr>
