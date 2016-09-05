@@ -1,0 +1,11 @@
+<table class="table table-striped table-hover resource-table users-table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>E-mail</th>
+    </tr>
+  </thead>
+  <% users.each do |user| %>
+    <%= render partial: "shared/user_row", locals: {user: user} %>
+  <% end %>
+</table>

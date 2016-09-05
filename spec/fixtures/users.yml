@@ -5,3 +5,4 @@
 # below each fixture, per the syntax in the comments below
 
 teacher_one: {uid: "123456789", name: "Teacher One", email: "teacherone@teachers.teach", provider: "google_oauth2"}
+teacher_two: {uid: "123456789", name: "Teacher Two", email: "teachertwo@teachers.teach", provider: "google_oauth2"}
