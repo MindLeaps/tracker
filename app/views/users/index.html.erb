@@ -1,0 +1,10 @@
+<h1>New User</h1>
+<fieldset>
+  <%= simple_form_for @user, wrapper: :horizontal_form, url: {action: 'create'} do |f| %>
+    <%= render partial: 'shared/errors', locals: {subject: @user} %>
+    <%= f.input :email %>
+    <%= f.button :submit, class: 'btn-outline-success' %>
+  <%- end %>
+</fieldset>
+
+<%= render partial: "shared/users_table", locals: {users: @users} %>
