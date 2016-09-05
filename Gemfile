@@ -13,6 +13,8 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'omniauth-google-oauth2'
 gem 'devise'
 gem 'rolify'
+gem 'pundit'
+
 gem 'simple_form'
 gem 'enum_help'
 gem 'bootstrap', '~> 4.0.0.alpha3.1'
