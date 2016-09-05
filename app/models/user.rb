@@ -1,4 +1,7 @@
 class User < ApplicationRecord
+  validates :email, presence: true
+  validates :email, uniqueness: true, allow_blank: true
+
   devise :trackable, :omniauthable, omniauth_providers: [:google_oauth2]
   def self.from_omniauth(auth)
     if User.exists?(email: auth['info']['email']) || User.count.zero?
