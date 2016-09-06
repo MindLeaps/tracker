@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Create organization' do
-  include_context 'login'
+  include_context 'login_super_admin'
 
   it 'creates MindLeapsTest orgnization', js: true do
     visit '/organizations'

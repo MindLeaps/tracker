@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe UsersController, type: :controller do
   fixtures :users
-  include_context 'controller_login'
+  include_context 'controller_login_super_admin'
 
   describe '#index' do
     it 'lists all existing users' do

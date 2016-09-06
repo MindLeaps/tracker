@@ -4,5 +4,6 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 
-teacher_one: {uid: "123456789", name: "Teacher One", email: "teacherone@teachers.teach", provider: "google_oauth2"}
-teacher_two: {uid: "123456789", name: "Teacher Two", email: "teachertwo@teachers.teach", provider: "google_oauth2"}
+super_admin_one: {uid: "1", name: "Super Administrator", email: "super_admin@teachers.teach", provider: "google_oauth2"}
+teacher_one: {uid: "2", name: "Teacher One", email: "teacherone@teachers.teach", provider: "google_oauth2"}
+teacher_two: {uid: "3", name: "Teacher Two", email: "teachertwo@teachers.teach", provider: "google_oauth2"}

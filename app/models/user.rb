@@ -1,27 +1,52 @@
 class User < ApplicationRecord
+  rolify
   validates :email, presence: true
   validates :email, uniqueness: true, allow_blank: true
 
   devise :trackable, :omniauthable, omniauth_providers: [:google_oauth2]
-  def self.from_omniauth(auth)
-    if User.exists?(email: auth['info']['email']) || User.count.zero?
-      return update_user_from_omniauth User.find_by(email: auth['info']['email']), auth
+
+  class << self
+    def from_omniauth(auth)
+      user = get_user_from_auth auth
+      return update_user_from_omniauth user, auth if user
+      return create_first_user auth if first_user?
+      empty_user
     end
-    empty_user
-  end
 
-  def self.update_user_from_omniauth(user, auth)
-    user.update(
-      uid: auth['uid'],
-      name: auth['info']['name'],
-      email: auth['info']['email'],
-      provider: auth.provider,
-      image: auth['info']['image']
-    )
-    user
-  end
+    private
 
-  def self.empty_user
-    User.new
+    def update_user_from_omniauth(user, auth)
+      user.update auth_params auth
+      user
+    end
+
+    def empty_user
+      User.new
+    end
+
+    def create_first_user(auth)
+      user = User.new auth_params auth
+      user.save
+      user.add_role :super_admin
+      user
+    end
+
+    def get_user_from_auth(auth)
+      User.find_by email: auth['info']['email']
+    end
+
+    def first_user?
+      User.count.zero?
+    end
+
+    def auth_params(auth)
+      {
+        uid: auth['uid'],
+        name: auth['info']['name'],
+        email: auth['info']['email'],
+        provider: auth.provider,
+        image: auth['info']['image']
+      }
+    end
   end
 end
