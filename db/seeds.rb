@@ -7,9 +7,17 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 # rubocop:disable Style/IndentArray
 
-chapters = Chapter.create([
+organizations = Organization.create([
+  { organization_name: 'MindLeaps'}
+])
+
+ml = organizations[0]
+
+ml.chapters.create([
   { chapter_name: 'Kigali' }
 ])
+
+chapters = ml.chapters
 
 chapters[0].groups.create([
   { group_name: 'A' },
