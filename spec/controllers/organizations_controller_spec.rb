@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe OrganizationsController, type: :controller do
-  fixtures :organizations
-  include_context 'controller_login'
+  fixtures :organizations, :roles, :users_roles
+  include_context 'controller_login_super_admin'
 
   describe '#index' do
     it 'gets a list of organizations' do
