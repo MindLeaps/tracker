@@ -8,7 +8,7 @@
 # rubocop:disable Style/IndentArray
 
 organizations = Organization.create([
-  { organization_name: 'MindLeaps'}
+  { organization_name: 'MindLeaps' }
 ])
 
 ml = organizations[0]
