@@ -1,3 +1,10 @@
-<h1><%= user_name @user %></h1>
-<%= image_tag user_image(@user, 300), class: 'profile-image' %>
+<div class="row">
+  <div class="col-sm-6">
+    <%= image_tag user_image(@user, 300), class: 'profile-image' %>
+  </div>
+  <div class="col-sm-6">
+    <h1><%= user_name @user %></h1>
+    Email: <%= @user.email %>
+  </div>
+</div>
 

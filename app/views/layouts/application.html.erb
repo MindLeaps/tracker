@@ -15,9 +15,11 @@
       <p class="alert"><%= alert %></p>
     </div>
   <% end %>
-  <section class="container main-container">
+  <div class="container main-container">
     <%= render "shared/menu" %>
-    <%= yield %>
-  </section>
+    <section class="main-content container">
+      <%= yield %>
+    </section>
+  </div>
 </body>
 </html>
