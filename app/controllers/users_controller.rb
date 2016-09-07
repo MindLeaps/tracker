@@ -14,4 +14,8 @@ class UsersController < ApplicationController
     return redirect_to users_url if @user.save
     render :index
   end
+
+  def show
+    @user = User.find params[:id]
+  end
 end
