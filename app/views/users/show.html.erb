@@ -4,7 +4,17 @@
   </div>
   <div class="col-sm-6">
     <h1><%= user_name @user %></h1>
-    Email: <%= @user.email %>
+    <ul>
+    <li>Email: <%= @user.email %></li>
+    <li>Current Role: <%= Role::ROLES[@user.current_role] %></li>
+
+    <section class="role-administration">
+      <legend>User Roles</legend>
+      <%= simple_form_for @user, url: {action: 'update'} do |f| %>
+        <%= f.input :roles, collection: Role::ROLES.invert, as: :radio_buttons, checked: @user.current_role, label: '' %>
+        <%= f.button :submit, class: 'btn-outline-success' %>
+      <%- end %>
+    </section>
   </div>
 </div>
 

@@ -11,4 +11,10 @@ class Role < ApplicationRecord
             allow_nil: true
 
   scopify
+
+  ROLES = {
+    super_admin: 'Super Administrator',
+    admin: 'Administrator',
+    user: 'User'
+  }.freeze
 end

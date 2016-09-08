@@ -5,6 +5,17 @@ class User < ApplicationRecord
 
   devise :trackable, :omniauthable, omniauth_providers: [:google_oauth2]
 
+  def current_role
+    Role::ROLES.keys.find { |role| has_role? role }
+  end
+
+  def update_role(new_role)
+    return if has_role? new_role
+
+    Role::ROLES.keys.each { |role| revoke role }
+    add_role new_role
+  end
+
   class << self
     def from_omniauth(auth)
       user = get_user_from_auth auth
