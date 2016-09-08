@@ -12,7 +12,7 @@
     <section class="role-administration">
       <legend>User Roles</legend>
       <%= simple_form_for @user, url: {action: 'update'} do |f| %>
-        <%= f.input :roles, collection: Role::ROLES.invert, as: :radio_buttons, checked: @user.current_role, label: '' %>
+        <%= f.input :roles, collection: Role::ROLES.invert, as: :radio_buttons, checked: @user.current_role, label: '', class: 'role-selection' %>
         <%= f.button :submit, class: 'btn-outline-success' %>
       <%- end %>
     </section>

@@ -11,6 +11,7 @@ class UsersController < ApplicationController
   def create
     authorize User
     @user = User.new params.require(:user).permit(:email)
+    @user.add_role :user
     return redirect_to users_url if @user.save
     render :index
   end

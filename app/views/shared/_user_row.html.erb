@@ -1,5 +1,5 @@
 <tr class="resource-row user-row">
     <td><a class="resource-row-link user-row-link" href="<%= url_for user %>"><%= user_name user %></a></td>
     <td><a class="resource-row-link user-row-link" href="<%= url_for user %>"><%= user.email %></a></td>
-    <td><a class="resource-row-link user-row-link" href="<%= url_for user %>"><%= user.is_super_admin? %></a></td>
+    <td><a class="resource-row-link user-row-link" href="<%= url_for user %>"><%= user.is_super_admin? || user.is_admin?%></a></td>
 </tr>
