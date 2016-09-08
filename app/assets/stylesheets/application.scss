@@ -21,6 +21,7 @@
 @import 'menu';
 @import 'students';
 @import 'chapters';
+@import 'users';
 
 .boolean {
   label {
@@ -39,6 +40,10 @@
 
 .main-container {
   margin-top: 60px;
+}
+
+.main-content {
+  margin-top: 20px;
 }
 
 .notices {

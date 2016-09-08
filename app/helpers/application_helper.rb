@@ -15,7 +15,16 @@ module ApplicationHelper
     chapter.groups.reduce(0) { |a, e| a + e.students.length }
   end
 
-  def user_image(size = 40)
-    "#{current_user.image}?sz=#{size}"
+  def user_image(user, size = 40)
+    return "#{user.image}?sz=#{size}" if user.image
+    image_url 'unknown_user.svg'
+  end
+
+  def current_user_image
+    user_image current_user
+  end
+
+  def user_name(user)
+    user.name || 'Inactive User'
   end
 end

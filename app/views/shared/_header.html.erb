@@ -4,11 +4,15 @@
       <%= image_tag('MindLeapsSmallLogo.png', class: 'img_preview pull-xs-left') %>
     </div>
     <div class="col-sm-4">
-      TRACKER
+      <%= render "shared/menu" %>
     </div>
     <div class="col-sm-4">
 
-    <span class="pull-xs-right"><%= current_user.name %><img class="user-image" src="<%= user_image %>"><%= link_to 'Logout', '/sign_out', role: 'button' %></span>
+      <span class="pull-xs-right">
+        <%= current_user.name %>
+        <%= link_to image_tag(current_user_image, class: 'user-image'), url_for(current_user) %>
+        <%= link_to 'Logout', '/sign_out', role: 'button' %>
+      </span>
     </div>
   </div>
 </header>
