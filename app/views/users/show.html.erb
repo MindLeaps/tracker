@@ -8,6 +8,7 @@
     <li>Email: <%= @user.email %></li>
     <li>Current Role: <%= Role::ROLES[@user.current_role] %></li>
 
+    <% unless @user.id == current_user.id %>
     <section class="role-administration">
       <legend>User Roles</legend>
       <%= simple_form_for @user, url: {action: 'update'} do |f| %>
@@ -15,6 +16,7 @@
         <%= f.button :submit, class: 'btn-outline-success' %>
       <%- end %>
     </section>
+    <%- end %>
   </div>
 </div>
 
