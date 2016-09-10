@@ -13,7 +13,6 @@ RSpec.describe Api::StudentsController, type: :controller do
       create :student, first_name: 'Someone'
     end
 
-
     it 'gets a list of students' do
       get :index, format: :json
 

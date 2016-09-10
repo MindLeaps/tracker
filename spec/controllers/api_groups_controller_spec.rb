@@ -16,12 +16,13 @@ RSpec.describe Api::GroupsController, type: :controller do
 
   describe '#index' do
     before :all do
-      
     end
     it 'gets a list of groups' do
       get :index, format: :json
       expect(response).to be_success
-      expect(json.map { |g| g['group_name'] }).to include 'Api Group Test Kigali', 'Api Group Test Rugerero', 'Api Group Test Kiregenzi'
+      expect(json.map { |g| g['group_name'] }).to include 'Api Group Test Kigali',
+                                                          'Api Group Test Rugerero',
+                                                          'Api Group Test Kiregenzi'
     end
   end
 

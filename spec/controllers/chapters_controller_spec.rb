@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe ChaptersController, type: :controller do
-  let (:admin) { create :admin }
-  let (:test_organization) {create :organization, organization_name: 'Newly Created Test Org'}
+  let(:admin) { create :admin }
+  let(:test_organization) { create :organization, organization_name: 'Newly Created Test Org' }
 
   before :each do
     sign_in admin

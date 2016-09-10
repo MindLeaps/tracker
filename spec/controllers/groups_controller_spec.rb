@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe GroupsController, type: :controller do
-  let (:admin) { create :admin }
-  let (:kigali_chapter) { create :chapter, chapter_name: 'Newly Created Test Chapter' }
+  let(:admin) { create :admin }
+  let(:kigali_chapter) { create :chapter, chapter_name: 'Newly Created Test Chapter' }
 
   before :each do
     sign_in admin

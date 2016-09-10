@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe UsersController, type: :controller do
-  let(:super_admin) {create :super_admin}
+  let(:super_admin) { create :super_admin }
 
   before :each do
     sign_in super_admin

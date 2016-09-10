@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe StudentsController, type: :controller do
-  let(:signed_in_user) {create :user}
-  let(:group_a) {create :group, group_name: 'Group A'}
+  let(:signed_in_user) { create :user }
+  let(:group_a) { create :group, group_name: 'Group A' }
 
   before :each do
     sign_in signed_in_user

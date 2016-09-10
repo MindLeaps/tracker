@@ -15,7 +15,9 @@ RSpec.describe Api::ChaptersController, type: :controller do
     it 'gets a list of chapters' do
       get :index, format: :json
       expect(response).to be_success
-      expect(json.map { |g| g['chapter_name'] }).to include 'Chapter Api Test Chapter One', 'Chapter Api Test Chapter Two', 'Chapter Api Test Chapter Three'
+      expect(json.map { |g| g['chapter_name'] }).to include 'Chapter Api Test Chapter One',
+                                                            'Chapter Api Test Chapter Two',
+                                                            'Chapter Api Test Chapter Three'
     end
   end
 
