@@ -34,6 +34,9 @@ group :development, :test do
   gem 'capybara', '> 2.1'
   gem 'rspec-rails'
   gem 'poltergeist'
+  gem 'factory_girl_rails'
+  gem 'faker'
+  gem 'database_cleaner'
 end
 
 group :development do

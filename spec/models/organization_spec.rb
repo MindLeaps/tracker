@@ -1,7 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe Organization, type: :model do
-  fixtures :organizations, :chapters
+  before :all do
+    create :organization, organization_name: 'Already Existing Organization'
+  end
 
   describe 'is valid' do
     it 'with a valid, unique name' do
@@ -18,7 +20,7 @@ RSpec.describe Organization, type: :model do
     end
 
     it 'with a duplicated name' do
-      org = Organization.new organization_name: organizations(:good_test_organization).organization_name
+      org = Organization.new organization_name: 'Already Existing Organization'
       expect(org).to_not be_valid
     end
   end

@@ -1,16 +1,22 @@
 require 'rails_helper'
 
 RSpec.describe OrganizationsController, type: :controller do
-  fixtures :organizations, :roles, :users_roles
-  include_context 'controller_login_super_admin'
+  let(:super_admin) { create :super_admin }
+
+  before :each do
+    sign_in super_admin
+  end
 
   describe '#index' do
     it 'gets a list of organizations' do
+      organization1 = create :organization
+      organization2 = create :organization
+
       get :index
       expect(response).to be_success
 
-      expect(assigns(:organizations)).to include organizations(:mindleaps_organization)
-      expect(assigns(:organizations)).to include organizations(:good_test_organization)
+      expect(assigns(:organizations)).to include organization1
+      expect(assigns(:organizations)).to include organization2
     end
   end
 

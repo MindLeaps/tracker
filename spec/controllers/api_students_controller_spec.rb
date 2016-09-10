@@ -1,30 +1,30 @@
 require 'rails_helper'
 
 RSpec.describe Api::StudentsController, type: :controller do
-  fixtures :students
-  fixtures :groups
   let(:json) { JSON.parse(response.body) }
-  let(:group_a) { groups(:group_a) }
 
   describe '#index' do
+    before :all do
+      @test_group = create :group, group_name: 'Api Controller Test Group'
+      create :student, first_name: 'Api', group: @test_group
+      create :student, first_name: 'Controller', group: @test_group
+      create :student, first_name: 'Spector', group: @test_group
+      create :student, first_name: 'Another'
+      create :student, first_name: 'Someone'
+    end
+
     it 'gets a list of students' do
       get :index, format: :json
 
       expect(response).to be_success
-      expect(json.map { |s| s['first_name'] }).to include 'Tomislav', 'Innocent', 'Rene'
+      expect(json.map { |s| s['first_name'] }).to include 'Api', 'Controller', 'Spector', 'Another', 'Someone'
     end
 
-    it 'gets all students' do
-      get :index, format: :json
+    it 'get only students belonging to Api Controller Test Group' do
+      get :index, params: { group_id: @test_group.id }, format: :json
 
-      expect(json.count).to eq Student.all.count
-    end
-
-    it 'get only students belonging to Group A' do
-      get :index, params: { group_id: group_a.id }, format: :json
-
-      expect(json.count).to eq 2
-      expect(json.map { |s| s['first_name'] }).to include 'Innocent', 'Rene'
+      expect(json.count).to eq 3
+      expect(json.map { |s| s['first_name'] }).to include 'Api', 'Controller', 'Spector'
     end
   end
 end

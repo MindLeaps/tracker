@@ -1,8 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe StudentsController, type: :controller do
-  fixtures :students, :groups
-  include_context 'controller_login'
+  let(:signed_in_user) { create :user }
+  let(:group_a) { create :group, group_name: 'Group A' }
+
+  before :each do
+    sign_in signed_in_user
+  end
 
   describe '#create' do
     it 'creates a student when supplied valid params' do
@@ -10,7 +14,7 @@ RSpec.describe StudentsController, type: :controller do
         first_name: 'Trevor',
         last_name: 'Noah',
         'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
-        group_id: groups(:group_a).id,
+        group_id: group_a.id,
         gender: 'M',
         quartier: 'He lives somewhere...',
         estimated_dob: true
@@ -20,7 +24,7 @@ RSpec.describe StudentsController, type: :controller do
       student = Student.last
       expect(student.first_name).to eql 'Trevor'
       expect(student.last_name).to eql 'Noah'
-      expect(student.group.group_name).to eql groups(:group_a).group_name
+      expect(student.group.group_name).to eql 'Group A'
       expect(student.gender).to eql 'M'
       expect(student.quartier).to eql 'He lives somewhere...'
     end
@@ -115,10 +119,14 @@ RSpec.describe StudentsController, type: :controller do
 
   describe '#index' do
     it 'gets a list of students' do
+      student1 = create :student
+      student2 = create :student
+
       get :index
       expect(response).to be_success
 
-      expect(assigns(:students)).to include students(:tomislav)
+      expect(assigns(:students)).to include student1
+      expect(assigns(:students)).to include student2
     end
   end
 end

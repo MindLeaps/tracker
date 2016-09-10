@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Create student' do
-  include_context 'login'
+  include_context 'login_with_admin'
 
   it 'creates Rick', js: true do
     visit '/students'
