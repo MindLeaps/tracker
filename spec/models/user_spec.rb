@@ -1,8 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  fixtures :users
-  let(:existing_user) { users :teacher_one }
+  before :all do
+    create :user, email: 'existing_user_email@example.com'
+  end
 
   describe 'is valid' do
     it 'with a valid, unique email' do
@@ -24,7 +25,7 @@ RSpec.describe User, type: :model do
     end
 
     it 'with a duplicated email field' do
-      user = User.new email: existing_user.email
+      user = User.new email: 'existing_user_email@example.com'
       expect(user).to_not be_valid
     end
   end
