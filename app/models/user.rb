@@ -20,8 +20,8 @@ class User < ApplicationRecord
     add_role new_role
   end
 
-  def administrator?
-    is_admin? || is_super_admin?
+  def administrator?(organization = nil)
+    is_admin_of?(organization) || is_super_admin?
   end
 
   class << self

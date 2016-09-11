@@ -31,22 +31,65 @@ RSpec.describe User, type: :model do
   end
 
   describe '#administrator?' do
-    it 'return true if user is super administrator' do
-      user = create :super_admin
+    context 'when user is global super administrator' do
+      let(:user) { create :super_admin }
 
-      expect(user.administrator?).to eql true
+      it 'is true globally' do
+        expect(user.administrator?).to eq true
+      end
+
+      it 'is true for any organization' do
+        organization = create :organization
+
+        expect(user.administrator?(organization)).to eq true
+      end
     end
 
-    it 'return true if user is administrator' do
-      user = create :admin
+    context 'user is global administrator' do
+      let(:user) { create :admin }
 
-      expect(user.administrator?).to eql true
+      it 'is true globally' do
+        expect(user.administrator?).to eq true
+      end
+
+      it 'is true for any organization' do
+        organization = create :organization
+
+        expect(user.administrator?(organization)).to eq true
+      end
     end
 
-    it 'return false if user is neither a super administrator or regular administrator' do
-      user = create :user
+    context 'user is a local administrator' do
+      let(:organization) { create :organization }
+      let(:user) { create :admin_of, organization: organization }
 
-      expect(user.administrator?).to eql false
+      it 'is true for an organization the user is admin of' do
+        expect(user.administrator?(organization)).to eq true
+      end
+
+      it 'is false for an organization the user is not an admin of' do
+        organization2 = create :organization
+
+        expect(user.administrator?(organization2)).to eq false
+      end
+
+      it 'is false globally' do
+        expect(user.administrator?).to eq false
+      end
+    end
+
+    context 'user is a regular user' do
+      let(:user) { create :user }
+
+      it 'is false globally' do
+        expect(user.administrator?).to eq false
+      end
+
+      it 'is false for any given organization' do
+        organization = create :organization
+
+        expect(user.administrator?(organization)).to eq false
+      end
     end
   end
 end
