@@ -29,4 +29,24 @@ RSpec.describe User, type: :model do
       expect(user).to_not be_valid
     end
   end
+
+  describe '#administrator?' do
+    it 'return true if user is super administrator' do
+      user = create :super_admin
+
+      expect(user.administrator?).to eql true
+    end
+
+    it 'return true if user is administrator' do
+      user = create :admin
+
+      expect(user.administrator?).to eql true
+    end
+
+    it 'return false if user is neither a super administrator or regular administrator' do
+      user = create :user
+
+      expect(user.administrator?).to eql false
+    end
+  end
 end

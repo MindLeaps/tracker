@@ -17,4 +17,10 @@ class Role < ApplicationRecord
     admin: 'Administrator',
     user: 'User'
   }.freeze
+
+  ROLE_LEVELS = {
+    super_admin: 3,
+    admin: 2,
+    user: 1
+  }.freeze
 end

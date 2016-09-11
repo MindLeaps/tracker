@@ -1,13 +1,8 @@
 class UserPolicy < ApplicationPolicy
   def update?
-    if user.is_super_admin?
-      return user.id == record.id if record.is_super_admin?
-      return true
-    end
-    if user.is_admin?
-      return false if record.is_super_admin?
-      return user.id == record.id if record.is_admin?
-      return true
+    if user.administrator?
+      return true if user.current_role_level > record.current_role_level
+      return user.id == record.id
     end
     false
   end

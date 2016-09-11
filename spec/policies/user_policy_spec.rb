@@ -35,7 +35,7 @@ RSpec.describe UserPolicy do
     end
 
     context 'on self' do
-      let(:user) {current_user}
+      let(:user) { current_user }
 
       it { is_expected.to permit_action :show }
       it { is_expected.to permit_action :update }
@@ -74,7 +74,7 @@ RSpec.describe UserPolicy do
     end
 
     context 'on self' do
-      let(:user) {current_user}
+      let(:user) { current_user }
 
       it { is_expected.to permit_action :show }
       it { is_expected.to permit_action :update }
@@ -113,7 +113,7 @@ RSpec.describe UserPolicy do
     end
 
     context 'on self' do
-      let(:user) {current_user}
+      let(:user) { current_user }
 
       it { is_expected.to permit_action :show }
       it { is_expected.to forbid_action :update }
