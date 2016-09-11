@@ -9,11 +9,19 @@ class User < ApplicationRecord
     Role::ROLES.keys.find { |role| has_role? role }
   end
 
+  def current_role_level
+    Role::ROLE_LEVELS[current_role]
+  end
+
   def update_role(new_role)
     return if has_role? new_role
 
     Role::ROLES.keys.each { |role| revoke role }
     add_role new_role
+  end
+
+  def administrator?
+    is_admin? || is_super_admin?
   end
 
   class << self
