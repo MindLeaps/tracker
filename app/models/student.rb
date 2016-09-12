@@ -1,6 +1,7 @@
 class Student < ActiveRecord::Base
-  validates :first_name, :last_name, :dob, :gender, presence: true
+  validates :first_name, :last_name, :dob, :gender, :organization, presence: true
   belongs_to :group
+  belongs_to :organization
   enum gender: { M: 0, F: 1 }
 
   delegate :group_name, to: :group, allow_nil: true

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160905214301) do
+ActiveRecord::Schema.define(version: 20160912004942) do
 
   create_table "chapters", force: :cascade do |t|
     t.string   "chapter_name",    null: false
@@ -66,7 +66,9 @@ ActiveRecord::Schema.define(version: 20160905214301) do
     t.string   "guardian_occupation"
     t.string   "guardian_contact"
     t.text     "family_members"
+    t.integer  "organization_id",                       null: false
     t.index ["group_id"], name: "index_students_on_group_id"
+    t.index ["organization_id"], name: "index_students_on_organization_id"
   end
 
   create_table "users", force: :cascade do |t|
