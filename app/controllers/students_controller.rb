@@ -1,10 +1,6 @@
 class StudentsController < ApplicationController
-  before_action do
-    @students = Student.all
-  end
-
   def index
-    @student = Student.new
+    @students = policy_scope Student
   end
 
   def new

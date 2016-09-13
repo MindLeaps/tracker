@@ -20,8 +20,14 @@ class User < ApplicationRecord
     add_role new_role
   end
 
-  def administrator?
-    is_admin? || is_super_admin?
+  def administrator?(organization = nil)
+    is_admin_of?(organization) || is_super_admin?
+  end
+
+  def organizations
+    return Organization.all.to_a if administrator?
+
+    Organization.with_role([:user, :admin], self).to_a
   end
 
   class << self

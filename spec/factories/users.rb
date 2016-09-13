@@ -4,6 +4,9 @@ FactoryGirl.define do
     email { Faker::Internet.safe_email }
     sequence(:uid) { |n| n }
     provider 'google_oauth2'
+    transient do
+      organization nil
+    end
     after(:create) { |user| user.update_role :user }
 
     factory :admin do
@@ -12,6 +15,10 @@ FactoryGirl.define do
 
     factory :super_admin do
       after(:create) { |user| user.update_role :super_admin }
+    end
+
+    factory :admin_of do
+      after(:create) { |user, evaluator| user.add_role :admin, evaluator.organization }
     end
   end
 end
