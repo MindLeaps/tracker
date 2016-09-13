@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160912004942) do
+ActiveRecord::Schema.define(version: 20160913033919) do
 
   create_table "chapters", force: :cascade do |t|
     t.string   "chapter_name",    null: false
@@ -29,9 +29,10 @@ ActiveRecord::Schema.define(version: 20160912004942) do
   end
 
   create_table "organizations", force: :cascade do |t|
-    t.string   "organization_name", null: false
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
+    t.string   "organization_name",                                                                                         null: false
+    t.datetime "created_at",                                                                                                null: false
+    t.datetime "updated_at",                                                                                                null: false
+    t.string   "image",             default: "https://placeholdit.imgix.net/~text?txtsize=23&txt=200%C3%97200&w=200&h=200"
   end
 
   create_table "roles", force: :cascade do |t|
