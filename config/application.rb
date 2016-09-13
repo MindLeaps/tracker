@@ -29,7 +29,6 @@ module Tracker
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
-
     config.google_client_id = ENV['GOOGLE_CLIENT_ID']
     config.google_client_secret = ENV['GOOGLE_CLIENT_SECRET']
   end
