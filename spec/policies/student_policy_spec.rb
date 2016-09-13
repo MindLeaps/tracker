@@ -36,6 +36,12 @@ RSpec.describe StudentPolicy do
       it 'excludes students in other organizations' do
         expect(result).to_not include @student3
       end
+
+      it 'excludes students in other organizations that have admin users' do
+        create :admin_of, organization: org2
+
+        expect(result).to_not include @student3
+      end
     end
   end
 end

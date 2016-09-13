@@ -24,6 +24,12 @@ class User < ApplicationRecord
     is_admin_of?(organization) || is_super_admin?
   end
 
+  def organizations
+    return Organization.all.to_a if administrator?
+
+    Organization.with_role([:user, :admin], self).to_a
+  end
+
   class << self
     def from_omniauth(auth)
       user = get_user_from_auth auth

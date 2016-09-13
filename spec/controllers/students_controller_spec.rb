@@ -155,6 +155,7 @@ RSpec.describe StudentsController, type: :controller do
 
         get :index
         expect(response).to be_success
+        expect(assigns(:students).length).to eq 2
         expect(assigns(:students)).to include student1
         expect(assigns(:students)).to include student2
         expect(assigns(:students)).to_not include student3

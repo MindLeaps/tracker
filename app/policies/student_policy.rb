@@ -11,8 +11,7 @@ class StudentPolicy < ApplicationPolicy
       if user.administrator?
         scope.all
       else
-        users_organizations = Organization.with_role [:user, :admin]
-        scope.where organization: users_organizations.to_a
+        scope.where organization: user.organizations
       end
     end
   end

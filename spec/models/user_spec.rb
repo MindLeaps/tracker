@@ -92,4 +92,42 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe '#organizations' do
+    subject { user.organizations }
+    context 'user is an admin of one organization' do
+      let(:org) { create :organization }
+      let(:user) { create :admin_of, organization: org }
+
+      it 'returns an array containing only the user\'s organization' do
+        expect(subject.length).to eq 1
+        expect(subject).to include org
+      end
+    end
+    context 'user is an admin of one organization and a user of another' do
+      let(:org1) { create :organization }
+      let(:org2) { create :organization }
+      let(:user) { create :admin_of, organization: org1 }
+      before :each do
+        user.add_role :user, org2
+      end
+
+      it 'returns an array containing both organizations' do
+        expect(subject.length).to eq 2
+        expect(subject).to include org1, org2
+      end
+    end
+    context 'user is a global admin' do
+      let(:user) { create :admin }
+      before :each do
+        @org1 = create :organization
+        @org2 = create :organization
+        @org3 = create :organization
+      end
+
+      it 'returns an array containing all 3 organizations' do
+        expect(subject).to include @org1, @org2, @org3
+      end
+    end
+  end
 end
