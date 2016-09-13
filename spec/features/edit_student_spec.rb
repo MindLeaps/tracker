@@ -2,6 +2,9 @@ require 'rails_helper'
 
 RSpec.describe 'Edit student' do
   include_context 'login_with_admin'
+  before :all do
+    create :organization
+  end
   before :each do
     create :student, first_name: 'Editovsky', last_name: 'Editus'
   end
