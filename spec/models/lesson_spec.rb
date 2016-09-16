@@ -7,11 +7,20 @@ RSpec.describe Lesson, type: :model do
     it { is_expected.to validate_presence_of :date }
 
     describe 'uniqueness' do
-      subject { create :lesson }
+      before :each do
+        @group = create :group
+        create :lesson, group: @group, date: Time.zone.today
+      end
 
-      it do
-        is_expected.to validate_uniqueness_of(:date).scoped_to(:group_id)
-          .with_message "Lesson already exists in group \"#{subject.group.group_name}\" on selected date."
+      it 'is expected to be valid' do
+        expect(create(:lesson, group: @group, date: Time.zone.yesterday)).to be_valid
+      end
+
+      it 'is expected to be invalid' do
+        lesson = build :lesson, group: @group, date: Time.zone.today
+        expect(lesson).to be_invalid
+        expect(lesson.errors.messages[:date])
+          .to include "Lesson already exists in group \"#{lesson.group.group_name}\" on selected date."
       end
     end
   end

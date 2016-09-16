@@ -22,3 +22,4 @@
 en:
   hello: "Hello world"
   student_created: "Student \"%{name}\" successfully created"
+  duplicate_lesson: "Lesson already exists in group \"%{group}\" on selected date."

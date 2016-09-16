@@ -64,6 +64,11 @@ RSpec.configure do |config|
       DatabaseCleaner.clean
     end
   end
+
+  config.after(:each) do
+    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.clean
+  end
 end
 
 Shoulda::Matchers.configure do |config|
