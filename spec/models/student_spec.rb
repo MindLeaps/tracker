@@ -32,4 +32,11 @@ RSpec.describe Student, type: :model do
       expect(student).to_not be_valid
     end
   end
+
+  describe '#proper_name' do
+    it 'returns last and first name concatenated' do
+      student = Student.new first_name: 'Ignazio', last_name: 'Sorbos'
+      expect(student.proper_name).to eq 'Sorbos, Ignazio'
+    end
+  end
 end

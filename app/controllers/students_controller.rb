@@ -9,7 +9,7 @@ class StudentsController < ApplicationController
 
   def create
     @student = Student.new student_params
-    return redirect_to @student if @student.save
+    return notice_and_redirect t(:student_created, name: @student.proper_name), @student if @student.save
     render :new
   end
 

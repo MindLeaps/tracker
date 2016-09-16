@@ -9,7 +9,7 @@ class LessonsController < ApplicationController
 
   def create
     @lesson = Lesson.new params.require(:lesson).permit :group_id, :date
-    return redirect_to lessons_url if @lesson.save
+    return notice_and_redirect('Lesson successfully created', lessons_url) if @lesson.save
     render :index
   end
 end

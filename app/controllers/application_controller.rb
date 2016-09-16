@@ -9,5 +9,10 @@ class ApplicationController < ActionController::Base
     new_user_session_path(*args)
   end
 
+  def notice_and_redirect(notice, redirect_url)
+    flash[:notice] = notice
+    redirect_to redirect_url
+  end
+
   helper_method :session_path
 end

@@ -15,5 +15,6 @@ RSpec.describe 'Create student' do
 
     expect(page).to have_content 'Rick'
     expect(page).to have_content 'Sanchez'
+    expect(page).to have_content 'Student "Sanchez, Rick" successfully created'
   end
 end

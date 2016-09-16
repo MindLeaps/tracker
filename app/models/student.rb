@@ -6,6 +6,10 @@ class Student < ActiveRecord::Base
 
   delegate :group_name, to: :group, allow_nil: true
 
+  def proper_name
+    "#{last_name}, #{first_name}"
+  end
+
   def self.permitted_params
     [:first_name, :last_name, :dob, :estimated_dob, :group_id, :gender, :quartier,
      :guardian_name, :guardian_occupation, :guardian_contact, :family_members, :health_insurance,
