@@ -1,6 +1,9 @@
 class LessonsController < ApplicationController
-  def index
+  before_action do
     @lessons = Lesson.all
+  end
+
+  def index
     @lesson = Lesson.new
   end
 

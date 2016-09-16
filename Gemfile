@@ -38,6 +38,7 @@ group :development, :test do
   gem 'faker'
   gem 'database_cleaner'
   gem 'pundit-matchers'
+  gem 'shoulda-matchers'
 end
 
 group :development do

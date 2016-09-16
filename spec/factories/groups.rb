@@ -1,5 +1,5 @@
 FactoryGirl.define do
   factory :group do
-    group_name { Faker::StarWars.vehicle }
+    sequence(:group_name) { |n| "#{Faker::StarWars.vehicle}-#{n}" }
   end
 end
