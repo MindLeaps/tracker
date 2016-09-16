@@ -20,6 +20,6 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
-  student_created: "Student \"%{name}\" successfully created"
-  duplicate_lesson: "Lesson already exists in group \"%{group}\" on selected date."
+  student_created: Student "%{name}" successfully created.
+  duplicate_lesson: Lesson already exists in group "%{group}" on selected date.
+  subject_created: Subject "%{subject}" successfully created.

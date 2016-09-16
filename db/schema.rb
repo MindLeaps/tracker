@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160915231926) do
+ActiveRecord::Schema.define(version: 20160916192552) do
 
   create_table "chapters", force: :cascade do |t|
     t.string   "chapter_name",    null: false
@@ -78,6 +78,14 @@ ActiveRecord::Schema.define(version: 20160915231926) do
     t.integer  "organization_id",                       null: false
     t.index ["group_id"], name: "index_students_on_group_id"
     t.index ["organization_id"], name: "index_students_on_organization_id"
+  end
+
+  create_table "subjects", force: :cascade do |t|
+    t.string   "subject_name",    null: false
+    t.integer  "organization_id", null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.index ["organization_id"], name: "index_subjects_on_organization_id"
   end
 
   create_table "users", force: :cascade do |t|

@@ -1,0 +1,11 @@
+<table class="table table-striped table-hover resource-table subjects-table">
+  <thead>
+    <tr>
+      <th>Subject Name</th>
+      <th>Organization</th>
+    </tr>
+  </thead>
+  <% subjects.each do |subject| %>
+    <%= render partial: "subjects/subject_row", locals: {subject: subject} %>
+  <% end %>
+</table>

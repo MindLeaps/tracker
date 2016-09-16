@@ -1,0 +1,11 @@
+<h1>New Subject</h1>
+<fieldset>
+  <%= simple_form_for @subject, wrapper: :horizontal_form, url: {action: 'create'} do |f| %>
+    <%= render partial: 'shared/errors', locals: {subject: @subject} %>
+    <%= f.input :subject_name %>
+    <%= f.association :organization, label_method: :organization_name, include_blank: false %>
+    <%= f.button :submit, class: 'btn-outline-success' %>
+  <%- end %>
+</fieldset>
+
+<%= render partial: "subjects/subjects_table", locals: {subjects: @subjects} %>
