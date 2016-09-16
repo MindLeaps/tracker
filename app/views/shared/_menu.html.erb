@@ -4,4 +4,5 @@
   <%= render partial: "shared/main_nav_item", locals: {name: "Chapters", url: url_for(controller: "chapters", action: "index")} %>
   <%= render partial: "shared/main_nav_item", locals: {name: "Organizations", url: url_for(controller: "organizations", action: "index")} if current_user.is_super_admin? %>
   <%= render partial: "shared/main_nav_item", locals: {name: "Users", url: url_for(controller: "users", action: "index")} if current_user.is_super_admin? %>
+  <%= render partial: "shared/main_nav_item", locals: {name: "Lessons", url: url_for(controller: "lessons", action: "index")} %>
 </ul>

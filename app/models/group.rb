@@ -7,6 +7,7 @@ class Group < ActiveRecord::Base
 
   belongs_to :chapter
   has_many :students
+  has_many :lessons
 
   delegate :chapter_name, to: :chapter, allow_nil: true
 
