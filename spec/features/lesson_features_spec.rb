@@ -29,5 +29,22 @@ RSpec.describe 'User interacts with lessons' do
       expect(page).to have_css '.lesson-row', count: 2
       expect(page).to have_content 'Feature Testing II'
     end
+
+    it 'shows a specific lesson' do
+      group = create :group, group_name: 'Lesson Feature Test Group'
+      create :student, first_name: 'Marinko', last_name: 'Marinkovic', group: group
+      create :student, first_name: 'Ivan', last_name: 'Ivankovic', group: group
+      sub = create :subject, subject_name: 'Feature Testing III'
+      create :lesson, subject: sub, group: group
+
+      visit '/'
+      click_link 'Lessons'
+      first('.lesson-row-link').click
+
+      expect(page).to have_content 'Lesson Feature Test Group'
+      expect(page).to have_content 'Students'
+      expect(page).to have_content 'Marinko'
+      expect(page).to have_content 'Ivan'
+    end
   end
 end

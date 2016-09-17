@@ -24,6 +24,16 @@ RSpec.describe LessonsController, type: :controller do
       end
     end
 
+    describe '#show' do
+      before :each do
+        lesson = create :lesson
+        get :show, params: { id: lesson.id }
+      end
+
+      it { should respond_with 200 }
+      it { should render_template 'show' }
+    end
+
     describe '#create' do
       context 'Creates the lesson successfully' do
         before :each do
