@@ -6,4 +6,5 @@
   <%= render partial: "shared/main_nav_item", locals: {name: "Users", url: url_for(controller: "users", action: "index")} if current_user.is_super_admin? %>
   <%= render partial: "shared/main_nav_item", locals: {name: "Lessons", url: url_for(controller: "lessons", action: "index")} %>
   <%= render partial: "shared/main_nav_item", locals: {name: "Subjects", url: url_for(controller: "subjects", action: "index")} %>
+  <%= render partial: "shared/main_nav_item", locals: {name: "Skills", url: url_for(controller: "skills", action: "index")} %>
 </ul>

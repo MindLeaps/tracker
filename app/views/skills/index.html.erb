@@ -1,0 +1,11 @@
+<h1>New skill</h1>
+<fieldset>
+  <%= simple_form_for @skill, wrapper: :horizontal_form, url: {action: 'create'} do |f| %>
+    <%= render partial: 'shared/errors', locals: {subject: @skill} %>
+    <%= f.input :skill_name %>
+    <%= f.association :organization, label_method: :organization_name, include_blank: false %>
+    <%= f.button :submit, class: 'btn-outline-success' %>
+  <%- end %>
+</fieldset>
+
+<%= render partial: "skills/skills_table", locals: {skills: @skills} %>

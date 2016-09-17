@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   resources :students, only: [:index, :new, :create, :show, :edit, :update]
   resources :lessons, only: [:index, :create, :show]
   resources :subjects, only: [:index, :create]
+  resources :skills, only: [:index, :create]
 
   root to: 'home#index'
 

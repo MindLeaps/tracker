@@ -24,3 +24,4 @@ en:
   duplicate_lesson: Lesson already exists in group "%{group}" on selected date.
   subject_created: Subject "%{subject}" successfully created.
   lesson_created: Lesson successfully created.
+  skill_created: Skill "%{skill}" successfully created.
