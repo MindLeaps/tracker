@@ -29,7 +29,8 @@ RSpec.describe SkillsController, type: :controller do
 
           post :create, params: { skill: {
             organization_id: org.id,
-            skill_name: 'Skills Controller Spec Skill'
+            skill_name: 'Skills Controller Spec Skill',
+            skill_description: 'This is a test skill for controller unit test'
           } }
         end
 
@@ -38,6 +39,7 @@ RSpec.describe SkillsController, type: :controller do
 
           expect(created_skill.skill_name).to eq 'Skills Controller Spec Skill'
           expect(created_skill.organization.organization_name).to eq 'Skills Controller Spec Org'
+          expect(created_skill.skill_description).to eq 'This is a test skill for controller unit test'
         end
 
         it { should redirect_to skills_path }

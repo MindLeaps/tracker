@@ -23,6 +23,7 @@ RSpec.describe 'User interacts with skills' do
       click_link 'Skills'
 
       fill_in 'Skill name', with: 'Feature Test Skill'
+      fill_in 'Skill description', with: 'This skill is usefull only for testing.'
       select 'Skill Feature Organization', from: 'skill_organization_id'
       click_button 'Create'
 
