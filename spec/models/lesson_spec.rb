@@ -3,8 +3,10 @@ require 'rails_helper'
 RSpec.describe Lesson, type: :model do
   describe 'validations' do
     it { is_expected.to belong_to :group }
+    it { is_expected.to belong_to :subject }
     it { is_expected.to validate_presence_of :group }
     it { is_expected.to validate_presence_of :date }
+    it { is_expected.to validate_presence_of :subject }
 
     describe 'uniqueness' do
       before :each do

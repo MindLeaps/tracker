@@ -65,8 +65,11 @@ RSpec.configure do |config|
     end
   end
 
+  config.before(:each) do |example|
+    DatabaseCleaner.strategy = example.metadata[:js] ? :deletion : :transaction
+    DatabaseCleaner.start
+  end
   config.after(:each) do
-    DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean
   end
 end

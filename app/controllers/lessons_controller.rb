@@ -8,8 +8,8 @@ class LessonsController < ApplicationController
   end
 
   def create
-    @lesson = Lesson.new params.require(:lesson).permit :group_id, :date
-    return notice_and_redirect('Lesson successfully created', lessons_url) if @lesson.save
+    @lesson = Lesson.new params.require(:lesson).permit :group_id, :date, :subject_id
+    return notice_and_redirect(t(:lesson_created), lessons_url) if @lesson.save
     render :index
   end
 end

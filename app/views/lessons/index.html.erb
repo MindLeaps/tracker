@@ -3,6 +3,7 @@
   <%= simple_form_for @lesson, wrapper: :horizontal_form, url: {action: 'create'} do |f| %>
     <%= render partial: 'shared/errors', locals: {subject: @lesson} %>
     <%= f.association :group, label_method: :group_name, include_blank: false %>
+    <%= f.association :subject, label_method: :subject_name, include_blank: false %>
     <%= f.input :date %>
     <%= f.button :submit, class: 'btn-outline-success' %>
   <%- end %>
