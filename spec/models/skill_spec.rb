@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe Skill, type: :model do
   describe 'relationships' do
     it { should belong_to :organization }
+    it { should have_many(:grade_descriptors).dependent :destroy }
     it { should have_many(:assignments).dependent :destroy }
     it { should have_many(:subjects).through :assignments }
   end

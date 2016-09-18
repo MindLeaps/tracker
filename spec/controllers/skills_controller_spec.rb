@@ -25,24 +25,37 @@ RSpec.describe SkillsController, type: :controller do
     describe '#create' do
       context 'Creates the lesson successfully' do
         before :each do
-          org = create :organization, organization_name: 'Skills Controller Spec Org'
+          @org = create :organization, organization_name: 'Skills Controller Spec Org'
 
           post :create, params: { skill: {
-            organization_id: org.id,
+            organization_id: @org.id,
             skill_name: 'Skills Controller Spec Skill',
             skill_description: 'This is a test skill for controller unit test'
           } }
         end
 
-        it 'creates the skill' do
+        it 'creates the skill with grade descriptors' do
+          post :create, params: { skill: {
+            organization_id: @org.id,
+            skill_name: 'Skills Controller Spec Skill II',
+            skill_description: 'This is a second test skill for controller unit test',
+            grade_descriptors_attributes: {
+              '12345': { mark: '1', grade_description: 'grade mark one' },
+              '54321': { mark: '2', grade_description: 'grade mark two' }
+            }
+          } }
+
           created_skill = Skill.last
 
-          expect(created_skill.skill_name).to eq 'Skills Controller Spec Skill'
+          expect(created_skill.skill_name).to eq 'Skills Controller Spec Skill II'
           expect(created_skill.organization.organization_name).to eq 'Skills Controller Spec Org'
-          expect(created_skill.skill_description).to eq 'This is a test skill for controller unit test'
+          expect(created_skill.skill_description).to eq 'This is a second test skill for controller unit test'
+          expect(created_skill.grade_descriptors.map(&:mark)).to include 1, 2
+          expect(created_skill.grade_descriptors.map(&:grade_description))
+            .to include 'grade mark one', 'grade mark two'
         end
 
-        it { should redirect_to skills_path }
+        it { should redirect_to Skill.last }
         it { should set_flash[:notice].to 'Skill "Skills Controller Spec Skill" successfully created.' }
       end
       context 'Lesson creation unsuccessful' do
@@ -52,7 +65,7 @@ RSpec.describe SkillsController, type: :controller do
           } }
         end
 
-        it { should render_template :index }
+        it { should render_template :new }
       end
     end
 
@@ -71,6 +84,18 @@ RSpec.describe SkillsController, type: :controller do
 
         get :show, params: { id: @skill2.id }
         expect(assigns(:skill)).to eq @skill2
+      end
+    end
+
+    describe '#new' do
+      before :each do
+        get :new
+      end
+
+      it { should respond_with 200 }
+      it { should render_template 'new' }
+      it 'assigns the new empty skill' do
+        expect(assigns(:skill)).to be_kind_of(Skill)
       end
     end
   end

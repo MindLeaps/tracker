@@ -1,16 +1,25 @@
 class SkillsController < ApplicationController
   def index
-    @skill = Skill.new
     @skills = Skill.all
   end
 
   def create
-    @skill = Skill.new params.require(:skill).permit(:skill_name, :organization_id, :skill_description)
-    return notice_and_redirect t(:skill_created, skill: @skill.skill_name), skills_url if @skill.save
-    render :index
+    @skill = Skill.new skill_parameters
+    return notice_and_redirect t(:skill_created, skill: @skill.skill_name), @skill if @skill.save
+    render :new
   end
 
   def show
     @skill = Skill.find params[:id]
+  end
+
+  def new
+    @skill = Skill.new
+  end
+
+  private
+
+  def skill_parameters
+    params.require(:skill).permit(:skill_name, :organization_id, :skill_description, grade_descriptors_attributes: [:mark, :grade_description, :_destroy])
   end
 end
