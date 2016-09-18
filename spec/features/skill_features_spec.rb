@@ -1,5 +1,3 @@
-# rubocop:disable Metrics/LineLength
-
 require 'rails_helper'
 
 RSpec.describe 'User interacts with skills' do

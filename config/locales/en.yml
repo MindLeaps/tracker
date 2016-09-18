@@ -21,7 +21,7 @@
 
 en:
   student_created: Student "%{name}" successfully created.
-  duplicate_lesson: Lesson already exists in group "%{group}" on selected date.
+  duplicate_lesson: Lesson already exists for group "%{group}" in "%{subject}" on selected date.
   subject_created: Subject "%{subject}" successfully created.
   lesson_created: Lesson successfully created.
   skill_created: Skill "%{skill}" successfully created.
