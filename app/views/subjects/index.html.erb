@@ -4,6 +4,10 @@
     <%= render partial: 'shared/errors', locals: {subject: @subject} %>
     <%= f.input :subject_name %>
     <%= f.association :organization, label_method: :organization_name, include_blank: false %>
+    <h5>Skills</h5>
+    <div class='clearfix'>
+      <%= link_to_add_association 'Add Skill', f, :assignments, class: 'btn btn-outline-primary btn-sm' %>
+    </div>
     <%= f.button :submit, class: 'btn-outline-success' %>
   <%- end %>
 </fieldset>

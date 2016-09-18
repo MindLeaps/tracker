@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'User interacts with subjects' do
+RSpec.describe 'User interacts with subjects', js: true do
   context 'As a global administrator' do
     include_context 'login_with_admin'
 
@@ -9,14 +9,19 @@ RSpec.describe 'User interacts with subjects' do
     end
 
     it 'creates a subject' do
+      create :skill, skill_name: 'Feature Test Skill I'
+
       visit '/'
       click_link 'Subjects'
 
       fill_in 'Subject name', with: 'Classical Dance'
-      select 'Subject Org', from: 'subject_organization_id'
+      select 'Subject Org', from: 'Organization'
+      click_link 'Add Skill'
+      select 'Feature Test Skill I', from: 'Skill'
       click_button 'Create'
 
       expect(page).to have_content 'Subject "Classical Dance" successfully created'
+      expect(page).to have_css '.subject-row', count: 1
     end
 
     it 'lists all existing subjects' do

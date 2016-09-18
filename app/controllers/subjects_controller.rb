@@ -13,6 +13,6 @@ class SubjectsController < ApplicationController
   private
 
   def subject_params
-    params.require(:subject).permit :subject_name, :organization_id
+    params.require(:subject).permit :subject_name, :organization_id, assignments_attributes: [:id, :skill_id, :_destroy]
   end
 end
