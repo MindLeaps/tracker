@@ -9,4 +9,8 @@ class SkillsController < ApplicationController
     return notice_and_redirect t(:skill_created, skill: @skill.skill_name), skills_url if @skill.save
     render :index
   end
+
+  def show
+    @skill = Skill.find params[:id]
+  end
 end

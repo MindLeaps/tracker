@@ -45,15 +45,33 @@ RSpec.describe SkillsController, type: :controller do
         it { should redirect_to skills_path }
         it { should set_flash[:notice].to 'Skill "Skills Controller Spec Skill" successfully created.' }
       end
+      context 'Lesson creation unsuccessful' do
+        before :each do
+          post :create, params: { skill: {
+            skill_name: 'failed'
+          } }
+        end
+
+        it { should render_template :index }
+      end
     end
-    context 'Lesson creation unsuccessful' do
+
+    describe '#show' do
       before :each do
-        post :create, params: { skill: {
-          skill_name: 'failed'
-        } }
+        @skill1 = create :skill
+        @skill2 = create :skill
+
+        get :show, params: { id: @skill1.id }
       end
 
-      it { should render_template :index }
+      it { should respond_with 200 }
+      it { should render_template 'show' }
+      it 'assigns the correct subject' do
+        expect(assigns(:skill)).to eq @skill1
+
+        get :show, params: { id: @skill2.id }
+        expect(assigns(:skill)).to eq @skill2
+      end
     end
   end
 end
