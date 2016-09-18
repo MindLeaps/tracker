@@ -6,7 +6,8 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 # rubocop:disable Style/IndentArray
-mindleaps = Organization.create({ organization_name: 'mindleaps' })
+# rubocop:disable Metrics/LineLength
+mindleaps = Organization.create organization_name: 'mindleaps'
 mindleaps.chapters.create([
   { chapter_name: 'Kigali' }
 ])
