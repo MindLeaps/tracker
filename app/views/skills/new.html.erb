@@ -7,6 +7,9 @@
     <%= f.association :organization, label_method: :organization_name, include_blank: false %>
     <h5>Grade Descriptors</h5>
     <div class='clearfix'>
+      <%= f.simple_fields_for :grade_descriptors do |grade_descriptors| %>
+        <%= render 'grade_descriptor_fields', f: grade_descriptors %>
+      <% end %>
       <%= link_to_add_association 'Add Grade Descriptor', f, :grade_descriptors, class: 'btn btn-outline-primary btn-sm' %>
     </div>
     <%= f.button :submit, class: 'btn-outline-success' %>
