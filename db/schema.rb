@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160919005750) do
+ActiveRecord::Schema.define(version: 20160918213623) do
 
   create_table "assignments", force: :cascade do |t|
     t.integer "skill_id",   null: false

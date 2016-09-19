@@ -3,7 +3,9 @@ class CreateGradeDescriptors < ActiveRecord::Migration[5.0]
     create_table :grade_descriptors do |t|
       t.integer :mark, null: false
       t.string :grade_description
-      t.belongs_to :skill, index: true, null: false
+      t.belongs_to :skill, null: false
+
+      t.index [:mark, :skill_id], unique: true
     end
   end
 end
