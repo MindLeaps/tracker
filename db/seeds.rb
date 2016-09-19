@@ -70,3 +70,13 @@ skills1 = Skill.create([
 ])
 
 subjects[0].skills = skills1
+
+subjects[0].skills[0].grade_descriptors.create([
+  { mark: 1, grade_description: 'Student cannot remember anything at all' },
+  { mark: 2, grade_description: 'Students can remember a single combination' },
+  { mark: 3, grade_description: 'Students can remember a single lengthy combination' },
+  { mark: 4, grade_description: 'Students can remember two combinations' },
+  { mark: 5, grade_description: 'Students can remember warmup and at least two combinations' },
+  { mark: 6, grade_description: 'Students can remember warmup and at least three combinations' },
+  { mark: 7, grade_description: 'Students can remember the whole routine' }
+])
