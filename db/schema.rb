@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160918213623) do
+ActiveRecord::Schema.define(version: 20160919005750) do
 
   create_table "assignments", force: :cascade do |t|
     t.integer "skill_id",   null: false
@@ -31,6 +31,7 @@ ActiveRecord::Schema.define(version: 20160918213623) do
     t.integer "mark",              null: false
     t.string  "grade_description"
     t.integer "skill_id",          null: false
+    t.index ["mark", "skill_id"], name: "index_grade_descriptors_on_mark_and_skill_id", unique: true
     t.index ["skill_id"], name: "index_grade_descriptors_on_skill_id"
   end
 
