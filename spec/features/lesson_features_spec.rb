@@ -46,5 +46,21 @@ RSpec.describe 'User interacts with lessons' do
       expect(page).to have_content 'Marinko'
       expect(page).to have_content 'Ivan'
     end
+
+    it 'shows students grades in specific lesson' do
+      group = create :group, group_name: 'Lesson Feature Test Group'
+      create :student, first_name: 'Graden', last_name: 'Gradanovic', group: group
+      sub = create :subject, subject_name: 'Feature Testing III'
+      create :skill_in_subject, skill_name: 'Feature Skill I', subject: sub
+      create :skill_in_subject, skill_name: 'Feature Skill II', subject: sub
+      lesson = create :lesson, subject: sub, group: group
+
+      visit "/lessons/#{lesson.id}"
+      click_link 'Graden'
+
+      expect(page).to have_content 'Graden'
+      expect(page).to have_content 'Feature Skill I'
+      expect(page).to have_content 'Feature Skill II'
+    end
   end
 end

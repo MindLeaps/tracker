@@ -14,9 +14,9 @@
   </thead>
   <% @lesson.group.students.each do |student| %>
     <tr class="resource-row student-grade-row">
-        <td><a class="resource-row-link student-grade-row-link"><%= student.last_name %></a></td>
-        <td><a class="resource-row-link student-grade-row-link"><%= student.first_name %></a></td>
-        <td><a class="resource-row-link student-grade-row-link text-xs-center">Not Graded</a></td>
+        <td><%= link_to student.last_name, lesson_student_grade_path(@lesson.id, student.id), class:'resource-row-link student-grade-row-link' %></td>
+        <td><%= link_to student.first_name, lesson_student_grade_path(@lesson.id, student.id), class:'resource-row-link student-grade-row-link' %></td>
+        <td><%= link_to 'Not Graded', lesson_student_grade_path(@lesson.id, student.id), class:'resource-row-link student-grade-row-link' %></td>  
     </tr>
   <% end %>
 </table>
