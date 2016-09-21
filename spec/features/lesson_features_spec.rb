@@ -47,20 +47,50 @@ RSpec.describe 'User interacts with lessons' do
       expect(page).to have_content 'Ivan'
     end
 
-    it 'shows students grades in specific lesson' do
-      group = create :group, group_name: 'Lesson Feature Test Group'
-      create :student, first_name: 'Graden', last_name: 'Gradanovic', group: group
-      sub = create :subject, subject_name: 'Feature Testing III'
-      create :skill_in_subject, skill_name: 'Feature Skill I', subject: sub
-      create :skill_in_subject, skill_name: 'Feature Skill II', subject: sub
-      lesson = create :lesson, subject: sub, group: group
+    describe 'grading' do
+      let(:group) { create :group, group_name: 'Lesson Feature Test Group' }
+      let(:subject) { create :subject, subject_name: 'Feature Testing III' }
 
-      visit "/lessons/#{lesson.id}"
-      click_link 'Graden'
+      before :each do
+        create :student, first_name: 'Graden', last_name: 'Gradanovic', group: group
+        skill1 = create :skill_in_subject, skill_name: 'Featuring', subject: subject
+        skill2 = create :skill_in_subject, skill_name: 'Testing', subject: subject
 
-      expect(page).to have_content 'Graden'
-      expect(page).to have_content 'Feature Skill I'
-      expect(page).to have_content 'Feature Skill II'
+        create :grade_descriptor, mark: 1, grade_description: 'Mark One For Skill One', skill: skill1
+        create :grade_descriptor, mark: 2, grade_description: 'Mark Two For Skill One', skill: skill1
+        create :grade_descriptor, mark: 1, grade_description: 'Mark One For Skill Two', skill: skill2
+        create :grade_descriptor, mark: 2, grade_description: 'Mark Two For Skill Two', skill: skill2
+
+        @lesson = create :lesson, subject: subject, group: group
+      end
+
+      it 'shows students grades in specific lesson' do
+        visit "/lessons/#{@lesson.id}"
+        click_link 'Graden'
+
+        expect(page).to have_content 'Graden'
+        expect(page).to have_content 'Featuring'
+        expect(page).to have_content 'Testing'
+        expect(page).to have_content 'No Grade'
+      end
+
+      it 'grades a student' do
+        visit "/lessons/#{@lesson.id}"
+        click_link 'Graden'
+
+        click_link 'Grade Student'
+
+        select '2 - Mark Two For Skill One', from: 'Featuring'
+        select '1 - Mark One For Skill Two', from: 'Testing'
+
+        click_button 'Save Student Grades'
+
+        expect(page).to have_content 'Student successfully graded.'
+        expect(page).to have_content 'Featuring'
+        expect(page).to have_content 'Mark Two For Skill One'
+        expect(page).to have_content 'Testing'
+        expect(page).to have_content 'Mark One For Skill Two'
+      end
     end
   end
 end
