@@ -28,6 +28,11 @@ class StudentsController < ApplicationController
     render :edit
   end
 
+  def grade
+    @student = Student.find params[:id]
+    @skills = Lesson.find(params[:lesson_id]).subject.skills
+  end
+
   private
 
   def student_params

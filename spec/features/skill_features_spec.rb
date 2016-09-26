@@ -16,7 +16,7 @@ RSpec.describe 'User interacts with skills', js: true do
       expect(page).to have_content 'Skill Feature Skill II'
     end
 
-    it 'create a skill' do
+    it 'creates a skill' do
       create :organization, organization_name: 'Skill Feature Organization'
 
       visit '/'
