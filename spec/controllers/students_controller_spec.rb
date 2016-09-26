@@ -179,5 +179,4 @@ RSpec.describe StudentsController, type: :controller do
       end
     end
   end
-
 end
