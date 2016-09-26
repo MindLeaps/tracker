@@ -137,7 +137,24 @@ RSpec.describe StudentsController, type: :controller do
         expect(assigns(:students)).to include student2
       end
     end
+
+    describe '#grade' do
+      before :each do
+        group = create :group, group_name: 'Student Grades Spec Group'
+        student = create :student, first_name: 'Graden', last_name: 'Gradanovic', group: group
+        sub = create :subject, subject_name: 'Student Grades Testing'
+        create :skill_in_subject, skill_name: 'Controller Test I', subject: sub
+        create :skill_in_subject, skill_name: 'Controller Test II', subject: sub
+        lesson = create :lesson, subject: sub, group: group
+
+        get :grade, params: { id: student.id, lesson_id: lesson.id }
+      end
+
+      it { should respond_with 200 }
+      it { should render_template 'grade' }
+    end
   end
+
   context 'logged in as a local administrator' do
     let(:organization1) { create :organization }
     let(:organization2) { create :organization }
@@ -162,4 +179,5 @@ RSpec.describe StudentsController, type: :controller do
       end
     end
   end
+
 end
