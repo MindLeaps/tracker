@@ -138,7 +138,7 @@ RSpec.describe StudentsController, type: :controller do
       end
     end
 
-    describe '#grade' do
+    describe '#grades' do
       before :each do
         group = create :group, group_name: 'Student Grades Spec Group'
         student = create :student, first_name: 'Graden', last_name: 'Gradanovic', group: group
@@ -147,11 +147,11 @@ RSpec.describe StudentsController, type: :controller do
         create :skill_in_subject, skill_name: 'Controller Test II', subject: sub
         lesson = create :lesson, subject: sub, group: group
 
-        get :grade, params: { id: student.id, lesson_id: lesson.id }
+        get :grades, params: { id: student.id, lesson_id: lesson.id }
       end
 
       it { should respond_with 200 }
-      it { should render_template 'grade' }
+      it { should render_template 'grades' }
     end
   end
 

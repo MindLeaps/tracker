@@ -26,3 +26,4 @@ en:
   subject_created: Subject "%{subject}" successfully created.
   lesson_created: Lesson successfully created.
   skill_created: Skill "%{skill}" successfully created.
+  create_grade_button: Save Student Grades

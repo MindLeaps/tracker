@@ -6,6 +6,20 @@ class Grade < ApplicationRecord
   belongs_to :student
   belongs_to :grade_descriptor
 
+  attr_accessor :skill
+
+  def skill
+    grade_descriptor.try(:skill) || @skill
+  end
+
+  def update_grade_descriptor(new_grade_descriptor)
+    if grade_descriptor.id != new_grade_descriptor.id
+      self.grade_descriptor = new_grade_descriptor
+      save
+    end
+    self
+  end
+
   private
 
   def grade_skill_must_be_unique_for_lesson_and_student

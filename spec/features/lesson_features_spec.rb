@@ -78,8 +78,6 @@ RSpec.describe 'User interacts with lessons' do
         visit "/lessons/#{@lesson.id}"
         click_link 'Graden'
 
-        click_link 'Grade Student'
-
         select '2 - Mark Two For Skill One', from: 'Featuring'
         select '1 - Mark One For Skill Two', from: 'Testing'
 

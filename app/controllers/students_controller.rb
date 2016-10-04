@@ -28,14 +28,31 @@ class StudentsController < ApplicationController
     render :edit
   end
 
+  def grades
+    @student = Student.find params[:id]
+    @grades = @student.grades_for_lesson params[:lesson_id]
+  end
+
   def grade
     @student = Student.find params[:id]
-    @skills = Lesson.find(params[:lesson_id]).subject.skills
+    @lesson = Lesson.find params[:lesson_id]
+    filled_grades = filled_grade_attributes permit_grades_params[:grades_attributes].values
+    grades = filled_grades.map { |g| Grade.new(student: @student, lesson: @lesson, grade_descriptor_id: g[:grade_descriptor_id]) }
+    @student.grade_lesson params[:lesson_id], grades
+    notice_and_redirect 'Student successfully graded.', grades_lesson_student_path
   end
 
   private
 
   def student_params
     params.require(:student).permit(*Student.permitted_params)
+  end
+
+  def filled_grade_attributes(grade_attributes)
+    grade_attributes.select { |g| !g['grade_descriptor_id'].empty? }
+  end
+
+  def permit_grades_params
+    params.require(:student).permit grades_attributes: [:id, :skill, :grade_descriptor_id]
   end
 end

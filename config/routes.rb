@@ -19,7 +19,8 @@ Rails.application.routes.draw do
   resources :lessons, only: [:index, :create, :show] do
     resources :students, only: [] do
       member do
-        get :grade
+        get :grades
+        post :grade
       end
     end
   end
