@@ -10,7 +10,7 @@ class Grade < ApplicationRecord
 
   def grade_skill_must_be_unique_for_lesson_and_student
     existing_grade = duplicate_grade
-    add_duplicate_grade_error(existing_grade) if existing_grade
+    add_duplicate_grade_error(existing_grade) if existing_grade && existing_grade.id != id
   end
 
   def all_relations_exist?

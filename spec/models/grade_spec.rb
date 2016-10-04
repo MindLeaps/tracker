@@ -20,12 +20,19 @@ RSpec.describe Grade, type: :model do
         @lesson = create :lesson, group: group
         @grade_descriptor = create :grade_descriptor
 
-        create :grade, lesson: @lesson, student: @student, grade_descriptor: @grade_descriptor
+        @existing_grade = create :grade, lesson: @lesson, student: @student, grade_descriptor: @grade_descriptor
       end
 
       it 'is valid' do
         grade = Grade.new student: @student, lesson: @lesson, grade_descriptor: create(:grade_descriptor)
         expect(grade).to be_valid
+      end
+
+      it 'is valid if updating the grade with a new grade descriptor' do
+        new_grade_descriptor = create :grade_descriptor, skill: @grade_descriptor.skill
+        @existing_grade.grade_descriptor = new_grade_descriptor
+
+        expect(@existing_grade).to be_valid
       end
 
       it 'is invalid because student was already graded for a skill in that lesson' do
