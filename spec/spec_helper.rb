@@ -22,6 +22,10 @@ require 'omniauth'
 require 'coveralls'
 Coveralls.wear!
 
+Capybara.register_driver :poltergeist do |app|
+  Capybara::Poltergeist::Driver.new(app, window_size: [1920, 1024])
+end
+
 # Useful for debugging issues with the spec js: true tests
 Capybara.register_driver :poltergeist_debug do |app|
   Capybara::Poltergeist::Driver.new(app,
