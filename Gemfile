@@ -43,6 +43,7 @@ group :development, :test do
   gem 'shoulda-matchers'
   gem 'selenium-webdriver'
   gem 'chromedriver-helper'
+  gem 'coveralls', require: false
 end
 
 group :development do

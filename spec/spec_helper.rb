@@ -19,6 +19,8 @@
 
 require 'capybara/poltergeist'
 require 'omniauth'
+require 'coveralls'
+Coveralls.wear!
 
 # Useful for debugging issues with the spec js: true tests
 Capybara.register_driver :poltergeist_debug do |app|
