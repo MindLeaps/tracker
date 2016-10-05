@@ -35,9 +35,7 @@ class StudentsController < ApplicationController
 
   def grade
     @student = Student.find params[:id]
-    @lesson = Lesson.find params[:lesson_id]
-    filled_grades = filled_grade_attributes permit_grades_params[:grades_attributes].values
-    grades = filled_grades.map { |g| Grade.new(student: @student, lesson: @lesson, grade_descriptor_id: g[:grade_descriptor_id]) }
+    grades = generate_grades_from_params @student
     @student.grade_lesson params[:lesson_id], grades
     notice_and_redirect 'Student successfully graded.', grades_lesson_student_path
   end
@@ -48,11 +46,16 @@ class StudentsController < ApplicationController
     params.require(:student).permit(*Student.permitted_params)
   end
 
-  def filled_grade_attributes(grade_attributes)
-    grade_attributes.select { |g| !g['grade_descriptor_id'].empty? }
+  def generate_grades_from_params(student)
+    filled_grades_attributes
+      .map { |g| Grade.new(student: student, lesson_id: params[:lesson_id], grade_descriptor_id: g[:grade_descriptor_id]) }
   end
 
-  def permit_grades_params
-    params.require(:student).permit grades_attributes: [:id, :skill, :grade_descriptor_id]
+  def filled_grades_attributes
+    grades_attributes.select { |g| !g['grade_descriptor_id'].empty? }
+  end
+
+  def grades_attributes
+    params.require(:student).permit(grades_attributes: [:id, :skill, :grade_descriptor_id])[:grades_attributes].values
   end
 end
