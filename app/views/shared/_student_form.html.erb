@@ -1,6 +1,7 @@
 <fieldset>
   <%= simple_form_for student, wrapper: :horizontal_form, url: {action: action} do |f| %>
     <%= render partial: 'shared/errors', locals: {subject: student} %>
+    <%= f.input :mlid, label: 'MLID' %>
     <%= f.input :first_name %>
     <%= f.input :last_name %>
     <%= f.input :gender, collection: Student.genders.map { |k, v| k.humanize }, include_blank: false %>

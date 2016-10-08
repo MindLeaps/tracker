@@ -13,6 +13,7 @@ RSpec.describe StudentsController, type: :controller do
     describe '#create' do
       it 'creates a student when supplied valid params' do
         post :create, params: { student: {
+          mlid: '1M',
           first_name: 'Trevor',
           last_name: 'Noah',
           'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
@@ -34,6 +35,7 @@ RSpec.describe StudentsController, type: :controller do
 
       it 'creates a female student when supplied valid params' do
         post :create, params: { student: {
+          mlid: '1F',
           first_name: 'Ami',
           last_name: 'Ayola',
           'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
@@ -49,6 +51,7 @@ RSpec.describe StudentsController, type: :controller do
 
       it 'creates a student with guardian inormation' do
         post :create, params: { student: {
+          mlid: '1G',
           first_name: 'Guardianed',
           last_name: 'Guard',
           'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
@@ -70,6 +73,7 @@ RSpec.describe StudentsController, type: :controller do
 
       it 'creates a student with health information' do
         post :create, params: { student: {
+          mlid: '1H',
           first_name: 'Healthy',
           last_name: 'Health',
           'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
@@ -90,6 +94,7 @@ RSpec.describe StudentsController, type: :controller do
 
       it 'creates a student with school information' do
         post :create, params: { student: {
+          mlid: '1E',
           first_name: 'Educated',
           last_name: 'Dropout',
           'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
@@ -111,6 +116,7 @@ RSpec.describe StudentsController, type: :controller do
 
       it 'creates a student with notes' do
         post :create, params: { student: {
+          mlid: '1P',
           first_name: 'Prime',
           last_name: 'Noted',
           'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,

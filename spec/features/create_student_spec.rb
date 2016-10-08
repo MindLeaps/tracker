@@ -9,6 +9,7 @@ RSpec.describe 'Create student' do
   it 'creates Rick', js: true do
     visit '/students'
     click_link 'New Student'
+    fill_in 'MLID', with: '1A'
     fill_in 'First name', with: 'Rick'
     fill_in 'Last name', with: 'Sanchez'
     click_button 'Create'
