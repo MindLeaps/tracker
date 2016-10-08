@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :lesson do
-    date { Faker::Time.between Time.zone.today, 90.days.ago }
+    sequence(:date) { |n| n.days.ago }
     group { create :group }
     subject { create :subject }
   end

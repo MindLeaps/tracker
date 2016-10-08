@@ -1,7 +1,7 @@
 class Student < ActiveRecord::Base
   validates :mlid, :first_name, :last_name, :dob, :gender, :organization, presence: true
   validates :mlid, uniqueness: {
-    scope: :organization_id,
+    scope: :organization_id
   }
   belongs_to :group
   belongs_to :organization
