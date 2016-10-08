@@ -15,8 +15,6 @@ RSpec.describe Api::GroupsController, type: :controller do
   end
 
   describe '#index' do
-    before :all do
-    end
     it 'gets a list of groups' do
       get :index, format: :json
       expect(response).to be_success
