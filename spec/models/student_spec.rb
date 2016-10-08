@@ -3,39 +3,23 @@ require 'rails_helper'
 RSpec.describe Student, type: :model do
   let(:org) { create :organization }
 
-  describe 'is valid' do
-    it 'with first and last name, dob, and gender' do
-      student = Student.new mlid: '1S', first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 0, organization: org
-      expect(student).to be_valid
-      expect(student.save).to eq true
-    end
-  end
+  describe 'validations' do
+    subject { create :student, mlid: 'TEST1' }
 
-  describe 'is not valid' do
-    it 'without MLID' do
-      student = Student.new first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 0, organization: org
-      expect(student).to_not be_valid
+    describe 'is valid' do
+      it 'with first and last name, dob, and gender' do
+        student = Student.new mlid: '1S', first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 0, organization: org
+        expect(student).to be_valid
+        expect(student.save).to eq true
+      end
     end
 
-    it 'without first name' do
-      student = Student.new last_name: 'Last', dob: 10.years.ago, gender: 0, organization: org
-      expect(student).to_not be_valid
-    end
-
-    it 'without last name' do
-      student = Student.new first_name: 'First', dob: 10.years.ago, gender: 0, organization: org
-      expect(student).to_not be_valid
-    end
-
-    it 'without DOB' do
-      student = Student.new first_name: 'First', last_name: 'Last', gender: 0, organization: org
-      expect(student).to_not be_valid
-    end
-
-    it 'without an organization' do
-      student = Student.new first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 0
-      expect(student).to_not be_valid
-    end
+    it { should validate_presence_of :mlid }
+    it { should validate_presence_of :first_name }
+    it { should validate_presence_of :last_name }
+    it { should validate_presence_of :dob }
+    it { should validate_presence_of :organization }
+    it { should validate_uniqueness_of(:mlid).scoped_to :organization_id }
   end
 
   describe '#proper_name' do
