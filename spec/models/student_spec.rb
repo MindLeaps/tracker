@@ -5,13 +5,18 @@ RSpec.describe Student, type: :model do
 
   describe 'is valid' do
     it 'with first and last name, dob, and gender' do
-      student = Student.new first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 0, organization: org
+      student = Student.new mlid: '1S', first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 0, organization: org
       expect(student).to be_valid
       expect(student.save).to eq true
     end
   end
 
   describe 'is not valid' do
+    it 'without MLID' do
+      student = Student.new first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 0, organization: org
+      expect(student).to_not be_valid
+    end
+
     it 'without first name' do
       student = Student.new last_name: 'Last', dob: 10.years.ago, gender: 0, organization: org
       expect(student).to_not be_valid
