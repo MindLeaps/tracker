@@ -16,6 +16,16 @@ Rails.application.routes.draw do
   resources :chapters, only: [:index, :create, :show]
   resources :groups, only: [:index, :create, :show]
   resources :students, only: [:index, :new, :create, :show, :edit, :update]
+  resources :lessons, only: [:index, :create, :show] do
+    resources :students, only: [] do
+      member do
+        get :grades
+        post :grade
+      end
+    end
+  end
+  resources :subjects, only: [:index, :create]
+  resources :skills, only: [:index, :create, :show, :new]
 
   root to: 'home#index'
 

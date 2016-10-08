@@ -18,6 +18,8 @@ gem 'pundit'
 gem 'simple_form'
 gem 'enum_help'
 gem 'bootstrap', '~> 4.0.0.alpha3.1'
+gem 'cocoon'
+gem 'jquery-rails'
 
 group :production do
   gem 'puma'
@@ -38,6 +40,9 @@ group :development, :test do
   gem 'faker'
   gem 'database_cleaner'
   gem 'pundit-matchers'
+  gem 'shoulda-matchers'
+  gem 'selenium-webdriver'
+  gem 'chromedriver-helper'
   gem 'coveralls', require: false
 end
 

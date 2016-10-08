@@ -11,7 +11,7 @@ AllCops:
     - vendor/**/* # Vendor gem dir in Travis CI
 
 Metrics/LineLength:
-  Max: 120
+  Max: 160
   # To make it possible to copy or click on URIs in the code, we allow lines
   # contaning a URI to be longer than Max.
   AllowURI: true

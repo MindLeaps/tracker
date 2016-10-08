@@ -22,6 +22,19 @@ require 'omniauth'
 require 'coveralls'
 Coveralls.wear!
 
+Capybara.register_driver :poltergeist do |app|
+  Capybara::Poltergeist::Driver.new(app, window_size: [1920, 1024])
+end
+
+# Useful for debugging issues with the spec js: true tests
+Capybara.register_driver :poltergeist_debug do |app|
+  Capybara::Poltergeist::Driver.new(app,
+                                    inspector: true,
+                                    debug: true,
+                                    js_errors: true,
+                                    phantomjs_options: ['--debug=true'])
+end
+
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest

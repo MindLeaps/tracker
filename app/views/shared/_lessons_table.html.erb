@@ -1,0 +1,12 @@
+<table class="table table-striped table-hover resource-table lessons-table">
+  <thead>
+    <tr>
+      <th>Group Name</th>
+      <th>Date</th>
+      <th>Subject</th>
+    </tr>
+  </thead>
+  <% lessons.each do |lesson| %>
+    <%= render partial: "shared/lesson_row", locals: {lesson: lesson} %>
+  <% end %>
+</table>

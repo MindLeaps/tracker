@@ -10,7 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160913033919) do
+ActiveRecord::Schema.define(version: 20160919032848) do
+
+  create_table "assignments", force: :cascade do |t|
+    t.integer "skill_id",   null: false
+    t.integer "subject_id", null: false
+    t.index ["skill_id"], name: "index_assignments_on_skill_id"
+    t.index ["subject_id"], name: "index_assignments_on_subject_id"
+  end
 
   create_table "chapters", force: :cascade do |t|
     t.string   "chapter_name",    null: false
@@ -20,12 +27,40 @@ ActiveRecord::Schema.define(version: 20160913033919) do
     t.index ["organization_id"], name: "index_chapters_on_organization_id"
   end
 
+  create_table "grade_descriptors", force: :cascade do |t|
+    t.integer "mark",              null: false
+    t.string  "grade_description"
+    t.integer "skill_id",          null: false
+    t.index ["mark", "skill_id"], name: "index_grade_descriptors_on_mark_and_skill_id", unique: true
+    t.index ["skill_id"], name: "index_grade_descriptors_on_skill_id"
+  end
+
+  create_table "grades", force: :cascade do |t|
+    t.integer "student_id",          null: false
+    t.integer "lesson_id",           null: false
+    t.integer "grade_descriptor_id", null: false
+    t.index ["grade_descriptor_id"], name: "index_grades_on_grade_descriptor_id"
+    t.index ["lesson_id"], name: "index_grades_on_lesson_id"
+    t.index ["student_id", "lesson_id", "grade_descriptor_id"], name: "grade_uniqueness_index", unique: true
+    t.index ["student_id"], name: "index_grades_on_student_id"
+  end
+
   create_table "groups", force: :cascade do |t|
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
     t.string   "group_name", default: "", null: false
     t.integer  "chapter_id"
     t.index ["chapter_id"], name: "index_groups_on_chapter_id"
+  end
+
+  create_table "lessons", force: :cascade do |t|
+    t.integer  "group_id",   null: false
+    t.date     "date",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "subject_id", null: false
+    t.index ["group_id"], name: "index_lessons_on_group_id"
+    t.index ["subject_id"], name: "index_lessons_on_subject_id"
   end
 
   create_table "organizations", force: :cascade do |t|
@@ -43,6 +78,15 @@ ActiveRecord::Schema.define(version: 20160913033919) do
     t.datetime "updated_at"
     t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
     t.index ["name"], name: "index_roles_on_name"
+  end
+
+  create_table "skills", force: :cascade do |t|
+    t.string   "skill_name",        null: false
+    t.integer  "organization_id",   null: false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+    t.text     "skill_description"
+    t.index ["organization_id"], name: "index_skills_on_organization_id"
   end
 
   create_table "students", force: :cascade do |t|
@@ -70,6 +114,14 @@ ActiveRecord::Schema.define(version: 20160913033919) do
     t.integer  "organization_id",                       null: false
     t.index ["group_id"], name: "index_students_on_group_id"
     t.index ["organization_id"], name: "index_students_on_organization_id"
+  end
+
+  create_table "subjects", force: :cascade do |t|
+    t.string   "subject_name",    null: false
+    t.integer  "organization_id", null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.index ["organization_id"], name: "index_subjects_on_organization_id"
   end
 
   create_table "users", force: :cascade do |t|

@@ -1,5 +1,5 @@
 FactoryGirl.define do
   factory :chapter do
-    chapter_name { Faker::StarWars.planet }
+    sequence(:chapter_name) { |n| "#{Faker::StarWars.planet}-#{n}" }
   end
 end

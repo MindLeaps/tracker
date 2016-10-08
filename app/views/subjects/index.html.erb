@@ -1,0 +1,15 @@
+<h1>New Subject</h1>
+<fieldset>
+  <%= simple_form_for @subject, wrapper: :horizontal_form, url: {action: 'create'} do |f| %>
+    <%= render partial: 'shared/errors', locals: {subject: @subject} %>
+    <%= f.input :subject_name %>
+    <%= f.association :organization, label_method: :organization_name, include_blank: false %>
+    <h5>Skills</h5>
+    <div class='clearfix'>
+      <%= link_to_add_association 'Add Skill', f, :assignments, class: 'btn btn-outline-primary btn-sm' %>
+    </div>
+    <%= f.button :submit, class: 'btn-outline-success' %>
+  <%- end %>
+</fieldset>
+
+<%= render partial: "subjects/subjects_table", locals: {subjects: @subjects} %>

@@ -137,7 +137,55 @@ RSpec.describe StudentsController, type: :controller do
         expect(assigns(:students)).to include student2
       end
     end
+
+    describe 'grading' do
+      before :each do
+        group = create :group, group_name: 'Student Grades Spec Group'
+        @student = create :student, first_name: 'Graden', last_name: 'Gradanovic', group: group
+        sub = create :subject, subject_name: 'Student Grades Testing'
+        @skill = create :skill_in_subject, skill_name: 'Controller Test I', subject: sub
+        @lesson = create :lesson, subject: sub, group: group
+        @gd1 = create :grade_descriptor, mark: 1, grade_description: 'Mark One For Skill One', skill: @skill
+        @gd2 = create :grade_descriptor, mark: 2, grade_description: 'Mark Two For Skill One', skill: @skill
+      end
+
+      describe '#grades' do
+        before :each do
+          get :grades, params: { id: @student.id, lesson_id: @lesson.id }
+        end
+
+        it { should respond_with 200 }
+        it { should render_template 'grades' }
+      end
+
+      describe '#grade' do
+        before :each do
+          post :grade, params: { id: @student.id, lesson_id: @lesson.id, student: {
+            grades_attributes: { '0' => { grade_descriptor_id: @gd1.id } }
+          } }
+        end
+
+        context 'successfully' do
+          it { should redirect_to action: :grades }
+
+          it 'Saves the new grade' do
+            expect(@student.grades.length).to eq 1
+            expect(@student.grades[0].grade_descriptor).to eq @gd1
+          end
+
+          it 'Updates the existing grade' do
+            post :grade, params: { id: @student.id, lesson_id: @lesson.id, student: {
+              grades_attributes: { '0' => { grade_descriptor_id: @gd2.id } }
+            } }
+
+            expect(@student.grades.length).to eq 1
+            expect(@student.grades[0].grade_descriptor).to eq @gd2
+          end
+        end
+      end
+    end
   end
+
   context 'logged in as a local administrator' do
     let(:organization1) { create :organization }
     let(:organization2) { create :organization }
