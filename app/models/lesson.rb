@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Lesson < ApplicationRecord
   validates :group, :date, :subject, presence: true
   validates :date, uniqueness: {

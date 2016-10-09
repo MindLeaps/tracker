@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class GradeDescriptor < ApplicationRecord
   belongs_to :skill
 

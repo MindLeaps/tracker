@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class LessonsController < ApplicationController
   before_action do
     @lessons = Lesson.all

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Helpers
   def login(user)
     OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new(

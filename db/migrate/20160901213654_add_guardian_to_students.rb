@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class AddGuardianToStudents < ActiveRecord::Migration[5.0]
   def change
     add_column :students, :guardian_name, :string

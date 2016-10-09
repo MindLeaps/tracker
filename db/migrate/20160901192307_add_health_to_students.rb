@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class AddHealthToStudents < ActiveRecord::Migration[5.0]
   def change
     add_column :students, :health_insurance, :text

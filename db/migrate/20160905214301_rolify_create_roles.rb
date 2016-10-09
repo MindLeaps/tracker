@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # rubocop:disable Metrics/MethodLength
 class RolifyCreateRoles < ActiveRecord::Migration
   def change

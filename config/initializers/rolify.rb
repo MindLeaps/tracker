@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # rubocop:disable Style/SymbolProc
 Rolify.configure do |config|
   # By default ORM adapter is ActiveRecord. uncomment to use mongoid

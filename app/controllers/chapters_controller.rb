@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class ChaptersController < ApplicationController
   before_action do
     @chapters = Chapter.all

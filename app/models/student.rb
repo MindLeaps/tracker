@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Student < ActiveRecord::Base
   validates :mlid, :first_name, :last_name, :dob, :gender, :organization, presence: true
   validates :mlid, uniqueness: {

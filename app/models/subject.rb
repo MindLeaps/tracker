@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Subject < ActiveRecord::Base
   belongs_to :organization
   has_many :lessons

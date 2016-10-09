@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class AddEducationInformationToStudents < ActiveRecord::Migration[5.0]
   def change
     add_column :students, :name_of_school, :string
