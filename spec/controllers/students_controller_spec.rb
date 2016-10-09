@@ -180,12 +180,25 @@ RSpec.describe StudentsController, type: :controller do
           end
 
           it 'Updates the existing grade' do
+            existing_grade_id = @student.grades[0].id
             post :grade, params: { id: @student.id, lesson_id: @lesson.id, student: {
-              grades_attributes: { '0' => { grade_descriptor_id: @gd2.id } }
+              grades_attributes: { '0' => { id: existing_grade_id, grade_descriptor_id: @gd2.id } }
             } }
 
-            expect(@student.grades.length).to eq 1
-            expect(@student.grades[0].grade_descriptor).to eq @gd2
+            student = Student.find @student.id
+            expect(student.grades.length).to eq 1
+            expect(student.grades[0].grade_descriptor).to eq @gd2
+          end
+
+          it 'Updates the existing grade to be ungraded' do
+            existing_grade_id = @student.grades[0].id
+
+            post :grade, params: { id: @student.id, lesson_id: @lesson.id, student: {
+              grades_attributes: { '0' => { id: existing_grade_id, grade_descriptor_id: '' } }
+            } }
+
+            student = Student.find @student.id
+            expect(student.grades.length).to eq 0
           end
         end
       end

@@ -1,4 +1,6 @@
 # rubocop:disable Metrics/LineLength
+# rubocop:disable Style/VariableNumber
+
 require 'rails_helper'
 
 RSpec.describe Grade, type: :model do
@@ -41,6 +43,26 @@ RSpec.describe Grade, type: :model do
         expect(grade.errors.messages[:grade_descriptor])
           .to include "#{@student.proper_name} already scored #{@grade_descriptor.mark} in #{@grade_descriptor.skill.skill_name} on #{@lesson.date} in #{@lesson.subject.subject_name}."
       end
+    end
+  end
+
+  describe '#update_grade_descriptor' do
+    before :each do
+      @subject = create :subject_with_skills, number_of_skills: 1
+      @grade_descriptor1 = create :grade_descriptor, skill: @subject.skills[0], mark: 1
+      @grade_descriptor2 = create :grade_descriptor, skill: @subject.skills[0], mark: 2
+
+      @grade = create :grade, grade_descriptor: @grade_descriptor1
+    end
+
+    it 'updates the grade_descriptor' do
+      @grade.update_grade_descriptor @grade_descriptor2
+      expect(@grade.grade_descriptor).to eq @grade_descriptor2
+    end
+
+    it 'deletes the grade if grade_descriptor is empty' do
+      @grade.update_grade_descriptor nil
+      expect(Grade.where(id: @grade.id)).not_to exist
     end
   end
 end

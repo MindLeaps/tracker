@@ -97,9 +97,11 @@ RSpec.describe Student, type: :model do
 
     it 'updates existing grades' do
       create :grade, student: @student, lesson: @lesson, grade_descriptor: @gd11
+      existing_grade_id = Student.find(@student.id).grades[0].id
       grade1 = build_grade @gd21
-      grade2 = build_grade @gd22
+      grade1.id = existing_grade_id
 
+      grade2 = build_grade @gd22
       @student.grade_lesson @lesson.id, [grade1, grade2]
       expect(@student.grades.length).to eq 2
       expect(@student.grades.map(&:grade_descriptor)).to include @gd21, @gd22
