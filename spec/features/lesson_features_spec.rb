@@ -25,7 +25,6 @@ RSpec.describe 'User interacts with lessons' do
 
       visit '/'
       click_link 'Lessons'
-
       expect(page).to have_css '.lesson-row', count: 2
       expect(page).to have_content 'Feature Testing II'
     end

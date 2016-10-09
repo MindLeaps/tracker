@@ -36,8 +36,7 @@ class Student < ActiveRecord::Base
   def grade_lesson(lesson_id, new_grades)
     existing_grades = Grade.where(lesson_id: lesson_id, student_id: id).includes(:grade_descriptor).all.to_a
     new_grades.map do |grade|
-      existing_grade = existing_grades.find { |g| g.skill.id == grade.skill.id }
-      update_grade grade, existing_grade
+      update_grade grade, existing_grade(grade, existing_grades)
     end
   end
 
@@ -45,7 +44,10 @@ class Student < ActiveRecord::Base
 
   def update_grade(grade, existing_grade)
     return existing_grade.update_grade_descriptor grade.grade_descriptor if existing_grade
-
     grade.tap(&:save)
+  end
+
+  def existing_grade(new_grade, existing_grades)
+    existing_grades.find { |g| g.id == new_grade.id }
   end
 end

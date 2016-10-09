@@ -48,11 +48,11 @@ class StudentsController < ApplicationController
 
   def generate_grades_from_params(student)
     filled_grades_attributes
-      .map { |g| Grade.new(student: student, lesson_id: params[:lesson_id], grade_descriptor_id: g[:grade_descriptor_id]) }
+      .map { |g| Grade.new(id: g[:id], student: student, lesson_id: params[:lesson_id], grade_descriptor_id: g[:grade_descriptor_id]) }
   end
 
   def filled_grades_attributes
-    grades_attributes.select { |g| !g['grade_descriptor_id'].empty? }
+    grades_attributes.select { |g| !g['grade_descriptor_id'].empty? || !g['id'].blank? }
   end
 
   def grades_attributes

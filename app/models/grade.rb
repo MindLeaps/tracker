@@ -13,7 +13,9 @@ class Grade < ApplicationRecord
   end
 
   def update_grade_descriptor(new_grade_descriptor)
-    if grade_descriptor.id != new_grade_descriptor.id
+    if new_grade_descriptor.nil?
+      Grade.find(id).delete
+    elsif grade_descriptor.id != new_grade_descriptor.id
       self.grade_descriptor = new_grade_descriptor
       save
     end
