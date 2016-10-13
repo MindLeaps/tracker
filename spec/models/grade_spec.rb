@@ -47,6 +47,34 @@ RSpec.describe Grade, type: :model do
     end
   end
 
+  describe 'scopes' do
+    before :each do
+      @student1 = create :student
+      @student2 = create :student
+
+      @lesson1 = create :lesson
+      @lesson2 = create :lesson
+
+      @grade1 = create :grade, student: @student1, lesson: @lesson1
+      @grade2 = create :grade, student: @student1, lesson: @lesson2
+      @grade3 = create :grade, student: @student2, lesson: @lesson1
+    end
+
+    describe '#by_group' do
+      it 'returns grades scoped by student' do
+        expect(Grade.by_student(@student1.id).all.length).to eq 2
+        expect(Grade.by_student(@student1.id).all).to include @grade1, @grade2
+      end
+    end
+
+    describe '#by_lesson' do
+      it 'returns grades scoped by lesson' do
+        expect(Grade.by_lesson(@lesson1.id).all.length).to eq 2
+        expect(Grade.by_lesson(@lesson1.id).all).to include @grade1, @grade3
+      end
+    end
+  end
+
   describe '#update_grade_descriptor' do
     before :each do
       @subject = create :subject_with_skills, number_of_skills: 1

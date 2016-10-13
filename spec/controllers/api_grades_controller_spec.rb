@@ -25,11 +25,14 @@ RSpec.describe Api::GradesController, type: :controller do
 
   describe '#index' do
     before :each do
-      @grade1 = create :grade, student: @student
-      @grade2 = create :grade, student: @student
-      @grade3 = create :grade
-      @grade4 = create :grade
-      @grade5 = create :grade
+      @lesson1 = create :lesson
+      @lesson2 = create :lesson
+
+      @grade1 = create :grade, student: @student, lesson: @lesson1
+      @grade2 = create :grade, student: @student, lesson: @lesson1
+      @grade3 = create :grade, lesson: @lesson2
+      @grade4 = create :grade, lesson: @lesson2
+      @grade5 = create :grade, lesson: @lesson2
 
       get :index, format: :json
     end
@@ -41,6 +44,20 @@ RSpec.describe Api::GradesController, type: :controller do
 
     it 'responds with timestamp' do
       expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
+    end
+
+    it 'lists only grades scoped by student' do
+      get :index, format: :json, params: { student_id: @student.id }
+
+      expect(json_grades.length).to eq 2
+      expect(json_grades.map { |g| g['id'] }).to include @grade1.id, @grade2.id
+    end
+
+    it 'lists only grades scoped by lesson' do
+      get :index, format: :json, params: { lesson_id: @lesson2.id }
+
+      expect(json_grades.length).to eq 3
+      expect(json_grades.map { |g| g['id'] }).to include @grade3.id, @grade4.id, @grade5.id
     end
   end
 

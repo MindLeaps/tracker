@@ -7,6 +7,10 @@ class Grade < ApplicationRecord
   belongs_to :student
   belongs_to :grade_descriptor
 
+  scope :by_student, ->(student_id) { where student_id: student_id }
+
+  scope :by_lesson, ->(lesson_id) { where lesson_id: lesson_id }
+
   attr_accessor :skill
 
   def skill

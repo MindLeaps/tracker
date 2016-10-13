@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 module Api
   class GradesController < ApiController
+    has_scope :by_student, as: :student_id
+    has_scope :by_lesson, as: :lesson_id
+
     def index
-      @grades = Grade.all
+      @grades = apply_scopes(Grade).all
       respond_with :api, @grades, meta: { timestamp: Time.zone.now }
     end
 
