@@ -11,6 +11,8 @@ class Grade < ApplicationRecord
 
   scope :by_lesson, ->(lesson_id) { where lesson_id: lesson_id }
 
+  scope :after_timestamp, ->(timestamp) { where('created_at > ? OR updated_at > ?', timestamp, timestamp) }
+
   attr_accessor :skill
 
   def skill

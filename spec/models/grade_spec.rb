@@ -55,7 +55,7 @@ RSpec.describe Grade, type: :model do
       @lesson1 = create :lesson
       @lesson2 = create :lesson
 
-      @grade1 = create :grade, student: @student1, lesson: @lesson1
+      @grade1 = create :grade, student: @student1, lesson: @lesson1, created_at: 4.days.ago, updated_at: 2.days.ago
       @grade2 = create :grade, student: @student1, lesson: @lesson2
       @grade3 = create :grade, student: @student2, lesson: @lesson1
     end
@@ -71,6 +71,13 @@ RSpec.describe Grade, type: :model do
       it 'returns grades scoped by lesson' do
         expect(Grade.by_lesson(@lesson1.id).all.length).to eq 2
         expect(Grade.by_lesson(@lesson1.id).all).to include @grade1, @grade3
+      end
+    end
+
+    describe '#after_timestamp' do
+      it 'returns grades created or updated after timestamp' do
+        expect(Grade.after_timestamp(Time.zone.today.beginning_of_day).length).to eq 2
+        expect(Grade.after_timestamp(Time.zone.today.beginning_of_day)).to include @grade2, @grade3
       end
     end
   end

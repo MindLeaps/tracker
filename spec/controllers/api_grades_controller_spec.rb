@@ -28,8 +28,8 @@ RSpec.describe Api::GradesController, type: :controller do
       @lesson1 = create :lesson
       @lesson2 = create :lesson
 
-      @grade1 = create :grade, student: @student, lesson: @lesson1
-      @grade2 = create :grade, student: @student, lesson: @lesson1
+      @grade1 = create :grade, student: @student, lesson: @lesson1, created_at: 3.months.ago, updated_at: 3.months.ago
+      @grade2 = create :grade, student: @student, lesson: @lesson1, created_at: 3.months.ago, updated_at: 3.months.ago
       @grade3 = create :grade, lesson: @lesson2
       @grade4 = create :grade, lesson: @lesson2
       @grade5 = create :grade, lesson: @lesson2
@@ -58,6 +58,16 @@ RSpec.describe Api::GradesController, type: :controller do
 
       expect(json_grades.length).to eq 3
       expect(json_grades.map { |g| g['id'] }).to include @grade3.id, @grade4.id, @grade5.id
+    end
+
+    it 'lists only grades create or updated after a certain time' do
+      create :grade, created_at: 3.months.ago, updated_at: 3.months.ago
+      create :grade, created_at: 2.months.ago, updated_at: 2.months.ago
+      create :grade, created_at: 4.months.ago, updated_at: 3.months.ago
+
+      get :index, format: :json, params: { after_timestamp: 1.day.ago }
+
+      expect(json_grades.length).to eq 3
     end
   end
 
