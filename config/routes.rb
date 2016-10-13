@@ -11,7 +11,7 @@ Rails.application.routes.draw do
     resources :groups, only: [:index, :show]
     resources :students, only: [:index, :show]
     resources :lessons, only: [:index, :show, :create]
-    resources :grades, only: [:show]
+    resources :grades, only: [:show, :create]
   end
 
   resources :users, only: [:index, :create, :show, :update]
