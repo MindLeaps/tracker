@@ -1,8 +1,10 @@
+# rubocop:disable Style/VariableNumber
 # frozen_string_literal: true
 require 'rails_helper'
 
 RSpec.describe Api::GradesController, type: :controller do
   let(:json) { JSON.parse(response.body) }
+  let(:json_grade) { json['grade'] }
 
   before :each do
     @group = create :group
@@ -28,10 +30,14 @@ RSpec.describe Api::GradesController, type: :controller do
 
     it { should respond_with 200 }
     it 'responds with the requested grade' do
-      expect(json['id']).to eq @grade.id
-      expect(json['grade_descriptor_id']).to eq @grade.grade_descriptor_id
-      expect(json['lesson_id']).to eq @grade.lesson_id
-      expect(json['student_id']).to eq @grade.student_id
+      expect(json_grade['id']).to eq @grade.id
+      expect(json_grade['grade_descriptor_id']).to eq @grade.grade_descriptor_id
+      expect(json_grade['lesson_id']).to eq @grade.lesson_id
+      expect(json_grade['student_id']).to eq @grade.student_id
+    end
+
+    it 'responds with timestamp' do
+      expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
     end
   end
 
@@ -39,6 +45,8 @@ RSpec.describe Api::GradesController, type: :controller do
     before :each do
       post :create, format: :json, params: { grade_descriptor_id: @gd1_1.id, lesson_id: @lesson.id, student_id: @student.id }
     end
+    it { should respond_with 201 }
+
     it 'creates a new grade' do
       g = Grade.last
       expect(g.grade_descriptor).to eq @gd1_1
@@ -46,6 +54,8 @@ RSpec.describe Api::GradesController, type: :controller do
       expect(g.student).to eq @student
     end
 
-    it { should respond_with 201 }
+    it 'responds with timestamp' do
+      expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
+    end
   end
 end
