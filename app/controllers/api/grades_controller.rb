@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 module Api
   class GradesController < ApiController
+    def index
+      @grades = Grade.all
+      respond_with :api, @grades, meta: { timestamp: Time.zone.now }
+    end
+
     def show
       @grade = Grade.find params[:id]
       respond_with :api, @grade, meta: { timestamp: Time.zone.now }

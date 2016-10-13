@@ -5,6 +5,7 @@ require 'rails_helper'
 RSpec.describe Api::GradesController, type: :controller do
   let(:json) { JSON.parse(response.body) }
   let(:json_grade) { json['grade'] }
+  let(:json_grades) { json['grades'] }
 
   before :each do
     @group = create :group
@@ -20,6 +21,27 @@ RSpec.describe Api::GradesController, type: :controller do
     @gd2_2 = create :grade_descriptor, mark: 2, skill: @skill2
 
     @lesson = create :lesson, group: @group, subject: @subject
+  end
+
+  describe '#index' do
+    before :each do
+      @grade1 = create :grade, student: @student
+      @grade2 = create :grade, student: @student
+      @grade3 = create :grade
+      @grade4 = create :grade
+      @grade5 = create :grade
+
+      get :index, format: :json
+    end
+
+    it 'lists all grades' do
+      expect(json_grades.length).to eq 5
+      expect(json_grades.map { |g| g['id'] }).to include @grade1.id, @grade2.id, @grade3.id, @grade4.id, @grade5.id
+    end
+
+    it 'responds with timestamp' do
+      expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
+    end
   end
 
   describe 'show' do
