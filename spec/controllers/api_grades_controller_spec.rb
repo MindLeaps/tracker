@@ -125,4 +125,16 @@ RSpec.describe Api::GradesController, type: :controller do
       expect(@grade.reload.grade_descriptor).to eq @gd2
     end
   end
+
+  describe '#destroy' do
+    before :each do
+      @grade = create :grade
+      delete :destroy, format: :json, params: { id: @grade.id }
+    end
+
+    it { should respond_with 200 }
+    it 'marks the grade as deleted' do
+      expect(@grade.reload.deleted_at.nil?).to be false
+    end
+  end
 end
