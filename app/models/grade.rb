@@ -7,6 +7,8 @@ class Grade < ApplicationRecord
   belongs_to :student
   belongs_to :grade_descriptor
 
+  default_scope { where deleted_at: nil }
+
   scope :by_student, ->(student_id) { where student_id: student_id }
 
   scope :by_lesson, ->(lesson_id) { where lesson_id: lesson_id }
@@ -31,18 +33,18 @@ class Grade < ApplicationRecord
 
   private
 
+  def all_relations_exist?
+    [lesson, student, grade_descriptor].exclude? nil
+  end
+
   def grade_skill_must_be_unique_for_lesson_and_student
     existing_grade = duplicate_grade
     add_duplicate_grade_error(existing_grade) if existing_grade && existing_grade.id != id
   end
 
-  def all_relations_exist?
-    [lesson, student, grade_descriptor].exclude? nil
-  end
-
   def duplicate_grade
     Grade.joins(:grade_descriptor)
-         .find_by(student: student, lesson: lesson, grade_descriptors: { skill_id: grade_descriptor.skill.id })
+         .find_by(student: student, lesson: lesson, grade_descriptors: { skill_id: grade_descriptor.skill.id }, deleted_at: nil)
   end
 
   def add_duplicate_grade_error(duplicate_grade)

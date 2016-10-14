@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161013042217) do
+ActiveRecord::Schema.define(version: 20161014032826) do
 
   create_table "assignments", force: :cascade do |t|
     t.integer "skill_id",   null: false
@@ -41,6 +41,7 @@ ActiveRecord::Schema.define(version: 20161013042217) do
     t.integer  "grade_descriptor_id", null: false
     t.datetime "created_at",          null: false
     t.datetime "updated_at",          null: false
+    t.date     "deleted_at"
     t.index ["grade_descriptor_id"], name: "index_grades_on_grade_descriptor_id"
     t.index ["lesson_id"], name: "index_grades_on_lesson_id"
     t.index ["student_id", "lesson_id", "grade_descriptor_id"], name: "grade_uniqueness_index", unique: true

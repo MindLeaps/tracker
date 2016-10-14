@@ -44,6 +44,12 @@ RSpec.describe Grade, type: :model do
         expect(grade.errors.messages[:grade_descriptor])
           .to include "#{@student.proper_name} already scored #{@grade_descriptor.mark} in #{@grade_descriptor.skill.skill_name} on #{@lesson.date} in #{@lesson.subject.subject_name}."
       end
+
+      it 'is valid if a student was already graded for a skill in that lesson but a previous grade was deleted' do
+        @existing_grade.update_attributes deleted_at: Time.zone.now
+        grade = Grade.new student: @student, lesson: @lesson, grade_descriptor: create(:grade_descriptor, skill: @grade_descriptor.skill)
+        expect(grade).to be_valid
+      end
     end
   end
 
@@ -58,6 +64,14 @@ RSpec.describe Grade, type: :model do
       @grade1 = create :grade, student: @student1, lesson: @lesson1, created_at: 4.days.ago, updated_at: 2.days.ago
       @grade2 = create :grade, student: @student1, lesson: @lesson2
       @grade3 = create :grade, student: @student2, lesson: @lesson1
+      @deleted_grade = create :grade, deleted_at: Time.zone.now
+    end
+
+    describe 'default_scope' do
+      it 'returns only non deleted grades' do
+        expect(Grade.all.length).to eq 3
+        expect(Grade.all).to include @grade1, @grade2, @grade3
+      end
     end
 
     describe '#by_group' do
