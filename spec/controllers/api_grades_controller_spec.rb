@@ -107,4 +107,22 @@ RSpec.describe Api::GradesController, type: :controller do
       expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
     end
   end
+
+  describe '#update' do
+    before :each do
+      @subject = create :subject
+      @skill = create :skill, subject: @subject
+      @lesson = create :lesson, subject: @subject
+      @gd1 = create :grade_descriptor, mark: 1, skill: @skill
+      @gd2 = create :grade_descriptor, mark: 2, skill: @skill
+
+      @grade = create :grade, grade_descriptor: @gd1, lesson: @lesson
+    end
+
+    it 'updates the grade\'s grade descriptor' do
+      patch :update, format: :json, params: { id: @grade.id, grade_descriptor_id: @gd2.id }
+
+      expect(@grade.reload.grade_descriptor).to eq @gd2
+    end
+  end
 end
