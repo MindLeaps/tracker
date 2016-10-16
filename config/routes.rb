@@ -13,6 +13,7 @@ Rails.application.routes.draw do
     resources :lessons, only: [:index, :show, :create]
     resources :grades, only: [:show, :create, :index, :update, :destroy]
     resources :subjects, only: [:index, :show]
+    resources :skills, only: [:index, :show]
   end
 
   resources :users, only: [:index, :create, :show, :update]
