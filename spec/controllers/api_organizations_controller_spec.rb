@@ -4,14 +4,14 @@ require 'rails_helper'
 RSpec.describe Api::OrganizationsController, type: :controller do
   let(:json) { JSON.parse(response.body) }
 
-  before :all do
+  before :each do
     @org1 = create :organization, organization_name: 'Org Api Test One'
     @org2 = create :organization, organization_name: 'Org Api Test Two'
     @org3 = create :organization, organization_name: 'Org Api Test Three'
   end
 
   describe '#index' do
-    before :all do
+    before :each do
     end
     it 'gets a list of organizations' do
       get :index, format: :json

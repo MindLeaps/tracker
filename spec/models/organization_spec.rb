@@ -2,7 +2,7 @@
 require 'rails_helper'
 
 RSpec.describe Organization, type: :model do
-  before :all do
+  before :each do
     create :organization, organization_name: 'Already Existing Organization'
   end
 

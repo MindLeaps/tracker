@@ -4,7 +4,7 @@ require 'rails_helper'
 RSpec.describe Api::GroupsController, type: :controller do
   let(:json) { JSON.parse(response.body) }
 
-  before :all do
+  before :each do
     @chapter = create :chapter, chapter_name: 'Api Group Test Chapter'
 
     @group1 = create :group, group_name: 'Api Group Test Kigali', chapter: @chapter

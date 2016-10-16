@@ -2,7 +2,7 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  before :all do
+  before :each do
     create :user, email: 'existing_user_email@example.com'
   end
 
