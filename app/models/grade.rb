@@ -7,13 +7,11 @@ class Grade < ApplicationRecord
   belongs_to :student
   belongs_to :grade_descriptor
 
-  default_scope { where deleted_at: nil }
-
   scope :by_student, ->(student_id) { where student_id: student_id }
 
   scope :by_lesson, ->(lesson_id) { where lesson_id: lesson_id }
 
-  scope :after_timestamp, ->(timestamp) { where('created_at > ? OR updated_at > ?', timestamp, timestamp) }
+  scope :exclude_deleted, -> { where deleted_at: nil }
 
   attr_accessor :skill
 
@@ -22,9 +20,9 @@ class Grade < ApplicationRecord
   end
 
   def update_grade_descriptor(new_grade_descriptor)
-    if new_grade_descriptor.nil?
-      Grade.find(id).delete
-    elsif grade_descriptor.id != new_grade_descriptor.id
+    return mark_grade_as_deleted if new_grade_descriptor.nil?
+
+    if grade_descriptor.id != new_grade_descriptor.id
       self.grade_descriptor = new_grade_descriptor
       save
     end
@@ -54,5 +52,11 @@ class Grade < ApplicationRecord
                                                  skill: grade_descriptor.skill.skill_name,
                                                  date: lesson.date,
                                                  subject: lesson.subject.subject_name))
+  end
+
+  def mark_grade_as_deleted
+    self.deleted_at = Time.zone.now
+    save
+    self
   end
 end

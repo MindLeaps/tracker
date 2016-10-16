@@ -67,13 +67,6 @@ RSpec.describe Grade, type: :model do
       @deleted_grade = create :grade, deleted_at: Time.zone.now
     end
 
-    describe 'default_scope' do
-      it 'returns only non deleted grades' do
-        expect(Grade.all.length).to eq 3
-        expect(Grade.all).to include @grade1, @grade2, @grade3
-      end
-    end
-
     describe '#by_group' do
       it 'returns grades scoped by student' do
         expect(Grade.by_student(@student1.id).all.length).to eq 2
@@ -90,8 +83,16 @@ RSpec.describe Grade, type: :model do
 
     describe '#after_timestamp' do
       it 'returns grades created or updated after timestamp' do
-        expect(Grade.after_timestamp(Time.zone.today.beginning_of_day).length).to eq 2
-        expect(Grade.after_timestamp(Time.zone.today.beginning_of_day)).to include @grade2, @grade3
+        expect(Grade.after_timestamp(Time.zone.today.beginning_of_day).length).to eq 3
+        expect(Grade.after_timestamp(Time.zone.today.beginning_of_day)).to include @grade2, @grade3, @deleted_grade
+      end
+    end
+
+    describe '#exclude_deleted' do
+      it 'returns only grades that are not deleted' do
+        expect(Grade.exclude_deleted.all.length).to eq 3
+        expect(Grade.exclude_deleted.all).to include @grade1, @grade2, @grade3
+        expect(Grade.exclude_deleted.all).not_to eq include @deleted_grade
       end
     end
   end
@@ -110,9 +111,9 @@ RSpec.describe Grade, type: :model do
       expect(@grade.grade_descriptor).to eq @grade_descriptor2
     end
 
-    it 'deletes the grade if grade_descriptor is empty' do
+    it 'marks the grade as deleted if grade_descriptor is empty' do
       @grade.update_grade_descriptor nil
-      expect(Grade.where(id: @grade.id)).not_to exist
+      expect(Grade.find(@grade.id).deleted_at).not_to be nil
     end
   end
 end

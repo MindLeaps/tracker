@@ -32,7 +32,7 @@ RSpec.describe Api::GradesController, type: :controller do
       @grade2 = create :grade, student: @student, lesson: @lesson1, created_at: 3.months.ago, updated_at: 3.months.ago
       @grade3 = create :grade, lesson: @lesson2
       @grade4 = create :grade, lesson: @lesson2
-      @grade5 = create :grade, lesson: @lesson2
+      @grade5 = create :grade, lesson: @lesson2, deleted_at: Time.zone.now
 
       get :index, format: :json
     end
@@ -68,6 +68,13 @@ RSpec.describe Api::GradesController, type: :controller do
       get :index, format: :json, params: { after_timestamp: 1.day.ago }
 
       expect(json_grades.length).to eq 3
+    end
+
+    it 'excludes deleted grades' do
+      get :index, format: :json, params: { exclude_deleted: true }
+
+      expect(json_grades.length).to eq 4
+      expect(json_grades.map { |g| g['id'] }).to include @grade1.id, @grade2.id, @grade3.id, @grade4.id
     end
   end
 

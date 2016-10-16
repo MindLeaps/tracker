@@ -23,13 +23,13 @@ class Student < ActiveRecord::Base
      :reason_for_leaving, :notes, :organization_id]
   end
 
-  def grades_for_lesson(lesson_id)
+  def current_grades_for_lesson_including_ungraded_skills(lesson_id)
     lesson = Lesson.find lesson_id
     skills = lesson.subject.skills
 
     skill_grades = Hash[skills.map { |skill| [skill.id, Grade.new(lesson_id: lesson_id, student_id: id, skill: skill)] }]
 
-    Grade.where(lesson_id: lesson_id, student_id: id).find_each { |grade| skill_grades[grade.skill.id] = grade }
+    current_grades_for_lesson(lesson_id).find_each { |grade| skill_grades[grade.skill.id] = grade }
 
     skill_grades.values
   end
@@ -42,6 +42,10 @@ class Student < ActiveRecord::Base
   end
 
   private
+
+  def current_grades_for_lesson(lesson_id)
+    Grade.where(lesson_id: lesson_id, student_id: id).exclude_deleted
+  end
 
   def update_grade(grade, existing_grade)
     return existing_grade.update_grade_descriptor grade.grade_descriptor if existing_grade
