@@ -20,6 +20,8 @@ gem 'enum_help'
 gem 'bootstrap', '~> 4.0.0.alpha3.1'
 gem 'cocoon'
 gem 'jquery-rails'
+gem 'active_model_serializers', '~> 0.10.0'
+gem 'has_scope'
 
 group :production do
   gem 'puma'

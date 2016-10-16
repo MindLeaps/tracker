@@ -199,7 +199,7 @@ RSpec.describe StudentsController, type: :controller do
             } }
 
             student = Student.find @student.id
-            expect(student.grades.length).to eq 0
+            expect(student.grades.exclude_deleted.length).to eq 0
           end
         end
       end

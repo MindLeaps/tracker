@@ -31,7 +31,7 @@ class StudentsController < ApplicationController
 
   def grades
     @student = Student.find params[:id]
-    @grades = @student.grades_for_lesson params[:lesson_id]
+    @grades = @student.current_grades_for_lesson_including_ungraded_skills params[:lesson_id]
   end
 
   def grade

@@ -30,7 +30,7 @@ RSpec.describe Student, type: :model do
     end
   end
 
-  describe '#grades_for_lesson' do
+  describe '#current_grades_for_lesson_including_ungraded_skills' do
     before :each do
       @group = create :group
       @student = create :student, group: @group
@@ -54,19 +54,26 @@ RSpec.describe Student, type: :model do
     end
 
     it 'returns grades that student has in lesson1' do
-      expect(@student.grades_for_lesson(@lesson1.id)).to include @grade1, @grade2
+      expect(@student.current_grades_for_lesson_including_ungraded_skills(@lesson1.id)).to include @grade1, @grade2
     end
 
     it 'does not return grades that student has in other lessons' do
-      expect(@student.grades_for_lesson(@lesson1.id)).to_not include @grade3, @grade4
+      expect(@student.current_grades_for_lesson_including_ungraded_skills(@lesson1.id)).to_not include @grade3, @grade4
     end
 
     it 'does not return grades of other students in any lesson' do
-      expect(@student.grades_for_lesson(@lesson1.id)).to_not include @otherstudentgrade1, @otherstudentgrade2
+      expect(@student.current_grades_for_lesson_including_ungraded_skills(@lesson1.id)).to_not include @otherstudentgrade1, @otherstudentgrade2
     end
 
-    it 'returns empty skills for ungraded skills in lesson' do
-      expect(@student.grades_for_lesson(@lesson1.id).length).to eq 3
+    it 'does not return grades that are marked as deleted' do
+      @grade1.deleted_at = Time.zone.now
+      @grade1.save
+
+      expect(@student.current_grades_for_lesson_including_ungraded_skills(@lesson1.id)).to_not include @grade1
+    end
+
+    it 'returns empty grades for ungraded skills in lesson' do
+      expect(@student.current_grades_for_lesson_including_ungraded_skills(@lesson1.id).length).to eq 3
     end
   end
 

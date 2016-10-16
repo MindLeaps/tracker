@@ -44,6 +44,56 @@ RSpec.describe Grade, type: :model do
         expect(grade.errors.messages[:grade_descriptor])
           .to include "#{@student.proper_name} already scored #{@grade_descriptor.mark} in #{@grade_descriptor.skill.skill_name} on #{@lesson.date} in #{@lesson.subject.subject_name}."
       end
+
+      it 'is valid if a student was already graded for a skill in that lesson but a previous grade was deleted' do
+        @existing_grade.update_attributes deleted_at: Time.zone.now
+        grade = Grade.new student: @student, lesson: @lesson, grade_descriptor: create(:grade_descriptor, skill: @grade_descriptor.skill)
+        expect(grade).to be_valid
+      end
+    end
+  end
+
+  describe 'scopes' do
+    before :each do
+      @student1 = create :student
+      @student2 = create :student
+
+      @lesson1 = create :lesson
+      @lesson2 = create :lesson
+
+      @grade1 = create :grade, student: @student1, lesson: @lesson1, created_at: 4.days.ago, updated_at: 2.days.ago
+      @grade2 = create :grade, student: @student1, lesson: @lesson2
+      @grade3 = create :grade, student: @student2, lesson: @lesson1
+      @deleted_grade = create :grade, deleted_at: Time.zone.now
+    end
+
+    describe '#by_group' do
+      it 'returns grades scoped by student' do
+        expect(Grade.by_student(@student1.id).all.length).to eq 2
+        expect(Grade.by_student(@student1.id).all).to include @grade1, @grade2
+      end
+    end
+
+    describe '#by_lesson' do
+      it 'returns grades scoped by lesson' do
+        expect(Grade.by_lesson(@lesson1.id).all.length).to eq 2
+        expect(Grade.by_lesson(@lesson1.id).all).to include @grade1, @grade3
+      end
+    end
+
+    describe '#after_timestamp' do
+      it 'returns grades created or updated after timestamp' do
+        expect(Grade.after_timestamp(Time.zone.today.beginning_of_day).length).to eq 3
+        expect(Grade.after_timestamp(Time.zone.today.beginning_of_day)).to include @grade2, @grade3, @deleted_grade
+      end
+    end
+
+    describe '#exclude_deleted' do
+      it 'returns only grades that are not deleted' do
+        expect(Grade.exclude_deleted.all.length).to eq 3
+        expect(Grade.exclude_deleted.all).to include @grade1, @grade2, @grade3
+        expect(Grade.exclude_deleted.all).not_to eq include @deleted_grade
+      end
     end
   end
 
@@ -61,9 +111,9 @@ RSpec.describe Grade, type: :model do
       expect(@grade.grade_descriptor).to eq @grade_descriptor2
     end
 
-    it 'deletes the grade if grade_descriptor is empty' do
+    it 'marks the grade as deleted if grade_descriptor is empty' do
       @grade.update_grade_descriptor nil
-      expect(Grade.where(id: @grade.id)).not_to exist
+      expect(Grade.find(@grade.id).deleted_at).not_to be nil
     end
   end
 end

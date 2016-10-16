@@ -7,6 +7,12 @@ class Grade < ApplicationRecord
   belongs_to :student
   belongs_to :grade_descriptor
 
+  scope :by_student, ->(student_id) { where student_id: student_id }
+
+  scope :by_lesson, ->(lesson_id) { where lesson_id: lesson_id }
+
+  scope :exclude_deleted, -> { where deleted_at: nil }
+
   attr_accessor :skill
 
   def skill
@@ -14,9 +20,9 @@ class Grade < ApplicationRecord
   end
 
   def update_grade_descriptor(new_grade_descriptor)
-    if new_grade_descriptor.nil?
-      Grade.find(id).delete
-    elsif grade_descriptor.id != new_grade_descriptor.id
+    return mark_grade_as_deleted if new_grade_descriptor.nil?
+
+    if grade_descriptor.id != new_grade_descriptor.id
       self.grade_descriptor = new_grade_descriptor
       save
     end
@@ -25,18 +31,18 @@ class Grade < ApplicationRecord
 
   private
 
+  def all_relations_exist?
+    [lesson, student, grade_descriptor].exclude? nil
+  end
+
   def grade_skill_must_be_unique_for_lesson_and_student
     existing_grade = duplicate_grade
     add_duplicate_grade_error(existing_grade) if existing_grade && existing_grade.id != id
   end
 
-  def all_relations_exist?
-    [lesson, student, grade_descriptor].exclude? nil
-  end
-
   def duplicate_grade
     Grade.joins(:grade_descriptor)
-         .find_by(student: student, lesson: lesson, grade_descriptors: { skill_id: grade_descriptor.skill.id })
+         .find_by(student: student, lesson: lesson, grade_descriptors: { skill_id: grade_descriptor.skill.id }, deleted_at: nil)
   end
 
   def add_duplicate_grade_error(duplicate_grade)
@@ -46,5 +52,11 @@ class Grade < ApplicationRecord
                                                  skill: grade_descriptor.skill.skill_name,
                                                  date: lesson.date,
                                                  subject: lesson.subject.subject_name))
+  end
+
+  def mark_grade_as_deleted
+    self.deleted_at = Time.zone.now
+    save
+    self
   end
 end
