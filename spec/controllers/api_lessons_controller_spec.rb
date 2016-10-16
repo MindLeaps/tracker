@@ -5,7 +5,7 @@ RSpec.describe Api::LessonsController, type: :controller do
   let(:json) { JSON.parse(response.body) }
 
   describe '#index' do
-    before :all do
+    before :each do
       @lesson1 = create :lesson
       @lesson2 = create :lesson
       @lesson3 = create :lesson

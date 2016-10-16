@@ -3,7 +3,7 @@ require 'rails_helper'
 
 RSpec.describe Api::ChaptersController, type: :controller do
   let(:json) { JSON.parse(response.body) }
-  before :all do
+  before :each do
     @chapter1 = create :chapter, chapter_name: 'Chapter Api Test Chapter One'
     @chapter2 = create :chapter, chapter_name: 'Chapter Api Test Chapter Two'
     @chapter3 = create :chapter, chapter_name: 'Chapter Api Test Chapter Three'

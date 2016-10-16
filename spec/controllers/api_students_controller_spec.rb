@@ -5,7 +5,7 @@ RSpec.describe Api::StudentsController, type: :controller do
   let(:json) { JSON.parse(response.body) }
 
   describe '#index' do
-    before :all do
+    before :each do
       @test_group = create :group, group_name: 'Api Controller Test Group'
       create :student, first_name: 'Api', group: @test_group
       create :student, first_name: 'Controller', group: @test_group

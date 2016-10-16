@@ -2,7 +2,7 @@
 require 'rails_helper'
 
 RSpec.describe Chapter, type: :model do
-  before :all do
+  before :each do
     @org1 = create :organization
     @org2 = create :organization
     @chapter1 = create :chapter, chapter_name: 'Existing Chapter Spec Chapter', organization: @org1
