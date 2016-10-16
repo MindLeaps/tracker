@@ -7,7 +7,7 @@ module Api
 
     def index
       @subjects = apply_scopes(Subject).all
-      respond_with @subjects, include: ['lessons'], meta: { timestamp: Time.zone.now }
+      respond_with @subjects, include: included_params, meta: { timestamp: Time.zone.now }
     end
 
     def show
