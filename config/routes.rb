@@ -14,6 +14,7 @@ Rails.application.routes.draw do
     resources :grades, only: [:show, :create, :index, :update, :destroy]
     resources :subjects, only: [:index, :show]
     resources :skills, only: [:index, :show]
+    resources :grade_descriptors, only: [:index, :show]
   end
 
   resources :users, only: [:index, :create, :show, :update]
