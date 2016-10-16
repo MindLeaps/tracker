@@ -36,6 +36,12 @@ RSpec.describe Api::SubjectsController, type: :controller do
 
       expect(json['subjects'].length).to eq 3
     end
+
+    it 'lists only subjects belonging to a specific organization' do
+      get :index, format: :json, params: { organization_id: @org1 }
+
+      expect(json['subjects'].length).to eq 2
+    end
   end
 
   describe '#show' do

@@ -3,6 +3,8 @@ module Api
   class SubjectsController < ApiController
     has_scope :after_timestamp
 
+    has_scope :by_organization, as: :organization_id
+
     def index
       @subjects = apply_scopes(Subject).all
       respond_with @subjects, include: ['lessons'], meta: { timestamp: Time.zone.now }

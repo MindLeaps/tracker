@@ -7,5 +7,7 @@ class Subject < ApplicationRecord
 
   validates :subject_name, :organization, presence: true
 
+  scope :by_organization, ->(organization_id) { where organization_id: organization_id }
+
   accepts_nested_attributes_for :assignments
 end

@@ -13,4 +13,22 @@ RSpec.describe Subject, type: :model do
     it { is_expected.to validate_presence_of :subject_name }
     it { is_expected.to validate_presence_of :organization }
   end
+
+  describe 'scopes' do
+    before :each do
+      @org1 = create :organization
+      @org2 = create :organization
+
+      @subject1 = create :subject, organization: @org1
+      @subject2 = create :subject, organization: @org1
+      @subject3 = create :subject, organization: @org2
+    end
+
+    describe 'by_organization' do
+      it 'returns subjects scoped by organization' do
+        expect(Subject.by_organization(@org1.id).length).to eq 2
+        expect(Subject.by_organization(@org1.id)).to include @subject1, @subject2
+      end
+    end
+  end
 end
