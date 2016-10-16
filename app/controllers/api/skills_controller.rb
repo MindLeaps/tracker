@@ -7,12 +7,12 @@ module Api
 
     def index
       @skills = apply_scopes(Skill).all
-      respond_with @skills, status: :ok, meta: { timestamp: Time.zone.now }
+      respond_with @skills, status: :ok, include: included_params, meta: { timestamp: Time.zone.now }
     end
 
     def show
       @skill = Skill.find params.require(:id)
-      respond_with @skill, status: :ok, meta: { timestamp: Time.zone.now }
+      respond_with @skill, status: :ok, include: included_params, meta: { timestamp: Time.zone.now }
     end
   end
 end

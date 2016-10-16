@@ -59,7 +59,9 @@ RSpec.describe Api::SkillsController, type: :controller do
 
   describe '#show' do
     before :each do
-      @skill = create :skill
+      @organization = create :organization
+      @subject = create :subject, organization: @organization
+      @skill = create :skill_in_subject, organization: @organization, subject: @subject
 
       get :show, format: :json, params: { id: @skill.id }
     end
@@ -75,6 +77,22 @@ RSpec.describe Api::SkillsController, type: :controller do
 
     it 'responds with timestamp' do
       expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
+    end
+
+    describe 'include' do
+      it 'includes organization' do
+        get :show, format: :json, params: { id: @skill.id, include: 'organization' }
+
+        expect(json['skill']['organization']['id']).to eq @organization.id
+        expect(json['skill']['organization']['organization_name']).to eq @organization.organization_name
+      end
+
+      it 'includes subjects' do
+        get :show, format: :json, params: { id: @skill.id, include: 'subjects' }
+
+        expect(json['skill']['subjects'].map { |s| s['id'] }).to include @subject.id
+        expect(json['skill']['subjects'].map { |s| s['subject_name'] }).to include @subject.subject_name
+      end
     end
   end
 end
