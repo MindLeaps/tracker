@@ -26,6 +26,16 @@ RSpec.describe Api::SubjectsController, type: :controller do
     it 'responds with timestamp' do
       expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
     end
+
+    it 'lists only subjects created or updated after a certain time' do
+      create :subject, created_at: 3.months.ago, updated_at: 3.months.ago
+      create :subject, created_at: 2.months.ago, updated_at: 2.months.ago
+      create :subject, created_at: 4.months.ago, updated_at: 3.months.ago
+
+      get :index, format: :json, params: { after_timestamp: 1.day.ago }
+
+      expect(json['subjects'].length).to eq 3
+    end
   end
 
   describe '#show' do

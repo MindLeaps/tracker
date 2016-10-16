@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161015235759) do
+ActiveRecord::Schema.define(version: 20161016180809) do
 
   create_table "assignments", force: :cascade do |t|
     t.integer "skill_id",   null: false
@@ -124,6 +124,7 @@ ActiveRecord::Schema.define(version: 20161015235759) do
     t.integer  "organization_id", null: false
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
+    t.date     "deleted_at"
     t.index ["organization_id"], name: "index_subjects_on_organization_id"
   end
 

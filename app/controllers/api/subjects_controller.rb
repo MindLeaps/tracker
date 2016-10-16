@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 module Api
   class SubjectsController < ApiController
+    has_scope :after_timestamp
+
     def index
-      @subjects = Subject.all
+      @subjects = apply_scopes(Subject).all
       respond_with @subjects, include: ['lessons'], meta: { timestamp: Time.zone.now }
     end
 

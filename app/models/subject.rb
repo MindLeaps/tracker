@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Subject < ActiveRecord::Base
+class Subject < ApplicationRecord
   belongs_to :organization
   has_many :lessons
   has_many :assignments, inverse_of: :subject, dependent: :destroy
