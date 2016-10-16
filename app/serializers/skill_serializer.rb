@@ -4,4 +4,5 @@ class SkillSerializer < ActiveModel::Serializer
 
   belongs_to :organization
   has_many :subjects
+  has_many :grade_descriptors
 end

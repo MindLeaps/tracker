@@ -71,6 +71,9 @@ RSpec.describe Api::SkillsController, type: :controller do
       @subject = create :subject, organization: @organization
       @skill = create :skill_in_subject, organization: @organization, subject: @subject
 
+      @gd1 = create :grade_descriptor, skill: @skill, mark: 1
+      @gd2 = create :grade_descriptor, skill: @skill, mark: 2
+
       get :show, format: :json, params: { id: @skill.id }
     end
 
@@ -100,6 +103,14 @@ RSpec.describe Api::SkillsController, type: :controller do
 
         expect(json['skill']['subjects'].map { |s| s['id'] }).to include @subject.id
         expect(json['skill']['subjects'].map { |s| s['subject_name'] }).to include @subject.subject_name
+      end
+
+      it 'includes grade_descriptors' do
+        get :show, format: :json, params: { id: @skill.id, include: 'grade_descriptors' }
+
+        expect(json['skill']['grade_descriptors'].length).to eq 2
+        expect(json['skill']['grade_descriptors'].map { |g| g['id'] }).to include @gd1.id, @gd2.id
+        expect(json['skill']['grade_descriptors'].map { |g| g['mark'] }).to include @gd1.mark, @gd2.mark
       end
     end
   end
