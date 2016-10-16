@@ -36,4 +36,31 @@ RSpec.describe Skill, type: :model do
       end
     end
   end
+
+  describe 'scopes' do
+    before :each do
+      @subject = create :subject
+
+      @org1 = create :organization
+      @org2 = create :organization
+
+      @skill1 = create :skill_in_subject, organization: @org1, subject: @subject
+      @skill2 = create :skill, organization: @org1
+      @skill3 = create :skill, organization: @org2
+    end
+
+    describe 'by_organization' do
+      it 'returns skills scoped by organization' do
+        expect(Skill.by_organization(@org1.id).length).to eq 2
+        expect(Skill.by_organization(@org1.id)).to include @skill1, @skill2
+      end
+    end
+
+    describe 'by_subject' do
+      it 'returns skills scoped by subject' do
+        expect(Skill.by_subject(@subject.id).length).to eq 1
+        expect(Skill.by_subject(@subject.id)).to include @skill1
+      end
+    end
+  end
 end

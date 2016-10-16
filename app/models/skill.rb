@@ -8,6 +8,10 @@ class Skill < ApplicationRecord
   has_many :assignments, dependent: :destroy
   has_many :subjects, through: :assignments
 
+  scope :by_organization, ->(organization_id) { where organization_id: organization_id }
+
+  scope :by_subject, ->(subject_id) { joins(:assignments).where(assignments: { subject_id: subject_id }) }
+
   accepts_nested_attributes_for :grade_descriptors
 
   def grade_descriptors_must_have_unique_marks
