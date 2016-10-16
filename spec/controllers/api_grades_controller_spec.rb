@@ -40,6 +40,7 @@ RSpec.describe Api::GradesController, type: :controller do
     it 'lists all grades' do
       expect(json_grades.length).to eq 5
       expect(json_grades.map { |g| g['id'] }).to include @grade1.id, @grade2.id, @grade3.id, @grade4.id, @grade5.id
+      expect(json_grades.map { |g| g['id'] }).to include @grade1.id, @grade2.id, @grade3.id, @grade4.id, @grade5.id
     end
 
     it 'responds with timestamp' do

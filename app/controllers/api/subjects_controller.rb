@@ -14,13 +14,5 @@ module Api
       @subject = Subject.find params.require 'id'
       respond_with @subject, include: included_params, meta: { timestamp: Time.zone.now }
     end
-
-    private
-
-    def included_params
-      return [] if params[:include].nil?
-
-      params['include'].split(',').map(&:strip)
-    end
   end
 end

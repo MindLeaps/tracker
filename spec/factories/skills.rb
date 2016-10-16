@@ -3,6 +3,7 @@ FactoryGirl.define do
   factory :skill do
     organization { create :organization }
     sequence(:skill_name) { |n| "#{Faker::Music.instrument}-#{n}" }
+    sequence(:skill_description) { |n| "#{Faker::Lorem.sentence}-#{n}" }
     transient do
       subject nil
     end
