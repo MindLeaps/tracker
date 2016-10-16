@@ -12,6 +12,8 @@ class Skill < ApplicationRecord
 
   scope :by_subject, ->(subject_id) { joins(:assignments).where(assignments: { subject_id: subject_id }) }
 
+  scope :exclude_deleted, -> { where deleted_at: nil }
+
   accepts_nested_attributes_for :grade_descriptors
 
   def grade_descriptors_must_have_unique_marks

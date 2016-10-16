@@ -46,7 +46,7 @@ RSpec.describe Skill, type: :model do
 
       @skill1 = create :skill_in_subject, organization: @org1, subject: @subject
       @skill2 = create :skill, organization: @org1
-      @skill3 = create :skill, organization: @org2
+      @skill3 = create :skill, organization: @org2, deleted_at: Time.zone.now
     end
 
     describe 'by_organization' do
@@ -60,6 +60,13 @@ RSpec.describe Skill, type: :model do
       it 'returns skills scoped by subject' do
         expect(Skill.by_subject(@subject.id).length).to eq 1
         expect(Skill.by_subject(@subject.id)).to include @skill1
+      end
+    end
+
+    describe 'exclude_deleted' do
+      it 'returns only non-deleted skills' do
+        expect(Skill.exclude_deleted.length).to eq 2
+        expect(Skill.exclude_deleted).to include @skill1, @skill2
       end
     end
   end

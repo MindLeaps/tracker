@@ -11,7 +11,7 @@ RSpec.describe Api::SkillsController, type: :controller do
 
       @subject = create :subject
 
-      @skill1 = create :skill_in_subject, organization: @org1, subject: @subject
+      @skill1 = create :skill_in_subject, organization: @org1, subject: @subject, deleted_at: Time.zone.today
       @skill2 = create :skill, organization: @org1
       @skill3 = create :skill, organization: @org2
 
@@ -26,6 +26,7 @@ RSpec.describe Api::SkillsController, type: :controller do
       expect(json['skills'].map { |s| s['skill_name'] }).to include @skill1.skill_name, @skill2.skill_name, @skill3.skill_name
       expect(json['skills'].map { |s| s['skill_description'] }).to include @skill1.skill_description, @skill2.skill_description, @skill3.skill_description
       expect(json['skills'].map { |s| s['organization_id'] }).to include @skill1.organization_id, @skill2.organization_id, @skill3.organization_id
+      expect(json['skills'].map { |s| s['deleted_at'] }).to include @skill1.deleted_at, @skill2.deleted_at, @skill3.deleted_at
     end
 
     it 'responds with timestamp' do
@@ -49,11 +50,18 @@ RSpec.describe Api::SkillsController, type: :controller do
       expect(json['skills'].map { |s| s['id'] }).to include @skill1.id, @skill2.id
     end
 
-    it 'reponds only with skills that are included in a specific subject' do
+    it 'responds only with skills that are included in a specific subject' do
       get :index, format: :json, params: { subject_id: @subject.id }
 
       expect(json['skills'].length).to eq 1
       expect(json['skills'].map { |s| s['id'] }).to include @skill1.id
+    end
+
+    it 'responds only with non-deleted skills' do
+      get :index, format: :json, params: { exclude_deleted: true }
+
+      expect(json['skills'].length).to eq 2
+      expect(json['skills'].map { |s| s['id'] }).to include @skill2.id, @skill3.id
     end
   end
 
