@@ -21,6 +21,10 @@ RSpec.describe Api::SkillsController, type: :controller do
       expect(json['skills'].map { |s| s['skill_description'] }).to include @skill1.skill_description, @skill2.skill_description
       expect(json['skills'].map { |s| s['organization_id'] }).to include @skill1.organization_id, @skill2.organization_id
     end
+
+    it 'responds with timestamp' do
+      expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
+    end
   end
 
   describe '#show' do
@@ -37,6 +41,10 @@ RSpec.describe Api::SkillsController, type: :controller do
       expect(json['skill']['skill_name']).to eq @skill.skill_name
       expect(json['skill']['skill_description']).to eq @skill.skill_description
       expect(json['skill']['organization_id']).to eq @skill.organization_id
+    end
+
+    it 'responds with timestamp' do
+      expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
     end
   end
 end
