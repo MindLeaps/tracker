@@ -3,35 +3,52 @@ require 'rails_helper'
 
 RSpec.describe Api::GroupsController, type: :controller do
   let(:json) { JSON.parse(response.body) }
-
-  before :each do
-    @chapter = create :chapter, chapter_name: 'Api Group Test Chapter'
-
-    @group1 = create :group, group_name: 'Api Group Test Kigali', chapter: @chapter
-    @group2 = create :group, group_name: 'Api Group Test Rugerero'
-    @group3 = create :group, group_name: 'Api Group Test Kiregenzi'
-
-    @student1 = create :student, group: @group1
-    @student2 = create :student, group: @group1
-  end
+  let(:group) { JSON.parse(response.body)['group'] }
+  let(:groups) { JSON.parse(response.body)['groups'] }
 
   describe '#index' do
-    it 'gets a list of groups' do
+    before :each do
+      @chapter = create :chapter
+
+      @group1 = create :group, chapter: @chapter
+      @group2 = create :group
+      @group3 = create :group
+
+      @student1 = create :student, group: @group1
+      @student2 = create :student, group: @group1
+
       get :index, format: :json
+    end
+
+    it { should respond_with 200 }
+
+    it 'gets a list of groups' do
       expect(response).to be_success
-      expect(json.map { |g| g['group_name'] }).to include 'Api Group Test Kigali',
-                                                          'Api Group Test Rugerero',
-                                                          'Api Group Test Kiregenzi'
+      expect(groups.map { |g| g['id'] }).to include @group1.id, @group2.id, @group3.id
+      expect(groups.map { |g| g['group_name'] }).to include @group1.group_name, @group2.group_name, @group3.group_name
+    end
+
+    it 'responds with timestamp' do
+      expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
     end
   end
 
   describe '#show' do
+    before :each do
+      @chapter = create :chapter
+      @group = create :group, chapter: @chapter
+
+      get :show, params: { id: @group.id }, format: :json
+    end
+
     it 'gets a single group' do
-      get :show, params: { id: @group1.id }, format: :json
       expect(response).to be_success
-      expect(json['group_name']).to eq 'Api Group Test Kigali'
-      expect(json['students'].map { |s| s['id'] }).to include @student1.id, @student2.id
-      expect(json['chapter_id']).to eq @chapter.id
+      expect(group['group_name']).to eq @group.group_name
+      expect(group['chapter_id']).to eq @chapter.id
+    end
+
+    it 'responds with timestamp' do
+      expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
     end
   end
 end
