@@ -3,6 +3,7 @@ require 'rails_helper'
 
 RSpec.describe Api::LessonsController, type: :controller do
   let(:json) { JSON.parse(response.body) }
+  let(:lesson) { JSON.parse(response.body)['lesson'] }
 
   describe '#index' do
     before :each do
@@ -11,17 +12,21 @@ RSpec.describe Api::LessonsController, type: :controller do
       @lesson3 = create :lesson
 
       @lesson_ids = [@lesson1.id, @lesson2.id, @lesson3.id]
+      get :index, format: :json
     end
 
-    it 'gets a list of all lessons' do
-      get :index, format: :json
+    it { should respond_with 200 }
 
-      expect(response).to be_success
-      expect(json.map { |l| l['id'] }).to include(*@lesson_ids)
+    it 'gets a list of all lessons' do
+      expect(json['lessons'].map { |l| l['id'] }).to include(*@lesson_ids)
+    end
+
+    it 'responds with timestamp' do
+      expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
     end
   end
 
-  describe '#get' do
+  describe '#show' do
     before :each do
       @lesson = create :lesson
       get :show, params: { id: @lesson.id }, format: :json
@@ -30,9 +35,13 @@ RSpec.describe Api::LessonsController, type: :controller do
     it { should respond_with 200 }
 
     it 'gets a single lesson' do
-      expect([json['id'], json['group_id'], json['subject_id'], json['date']]).to eq [
+      expect([lesson['id'], lesson['group_id'], lesson['subject_id'], lesson['date']]).to eq [
         @lesson.id, @lesson.group_id, @lesson.subject_id, @lesson.date.to_formatted_s
       ]
+    end
+
+    it 'responds with timestamp' do
+      expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
     end
   end
 

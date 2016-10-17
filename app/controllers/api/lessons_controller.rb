@@ -2,17 +2,19 @@
 module Api
   class LessonsController < ApiController
     def index
-      respond_with Lesson.all
+      @lessons = Lesson.all
+      respond_with @lessons, meta: { timestamp: Time.zone.now }
     end
 
     def show
-      respond_with Lesson.find params[:id]
+      @lesson = Lesson.find params.require :id
+      respond_with @lesson, meta: { timestamp: Time.zone.now }
     end
 
     def create
       @lesson = Lesson.new params.permit :group_id, :date, :subject_id
       @lesson.save
-      respond_with @lesson
+      respond_with @lesson, meta: { timestamp: Time.zone.now }
     end
   end
 end
