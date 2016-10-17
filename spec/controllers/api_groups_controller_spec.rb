@@ -62,6 +62,10 @@ RSpec.describe Api::GroupsController, type: :controller do
     before :each do
       @chapter = create :chapter
       @group = create :group, chapter: @chapter
+      @student1 = create :student, group: @group
+      @student2 = create :student, group: @group
+      @lesson1 = create :lesson, group: @group
+      @lesson2 = create :lesson, group: @group
 
       get :show, params: { id: @group.id }, format: :json
     end
@@ -74,6 +78,30 @@ RSpec.describe Api::GroupsController, type: :controller do
 
     it 'responds with timestamp' do
       expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
+    end
+
+    describe 'include' do
+      it 'includes a chapter' do
+        get :show, params: { id: @group.id, include: 'chapter' }, format: :json
+
+        expect(group['chapter']['id']).to eq @chapter.id
+        expect(group['chapter']['chapter_name']).to eq @chapter.chapter_name
+      end
+
+      it 'includes students' do
+        get :show, params: { id: @group.id, include: 'students' }, format: :json
+
+        expect(group['students'].length).to eq 2
+        expect(group['students'].map { |s| s['id'] }).to include @student1.id, @student2.id
+        expect(group['students'].map { |s| s['first_name'] }).to include @student1.first_name, @student2.first_name
+      end
+
+      it 'includes lessons' do
+        get :show, params: { id: @group.id, include: 'lessons' }, format: :json
+
+        expect(group['lessons'].length).to eq 2
+        expect(group['lessons'].map { |l| l['id'] }).to include @lesson1.id, @lesson2.id
+      end
     end
   end
 end

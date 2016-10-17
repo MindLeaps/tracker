@@ -7,12 +7,12 @@ module Api
 
     def index
       @groups = apply_scopes(Group).all
-      respond_with @groups, meta: { timestamp: Time.zone.now }
+      respond_with @groups, include: included_params, meta: { timestamp: Time.zone.now }
     end
 
     def show
       @group = Group.find params.require :id
-      respond_with @group, meta: { timestamp: Time.zone.now }
+      respond_with @group, include: included_params, meta: { timestamp: Time.zone.now }
     end
   end
 end
