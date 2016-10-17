@@ -7,9 +7,15 @@ RSpec.describe Api::LessonsController, type: :controller do
 
   describe '#index' do
     before :each do
-      @lesson1 = create :lesson
-      @lesson2 = create :lesson
-      @lesson3 = create :lesson
+      @subject1 = create :subject
+      @subject2 = create :subject
+
+      @group1 = create :group
+      @group2 = create :group
+
+      @lesson1 = create :lesson, group: @group1, subject: @subject1
+      @lesson2 = create :lesson, group: @group1, subject: @subject2
+      @lesson3 = create :lesson, group: @group2, subject: @subject2
 
       @lesson_ids = [@lesson1.id, @lesson2.id, @lesson3.id]
       get :index, format: :json
@@ -33,6 +39,20 @@ RSpec.describe Api::LessonsController, type: :controller do
       get :index, format: :json, params: { after_timestamp: 1.day.ago }
 
       expect(json['lessons'].length).to eq 3
+    end
+
+    it 'responds only with lessons belonging to a specific group' do
+      get :index, format: :json, params: { group_id: @group1.id }
+
+      expect(json['lessons'].length).to eq 2
+      expect(json['lessons'].map { |s| s['id'] }).to include @lesson1.id, @lesson2.id
+    end
+
+    it 'responds only with lessons belonging to a specific subject' do
+      get :index, format: :json, params: { subject_id: @subject1.id }
+
+      expect(json['lessons'].length).to eq 1
+      expect(json['lessons'].map { |s| s['id'] }).to include @lesson1.id
     end
   end
 

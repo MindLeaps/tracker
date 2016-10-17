@@ -29,4 +29,33 @@ RSpec.describe Lesson, type: :model do
       end
     end
   end
+
+  describe 'scopes' do
+    before :each do
+      @subject1 = create :subject
+      @subject2 = create :subject
+
+      @group1 = create :group
+      @group2 = create :group
+
+      @lesson1 = create :lesson, group: @group1, subject: @subject1
+      @lesson2 = create :lesson, group: @group1, subject: @subject2
+      @lesson3 = create :lesson, group: @group2, subject: @subject1
+      @lesson4 = create :lesson, group: @group2, subject: @subject2
+    end
+
+    describe 'by_group' do
+      it 'returns lessons belonging to a particular group' do
+        expect(Lesson.by_group(@group1.id).length).to eq 2
+        expect(Lesson.by_group(@group1.id)).to include @lesson1, @lesson2
+      end
+    end
+
+    describe 'by_subject' do
+      it 'returns lessons belonging to a particular subject' do
+        expect(Lesson.by_subject(@subject1.id).length).to eq 2
+        expect(Lesson.by_subject(@subject1.id)).to include @lesson1, @lesson3
+      end
+    end
+  end
 end
