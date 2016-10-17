@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161017010053) do
+ActiveRecord::Schema.define(version: 20161017015840) do
 
   create_table "assignments", force: :cascade do |t|
     t.integer "skill_id",   null: false
@@ -55,6 +55,7 @@ ActiveRecord::Schema.define(version: 20161017010053) do
     t.datetime "updated_at",              null: false
     t.string   "group_name", default: "", null: false
     t.integer  "chapter_id"
+    t.datetime "deleted_at"
     t.index ["chapter_id"], name: "index_groups_on_chapter_id"
   end
 

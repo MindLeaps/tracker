@@ -12,7 +12,7 @@ RSpec.describe Api::GroupsController, type: :controller do
 
       @group1 = create :group, chapter: @chapter
       @group2 = create :group
-      @group3 = create :group
+      @group3 = create :group, deleted_at: Time.zone.now
 
       @student1 = create :student, group: @group1
       @student2 = create :student, group: @group1
@@ -30,6 +30,23 @@ RSpec.describe Api::GroupsController, type: :controller do
 
     it 'responds with timestamp' do
       expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
+    end
+
+    it 'responds only with groups created or updated after a certain time' do
+      create :group, created_at: 3.months.ago, updated_at: 3.months.ago
+      create :group, created_at: 2.months.ago, updated_at: 2.months.ago
+      create :group, created_at: 4.months.ago, updated_at: 3.months.ago
+
+      get :index, format: :json, params: { after_timestamp: 1.day.ago }
+
+      expect(groups.length).to eq 3
+    end
+
+    it 'responds only with non-deleted groups' do
+      get :index, format: :json, params: { exclude_deleted: true }
+
+      expect(groups.length).to eq 2
+      expect(groups.map { |g| g['id'] }).to include @group1.id, @group2.id
     end
   end
 
