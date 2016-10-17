@@ -56,7 +56,8 @@ RSpec.describe Api::GradeDescriptorsController, type: :controller do
 
   describe '#show' do
     before :each do
-      @gd = create :grade_descriptor
+      @skill = create :skill
+      @gd = create :grade_descriptor, skill: @skill
 
       get :show, format: :json, params: { id: @gd.id }
     end
@@ -71,6 +72,15 @@ RSpec.describe Api::GradeDescriptorsController, type: :controller do
 
     it 'responds with timestamp' do
       expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
+    end
+
+    describe 'include' do
+      it 'includes skill' do
+        get :show, format: :json, params: { id: @gd.id, include: 'skill' }
+
+        expect(json['grade_descriptor']['skill']['id']).to eq @skill.id
+        expect(json['grade_descriptor']['skill']['skill_name']).to eq @skill.skill_name
+      end
     end
   end
 end
