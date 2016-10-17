@@ -2,5 +2,5 @@
 class ApplicationRecord < ActiveRecord::Base
   self.abstract_class = true
 
-  scope :after_timestamp, ->(timestamp) { where('created_at > ? OR updated_at > ?', timestamp, timestamp) }
+  scope :after_timestamp, ->(timestamp) { where('created_at > :datetime OR updated_at > :datetime', datetime: Time.zone.parse(timestamp)) }
 end

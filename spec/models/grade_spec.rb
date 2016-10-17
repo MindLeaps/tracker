@@ -83,8 +83,8 @@ RSpec.describe Grade, type: :model do
 
     describe '#after_timestamp' do
       it 'returns grades created or updated after timestamp' do
-        expect(Grade.after_timestamp(Time.zone.today.beginning_of_day).length).to eq 3
-        expect(Grade.after_timestamp(Time.zone.today.beginning_of_day)).to include @grade2, @grade3, @deleted_grade
+        expect(Grade.after_timestamp(Time.zone.today.beginning_of_day.iso8601).length).to eq 3
+        expect(Grade.after_timestamp(Time.zone.today.beginning_of_day.iso8601)).to include @grade2, @grade3, @deleted_grade
       end
     end
 
