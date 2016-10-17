@@ -24,6 +24,16 @@ RSpec.describe Api::LessonsController, type: :controller do
     it 'responds with timestamp' do
       expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
     end
+
+    it 'responds only with lessons created or updated after a certain time' do
+      create :lesson, created_at: 3.months.ago, updated_at: 3.months.ago
+      create :lesson, created_at: 2.months.ago, updated_at: 2.months.ago
+      create :lesson, created_at: 4.months.ago, updated_at: 3.months.ago
+
+      get :index, format: :json, params: { after_timestamp: 1.day.ago }
+
+      expect(json['lessons'].length).to eq 3
+    end
   end
 
   describe '#show' do

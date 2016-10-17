@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 module Api
   class LessonsController < ApiController
+    has_scope :after_timestamp
+
     def index
-      @lessons = Lesson.all
+      @lessons = apply_scopes(Lesson).all
       respond_with @lessons, meta: { timestamp: Time.zone.now }
     end
 
