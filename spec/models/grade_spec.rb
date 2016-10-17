@@ -92,7 +92,7 @@ RSpec.describe Grade, type: :model do
       it 'returns only grades that are not deleted' do
         expect(Grade.exclude_deleted.all.length).to eq 3
         expect(Grade.exclude_deleted.all).to include @grade1, @grade2, @grade3
-        expect(Grade.exclude_deleted.all).not_to eq include @deleted_grade
+        expect(Grade.exclude_deleted.all).not_to include @deleted_grade
       end
     end
   end

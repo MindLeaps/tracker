@@ -25,4 +25,31 @@ RSpec.describe GradeDescriptor, type: :model do
       end
     end
   end
+
+  describe 'scope' do
+    before :each do
+      @skill1 = create :skill
+      @skill2 = create :skill
+
+      @gd1 = create :grade_descriptor, skill: @skill1, deleted_at: Time.zone.now
+      @gd2 = create :grade_descriptor, skill: @skill1
+      @gd3 = create :grade_descriptor, skill: @skill2
+    end
+
+    describe 'by_skill' do
+      it 'returns only grade descriptors that belong to a particular skill' do
+        expect(GradeDescriptor.by_skill(@skill1.id).length).to eq 2
+        expect(GradeDescriptor.by_skill(@skill1.id)).to include @gd1, @gd2
+
+        expect(GradeDescriptor.by_skill(@skill2.id).length).to eq 1
+        expect(GradeDescriptor.by_skill(@skill2.id)).to include @gd3
+      end
+    end
+    describe '#exclude_deleted' do
+      it 'returns only grade descriptors that are not deleted' do
+        expect(GradeDescriptor.exclude_deleted.all.length).to eq 2
+        expect(GradeDescriptor.exclude_deleted.all).to include @gd2, @gd3
+      end
+    end
+  end
 end

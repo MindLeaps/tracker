@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161016230051) do
+ActiveRecord::Schema.define(version: 20161017000516) do
 
   create_table "assignments", force: :cascade do |t|
     t.integer "skill_id",   null: false
@@ -28,9 +28,12 @@ ActiveRecord::Schema.define(version: 20161016230051) do
   end
 
   create_table "grade_descriptors", force: :cascade do |t|
-    t.integer "mark",              null: false
-    t.string  "grade_description"
-    t.integer "skill_id",          null: false
+    t.integer  "mark",              null: false
+    t.string   "grade_description"
+    t.integer  "skill_id",          null: false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+    t.datetime "deleted_at"
     t.index ["mark", "skill_id"], name: "index_grade_descriptors_on_mark_and_skill_id", unique: true
     t.index ["skill_id"], name: "index_grade_descriptors_on_skill_id"
   end
