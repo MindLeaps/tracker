@@ -14,6 +14,8 @@ class Group < ApplicationRecord
 
   scope :exclude_deleted, -> { where deleted_at: nil }
 
+  scope :by_chapter, ->(chapter_id) { where chapter_id: chapter_id }
+
   def group_chapter_name
     "#{group_name} - #{chapter_name}"
   end

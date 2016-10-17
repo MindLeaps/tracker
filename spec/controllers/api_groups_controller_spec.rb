@@ -8,11 +8,12 @@ RSpec.describe Api::GroupsController, type: :controller do
 
   describe '#index' do
     before :each do
-      @chapter = create :chapter
+      @chapter1 = create :chapter
+      @chapter2 = create :chapter
 
-      @group1 = create :group, chapter: @chapter
-      @group2 = create :group
-      @group3 = create :group, deleted_at: Time.zone.now
+      @group1 = create :group, chapter: @chapter1
+      @group2 = create :group, chapter: @chapter2
+      @group3 = create :group, deleted_at: Time.zone.now, chapter: @chapter1
 
       @student1 = create :student, group: @group1
       @student2 = create :student, group: @group1
@@ -47,6 +48,13 @@ RSpec.describe Api::GroupsController, type: :controller do
 
       expect(groups.length).to eq 2
       expect(groups.map { |g| g['id'] }).to include @group1.id, @group2.id
+    end
+
+    it 'responds only with groups belonging to a specific chapter' do
+      get :index, format: :json, params: { chapter_id: @chapter1.id }
+
+      expect(groups.length).to eq 2
+      expect(groups.map { |g| g['id'] }).to include @group1.id, @group3.id
     end
   end
 
