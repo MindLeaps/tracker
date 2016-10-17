@@ -58,7 +58,9 @@ RSpec.describe Api::LessonsController, type: :controller do
 
   describe '#show' do
     before :each do
-      @lesson = create :lesson
+      @group = create :group
+      @subject = create :subject
+      @lesson = create :lesson, group: @group, subject: @subject
       get :show, params: { id: @lesson.id }, format: :json
     end
 
@@ -72,6 +74,22 @@ RSpec.describe Api::LessonsController, type: :controller do
 
     it 'responds with timestamp' do
       expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
+    end
+
+    describe 'include' do
+      it 'includes group' do
+        get :show, format: :json, params: { id: @lesson.id, include: 'group' }
+
+        expect(lesson['group']['id']).to eq @group.id
+        expect(lesson['group']['group_name']).to eq @group.group_name
+      end
+
+      it 'includes subject' do
+        get :show, format: :json, params: { id: @lesson.id, include: 'subject' }
+
+        expect(lesson['subject']['id']).to eq @subject.id
+        expect(lesson['subject']['subject_name']).to eq @subject.subject_name
+      end
     end
   end
 
