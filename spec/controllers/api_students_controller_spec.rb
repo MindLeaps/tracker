@@ -14,9 +14,9 @@ RSpec.describe Api::StudentsController, type: :controller do
       @group1 = create :group, group_name: 'Api Controller Test Group'
       @group2 = create :group
 
-      create :student, first_name: 'Api', group: @group1, organization: @org1
-      create :student, first_name: 'Controller', group: @group1, organization: @org2
-      create :student, first_name: 'Spector', group: @group2, organization: @org2
+      @student1 = create :student, first_name: 'Api', group: @group1, organization: @org1, deleted_at: Time.zone.now
+      @student2 = create :student, first_name: 'Controller', group: @group1, organization: @org2
+      @student3 = create :student, first_name: 'Spector', group: @group2, organization: @org2
 
       get :index, format: :json
     end
@@ -53,6 +53,13 @@ RSpec.describe Api::StudentsController, type: :controller do
       get :index, format: :json, params: { after_timestamp: 5.minutes.ago }
 
       expect(json['students'].length).to eq 4
+    end
+
+    it 'responds only with non-deleted students' do
+      get :index, format: :json, params: { exclude_deleted: true }
+
+      expect(students.length).to eq 2
+      expect(students.map { |s| s['id'] }).to include @student2.id, @student3.id
     end
   end
 
