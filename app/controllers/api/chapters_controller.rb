@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 module Api
   class ChaptersController < ApiController
+    has_scope :after_timestamp
+    has_scope :by_organization, as: :organization_id
+
     def index
-      @chapters = Chapter.all
+      @chapters = apply_scopes(Chapter).all
       respond_with @chapters, meta: { timestamp: Time.zone.now }
     end
 

@@ -8,9 +8,12 @@ RSpec.describe Api::ChaptersController, type: :controller do
 
   describe '#index' do
     before :each do
-      @chapter1 = create :chapter
-      @chapter2 = create :chapter
-      @chapter3 = create :chapter
+      @org1 = create :organization
+      @org2 = create :organization
+
+      @chapter1 = create :chapter, organization: @org1
+      @chapter2 = create :chapter, organization: @org1
+      @chapter3 = create :chapter, organization: @org2
 
       @group1 = create :group, chapter: @chapter1
       @group2 = create :group, chapter: @chapter1
@@ -22,17 +25,37 @@ RSpec.describe Api::ChaptersController, type: :controller do
 
     it 'gets a list of chapters' do
       expect(response).to be_success
+      expect(chapters.map { |g| g['id'] }).to include @chapter1.id, @chapter2.id, @chapter3.id
       expect(chapters.map { |g| g['chapter_name'] }).to include @chapter1.chapter_name, @chapter2.chapter_name, @chapter3.chapter_name
     end
 
     it 'responds with timestamp' do
       expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
     end
+
+    it 'responds only with chapters created or updated after a certain time' do
+      create :chapter, created_at: 2.months.ago, updated_at: 2.days.ago
+      create :chapter, created_at: 2.months.ago, updated_at: 5.days.ago
+      create :chapter, created_at: 5.days.ago, updated_at: 6.hours.ago
+
+      get :index, format: :json, params: { after_timestamp: 1.day.ago }
+
+      expect(chapters.length).to eq 4
+    end
+
+    it 'responds only with chapters belonging to a certain organization' do
+      get :index, format: :json, params: { organization_id: @org1.id }
+
+      expect(chapters.length).to eq 2
+      expect(chapters.map { |c| c['chapter_name'] }).to include @chapter1.chapter_name, @chapter2.chapter_name
+    end
   end
 
   describe '#show' do
     before :each do
-      @chapter = create :chapter
+      @org = create :organization
+
+      @chapter = create :chapter, organization: @org
 
       @group1 = create :group, chapter: @chapter
       @group2 = create :group, chapter: @chapter
@@ -44,7 +67,9 @@ RSpec.describe Api::ChaptersController, type: :controller do
 
     it 'gets a single chapter' do
       expect(response).to be_success
+      expect(chapter['id']).to eq @chapter.id
       expect(chapter['chapter_name']).to eq @chapter.chapter_name
+      expect(chapter['organization_id']).to eq @chapter.organization_id
     end
 
     it 'responds with timestamp' do
