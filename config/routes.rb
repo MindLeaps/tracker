@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   end
 
   scope module: :api, as: :api, constraints: -> (req) { req.format == :json } do
-    resources :organizations, only: [:index]
+    resources :organizations, only: [:index, :show]
     resources :chapters, only: [:index, :show]
     resources :groups, only: [:index, :show]
     resources :students, only: [:index, :show]

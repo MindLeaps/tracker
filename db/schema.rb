@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161018060253) do
+ActiveRecord::Schema.define(version: 20161018062946) do
 
   create_table "assignments", force: :cascade do |t|
     t.integer "skill_id",   null: false
@@ -76,6 +76,7 @@ ActiveRecord::Schema.define(version: 20161018060253) do
     t.datetime "created_at",                                                                                                null: false
     t.datetime "updated_at",                                                                                                null: false
     t.string   "image",             default: "https://placeholdit.imgix.net/~text?txtsize=23&txt=200%C3%97200&w=200&h=200"
+    t.datetime "deleted_at"
   end
 
   create_table "roles", force: :cascade do |t|
