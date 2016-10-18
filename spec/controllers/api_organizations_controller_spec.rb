@@ -49,6 +49,10 @@ RSpec.describe Api::OrganizationsController, type: :controller do
   describe '#show' do
     before :each do
       @org = create :organization, image: 'http://example.com/1.jpg'
+      @chapter1 = create :chapter, organization: @org
+      @chapter2 = create :chapter, organization: @org
+      @student1 = create :student, organization: @org
+      @student2 = create :student, organization: @org
 
       get :show, format: :json, params: { id: @org.id }
     end
@@ -63,6 +67,22 @@ RSpec.describe Api::OrganizationsController, type: :controller do
 
     it 'responds with timestamp' do
       expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
+    end
+
+    describe 'include' do
+      it 'includes the chapters' do
+        get :show, format: :json, params: { id: @org.id, include: 'chapters' }
+
+        expect(organization['chapters'].map { |c| c['id'] }).to include @chapter1.id, @chapter2.id
+        expect(organization['chapters'].map { |c| c['chapter_name'] }).to include @chapter1.chapter_name, @chapter2.chapter_name
+      end
+
+      it 'includes the students' do
+        get :show, format: :json, params: { id: @org.id, include: 'students' }
+
+        expect(organization['students'].map { |c| c['id'] }).to include @student1.id, @student2.id
+        expect(organization['students'].map { |c| c['first_name'] }).to include @student1.first_name, @student2.first_name
+      end
     end
   end
 end

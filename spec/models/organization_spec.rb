@@ -6,6 +6,9 @@ RSpec.describe Organization, type: :model do
     create :organization, organization_name: 'Already Existing Organization'
   end
 
+  it { should have_many :chapters }
+  it { should have_many :students }
+
   describe 'is valid' do
     it 'with a valid, unique name' do
       org = Organization.new organization_name: 'Totally valid org'
