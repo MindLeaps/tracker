@@ -3,31 +3,52 @@ require 'rails_helper'
 
 RSpec.describe Api::ChaptersController, type: :controller do
   let(:json) { JSON.parse(response.body) }
-  before :each do
-    @chapter1 = create :chapter, chapter_name: 'Chapter Api Test Chapter One'
-    @chapter2 = create :chapter, chapter_name: 'Chapter Api Test Chapter Two'
-    @chapter3 = create :chapter, chapter_name: 'Chapter Api Test Chapter Three'
-
-    @group1 = create :group, chapter: @chapter1
-    @group2 = create :group, chapter: @chapter1
-  end
+  let(:chapters) { JSON.parse(response.body)['chapters'] }
+  let(:chapter) { JSON.parse(response.body)['chapter'] }
 
   describe '#index' do
-    it 'gets a list of chapters' do
+    before :each do
+      @chapter1 = create :chapter
+      @chapter2 = create :chapter
+      @chapter3 = create :chapter
+
+      @group1 = create :group, chapter: @chapter1
+      @group2 = create :group, chapter: @chapter1
+
       get :index, format: :json
+    end
+
+    it { should respond_with 200 }
+
+    it 'gets a list of chapters' do
       expect(response).to be_success
-      expect(json.map { |g| g['chapter_name'] }).to include 'Chapter Api Test Chapter One',
-                                                            'Chapter Api Test Chapter Two',
-                                                            'Chapter Api Test Chapter Three'
+      expect(chapters.map { |g| g['chapter_name'] }).to include @chapter1.chapter_name, @chapter2.chapter_name, @chapter3.chapter_name
+    end
+
+    it 'responds with timestamp' do
+      expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
     end
   end
 
   describe '#show' do
+    before :each do
+      @chapter = create :chapter
+
+      @group1 = create :group, chapter: @chapter
+      @group2 = create :group, chapter: @chapter
+
+      get :show, params: { id: @chapter.id }, format: :json
+    end
+
+    it { should respond_with 200 }
+
     it 'gets a single chapter' do
-      get :show, params: { id: @chapter1.id }, format: :json
       expect(response).to be_success
-      expect(json['chapter_name']).to eq @chapter1.chapter_name
-      expect(json['groups'].map { |g| g['id'] }).to include(@group1.id, @group2.id)
+      expect(chapter['chapter_name']).to eq @chapter.chapter_name
+    end
+
+    it 'responds with timestamp' do
+      expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
     end
   end
 end
