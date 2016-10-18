@@ -3,6 +3,7 @@ module Api
   class ChaptersController < ApiController
     has_scope :after_timestamp
     has_scope :by_organization, as: :organization_id
+    has_scope :exclude_deleted, type: :boolean
 
     def index
       @chapters = apply_scopes(Chapter).all

@@ -12,7 +12,7 @@ RSpec.describe Api::ChaptersController, type: :controller do
       @org2 = create :organization
 
       @chapter1 = create :chapter, organization: @org1
-      @chapter2 = create :chapter, organization: @org1
+      @chapter2 = create :chapter, organization: @org1, deleted_at: Time.zone.now
       @chapter3 = create :chapter, organization: @org2
 
       @group1 = create :group, chapter: @chapter1
@@ -48,6 +48,13 @@ RSpec.describe Api::ChaptersController, type: :controller do
 
       expect(chapters.length).to eq 2
       expect(chapters.map { |c| c['chapter_name'] }).to include @chapter1.chapter_name, @chapter2.chapter_name
+    end
+
+    it 'responds without deleted chapters' do
+      get :index, format: :json, params: { exclude_deleted: true }
+
+      expect(chapters.length).to eq 2
+      expect(chapters.map { |c| c['id'] }).to include @chapter1.id, @chapter3.id
     end
   end
 
