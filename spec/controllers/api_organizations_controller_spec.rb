@@ -34,6 +34,16 @@ RSpec.describe Api::OrganizationsController, type: :controller do
       expect(organizations.length).to eq 2
       expect(organizations.map { |o| o['organization_name'] }).to include @org1.organization_name, @org2.organization_name
     end
+
+    it 'responds only with organizations created or updated after a certain time' do
+      create :organization, created_at: 2.months.ago, updated_at: 2.days.ago
+      create :organization, created_at: 2.months.ago, updated_at: 5.days.ago
+      create :organization, created_at: 5.days.ago, updated_at: 6.hours.ago
+
+      get :index, format: :json, params: { after_timestamp: 1.day.ago }
+
+      expect(organizations.length).to eq 4
+    end
   end
 
   describe '#show' do

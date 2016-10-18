@@ -2,6 +2,7 @@
 module Api
   class OrganizationsController < ApiController
     has_scope :exclude_deleted, type: :boolean
+    has_scope :after_timestamp
 
     def index
       @organizations = apply_scopes(Organization).all
