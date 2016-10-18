@@ -6,12 +6,12 @@ module Api
 
     def index
       @chapters = apply_scopes(Chapter).all
-      respond_with @chapters, meta: { timestamp: Time.zone.now }
+      respond_with @chapters, include: included_params, meta: { timestamp: Time.zone.now }
     end
 
     def show
       @chapter = Chapter.find params[:id]
-      respond_with @chapter, meta: { timestamp: Time.zone.now }
+      respond_with @chapter, include: included_params, meta: { timestamp: Time.zone.now }
     end
   end
 end

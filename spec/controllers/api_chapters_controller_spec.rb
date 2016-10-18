@@ -75,5 +75,21 @@ RSpec.describe Api::ChaptersController, type: :controller do
     it 'responds with timestamp' do
       expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
     end
+
+    describe 'include' do
+      it 'includes the organization' do
+        get :show, format: :json, params: { id: @chapter.id, include: 'organization' }
+
+        expect(chapter['organization']['id']).to eq @org['id']
+        expect(chapter['organization']['organization_name']).to eq @org['organization_name']
+      end
+
+      it 'includes the groups' do
+        get :show, format: :json, params: { id: @chapter.id, include: 'groups' }
+
+        expect(chapter['groups'].map { |g| g['id'] }).to include @group1.id, @group2.id
+        expect(chapter['groups'].map { |g| g['group_name'] }).to include @group1.group_name, @group2.group_name
+      end
+    end
   end
 end
