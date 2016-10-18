@@ -58,7 +58,9 @@ RSpec.describe Api::StudentsController, type: :controller do
 
   describe '#show' do
     before :each do
-      @student = create :student, deleted_at: Time.zone.now
+      @org = create :organization
+      @group = create :group
+      @student = create :student, deleted_at: Time.zone.now, group: @group, organization: @org
 
       get :show, format: :json, params: { id: @student.id }
     end
@@ -74,6 +76,22 @@ RSpec.describe Api::StudentsController, type: :controller do
 
     it 'responds with timestamp' do
       expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
+    end
+
+    describe 'include' do
+      it 'includes group' do
+        get :show, format: :json, params: { id: @student.id, include: 'group' }
+
+        expect(student['group']['id']).to eq @group.id
+        expect(student['group']['group_name']).to eq @group.group_name
+      end
+
+      it 'includes organization' do
+        get :show, format: :json, params: { id: @student.id, include: 'organization' }
+
+        expect(student['organization']['id']).to eq @org.id
+        expect(student['organization']['organization_name']).to eq @org.organization_name
+      end
     end
   end
 end

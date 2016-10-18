@@ -7,12 +7,12 @@ module Api
 
     def index
       @students = apply_scopes(Student).all
-      respond_with @students, meta: { timestamp: Time.zone.now }
+      respond_with @students, include: included_params, meta: { timestamp: Time.zone.now }
     end
 
     def show
       @student = Student.find params[:id]
-      respond_with @student, meta: { timestamp: Time.zone.now }
+      respond_with @student, include: included_params, meta: { timestamp: Time.zone.now }
     end
   end
 end
