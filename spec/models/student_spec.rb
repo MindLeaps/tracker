@@ -119,4 +119,35 @@ RSpec.describe Student, type: :model do
       Grade.new student: @student, lesson: @lesson, grade_descriptor: grade_descriptor
     end
   end
+
+  describe 'scopes' do
+    before :each do
+      @org1 = create :organization
+      @org2 = create :organization
+
+      @group1 = create :group
+      @group2 = create :group
+
+      @student1 = create :student, group: @group1, organization: @org1
+      @student2 = create :student, group: @group1, organization: @org1
+      @student3 = create :student, group: @group2, organization: @org1
+
+      create :student, organization: @org2
+      create :student, organization: @org2
+    end
+
+    describe 'by_group' do
+      it 'returns students scoped by group' do
+        expect(Student.by_group(@group1.id).length).to eq 2
+        expect(Student.by_group(@group1.id)).to include @student1, @student2
+      end
+    end
+
+    describe 'by_organization' do
+      it 'returns students scoped by organization' do
+        expect(Student.by_organization(@org1.id).length).to eq 3
+        expect(Student.by_organization(@org1.id)).to include @student1, @student2, @student3
+      end
+    end
+  end
 end

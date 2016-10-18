@@ -3,4 +3,6 @@ class ApplicationRecord < ActiveRecord::Base
   self.abstract_class = true
 
   scope :after_timestamp, ->(timestamp) { where('created_at > :datetime OR updated_at > :datetime', datetime: Time.zone.parse(timestamp)) }
+
+  scope :exclude_deleted, -> { where deleted_at: nil }
 end

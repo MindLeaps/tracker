@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Student < ActiveRecord::Base
+class Student < ApplicationRecord
   validates :mlid, :first_name, :last_name, :dob, :gender, :organization, presence: true
   validates :mlid, uniqueness: {
     scope: :organization_id
@@ -11,6 +11,10 @@ class Student < ActiveRecord::Base
   accepts_nested_attributes_for :grades
 
   delegate :group_name, to: :group, allow_nil: true
+
+  scope :by_group, ->(group_id) { where group_id: group_id }
+
+  scope :by_organization, ->(organization_id) { where organization_id: organization_id }
 
   def proper_name
     "#{last_name}, #{first_name}"
