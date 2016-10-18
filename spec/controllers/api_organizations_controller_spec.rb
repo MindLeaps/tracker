@@ -10,7 +10,7 @@ RSpec.describe Api::OrganizationsController, type: :controller do
     before :each do
       @org1 = create :organization
       @org2 = create :organization
-      @org3 = create :organization
+      @org3 = create :organization, deleted_at: Time.zone.now
 
       get :index, format: :json
     end
@@ -19,12 +19,20 @@ RSpec.describe Api::OrganizationsController, type: :controller do
 
     it 'gets a list of organizations' do
       expect(response).to be_success
-      expect(organizations.map { |g| g['id'] }).to include @org1.id, @org2.id, @org3.id
-      expect(organizations.map { |g| g['organization_name'] }).to include @org1.organization_name, @org2.organization_name, @org3.organization_name
+      expect(organizations.map { |o| o['id'] }).to include @org1.id, @org2.id, @org3.id
+      expect(organizations.map { |o| o['organization_name'] }).to include @org1.organization_name, @org2.organization_name, @org3.organization_name
+      expect(organizations.map { |o| o['deleted_at'] }).to include @org1.deleted_at, @org2.deleted_at, @org3.deleted_at.iso8601(3)
     end
 
     it 'responds with timestamp' do
       expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
+    end
+
+    it 'excludes deleted organizations from the response' do
+      get :index, format: :json, params: { exclude_deleted: true }
+
+      expect(organizations.length).to eq 2
+      expect(organizations.map { |o| o['organization_name'] }).to include @org1.organization_name, @org2.organization_name
     end
   end
 

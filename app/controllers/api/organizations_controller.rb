@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 module Api
   class OrganizationsController < ApiController
+    has_scope :exclude_deleted, type: :boolean
+
     def index
-      @organizations = Organization.all
+      @organizations = apply_scopes(Organization).all
       respond_with @organizations, meta: { timestamp: Time.zone.now }
     end
 
