@@ -11,8 +11,6 @@ class Grade < ApplicationRecord
 
   scope :by_lesson, ->(lesson_id) { where lesson_id: lesson_id }
 
-  scope :exclude_deleted, -> { where deleted_at: nil }
-
   attr_accessor :skill
 
   def skill

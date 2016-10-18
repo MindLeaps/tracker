@@ -14,4 +14,6 @@ class Chapter < ApplicationRecord
   has_many :students
 
   delegate :organization_name, to: :organization, allow_nil: true
+
+  scope :by_organization, ->(organization_id) { where organization_id: organization_id }
 end

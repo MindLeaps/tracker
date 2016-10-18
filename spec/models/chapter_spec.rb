@@ -40,4 +40,22 @@ RSpec.describe Chapter, type: :model do
       expect(chapter).to_not be_valid
     end
   end
+
+  describe 'scopes' do
+    before :each do
+      @org1 = create :organization
+      @org2 = create :organization
+
+      @chapter1 = create :chapter, organization: @org1
+      @chapter2 = create :chapter, organization: @org1
+      @chapter3 = create :chapter, organization: @org2
+    end
+
+    describe 'by_organization' do
+      it 'should return only chapters belonging to a certain organization' do
+        expect(Chapter.by_organization(@org1.id).length).to eq 2
+        expect(Chapter.by_organization(@org1.id)).to include @chapter1, @chapter2
+      end
+    end
+  end
 end
