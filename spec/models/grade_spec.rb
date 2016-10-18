@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 # rubocop:disable Metrics/LineLength
-# rubocop:disable Style/VariableNumber
 
 require 'rails_helper'
 

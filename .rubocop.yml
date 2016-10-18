@@ -19,6 +19,9 @@ Metrics/LineLength:
     - http
     - https
 
+Rails/HttpPositionalArguments:
+  Enabled: false
+
 Style/Documentation:
   Enabled: false
 
