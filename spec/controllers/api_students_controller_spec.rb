@@ -8,13 +8,15 @@ RSpec.describe Api::StudentsController, type: :controller do
 
   describe '#index' do
     before :each do
+      @org1 = create :organization
+      @org2 = create :organization
+
       @group1 = create :group, group_name: 'Api Controller Test Group'
       @group2 = create :group
 
-      create :student, first_name: 'Api', group: @group1
-      create :student, first_name: 'Controller', group: @group1
-      create :student, first_name: 'Spector', group: @group2
-
+      create :student, first_name: 'Api', group: @group1, organization: @org1
+      create :student, first_name: 'Controller', group: @group1, organization: @org2
+      create :student, first_name: 'Spector', group: @group2, organization: @org2
 
       get :index, format: :json
     end
@@ -25,11 +27,18 @@ RSpec.describe Api::StudentsController, type: :controller do
       expect(students.map { |s| s['first_name'] }).to include 'Api', 'Controller', 'Spector'
     end
 
-    it 'get only students belonging to Api Controller Test Group' do
+    it 'responds only with students belonging to a specific group' do
       get :index, params: { group_id: @group1.id }, format: :json
 
       expect(students.count).to eq 2
       expect(students.map { |s| s['first_name'] }).to include 'Api', 'Controller'
+    end
+
+    it 'responds only with students belonging to a specific organization' do
+      get :index, params: { organization_id: @org2.id }, format: :json
+
+      expect(students.count).to eq 2
+      expect(students.map { |s| s['first_name'] }).to include 'Controller', 'Spector'
     end
 
     it 'responds with timestamp' do

@@ -2,13 +2,11 @@
 module Api
   class StudentsController < ApiController
     has_scope :after_timestamp
+    has_scope :by_group, as: :group_id
+    has_scope :by_organization, as: :organization_id
 
     def index
-      @students = if params[:group_id]
-                    Student.where group_id: params[:group_id]
-                  else
-                    apply_scopes Student.all
-                  end
+      @students = apply_scopes(Student).all
       respond_with @students, meta: { timestamp: Time.zone.now }
     end
 

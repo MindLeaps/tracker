@@ -12,6 +12,10 @@ class Student < ApplicationRecord
 
   delegate :group_name, to: :group, allow_nil: true
 
+  scope :by_group, ->(group_id) { where group_id: group_id }
+
+  scope :by_organization, ->(organization_id) { where organization_id: organization_id }
+
   def proper_name
     "#{last_name}, #{first_name}"
   end
