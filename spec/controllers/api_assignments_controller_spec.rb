@@ -10,7 +10,7 @@ RSpec.describe Api::AssignmentsController, type: :controller do
     before :each do
       @a1 = create :assignment
       @a2 = create :assignment
-      @a3 = create :assignment
+      @a3 = create :assignment, deleted_at: Time.zone.now
 
       get :index, format: :json
     end
@@ -35,6 +35,13 @@ RSpec.describe Api::AssignmentsController, type: :controller do
       get :index, format: :json, params: { after_timestamp: 1.day.ago }
 
       expect(assignments.length).to eq 4
+    end
+
+    it 'excludes deleted assignments from the response' do
+      get :index, format: :json, params: { exclude_deleted: true }
+
+      expect(assignments.length).to eq 2
+      expect(assignments.map { |o| o['id'] }).to include @a1.id, @a2.id
     end
   end
 

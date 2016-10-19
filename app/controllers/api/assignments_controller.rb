@@ -2,6 +2,7 @@
 module Api
   class AssignmentsController < ApiController
     has_scope :after_timestamp
+    has_scope :exclude_deleted, type: :boolean
 
     def index
       @assignments = apply_scopes(Assignment).all
