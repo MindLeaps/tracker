@@ -21,6 +21,7 @@ RSpec.describe Api::AssignmentsController, type: :controller do
       expect(assignments.map { |a| a['id'] }).to include @a1.id, @a2.id, @a3.id
       expect(assignments.map { |a| a['skill_id'] }).to include @a1.skill_id, @a2.skill_id, @a3.skill_id
       expect(assignments.map { |a| a['subject_id'] }).to include @a1.subject_id, @a2.subject_id, @a3.subject_id
+      expect(assignments.map { |a| a['deleted_at'] }).to include @a1.deleted_at, @a2.deleted_at, @a3.deleted_at.iso8601(3)
     end
 
     it 'responds with timestamp' do
