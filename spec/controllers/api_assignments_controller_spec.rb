@@ -8,15 +8,9 @@ RSpec.describe Api::AssignmentsController, type: :controller do
 
   describe '#index' do
     before :each do
-      @subject = create :subject
-
-      @skill1 = create :skill_in_subject, subject: @subject
-      @skill2 = create :skill_in_subject, subject: @subject
-      @skill3 = create :skill_in_subject, subject: @subject
-
-      @a1 = @skill1.assignments[0]
-      @a2 = @skill2.assignments[0]
-      @a3 = @skill3.assignments[0]
+      @a1 = create :assignment
+      @a2 = create :assignment
+      @a3 = create :assignment
 
       get :index, format: :json
     end
@@ -32,13 +26,21 @@ RSpec.describe Api::AssignmentsController, type: :controller do
     it 'responds with timestamp' do
       expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
     end
+
+    it 'responds only with assignments created or updated after a certain time' do
+      create :assignment, created_at: 2.months.ago, updated_at: 2.days.ago
+      create :assignment, created_at: 2.months.ago, updated_at: 5.days.ago
+      create :assignment, created_at: 5.days.ago, updated_at: 6.hours.ago
+
+      get :index, format: :json, params: { after_timestamp: 1.day.ago }
+
+      expect(assignments.length).to eq 4
+    end
   end
 
   describe '#show' do
     before :each do
-      @subject = create :subject
-      @skill = create :skill_in_subject, subject: @subject
-      @a = @skill.assignments[0]
+      @a = create :assignment
 
       get :show, format: :json, params: { id: @a.id }
     end

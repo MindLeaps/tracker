@@ -10,11 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161018062946) do
+ActiveRecord::Schema.define(version: 20161019013750) do
 
   create_table "assignments", force: :cascade do |t|
-    t.integer "skill_id",   null: false
-    t.integer "subject_id", null: false
+    t.integer  "skill_id",   null: false
+    t.integer  "subject_id", null: false
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["skill_id"], name: "index_assignments_on_skill_id"
     t.index ["subject_id"], name: "index_assignments_on_subject_id"
   end
