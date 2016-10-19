@@ -6,12 +6,12 @@ module Api
 
     def index
       @assignments = apply_scopes(Assignment).all
-      respond_with @assignments, meta: { timestamp: Time.zone.now }
+      respond_with @assignments, include: included_params, meta: { timestamp: Time.zone.now }
     end
 
     def show
       @assignment = Assignment.find params.require :id
-      respond_with @assignment, meta: { timestamp: Time.zone.now }
+      respond_with @assignment, include: included_params, meta: { timestamp: Time.zone.now }
     end
   end
 end

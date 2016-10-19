@@ -63,5 +63,21 @@ RSpec.describe Api::AssignmentsController, type: :controller do
     it 'responds with timestamp' do
       expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
     end
+
+    describe 'include' do
+      it 'includes the skill' do
+        get :show, format: :json, params: { id: @a.id, include: 'skill' }
+
+        expect(assignment['skill']['id']).to eq @a.skill.id
+        expect(assignment['skill']['skill_name']).to eq @a.skill.skill_name
+      end
+
+      it 'includes the subject' do
+        get :show, format: :json, params: { id: @a.id, include: 'subject' }
+
+        expect(assignment['subject']['id']).to eq @a.subject.id
+        expect(assignment['subject']['subject_name']).to eq @a.subject.subject_name
+      end
+    end
   end
 end
