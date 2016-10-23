@@ -145,6 +145,21 @@ RSpec.describe StudentsController, type: :controller do
       end
     end
 
+    describe '#destroy' do
+      before :each do
+        @student = create :student
+
+        post :destroy, params: { id: @student.id }
+      end
+
+      it { should redirect_to students_path }
+      it { should set_flash[:notice].to "Student \"#{@student.proper_name}\" successfully deleted." }
+
+      it 'Marks the student as deleted' do
+        expect(@student.reload.deleted_at).not_to be_nil
+      end
+    end
+
     describe 'grading' do
       before :each do
         group = create :group, group_name: 'Student Grades Spec Group'

@@ -29,6 +29,13 @@ class StudentsController < ApplicationController
     render :edit
   end
 
+  def destroy
+    @student = Student.find params.require :id
+    @student.deleted_at = Time.zone.now
+
+    return notice_and_redirect t(:student_deleted, name: @student.proper_name), students_path if @student.save
+  end
+
   def grades
     @student = Student.find params[:id]
     @grades = @student.current_grades_for_lesson_including_ungraded_skills params[:lesson_id]
