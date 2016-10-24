@@ -24,7 +24,11 @@ Rails.application.routes.draw do
   resources :organizations, only: [:index, :create, :show]
   resources :chapters, only: [:index, :create, :show]
   resources :groups, only: [:index, :create, :show]
-  resources :students, only: [:index, :new, :create, :show, :edit, :update, :destroy]
+  resources :students, only: [:index, :new, :create, :show, :edit, :update, :destroy] do
+    member do
+      post :undelete
+    end
+  end
   resources :lessons, only: [:index, :create, :show] do
     resources :students, only: [] do
       member do

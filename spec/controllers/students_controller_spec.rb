@@ -161,10 +161,26 @@ RSpec.describe StudentsController, type: :controller do
       end
 
       it { should redirect_to students_path }
-      it { should set_flash[:notice].to "Student \"#{@student.proper_name}\" successfully deleted." }
+      it { should set_flash[:undo_notice] }
 
       it 'Marks the student as deleted' do
         expect(@student.reload.deleted_at).not_to be_nil
+      end
+    end
+
+    describe '#undelete' do
+      before :each do
+        @student = create :student, deleted_at: Time.zone.now
+
+        post :undelete, params: { id: @student.id }
+      end
+
+      it { should redirect_to students_path }
+
+      it { should set_flash[:notice].to "Student \"#{@student.proper_name}\" successfully restored." }
+
+      it 'Marks the student as not deleted' do
+        expect(@student.reload.deleted_at).to be_nil
       end
     end
 

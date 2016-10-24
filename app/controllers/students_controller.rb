@@ -35,7 +35,14 @@ class StudentsController < ApplicationController
     @student = Student.find params.require :id
     @student.deleted_at = Time.zone.now
 
-    return notice_and_redirect t(:student_deleted, name: @student.proper_name), students_path if @student.save
+    return undo_notice_and_redirect t(:student_deleted, name: @student.proper_name), undelete_student_path, students_path if @student.save
+  end
+
+  def undelete
+    @student = Student.find params.require :id
+    @student.deleted_at = nil
+
+    return notice_and_redirect t(:student_restored, name: @student.proper_name), students_path if @student.save
   end
 
   def grades
