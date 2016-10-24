@@ -133,15 +133,54 @@ RSpec.describe StudentsController, type: :controller do
     end
 
     describe '#index' do
-      it 'gets a list of students' do
-        student1 = create :student
-        student2 = create :student
+      before :each do
+        @student1 = create :student
+        @student2 = create :student
+        @deleted_student = create :student, deleted_at: Time.zone.now
 
         get :index
-        expect(response).to be_success
+      end
 
-        expect(assigns(:students)).to include student1
-        expect(assigns(:students)).to include student2
+      it { should respond_with 200 }
+
+      it 'gets a list of students' do
+        expect(assigns(:students)).to include @student1
+        expect(assigns(:students)).to include @student2
+      end
+
+      it 'does not display deleted students' do
+        expect(assigns(:students)).not_to include @deleted_student
+      end
+    end
+
+    describe '#destroy' do
+      before :each do
+        @student = create :student
+
+        post :destroy, params: { id: @student.id }
+      end
+
+      it { should redirect_to students_path }
+      it { should set_flash[:undo_notice] }
+
+      it 'Marks the student as deleted' do
+        expect(@student.reload.deleted_at).not_to be_nil
+      end
+    end
+
+    describe '#undelete' do
+      before :each do
+        @student = create :student, deleted_at: Time.zone.now
+
+        post :undelete, params: { id: @student.id }
+      end
+
+      it { should redirect_to students_path }
+
+      it { should set_flash[:notice].to "Student \"#{@student.proper_name}\" successfully restored." }
+
+      it 'Marks the student as not deleted' do
+        expect(@student.reload.deleted_at).to be_nil
       end
     end
 

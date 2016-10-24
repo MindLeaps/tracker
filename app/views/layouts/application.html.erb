@@ -9,9 +9,10 @@
 </head>
 <body>
   <%= render "shared/header" %>
-  <% if notice or alert %>
+  <% if notice or undo_notice or alert %>
     <div class="notices">
-      <div class="notice"><%= notice %></div>
+      <% if notice %><div class="alert-success notice"><%= notice %></div><% end %>
+      <% if undo_notice %><div class="alert-danger notice undo-notice"><%= undo_notice.try(:html_safe) %></div><% end %>
       <p class="alert"><%= alert %></p>
     </div>
   <% end %>

@@ -15,5 +15,13 @@ class ApplicationController < ActionController::Base
     redirect_to redirect_url
   end
 
+  def undo_notice_and_redirect(notice, undo_path, redirect_url)
+    undo_link = view_context.button_to 'Undo', undo_path, class: 'notice-link alert-link btn-link'
+    flash[:undo_notice] = notice + " #{undo_link}"
+    redirect_to redirect_url
+  end
+
+  add_flash_types :undo_notice
+
   helper_method :session_path
 end

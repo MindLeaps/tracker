@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 class StudentsController < ApplicationController
+  has_scope :exclude_deleted, type: :boolean, default: true
+
   def index
-    @students = policy_scope Student
+    @students = apply_scopes policy_scope(Student)
   end
 
   def new
@@ -27,6 +29,20 @@ class StudentsController < ApplicationController
     return redirect_to @student if @student.update_attributes student_params
 
     render :edit
+  end
+
+  def destroy
+    @student = Student.find params.require :id
+    @student.deleted_at = Time.zone.now
+
+    return undo_notice_and_redirect t(:student_deleted, name: @student.proper_name), undelete_student_path, students_path if @student.save
+  end
+
+  def undelete
+    @student = Student.find params.require :id
+    @student.deleted_at = nil
+
+    return notice_and_redirect t(:student_restored, name: @student.proper_name), students_path if @student.save
   end
 
   def grades
