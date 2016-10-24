@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 class StudentsController < ApplicationController
+  has_scope :exclude_deleted, type: :boolean, default: true
+
   def index
-    @students = policy_scope Student
+    @students = apply_scopes policy_scope(Student)
   end
 
   def new

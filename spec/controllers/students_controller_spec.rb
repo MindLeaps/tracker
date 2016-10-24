@@ -133,15 +133,23 @@ RSpec.describe StudentsController, type: :controller do
     end
 
     describe '#index' do
-      it 'gets a list of students' do
-        student1 = create :student
-        student2 = create :student
+      before :each do
+        @student1 = create :student
+        @student2 = create :student
+        @deleted_student = create :student, deleted_at: Time.zone.now
 
         get :index
-        expect(response).to be_success
+      end
 
-        expect(assigns(:students)).to include student1
-        expect(assigns(:students)).to include student2
+      it { should respond_with 200 }
+
+      it 'gets a list of students' do
+        expect(assigns(:students)).to include @student1
+        expect(assigns(:students)).to include @student2
+      end
+
+      it 'does not display deleted students' do
+        expect(assigns(:students)).not_to include @deleted_student
       end
     end
 
