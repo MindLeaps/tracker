@@ -74,3 +74,9 @@
   0% {transform: translateY(0px);}
   100% {transform: translateY(-60px);}
 }
+
+.action-buttons {
+  form {
+    display: inline-block
+  }
+}

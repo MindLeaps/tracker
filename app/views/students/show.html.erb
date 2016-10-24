@@ -18,8 +18,8 @@
 <li>Notes: <%= @student.notes %></li>
 </ul>
 
-<p>
+<div class="action-buttons">
   <%= link_to 'Back to All Students', students_path %>
-  <%= link_to 'Edit', { action: :edit }, class: 'btn btn-default' %>
-  <%= button_to 'Delete', { action: :destroy, id: @student.id }, class: 'btn btn-default', method: :delete %>
-  </p>
+  <%= link_to 'Edit', { action: :edit }, class: 'btn btn-secondary' %>
+  <%= button_to 'Delete', { action: :destroy, id: @student.id }, class: 'btn btn-danger', method: :delete %>
+</div>
