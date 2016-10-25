@@ -12,6 +12,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 
 gem 'omniauth-google-oauth2'
 gem 'devise'
+gem 'tiddle'
 gem 'rolify'
 gem 'pundit'
 
@@ -46,6 +47,7 @@ group :development, :test do
   gem 'selenium-webdriver'
   gem 'chromedriver-helper'
   gem 'coveralls', require: false
+  gem 'webmock'
 end
 
 group :development do
