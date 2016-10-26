@@ -4,6 +4,11 @@ require 'rails_helper'
 RSpec.describe Api::LessonsController, type: :controller do
   let(:json) { JSON.parse(response.body) }
   let(:lesson) { JSON.parse(response.body)['lesson'] }
+  let(:admin) { create :admin }
+
+  before :each do
+    sign_in admin
+  end
 
   describe '#index' do
     before :each do

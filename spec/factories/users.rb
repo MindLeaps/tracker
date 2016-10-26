@@ -7,6 +7,7 @@ FactoryGirl.define do
     provider 'google_oauth2'
     transient do
       organization nil
+      token nil
     end
     after(:create) { |user| user.update_role :user }
 

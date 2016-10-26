@@ -32,5 +32,6 @@ module Tracker
     config.active_record.raise_in_transactional_callbacks = true
     config.google_client_id = ENV['GOOGLE_CLIENT_ID']
     config.google_client_secret = ENV['GOOGLE_CLIENT_SECRET']
+    config.google_token_info_url = 'https://www.googleapis.com/oauth2/v3/tokeninfo'
   end
 end

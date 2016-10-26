@@ -5,6 +5,11 @@ RSpec.describe Api::ChaptersController, type: :controller do
   let(:json) { JSON.parse(response.body) }
   let(:chapters) { JSON.parse(response.body)['chapters'] }
   let(:chapter) { JSON.parse(response.body)['chapter'] }
+  let(:admin) { create :admin }
+
+  before :each do
+    sign_in admin
+  end
 
   describe '#index' do
     before :each do

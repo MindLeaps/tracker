@@ -5,6 +5,11 @@ RSpec.describe Api::OrganizationsController, type: :controller do
   let(:json) { JSON.parse(response.body) }
   let(:organizations) { JSON.parse(response.body)['organizations'] }
   let(:organization) { JSON.parse(response.body)['organization'] }
+  let(:admin) { create :admin }
+
+  before :each do
+    sign_in admin
+  end
 
   describe '#index' do
     before :each do

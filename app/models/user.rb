@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 class User < ApplicationRecord
+  has_many :authentication_tokens
   rolify
   validates :email, presence: true
   validates :email, uniqueness: true, allow_blank: true
 
-  devise :trackable, :omniauthable, omniauth_providers: [:google_oauth2]
+  devise :trackable, :token_authenticatable, :omniauthable, omniauth_providers: [:google_oauth2]
 
   def current_role
     Role::ROLES.keys.find { |role| has_role? role }
@@ -37,6 +38,13 @@ class User < ApplicationRecord
       return update_user_from_omniauth user, auth if user
       return create_first_user auth if first_user?
       empty_user
+    end
+
+    def from_id_token(id_token)
+      client = OAuth2::Client.new(Rails.configuration.google_client_id, Rails.configuration.google_client_secret)
+
+      response = client.request(:get, Rails.configuration.google_token_info_url, params: { id_token: id_token }).parsed
+      User.find_by(email: response['email'])
     end
 
     private
