@@ -1,0 +1,22 @@
+[Unit]
+Description=Mindleaps Tracker Rails App
+After=network.target
+
+[Service]
+Type=simple
+User=mindleaps
+WorkingDirectory=/home/mindleaps/tracker
+
+Environment=SECRET_KEY_BASE={{ secret_key_base }}
+Environment=DEVISE_SECRET_KEY={{ devise_secret_key }}
+Environment=GOOGLE_CLIENT_ID={{ google_client_id }}
+Environment=GOOGLE_CLIENT_SECRET={{ google_client_secret }}
+Environment=DOMAIN={{ deploy_domain }}
+Environment=RAILS_ENV=production
+Environment=HOME=/home/mindleaps
+ExecStart=/home/mindleaps/.rvm/bin/rvm all do rails s
+
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

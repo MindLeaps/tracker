@@ -1,5 +1,8 @@
 ---
 - hosts: server
+  gather_facts: no
+  pre_tasks:
+    - raw: sudo apt-get -y install python-simplejson
   roles:
   - { role: kamaln7.swapfile, swapfile_size: 2GB, swapfile_location: /mnt/swapfile }
   tasks:
@@ -135,9 +138,9 @@
     sudo_user: mindleaps
     shell: DEVISE_SECRET_KEY={{ devise_secret_key }} RAILS_ENV=production ~/.rvm/bin/rvm `cat ~/tracker/.ruby-version` do rails assets:precompile chdir=/home/mindleaps/tracker
 
-  - name: Install the upstart script for tracker
+  - name: Install the systemd script for tracker
     sudo: true
-    template: src=tracker.conf.j2 dest=/etc/init/tracker.conf
+    template: src=tracker.service.j2 dest=/etc/systemd/system/tracker.service
     notify: Restart tracker
 
   - name: Start tracker
@@ -149,7 +152,7 @@
 
   - name: Get SSL Certificate
     sudo: true
-    shell: "/etc/certbot-auto certonly -n -m {{ letsencrypt_email }} --webroot -w /home/mindleaps/tracker/public -d {{ deploy_domain }}"
+    shell: "/etc/certbot-auto certonly -n -m {{ letsencrypt_email }} --agree-tos --webroot -w /home/mindleaps/tracker/public -d {{ deploy_domain }}"
 
   - name: Restart Nginx
     service: name=nginx state=restarted
