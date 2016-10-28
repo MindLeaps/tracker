@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 module Api
   class ApiController < ActionController::Base
-    before_action :authenticate_user!
-    before_action :skip_session_cookie
+    # before_action :authenticate_user!
+    # before_action :skip_session_cookie
 
     include Pundit
     # Prevent CSRF attacks by raising an exception.
