@@ -3,6 +3,11 @@ require 'rails_helper'
 
 RSpec.describe Api::GradeDescriptorsController, type: :controller do
   let(:json) { JSON.parse(response.body) }
+  let(:admin) { create :admin }
+
+  before :each do
+    sign_in admin
+  end
 
   describe '#index' do
     before :each do

@@ -5,6 +5,11 @@ RSpec.describe Api::AssignmentsController, type: :controller do
   let(:json) { JSON.parse(response.body) }
   let(:assignments) { JSON.parse(response.body)['assignments'] }
   let(:assignment) { JSON.parse(response.body)['assignment'] }
+  let(:admin) { create :admin }
+
+  before :each do
+    sign_in admin
+  end
 
   describe '#index' do
     before :each do

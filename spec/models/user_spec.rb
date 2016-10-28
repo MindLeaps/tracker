@@ -3,7 +3,19 @@ require 'rails_helper'
 
 RSpec.describe User, type: :model do
   before :each do
-    create :user, email: 'existing_user_email@example.com'
+    @user = create :user, email: 'existing_user_email@example.com'
+  end
+
+  describe '#from_id_token' do
+    before :each do
+      @valid_token = 'some_valid_google_id_token_123'
+      stub_request(:get, "#{Rails.configuration.google_token_info_url}?id_token=#{@valid_token}")
+        .to_return(status: 200, body: JSON.unparse(email: @user.email), headers: { content_type: 'application/json' })
+    end
+
+    it 'returns a user identified by the email' do
+      expect(User.from_id_token(@valid_token)).to eq @user
+    end
   end
 
   describe 'is valid' do

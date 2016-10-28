@@ -5,8 +5,10 @@ RSpec.describe Api::GradesController, type: :controller do
   let(:json) { JSON.parse(response.body) }
   let(:grade) { json['grade'] }
   let(:grades) { json['grades'] }
+  let(:admin) { create :admin }
 
   before :each do
+    sign_in admin
     @group = create :group
     @student = create :student, group: @group
 

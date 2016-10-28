@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161019013750) do
+ActiveRecord::Schema.define(version: 20161025175655) do
 
   create_table "assignments", force: :cascade do |t|
     t.integer  "skill_id",   null: false
@@ -20,6 +20,17 @@ ActiveRecord::Schema.define(version: 20161019013750) do
     t.datetime "updated_at", null: false
     t.index ["skill_id"], name: "index_assignments_on_skill_id"
     t.index ["subject_id"], name: "index_assignments_on_subject_id"
+  end
+
+  create_table "authentication_tokens", force: :cascade do |t|
+    t.string   "body"
+    t.integer  "user_id"
+    t.datetime "last_used_at"
+    t.string   "ip_address"
+    t.string   "user_agent"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.index ["user_id"], name: "index_authentication_tokens_on_user_id"
   end
 
   create_table "chapters", force: :cascade do |t|

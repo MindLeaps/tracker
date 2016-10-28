@@ -7,6 +7,10 @@ abort('The Rails environment is running in production mode!') if Rails.env.produ
 require 'spec_helper'
 require 'rspec/rails'
 require 'pundit/rspec'
+require 'webmock/rspec'
+require 'devise'
+
+WebMock.disable_net_connect!(allow_localhost: true)
 
 Dir[Rails.root.join('spec/helpers/**/*.rb')].each { |f| require f }
 Dir[Rails.root.join('spec/shared/**/*.rb')].each { |f| require f }

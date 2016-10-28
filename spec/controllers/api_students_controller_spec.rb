@@ -5,6 +5,11 @@ RSpec.describe Api::StudentsController, type: :controller do
   let(:json) { JSON.parse(response.body) }
   let(:student) { JSON.parse(response.body)['student'] }
   let(:students) { JSON.parse(response.body)['students'] }
+  let(:admin) { create :admin }
+
+  before :each do
+    sign_in admin
+  end
 
   describe '#index' do
     before :each do
