@@ -33,4 +33,52 @@ RSpec.describe GroupsController, type: :controller do
       expect(assigns(:groups)).to include group2
     end
   end
+
+  describe '#edit' do
+    before :each do
+      @group = create :group
+
+      get :edit, params: { id: @group.id }
+    end
+
+    it { should respond_with 200 }
+
+    it 'presents a group to edit' do
+      expect(assigns(:group)).to eq @group
+    end
+  end
+
+  describe '#update' do
+    before :each do
+      @chapter1 = create :chapter
+      @chapter2 = create :chapter
+      @group = create :group, group_name: 'Test Group', chapter: @chapter1
+    end
+
+    context 'success' do
+      before :each do
+        post :update, params: { id: @group.id, group: { group_name: 'Updated Name', chapter_id: @chapter2.id } }
+      end
+
+      it { should respond_with 302 }
+
+      it { should redirect_to group_url }
+
+      it { should set_flash[:notice].to 'Group "Updated Name" successfully updated.' }
+
+      it 'updates the edited group' do
+        expect(@group.reload.group_name).to eq 'Updated Name'
+        expect(@group.reload.chapter).to eq @chapter2
+      end
+    end
+
+    context 'failure' do
+      before :each do
+        post :update, params: { id: @group.id, group: { group_name: '' } }
+      end
+
+      it { should respond_with 422 }
+      it { should render_template :edit }
+    end
+  end
 end

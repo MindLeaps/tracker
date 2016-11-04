@@ -24,6 +24,7 @@ en:
   student_delete_confirmation: Are you sure you want to delete student "%{name}"?
   student_deleted: Student "%{name}" successfully deleted.
   student_restored: Student "%{name}" successfully restored.
+  group_updated: Group "%{group}" successfully updated.
   duplicate_lesson: Lesson already exists for group "%{group}" in "%{subject}" on selected date.
   duplicate_grade: "%{name} already scored %{mark} in %{skill} on %{date} in %{subject}."
   subject_created: Subject "%{subject}" successfully created.
