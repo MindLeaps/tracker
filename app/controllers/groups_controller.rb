@@ -25,7 +25,7 @@ class GroupsController < ApplicationController
   def update
     @group = Group.find params.require :id
     return notice_and_redirect t(:group_updated, group: @group.group_name), group_url if @group.update_attributes group_params
-    render action: :edit, status: 422
+    render :edit, status: 422
   end
 
   private

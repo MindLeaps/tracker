@@ -1,0 +1,13 @@
+<h1>Edit Chapter</h1>
+<div class="container">
+  <fieldset>
+    <%= simple_form_for @chapter, wrapper: :horizontal_form, url: { action: :update } do |f| %>
+      <%= render partial: 'shared/errors', locals: {subject: @chapter} %>
+      <%= f.input :chapter_name %>
+      <%= f.association :organization, label_method: :organization_name, include_blank: 'None' %>
+      <hr />
+      <%= f.button :submit, class: 'btn-outline-success' %>
+    <%- end %>
+  </fieldset>
+</div>
+<p><a href="<%= url_for action: 'show' %>">Cancel</a></p>
