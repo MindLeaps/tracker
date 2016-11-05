@@ -9,12 +9,28 @@ class ChaptersController < ApplicationController
   end
 
   def create
-    @chapter = Chapter.new(params.require(:chapter).permit(:chapter_name, :organization_id))
+    @chapter = Chapter.new chapter_params
     return redirect_to chapters_url if @chapter.save
     render :index
   end
 
   def show
-    @chapter = Chapter.find params[:id]
+    @chapter = Chapter.find params.require :id
+  end
+
+  def edit
+    @chapter = Chapter.find params.require :id
+  end
+
+  def update
+    @chapter = Chapter.find params.require :id
+    return notice_and_redirect t(:chapter_updated, chapter: @chapter.chapter_name), chapter_url if @chapter.update_attributes chapter_params
+    render :edit, status: 422
+  end
+
+  private
+
+  def chapter_params
+    params.require(:chapter).permit :chapter_name, :organization_id
   end
 end

@@ -1,5 +1,11 @@
 <h1>Chapter: <%= @chapter.chapter_name %></h1>
+<h5>Ogranization: <%= chapter_organization_name @chapter %></h5>
 
 <h3>Groups</h3>
 
 <%= render partial: "shared/groups_table", locals: {groups: @chapter.groups} %>
+
+<div class="action-buttons">
+  <%= link_to 'Back to All Chapters', chapters_path %>
+  <%= link_to 'Edit', { action: :edit }, class: 'btn btn-secondary' %>
+</div>
