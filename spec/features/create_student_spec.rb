@@ -17,6 +17,7 @@ RSpec.describe 'Create student' do
 
     expect(page).to have_content 'Rick'
     expect(page).to have_content 'Sanchez'
-    expect(page).to have_content 'Student "Sanchez, Rick" successfully created'
+    expect(page).to have_content 'Student "Sanchez, Rick" successfully created.'
+    expect(page).to have_link 'Create another', href: new_student_path
   end
 end

@@ -10,7 +10,7 @@ class ChaptersController < ApplicationController
 
   def create
     @chapter = Chapter.new chapter_params
-    return redirect_to chapters_url if @chapter.save
+    return notice_and_redirect t(:chapter_created, chapter: @chapter.chapter_name), chapters_url if @chapter.save
     render :index
   end
 

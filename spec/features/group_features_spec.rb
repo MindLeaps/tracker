@@ -7,10 +7,11 @@ RSpec.describe 'User interacts with Groups' do
   describe 'Group creation' do
     it 'creates a new group', js: true do
       visit '/groups'
-      fill_in 'Group name', with: 'New Group Name For Create Group Feature Test'
+      fill_in 'Group name', with: 'Feature Test Group'
       click_button 'Create'
 
-      expect(page).to have_content 'New Group Name For Create Group Feature Test'
+      expect(page).to have_content 'Feature Test Group'
+      expect(page).to have_content 'Group "Feature Test Group" successfully created.'
     end
   end
 
