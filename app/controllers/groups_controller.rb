@@ -10,7 +10,7 @@ class GroupsController < ApplicationController
 
   def create
     @group = Group.new group_params
-    return redirect_to groups_url if @group.save
+    return notice_and_redirect t(:group_created, group: @group.group_name), groups_url if @group.save
     render :index
   end
 

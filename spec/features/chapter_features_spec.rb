@@ -7,10 +7,11 @@ RSpec.describe 'User interacts with Chapters' do
   describe 'Chapter creation' do
     it 'creates a new Chapter', js: true do
       visit '/chapters'
-      fill_in 'Chapter name', with: 'New Chapter Name For Create Chapter Feature Test'
+      fill_in 'Chapter name', with: 'Chapter One'
       click_button 'Create'
 
-      expect(page).to have_content 'New Chapter Name For Create Chapter Feature Test'
+      expect(page).to have_content 'Chapter One'
+      expect(page).to have_content 'Chapter "Chapter One" successfully created.'
     end
   end
 
