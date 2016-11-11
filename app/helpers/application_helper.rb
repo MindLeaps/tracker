@@ -13,7 +13,7 @@ module ApplicationHelper
   end
 
   def chapter_students_number(chapter)
-    chapter.groups.reduce(0) { |a, e| a + e.students.length }
+    chapter.groups.reduce(0) { |acc, elem| acc + elem.students.length }
   end
 
   def user_image(user, size = 40)
