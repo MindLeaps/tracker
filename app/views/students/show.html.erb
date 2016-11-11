@@ -1,4 +1,7 @@
 <h1><%= @student.last_name %>, <%= @student.first_name %></h1>
+<% if @student.deleted_at %>
+  <p class="text-danger">Student deleted at: <%= @student.deleted_at %></p>
+<% end %>
 <ul>
 <li>Date of Birth: <%= @student.estimated_dob ? "EST" : "" %> <%= @student.dob %></li>
 <li>Gender: <%= @student.gender %></li>
