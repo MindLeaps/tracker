@@ -34,6 +34,30 @@ RSpec.describe GroupsController, type: :controller do
     end
   end
 
+  describe '#index' do
+    before :each do
+      @group = create :group
+      @student1 = create :student, group: @group
+      @student2 = create :student, group: @group
+      @deleted_student = create :student, group: @group, deleted_at: Time.zone.now
+
+      get :show, params: { id: @group.id }
+    end
+
+    it { should respond_with 200 }
+
+    it { should render_template :show }
+
+    it 'exposes current group' do
+      expect(assigns(:group)).to eq @group
+    end
+
+    it 'exposes non-deleted students in a group' do
+      expect(assigns(:students)).to include @student1, @student2
+      expect(assigns(:students)).not_to include @deleted_student
+    end
+  end
+
   describe '#edit' do
     before :each do
       @group = create :group
