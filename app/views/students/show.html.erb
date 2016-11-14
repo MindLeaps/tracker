@@ -19,6 +19,10 @@
 <li>Health Issues: <%= @student.health_issues %></li>
 <li>HIV Tested: <%= @student.hiv_tested %></li>
 <li>Notes: <%= @student.notes %></li>
+<li>Images:</li>
+<% @student.student_images.each do |i| %>
+  <%= image_tag i.image.url %>
+<% end %>
 </ul>
 
 <div class="action-buttons">

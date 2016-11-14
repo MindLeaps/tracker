@@ -23,6 +23,7 @@ gem 'cocoon'
 gem 'jquery-rails'
 gem 'active_model_serializers', '~> 0.10.0'
 gem 'has_scope'
+gem 'carrierwave', '>= 1.0.0.rc', '< 2.0'
 
 # gem 'mindleaps_analytics', path: '../Tracker-Analytics'
 

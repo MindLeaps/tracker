@@ -9,6 +9,8 @@ RSpec.describe Student, type: :model do
     it { should belong_to :organization }
     it { should have_many :grades }
     it { should have_many :absences }
+    it { should have_many :student_images }
+    it { should accept_nested_attributes_for :student_images }
   end
 
   describe 'validations' do
