@@ -125,10 +125,11 @@ ActiveRecord::Schema.define(version: 20170120002843) do
   end
 
   create_table "student_images", force: :cascade do |t|
-    t.string   "image"
+    t.string   "filename"
     t.integer  "student_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
     t.index ["student_id"], name: "index_student_images_on_student_id", using: :btree
   end
 
