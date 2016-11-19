@@ -28,6 +28,7 @@ Rails.application.routes.draw do
   resources :chapters, only: [:index, :create, :show, :edit, :update]
   resources :groups, only: [:index, :create, :show, :edit, :update]
   resources :students, only: [:index, :new, :create, :show, :edit, :update, :destroy] do
+    resources :student_images, only: [:index]
     member do
       post :undelete
     end
