@@ -20,8 +20,10 @@
 <li>HIV Tested: <%= @student.hiv_tested %></li>
 <li>Notes: <%= @student.notes %></li>
 <li>Images:</li>
-<% @student.student_images.each do |i| %>
-  <%= image_tag i.image.url %>
+<% @student.student_images.each do |image| %>
+  <div class="crop-container">
+    <%= image_tag image.filename.url, id: 'crop-image' %>
+  </div>
 <% end %>
 </ul>
 

@@ -50,7 +50,7 @@ RSpec.describe StudentsController, type: :controller do
         expect(student.gender).to eql 'F'
       end
 
-      it 'creates a student with guardian inormation' do
+      it 'creates a student with guardian information' do
         post :create, params: { student: {
           mlid: '1G',
           first_name: 'Guardianed',

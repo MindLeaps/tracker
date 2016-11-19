@@ -27,7 +27,7 @@ class Student < ApplicationRecord
     [:mlid, :first_name, :last_name, :dob, :estimated_dob, :group_id, :gender, :quartier,
      :guardian_name, :guardian_occupation, :guardian_contact, :family_members, :health_insurance,
      :health_issues, :hiv_tested, :name_of_school, :school_level_completed, :year_of_dropout,
-     :reason_for_leaving, :notes, :organization_id, student_images_attributes: [:image]]
+     :reason_for_leaving, :notes, :organization_id, student_images_attributes: [:filename]]
   end
 
   def current_grades_for_lesson_including_ungraded_skills(lesson_id)
