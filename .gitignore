@@ -15,6 +15,7 @@
 db/*.sqlite*
 log/
 playbook.retry
+public/uploads
 
 ## Specific to RubyMotion:
 .dat*
