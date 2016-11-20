@@ -42,3 +42,5 @@ en:
   student_not_graded: Not Graded
   back_to_subjects: Back to All Subjects
   cancel: Cancel
+  student_has_no_images: This student has no images
+  image_uploaded: Image successfully uploaded.
