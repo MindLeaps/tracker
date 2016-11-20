@@ -80,3 +80,12 @@
     display: inline-block
   }
 }
+
+.student-image-card {
+  width: 300px;
+  display: inline-block;
+
+  .student-image {
+    width: 100%;
+  }
+}

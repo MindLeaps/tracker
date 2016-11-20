@@ -1,6 +1,14 @@
+<h1><%= @student.proper_name %></h1>
 <%= t :student_has_no_images if @images.length == 0 %>
 <% @images.each do |image| %>
-    <%= image_tag image.filename.url, class: 'student-image' %>
+    <div class="card student-image-card">
+      <%= image_tag image.filename.url, class: 'student-image card-img-top' %>
+      <div class="card-block">
+        <h4 class="card-title">Image title</h4>
+        <p class="card-text">Some quick image description here.</p>
+        <a href="#" class="btn btn-primary">Edit Image</a>
+      </div>
+    </div>
 <%- end %>
 
 <div class="image-upload">
