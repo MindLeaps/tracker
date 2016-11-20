@@ -1,1 +1,3 @@
-Image
+<% @images.each do |image| %>
+    <%= image_tag image.filename.url, class: 'student-image' %>
+<%- end %>
