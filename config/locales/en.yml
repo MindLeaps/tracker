@@ -43,4 +43,5 @@ en:
   back_to_subjects: Back to All Subjects
   cancel: Cancel
   student_has_no_images: This student has no images
-  image_uploaded: Image successfully uploaded.
+  images_uploaded: Images successfully uploaded.
+  no_image_submitted: No image submitted.

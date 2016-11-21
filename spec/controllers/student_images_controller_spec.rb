@@ -29,12 +29,12 @@ RSpec.describe StudentImagesController, type: :controller do
         expect(assigns(:student)).to eq @student
       end
 
-      it 'assigns all of students images' do
-        expect(assigns(:images)).to include @image1, @image2
+      it 'student contains its own images' do
+        expect(assigns(:student).student_images).to include @image1, @image2
       end
 
-      it 'does not assign images of other students' do
-        expect(assigns(:images)).not_to include @image3
+      it 'student does not contain images of other students' do
+        expect(assigns(:student).student_images).not_to include @image3
       end
 
       it 'assigns a new empty image' do
@@ -43,27 +43,31 @@ RSpec.describe StudentImagesController, type: :controller do
     end
 
     describe '#create' do
-      context 'uploads a single image successfully' do
+      context 'submits a single image successfully' do
         before :each do
           @student = create :student
 
-          post :create, params: { student_id: @student.id, student_image: { filename: test_image } }
+          post :create, params: { student_id: @student.id, student_image: { filename: [test_image] } }
         end
 
         it { should route(:post, "students/#{@student.id}/student_images").to action: :create, student_id: @student.id }
         it { should redirect_to student_student_images_url }
-        it { should set_flash[:notice].to 'Image successfully uploaded.' }
+        it { should set_flash[:notice].to 'Images successfully uploaded.' }
         it 'saves a new image' do
           expect(StudentImage.where(student_id: @student.id).length).to eq 1
         end
       end
 
-      context 'image upload failed' do
+      context 'submits no image' do
         before :each do
           @student = create :student
 
-          post :create, params: { student_id: @student.id, student_image: { filename: test_image } }
+          post :create, params: { student_id: @student.id }
         end
+
+        it { should respond_with :bad_request }
+        it { should render_template 'student_images/index' }
+        it { should set_flash[:alert].to 'No image submitted.' }
       end
     end
   end

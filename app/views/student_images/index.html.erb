@@ -1,6 +1,6 @@
 <h1><%= @student.proper_name %></h1>
-<%= t :student_has_no_images if @images.length == 0 %>
-<% @images.each do |image| %>
+<%= t :student_has_no_images if @student.student_images.length == 0 %>
+<% @student.student_images.each do |image| %>
     <div class="card student-image-card">
       <%= image_tag image.filename.medium.url, class: 'student-image card-img-top' %>
       <div class="card-block">
@@ -13,7 +13,7 @@
 
 <div class="image-upload">
   <%= simple_form_for @new_image, wrapper: :horizontal_form, url: {action: :create}, html: {multipart: true} do |f| %>
-      <%= f.input :filename, as: :file %>
+      <%= f.input :filename, as: :file, input_html: { multiple: true } %>
       <%= f.button :submit, 'Upload', class: 'btn-outline-success' %>
   <%- end %>
 </div>
