@@ -1,161 +1,19 @@
 ---
-- hosts: server
+- hosts: all
+
+  # Needed for Ubuntu > 14 which is now installed on DO Ubuntu hosts, see
+  # http://stackoverflow.com/a/34402816
   gather_facts: no
   pre_tasks:
     - raw: sudo apt-get -y install python-simplejson
+
   roles:
-  - { role: kamaln7.swapfile, swapfile_size: 2GB, swapfile_location: /mnt/swapfile }
-  tasks:
-  - name: Install required packages
-    sudo: true
-    apt: pkg={{ item }} state=installed
-    with_items:
-      - build-essential
-      - curl
-      - git
-      - git-core
-      - libcurl4-openssl-dev
-      - libgmp3-dev
-      - libpq-dev
-      - libreadline-dev
-      - libsqlite3-dev
-      - libssl-dev
-      - libxml2-dev
-      - libxslt1-dev
-      - libyaml-dev
-      - nginx-extras
-      - sqlite3
-      - zlib1g-dev
-      - nodejs
+    - server
 
-  - name: Install nginx config
-    sudo: true
-    template: src=nginx.conf dest=/etc/nginx/nginx.conf
-    notify: Reload nginx config
+- hosts: webservers
+  roles:
+    - webserver
 
-  - name: Install rvm dependencies
-    sudo: true
-    apt: pkg={{ item }} update_cache=yes state=installed
-    with_items:
-      - automake
-      - bison
-      - libffi-dev
-      - libgdbm-dev
-      - libncurses5-dev
-      - libtool
-
-  - name: Create the mindleaps user
-    sudo: true
-    user: name=mindleaps
-
-  - name: Trust RVM public key
-    sudo: true
-    sudo_user: mindleaps
-    shell: "\\gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3"
-
-  - name: Get rvm
-    sudo: true
-    sudo_user: mindleaps
-    shell: "\\curl -L https://get.rvm.io | bash -s stable --ignore-dotfiles"
-    args:
-      creates: "/home/mindleaps/.rvm"
-
-  - name: Dont install documentation with gems
-    sudo: true
-    sudo_user: mindleaps
-    command: 'echo "gem: --no-ri --no-rdoc" > ~/.gemrc creates=~/.gemrc'
-
-  - name: Add rvm to bashrc
-    sudo: true
-    sudo_user: mindleaps
-    lineinfile:
-      dest="~/.bashrc"
-      state=present
-      line="source ~/.rvm/scripts/rvm"
-      insertafter=EOF
-
-  - name: Copy the source to the machine
-    sudo: true
-    sudo_user: mindleaps
-    synchronize:
-      dest: /home/mindleaps/tracker
-      src: ../../
-      delete: yes
-      owner: no
-      group: no
-      rsync_opts:
-        - "--exclude=.DS_Store"
-        - "--exclude=.git"
-        - "--exclude=.gitignore"
-        - "--exclude=.rspec"
-        - "--exclude=.rubocop.yml"
-        - "--exclude=.travis.yml"
-        - "--exclude=deploy"
-        - "--exclude=spec"
-        - "--exclude=db/*.sqlite3"
-        - "--exclude=log"
-        - "--exclude=tmp"
-
-  - name: Change ownership of destination directory
-    sudo: true
-    sudo_user: root
-    shell: chown -R mindleaps:mindleaps /home/mindleaps/tracker
-
-  - name: Grant the rails app access to tmp
-    sudo: true
-    file: dest=/home/mindleaps/tracker/tmp owner=mindleaps group=mindleaps mode=0700 state=directory recurse=yes
-
-  - name: Grant the rails app access to db
-    sudo: true
-    file: dest=/home/mindleaps/tracker/db owner=mindleaps group=mindleaps mode=0700 state=directory recurse=yes
-
-  - name: Install libs required by RVM
-    sudo: true
-    shell: /home/mindleaps/.rvm/bin/rvm --autolibs=enabled requirements `cat ~/tracker/.ruby-version`
-
-  - name: Install the ruby version needed by mindleaps
-    sudo: true
-    sudo_user: mindleaps
-    shell: ~/.rvm/bin/rvm install `cat ~/tracker/.ruby-version`
-
-  - name: Install Bundler
-    sudo: true
-    sudo_user: mindleaps
-    shell: ~/.rvm/bin/rvm `cat ~/tracker/.ruby-version` do gem install bundler chdir=/home/mindleaps/tracker
-
-  - name: Install all gems
-    sudo: true
-    sudo_user: mindleaps
-    shell: ~/.rvm/bin/rvm `cat ~/tracker/.ruby-version` do bundle install chdir=/home/mindleaps/tracker
-
-  - name: Migrate the Database
-    sudo: true
-    sudo_user: mindleaps
-    shell: DEVISE_SECRET_KEY={{ devise_secret_key }} RAILS_ENV=production ~/.rvm/bin/rvm `cat ~/tracker/.ruby-version` do rails db:migrate chdir=/home/mindleaps/tracker
-
-  - name: Precompile the assets
-    sudo: true
-    sudo_user: mindleaps
-    shell: DEVISE_SECRET_KEY={{ devise_secret_key }} RAILS_ENV=production ~/.rvm/bin/rvm `cat ~/tracker/.ruby-version` do rails assets:precompile chdir=/home/mindleaps/tracker
-
-  - name: Install the systemd script for tracker
-    sudo: true
-    template: src=tracker.service.j2 dest=/etc/systemd/system/tracker.service
-    notify: Restart tracker
-
-  - name: Start tracker
-    sudo: true
-    service: name=tracker state=started
-
-  - name: Install Certbot
-    get_url: url=https://dl.eff.org/certbot-auto dest=/etc/certbot-auto mode=a+x
-
-  - name: Get SSL Certificate
-    sudo: true
-    shell: "/etc/certbot-auto certonly -n -m {{ letsencrypt_email }} --agree-tos --webroot -w /home/mindleaps/tracker/public -d {{ deploy_domain }}"
-
-  - name: Restart Nginx
-    service: name=nginx state=restarted
-
-  - name: Restart Tracker
-    service: name=tracker state=restarted
+- hosts: databases
+  roles:
+    - db
