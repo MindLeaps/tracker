@@ -10,10 +10,10 @@
   roles:
     - server
 
-- hosts: webservers
-  roles:
-    - webserver
-
 - hosts: databases
   roles:
     - db
+
+- hosts: webservers
+  roles:
+    - webserver

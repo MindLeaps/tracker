@@ -1,3 +1,8 @@
 ---
 dependencies:
-  - { role: geerlingguy.ansible-role-postgresql }
+  - role: geerlingguy.ansible-role-postgresql
+    postgresql_databases:
+    - name: tracker
+    postgresql_users:
+    - name: tracker
+      password: "{{ database_password }}"

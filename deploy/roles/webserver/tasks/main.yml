@@ -83,7 +83,7 @@
       - "--exclude=.travis.yml"
       - "--exclude=deploy"
       - "--exclude=spec"
-      - "--exclude=db/*.sqlite3"
+      - "--exclude=db"
       - "--exclude=log"
       - "--exclude=tmp"
 
@@ -96,9 +96,10 @@
   sudo: true
   file: dest=/home/mindleaps/tracker/tmp owner=mindleaps group=mindleaps mode=0700 state=directory recurse=yes
 
-- name: Grant the rails app access to db
+- name: Install database config
   sudo: true
-  file: dest=/home/mindleaps/tracker/db owner=mindleaps group=mindleaps mode=0700 state=directory recurse=yes
+  template: src=database.yml.j2 dest=/home/mindleaps/tracker/config/database.yml
+  notify: Restart tracker
 
 - name: Install libs required by RVM
   sudo: true
