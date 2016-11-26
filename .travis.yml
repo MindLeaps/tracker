@@ -1,10 +1,14 @@
+dist: trusty
 language: ruby
-env:
-  - DB=sqlite
-script: RAILS_ENV=test bundle exec rake --trace db:migrate test
-sqlite: &sqlite
-  adapter: sqlite3
-  database: db/<%= Rails.env %>.sqlite3
+
+services:
+- postgresql
+
+before_script:
+- psql -c 'create database tracker_test;' -U postgres
+    
+script:
+- RAILS_ENV=test bundle exec rake --trace db:migrate test
 
 notifications:
   webhooks:
@@ -15,5 +19,6 @@ notifications:
     on_start: never     # options: [always|never|change] default: always
 
 addons:
-    code_climate:
-        repo_token: 5db3f72ce9253ebdff56c2f98793691557a46415e09f70ab9c46036216d22580
+  postgresql: "9.5"
+  code_climate:
+      repo_token: 5db3f72ce9253ebdff56c2f98793691557a46415e09f70ab9c46036216d22580
