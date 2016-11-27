@@ -10,8 +10,8 @@ http {
   server {
     listen 443 ssl;
     server_name {{ deploy_domain }};
-    ssl_certificate /etc/letsencrypt/live/{{ deploy_domain }}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/{{ deploy_domain }}/privkey.pem;
+    ssl_certificate {{ ssl_certificate }};
+    ssl_certificate_key {{ ssl_certificate_key }};
     include /etc/nginx/mime.types;
     default_type application/octet-stream;
     root /home/mindleaps/tracker/public;
