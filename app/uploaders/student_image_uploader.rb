@@ -34,6 +34,10 @@ class StudentImageUploader < CarrierWave::Uploader::Base
     process resize_to_fill: [250, 250]
   end
 
+  version :mini_thumb, from_version: :medium do
+    process resize_to_fill: [32, 32]
+  end
+
   # Add a white list of extensions which are allowed to be uploaded.
   # For images you might use something like this:
   # def extension_whitelist
