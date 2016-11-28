@@ -5,6 +5,7 @@ RSpec.describe Student, type: :model do
   let(:org) { create :organization }
 
   describe 'relationships' do
+    it { should belong_to :profile_image }
     it { should belong_to :group }
     it { should belong_to :organization }
     it { should have_many :grades }
@@ -13,14 +14,34 @@ RSpec.describe Student, type: :model do
     it { should accept_nested_attributes_for :student_images }
   end
 
-  describe 'validations' do
+  describe 'validate' do
     subject { create :student, mlid: 'TEST1' }
 
-    describe 'is valid' do
+    describe 'student is valid' do
       it 'with first and last name, dob, and gender' do
         student = Student.new mlid: '1S', first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 0, organization: org
         expect(student).to be_valid
         expect(student.save).to eq true
+      end
+    end
+
+    describe 'profile_image' do
+      before :each do
+        @student = create :student
+        @image = create :student_image, student: @student
+        @other_image = create :student_image
+      end
+
+      it 'student is valid if profile image belongs to student' do
+        @student.profile_image = @image
+        expect(@student).to be_valid
+      end
+
+      it 'student is invalid if profile image belongs to other student' do
+        @student.profile_image = @other_image
+        expect(@student).to be_invalid
+        expect(@student.errors.messages[:profile_image])
+          .to include "Image of #{@other_image.student.proper_name} cannot be a profile image for #{@student.proper_name}"
       end
     end
 

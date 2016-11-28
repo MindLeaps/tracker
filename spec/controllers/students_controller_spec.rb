@@ -153,6 +153,19 @@ RSpec.describe StudentsController, type: :controller do
       end
     end
 
+    describe '#update' do
+      before :each do
+        @student = create :student
+        @image = create :student_image, student: @student
+      end
+
+      it 'updates the student\'s profile image' do
+        post :update, params: { id: @student.id, student: { profile_image_id: @image.id } }
+
+        expect(@student.reload.profile_image).to eq @image
+      end
+    end
+
     describe '#destroy' do
       before :each do
         @student = create :student

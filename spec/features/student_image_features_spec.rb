@@ -28,5 +28,16 @@ RSpec.describe 'User interacts with student images' do
       expect(page).to have_content 'Images successfully uploaded.'
       expect(page).to have_selector 'img.student-image', count: 4
     end
+
+    it 'selects an image to be a profile image' do
+      visit student_path @student
+      click_link 'Images'
+
+      first('.student-image-card').click_button 'Set as Profile'
+
+      expect(page.current_path).to eq student_path @student
+
+      expect(page).to have_selector 'img.student-profile-image'
+    end
   end
 end
