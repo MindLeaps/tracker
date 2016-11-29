@@ -114,7 +114,7 @@
       - "--exclude=.travis.yml"
       - "--exclude=deploy"
       - "--exclude=spec"
-      - "--exclude=db"
+      - "--exclude=db/*.sqlite3"
       - "--exclude=log"
       - "--exclude=tmp"
 
