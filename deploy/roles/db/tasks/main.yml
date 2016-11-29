@@ -4,3 +4,11 @@
     src: pg_hba.conf.j2
     dest: /etc/postgresql/9.5/main/pg_hba.conf
   notify: restart postgresql
+
+- name: Set listen_address
+  lineinfile:
+    backup: True
+    dest: /etc/postgresql/9.5/main/postgresql.conf
+    insertafter: EOF
+    line: "listen_addresses = '{{ database_address }}'"
+  notify: restart postgresql
