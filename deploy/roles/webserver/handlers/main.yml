@@ -2,7 +2,7 @@
 - name: Reload nginx config
   service:
     name: nginx
-    state: reload
+    state: reloaded
     enabled: yes
 
 - name: Restart tracker
