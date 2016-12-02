@@ -156,6 +156,11 @@
   sudo_user: mindleaps
   shell: DEVISE_SECRET_KEY={{ devise_secret_key }} RAILS_ENV=production ~/.rvm/bin/rvm `cat ~/tracker/.ruby-version` do rails db:migrate chdir=/home/mindleaps/tracker
 
+- name: Reset Postgres sequences of table primary key ids
+  sudo: true
+  sudo_user: mindleaps
+  shell: DEVISE_SECRET_KEY={{ devise_secret_key }} RAILS_ENV=production ~/.rvm/bin/rvm `cat ~/tracker/.ruby-version` do rake db:correct_sequence_ids chdir=/home/mindleaps/tracker
+
 - name: Precompile the assets
   sudo: true
   sudo_user: mindleaps
