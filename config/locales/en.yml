@@ -36,7 +36,7 @@ en:
   lesson_created: Lesson successfully created.
   skill_created: Skill "%{skill}" successfully created.
   create_grade_button: Save Student Grades
-  invalid_token: Invalid token or non-existant user
+  invalid_token: Invalid token or non-existent user
   student_graded: Student successfully graded.
   student_absent: Absent
   student_not_graded: Not Graded
