@@ -12,14 +12,17 @@
 
 ActiveRecord::Schema.define(version: 20161025175655) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "assignments", force: :cascade do |t|
     t.integer  "skill_id",   null: false
     t.integer  "subject_id", null: false
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["skill_id"], name: "index_assignments_on_skill_id"
-    t.index ["subject_id"], name: "index_assignments_on_subject_id"
+    t.index ["skill_id"], name: "index_assignments_on_skill_id", using: :btree
+    t.index ["subject_id"], name: "index_assignments_on_subject_id", using: :btree
   end
 
   create_table "authentication_tokens", force: :cascade do |t|
@@ -30,7 +33,7 @@ ActiveRecord::Schema.define(version: 20161025175655) do
     t.string   "user_agent"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
-    t.index ["user_id"], name: "index_authentication_tokens_on_user_id"
+    t.index ["user_id"], name: "index_authentication_tokens_on_user_id", using: :btree
   end
 
   create_table "chapters", force: :cascade do |t|
@@ -39,7 +42,7 @@ ActiveRecord::Schema.define(version: 20161025175655) do
     t.datetime "updated_at",      null: false
     t.integer  "organization_id"
     t.datetime "deleted_at"
-    t.index ["organization_id"], name: "index_chapters_on_organization_id"
+    t.index ["organization_id"], name: "index_chapters_on_organization_id", using: :btree
   end
 
   create_table "grade_descriptors", force: :cascade do |t|
@@ -49,8 +52,8 @@ ActiveRecord::Schema.define(version: 20161025175655) do
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
     t.datetime "deleted_at"
-    t.index ["mark", "skill_id"], name: "index_grade_descriptors_on_mark_and_skill_id", unique: true
-    t.index ["skill_id"], name: "index_grade_descriptors_on_skill_id"
+    t.index ["mark", "skill_id"], name: "index_grade_descriptors_on_mark_and_skill_id", unique: true, using: :btree
+    t.index ["skill_id"], name: "index_grade_descriptors_on_skill_id", using: :btree
   end
 
   create_table "grades", force: :cascade do |t|
@@ -60,9 +63,9 @@ ActiveRecord::Schema.define(version: 20161025175655) do
     t.datetime "created_at",          null: false
     t.datetime "updated_at",          null: false
     t.datetime "deleted_at"
-    t.index ["grade_descriptor_id"], name: "index_grades_on_grade_descriptor_id"
-    t.index ["lesson_id"], name: "index_grades_on_lesson_id"
-    t.index ["student_id"], name: "index_grades_on_student_id"
+    t.index ["grade_descriptor_id"], name: "index_grades_on_grade_descriptor_id", using: :btree
+    t.index ["lesson_id"], name: "index_grades_on_lesson_id", using: :btree
+    t.index ["student_id"], name: "index_grades_on_student_id", using: :btree
   end
 
   create_table "groups", force: :cascade do |t|
@@ -71,7 +74,7 @@ ActiveRecord::Schema.define(version: 20161025175655) do
     t.string   "group_name", default: "", null: false
     t.integer  "chapter_id"
     t.datetime "deleted_at"
-    t.index ["chapter_id"], name: "index_groups_on_chapter_id"
+    t.index ["chapter_id"], name: "index_groups_on_chapter_id", using: :btree
   end
 
   create_table "lessons", force: :cascade do |t|
@@ -81,8 +84,8 @@ ActiveRecord::Schema.define(version: 20161025175655) do
     t.datetime "updated_at", null: false
     t.integer  "subject_id", null: false
     t.datetime "deleted_at"
-    t.index ["group_id"], name: "index_lessons_on_group_id"
-    t.index ["subject_id"], name: "index_lessons_on_subject_id"
+    t.index ["group_id"], name: "index_lessons_on_group_id", using: :btree
+    t.index ["subject_id"], name: "index_lessons_on_subject_id", using: :btree
   end
 
   create_table "organizations", force: :cascade do |t|
@@ -99,8 +102,8 @@ ActiveRecord::Schema.define(version: 20161025175655) do
     t.integer  "resource_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
-    t.index ["name"], name: "index_roles_on_name"
+    t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id", using: :btree
+    t.index ["name"], name: "index_roles_on_name", using: :btree
   end
 
   create_table "skills", force: :cascade do |t|
@@ -110,7 +113,7 @@ ActiveRecord::Schema.define(version: 20161025175655) do
     t.datetime "updated_at",        null: false
     t.text     "skill_description"
     t.datetime "deleted_at"
-    t.index ["organization_id"], name: "index_skills_on_organization_id"
+    t.index ["organization_id"], name: "index_skills_on_organization_id", using: :btree
   end
 
   create_table "students", force: :cascade do |t|
@@ -138,8 +141,8 @@ ActiveRecord::Schema.define(version: 20161025175655) do
     t.integer  "organization_id",                       null: false
     t.string   "mlid",                                  null: false
     t.datetime "deleted_at"
-    t.index ["group_id"], name: "index_students_on_group_id"
-    t.index ["organization_id"], name: "index_students_on_organization_id"
+    t.index ["group_id"], name: "index_students_on_group_id", using: :btree
+    t.index ["organization_id"], name: "index_students_on_organization_id", using: :btree
   end
 
   create_table "subjects", force: :cascade do |t|
@@ -148,7 +151,7 @@ ActiveRecord::Schema.define(version: 20161025175655) do
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
     t.datetime "deleted_at"
-    t.index ["organization_id"], name: "index_subjects_on_organization_id"
+    t.index ["organization_id"], name: "index_subjects_on_organization_id", using: :btree
   end
 
   create_table "users", force: :cascade do |t|
@@ -164,13 +167,13 @@ ActiveRecord::Schema.define(version: 20161025175655) do
     t.string   "last_sign_in_ip"
     t.string   "provider"
     t.string   "image"
-    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
   end
 
   create_table "users_roles", id: false, force: :cascade do |t|
     t.integer "user_id"
     t.integer "role_id"
-    t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
+    t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id", using: :btree
   end
 
 end
