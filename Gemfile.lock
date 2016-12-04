@@ -266,6 +266,8 @@ GEM
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.0)
+    skylight (1.0.1)
+      activesupport (>= 3.0.0)
     slop (3.6.0)
     spring (2.0.0)
       activesupport (>= 4.2)
@@ -344,6 +346,7 @@ DEPENDENCIES
   selenium-webdriver
   shoulda-matchers
   simple_form
+  skylight
   spring
   tiddle
   web-console
