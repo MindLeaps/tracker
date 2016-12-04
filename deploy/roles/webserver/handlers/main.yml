@@ -6,10 +6,11 @@
     enabled: yes
 
 - name: Restart tracker
-  service:
+  systemd:
     name: tracker
     state: restarted
     enabled: yes
+    daemon_reload: yes
 
 - name: Run DB migrations
   sudo: true
