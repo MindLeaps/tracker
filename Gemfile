@@ -28,6 +28,7 @@ group :production do
   gem 'puma'
   gem 'SyslogLogger'
   gem 'skylight'
+  gem 'newrelic_rpm'
 end
 
 group :development, :test do

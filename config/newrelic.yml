@@ -1,0 +1,23 @@
+#
+# This file configures the New Relic Agent.  New Relic monitors Ruby, Java,
+# .NET, PHP, Python and Node applications with deep visibility and low
+# overhead.  For more information, visit www.newrelic.com.
+#
+# Generated December 04, 2016
+#
+# This configuration file is custom generated for MindLeaps
+#
+# For full documentation of agent configuration options, please refer to
+# https://docs.newrelic.com/docs/agents/ruby-agent/installation-configuration/ruby-agent-configuration
+
+common: &default_settings
+  # To disable the agent regardless of other settings, uncomment the following:
+   agent_enabled: false
+
+  # Logging level for log/newrelic_agent.log
+  log_level: info
+
+production:
+  <<: *default_settings
+  agent_enabled: true
+  developer_mode: false
