@@ -27,6 +27,7 @@ gem 'has_scope'
 group :production do
   gem 'puma'
   gem 'SyslogLogger'
+  gem 'skylight'
 end
 
 group :development, :test do
