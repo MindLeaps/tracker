@@ -48,7 +48,7 @@ RSpec.describe Api::GradesController, type: :controller do
     end
 
     it 'lists all grades including the grades of deleted students' do
-      get :index, format: :json, params: { exclude_deleted_students: false }
+      get :index, format: :json, params: { include_deleted_students: true }
 
       expect(grades.length).to eq 7
       expect(grades.map { |g| g['id'] }).to include @grade1.id, @grade2.id, @grade3.id, @grade4.id, @grade5.id, @grade6.id, @grade7.id

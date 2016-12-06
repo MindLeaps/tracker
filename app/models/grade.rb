@@ -13,8 +13,6 @@ class Grade < ApplicationRecord
 
   scope :exclude_deleted_students, -> { joins(:student).where students: { deleted_at: nil } }
 
-  # scope :after_timestamp, ->(timestamp) { where('created_at > :datetime OR updated_at > :datetime', datetime: Time.zone.parse(timestamp)) }
-
   attr_accessor :skill
 
   def skill
