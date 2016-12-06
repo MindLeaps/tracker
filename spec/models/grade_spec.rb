@@ -56,6 +56,7 @@ RSpec.describe Grade, type: :model do
     before :each do
       @student1 = create :student
       @student2 = create :student
+      @deleted_student = create :student, deleted_at: Time.zone.now
 
       @lesson1 = create :lesson
       @lesson2 = create :lesson
@@ -64,6 +65,8 @@ RSpec.describe Grade, type: :model do
       @grade2 = create :grade, student: @student1, lesson: @lesson2
       @grade3 = create :grade, student: @student2, lesson: @lesson1
       @deleted_grade = create :grade, deleted_at: Time.zone.now
+
+      @grade_of_deleted = create :grade, student: @deleted_student, created_at: 5.days.ago, updated_at: 2.days.ago
     end
 
     describe '#by_group' do
@@ -89,9 +92,17 @@ RSpec.describe Grade, type: :model do
 
     describe '#exclude_deleted' do
       it 'returns only grades that are not deleted' do
-        expect(Grade.exclude_deleted.all.length).to eq 3
+        expect(Grade.exclude_deleted.all.length).to eq 4
         expect(Grade.exclude_deleted.all).to include @grade1, @grade2, @grade3
         expect(Grade.exclude_deleted.all).not_to include @deleted_grade
+      end
+    end
+
+    describe '#exclude_deleted_students' do
+      it 'returns only grades of non-deleted students' do
+        expect(Grade.exclude_deleted_students.all.length).to eq 4
+        expect(Grade.exclude_deleted_students.all).to include @grade1, @grade2, @grade3, @deleted_grade
+        expect(Grade.exclude_deleted_students.all).not_to include @grade_of_deleted
       end
     end
   end
