@@ -5,6 +5,9 @@ module Api
     has_scope :by_lesson, as: :lesson_id
     has_scope :after_timestamp
     has_scope :exclude_deleted, type: :boolean
+    has_scope :include_deleted_students, type: :boolean, default: false, allow_blank: true do |_, scope, value|
+      !value ? scope.exclude_deleted_students : scope
+    end
 
     def index
       @grades = apply_scopes(Grade).all

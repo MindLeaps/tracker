@@ -29,19 +29,29 @@ RSpec.describe Api::GradesController, type: :controller do
       @lesson1 = create :lesson
       @lesson2 = create :lesson
 
+      @deleted_student = create :student, group: @group, deleted_at: Time.zone.now
+
       @grade1 = create :grade, student: @student, lesson: @lesson1, created_at: 3.months.ago, updated_at: 3.months.ago
       @grade2 = create :grade, student: @student, lesson: @lesson1, created_at: 3.months.ago, updated_at: 3.months.ago
       @grade3 = create :grade, lesson: @lesson2
       @grade4 = create :grade, lesson: @lesson2
       @grade5 = create :grade, lesson: @lesson2, deleted_at: Time.zone.now
+      @grade6 = create :grade, student: @deleted_student, lesson: @lesson1
+      @grade7 = create :grade, student: @deleted_student, lesson: @lesson2
 
       get :index, format: :json
     end
 
-    it 'lists all grades' do
+    it 'lists all grades excluding the grades of deleted students' do
       expect(grades.length).to eq 5
       expect(grades.map { |g| g['id'] }).to include @grade1.id, @grade2.id, @grade3.id, @grade4.id, @grade5.id
-      expect(grades.map { |g| g['id'] }).to include @grade1.id, @grade2.id, @grade3.id, @grade4.id, @grade5.id
+    end
+
+    it 'lists all grades including the grades of deleted students' do
+      get :index, format: :json, params: { include_deleted_students: true }
+
+      expect(grades.length).to eq 7
+      expect(grades.map { |g| g['id'] }).to include @grade1.id, @grade2.id, @grade3.id, @grade4.id, @grade5.id, @grade6.id, @grade7.id
     end
 
     it 'responds with timestamp' do
