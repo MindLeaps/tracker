@@ -10,10 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161025175655) do
+ActiveRecord::Schema.define(version: 20161217023827) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "absences", force: :cascade do |t|
+    t.integer "student_id", null: false
+    t.integer "lesson_id",  null: false
+    t.index ["lesson_id"], name: "index_absences_on_lesson_id", using: :btree
+    t.index ["student_id"], name: "index_absences_on_student_id", using: :btree
+  end
 
   create_table "assignments", force: :cascade do |t|
     t.integer  "skill_id",   null: false
@@ -176,4 +183,7 @@ ActiveRecord::Schema.define(version: 20161025175655) do
     t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id", using: :btree
   end
 
+  add_foreign_key "absences", "lessons"
+  add_foreign_key "absences", "students"
+  add_foreign_key "authentication_tokens", "users"
 end
