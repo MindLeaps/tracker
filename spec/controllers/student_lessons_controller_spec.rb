@@ -1,0 +1,85 @@
+# frozen_string_literal: true
+require 'rails_helper'
+
+RSpec.describe StudentLessonsController, type: :controller do
+  let(:group_a) { create :group, group_name: 'Group A' }
+
+  context 'logged in as a global administrator' do
+    let(:organization) { create :organization }
+    let(:signed_in_user) { create :admin }
+
+    before :each do
+      sign_in signed_in_user
+    end
+
+    describe 'grading' do
+      before :each do
+        group = create :group, group_name: 'Student Grades Spec Group'
+        @student = create :student, first_name: 'Graden', last_name: 'Gradanovic', group: group
+        sub = create :subject, subject_name: 'Student Grades Testing'
+        @skill = create :skill_in_subject, skill_name: 'Controller Test I', subject: sub
+        @lesson = create :lesson, subject: sub, group: group
+        @gd1 = create :grade_descriptor, mark: 1, grade_description: 'Mark One For Skill One', skill: @skill
+        @gd2 = create :grade_descriptor, mark: 2, grade_description: 'Mark Two For Skill One', skill: @skill
+      end
+
+      describe '#show' do
+        before :each do
+          get :show, params: { id: @student.id, lesson_id: @lesson.id }
+        end
+
+        it { should respond_with 200 }
+        it { should render_template :show }
+      end
+
+      describe '#grade' do
+        before :each do
+          post :grade, params: { id: @student.id, lesson_id: @lesson.id, student: {
+            grades_attributes: { '0' => { grade_descriptor_id: @gd1.id } }
+          } }
+        end
+
+        context 'successfully' do
+          it { should redirect_to action: :show }
+
+          it 'Saves the new grade' do
+            expect(@student.grades.length).to eq 1
+            expect(@student.grades[0].grade_descriptor).to eq @gd1
+          end
+
+          it 'Updates the existing grade' do
+            existing_grade_id = @student.grades[0].id
+            post :grade, params: { id: @student.id, lesson_id: @lesson.id, student: {
+              grades_attributes: { '0' => { id: existing_grade_id, grade_descriptor_id: @gd2.id } }
+            } }
+
+            student = Student.find @student.id
+            expect(student.grades.length).to eq 1
+            expect(student.grades[0].grade_descriptor).to eq @gd2
+          end
+
+          it 'Updates the existing grade to be ungraded' do
+            existing_grade_id = @student.grades[0].id
+
+            post :grade, params: { id: @student.id, lesson_id: @lesson.id, student: {
+              grades_attributes: { '0' => { id: existing_grade_id, grade_descriptor_id: '' } }
+            } }
+
+            student = Student.find @student.id
+            expect(student.grades.exclude_deleted.length).to eq 0
+          end
+
+          it 'Marks the student as absent from lesson' do
+            post :grade, params: { id: @student.id, lesson_id: @lesson.id, student: {
+              absences: '1',
+              grades_attributes: { '0' => { grade_descriptor_id: @gd1.id } }
+            } }
+
+            expect(@lesson.absences[0].student_id).to eq @student.id
+            expect(@student.absences[0].lesson_id).to be @lesson.id
+          end
+        end
+      end
+    end
+  end
+end

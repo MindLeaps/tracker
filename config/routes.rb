@@ -2,6 +2,10 @@
 # rubocop:disable Metrics/BlockLength
 
 Rails.application.routes.draw do
+  get 'student_lessons/show'
+
+  get 'student_lessons/grade'
+
   devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks', sessions: 'users/sessions' }, path: '/'
   devise_scope :user do
     post 'sign_in', to: 'users/sessions#token_signin'
@@ -31,9 +35,8 @@ Rails.application.routes.draw do
     end
   end
   resources :lessons, only: [:index, :create, :show] do
-    resources :students, only: [] do
+    resources :students, controller: :student_lessons, only: [:show] do
       member do
-        get :grades
         post :grade
       end
     end
