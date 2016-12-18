@@ -6,4 +6,10 @@ RSpec.describe Absence, type: :model do
     it { should belong_to :student }
     it { should belong_to :lesson }
   end
+
+  describe 'validations' do
+    subject { build :absence }
+
+    it { should validate_uniqueness_of(:student).scoped_to :lesson_id }
+  end
 end
