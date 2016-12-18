@@ -27,8 +27,6 @@ class Lesson < ApplicationRecord
     absence.destroy
   end
 
-  private
-
   def student_absent?(student)
     absences.map(&:student_id).include? student.id
   end

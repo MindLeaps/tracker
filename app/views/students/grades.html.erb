@@ -18,3 +18,7 @@
     <%= f.button :submit, I18n.t(:create_grade_button), class: 'btn-outline-success' %>
   <%- end %>
 </fieldset>
+
+<div class="action-buttons">
+  <%= link_to 'Back to Lesson', lesson_path(@lesson) %>
+</div>

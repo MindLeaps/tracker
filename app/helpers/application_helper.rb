@@ -28,4 +28,10 @@ module ApplicationHelper
   def user_name(user)
     user.name || 'Inactive User'
   end
+
+  def lesson_student_average_grade(lesson, student)
+    return t(:student_absent) if lesson.student_absent? student
+
+    t :student_not_graded
+  end
 end

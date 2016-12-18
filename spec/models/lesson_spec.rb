@@ -65,7 +65,7 @@ RSpec.describe Lesson, type: :model do
     end
   end
 
-  describe 'mark_student_as_absent' do
+  describe '#mark_student_as_absent' do
     before :each do
       @group = create :group
       @student = create :student, group: @group
@@ -94,7 +94,7 @@ RSpec.describe Lesson, type: :model do
     end
   end
 
-  describe 'mark_student_as_present' do
+  describe '#mark_student_as_present' do
     before :each do
       @group = create :group
 
@@ -117,6 +117,24 @@ RSpec.describe Lesson, type: :model do
       @lesson2.mark_student_as_present @present_student
 
       expect(@lesson2.reload.absences.length).to eq 0
+    end
+  end
+
+  describe '#student_absent?' do
+    before :each do
+      @group = create :group
+      @student = create :student, group: @group
+      @lesson = create :lesson, group: @group
+    end
+
+    it 'returns true if a student is absent' do
+      create :absence, lesson: @lesson, student: @student
+
+      expect(@lesson.student_absent?(@student)).to be true
+    end
+
+    it 'returns false if student is not absent' do
+      expect(@lesson.student_absent?(@student)).to be false
     end
   end
 end

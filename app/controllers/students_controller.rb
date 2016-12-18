@@ -47,9 +47,9 @@ class StudentsController < ApplicationController
 
   def grades
     @student = Student.find params[:id]
-    lesson = Lesson.find params[:lesson_id]
+    @lesson = Lesson.find params[:lesson_id]
     @grades = @student.current_grades_for_lesson_including_ungraded_skills params[:lesson_id]
-    @absence = lesson.absences.map(&:student_id).include? @student.id
+    @absence = @lesson.absences.map(&:student_id).include? @student.id
   end
 
   def grade
