@@ -34,7 +34,7 @@ RSpec.describe GroupsController, type: :controller do
     end
   end
 
-  describe '#index' do
+  describe '#show' do
     before :each do
       @group = create :group
       @student1 = create :student, group: @group

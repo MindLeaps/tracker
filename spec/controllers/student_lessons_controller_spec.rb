@@ -34,7 +34,7 @@ RSpec.describe StudentLessonsController, type: :controller do
 
       describe '#grade' do
         before :each do
-          post :grade, params: { id: @student.id, lesson_id: @lesson.id, student: {
+          post :update, params: { id: @student.id, lesson_id: @lesson.id, student: {
             grades_attributes: { '0' => { grade_descriptor_id: @gd1.id } }
           } }
         end
@@ -49,7 +49,7 @@ RSpec.describe StudentLessonsController, type: :controller do
 
           it 'Updates the existing grade' do
             existing_grade_id = @student.grades[0].id
-            post :grade, params: { id: @student.id, lesson_id: @lesson.id, student: {
+            post :update, params: { id: @student.id, lesson_id: @lesson.id, student: {
               grades_attributes: { '0' => { id: existing_grade_id, grade_descriptor_id: @gd2.id } }
             } }
 
@@ -61,7 +61,7 @@ RSpec.describe StudentLessonsController, type: :controller do
           it 'Updates the existing grade to be ungraded' do
             existing_grade_id = @student.grades[0].id
 
-            post :grade, params: { id: @student.id, lesson_id: @lesson.id, student: {
+            post :update, params: { id: @student.id, lesson_id: @lesson.id, student: {
               grades_attributes: { '0' => { id: existing_grade_id, grade_descriptor_id: '' } }
             } }
 
@@ -70,7 +70,7 @@ RSpec.describe StudentLessonsController, type: :controller do
           end
 
           it 'Marks the student as absent from lesson' do
-            post :grade, params: { id: @student.id, lesson_id: @lesson.id, student: {
+            post :update, params: { id: @student.id, lesson_id: @lesson.id, student: {
               absences: '1',
               grades_attributes: { '0' => { grade_descriptor_id: @gd1.id } }
             } }

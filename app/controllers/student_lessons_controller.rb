@@ -7,22 +7,22 @@ class StudentLessonsController < ApplicationController
     @absence = @lesson.absences.map(&:student_id).include? @student.id
   end
 
-  def grade
+  def update
     student = Student.find params[:id]
-    lesson = Lesson.find params[:lesson_id]
-    grades = generate_grades_from_params student
-    student.grade_lesson params[:lesson_id], grades
-    mark_student_absence lesson, student, absence_param
-    notice_and_redirect 'Student successfully graded.', lesson_student_path
+    student.grade_lesson params[:lesson_id], generate_grades_from_params(student)
+
+    mark_student_absence student
+    notice_and_redirect I18n.t(:student_graded), lesson_student_path
   end
 
   private
 
-  def absence_param
+  def absence
     params.require(:student).permit(:absences)[:absences]
   end
 
-  def mark_student_absence(lesson, student, absence)
+  def mark_student_absence(student)
+    lesson = Lesson.find params[:lesson_id]
     if absence == '1'
       lesson.mark_student_as_absent student
     elsif absence == '0'

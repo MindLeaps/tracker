@@ -12,7 +12,7 @@ class StudentsController < ApplicationController
 
   def create
     @student = Student.new student_params
-    return link_notice_and_redirect t(:student_created, name: @student.proper_name), new_student_path, 'Create another', @student if @student.save
+    return link_notice_and_redirect t(:student_created, name: @student.proper_name), new_student_path, I18n.t(:create_another), @student if @student.save
     render :new
   end
 
