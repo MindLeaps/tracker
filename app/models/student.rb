@@ -4,10 +4,11 @@ class Student < ApplicationRecord
   validates :mlid, uniqueness: {
     scope: :organization_id
   }
+  enum gender: { M: 0, F: 1 }
   belongs_to :group
   belongs_to :organization
-  enum gender: { M: 0, F: 1 }
   has_many :grades
+  has_many :absences
   accepts_nested_attributes_for :grades
 
   delegate :group_name, to: :group, allow_nil: true

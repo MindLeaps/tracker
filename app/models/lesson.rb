@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 class Lesson < ApplicationRecord
+  belongs_to :group
+  belongs_to :subject
+  has_many :absences
+
   validates :group, :date, :subject, presence: true
   validates :date, uniqueness: {
     scope: [:group, :subject],
@@ -7,9 +11,5 @@ class Lesson < ApplicationRecord
   }
 
   scope :by_group, ->(group_id) { where group_id: group_id }
-
   scope :by_subject, ->(subject_id) { where subject_id: subject_id }
-
-  belongs_to :group
-  belongs_to :subject
 end

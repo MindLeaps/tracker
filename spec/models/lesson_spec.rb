@@ -2,6 +2,12 @@
 require 'rails_helper'
 
 RSpec.describe Lesson, type: :model do
+  describe 'relationships' do
+    it { should belong_to :group }
+    it { should belong_to :subject }
+    it { should have_many :absences }
+  end
+
   describe 'validations' do
     it { is_expected.to belong_to :group }
     it { is_expected.to belong_to :subject }
