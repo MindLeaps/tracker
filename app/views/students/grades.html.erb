@@ -5,6 +5,7 @@
 <fieldset>
   <%= simple_form_for @student, wrapper: :horizontal_form, url: {action: 'grade'}, method: :post do |f| %>
     <%= render partial: 'shared/errors', locals: {subject: @student} %>
+    <%= f.input :absences, as: :boolean, label: 'Student absent', input_html: { checked: @absence } %>
     <%= f.simple_fields_for :grades, @grades do |grade| %>
       <%= grade.hidden_field :skill, value: grade.object.skill %>
       <%= grade.association :grade_descriptor,
