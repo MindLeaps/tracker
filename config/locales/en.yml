@@ -21,6 +21,7 @@
 
 en:
   student_created: Student "%{name}" successfully created.
+  create_another: Create another
   student_delete_confirmation: Are you sure you want to delete student "%{name}"?
   student_deleted: Student "%{name}" successfully deleted.
   student_restored: Student "%{name}" successfully restored.
@@ -34,4 +35,7 @@ en:
   lesson_created: Lesson successfully created.
   skill_created: Skill "%{skill}" successfully created.
   create_grade_button: Save Student Grades
-  invalid_token: 'Invalid token or non-existant user'
+  invalid_token: Invalid token or non-existant user
+  student_graded: Student successfully graded.
+  student_absent: Absent
+  student_not_graded: Not Graded

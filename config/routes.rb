@@ -31,12 +31,7 @@ Rails.application.routes.draw do
     end
   end
   resources :lessons, only: [:index, :create, :show] do
-    resources :students, only: [] do
-      member do
-        get :grades
-        post :grade
-      end
-    end
+    resources :students, controller: :student_lessons, only: [:show, :update]
   end
   resources :subjects, only: [:index, :create]
   resources :skills, only: [:index, :create, :show, :new]

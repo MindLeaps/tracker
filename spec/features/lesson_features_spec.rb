@@ -89,6 +89,22 @@ RSpec.describe 'User interacts with lessons' do
         expect(page).to have_content 'Testing'
         expect(page).to have_content 'Mark One For Skill Two'
       end
+
+      it 'marks a student as being absent from a lesson' do
+        visit "/lessons/#{@lesson.id}"
+        click_link 'Graden'
+
+        expect(page).to have_unchecked_field 'student_absences'
+        check 'student_absences'
+
+        click_button 'Save Student Grades'
+        expect(page).to have_content 'Student successfully graded.'
+        expect(page).to have_checked_field 'student_absences'
+
+        click_link 'Back to Lesson'
+
+        expect(page).to have_content 'Absent'
+      end
     end
   end
 end

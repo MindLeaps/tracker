@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 class Lesson < ApplicationRecord
+  belongs_to :group
+  belongs_to :subject
+  has_many :absences
+
   validates :group, :date, :subject, presence: true
   validates :date, uniqueness: {
     scope: [:group, :subject],
@@ -7,9 +11,22 @@ class Lesson < ApplicationRecord
   }
 
   scope :by_group, ->(group_id) { where group_id: group_id }
-
   scope :by_subject, ->(subject_id) { where subject_id: subject_id }
 
-  belongs_to :group
-  belongs_to :subject
+  def mark_student_as_absent(student)
+    return if student_absent?(student)
+
+    Absence.create student: student, lesson: self
+  end
+
+  def mark_student_as_present(student)
+    return unless student_absent? student
+
+    absence = absences.detect { |a| a.student_id == student.id }
+    absence.destroy
+  end
+
+  def student_absent?(student)
+    absences.any? { |absence| absence.student_id == student.id }
+  end
 end

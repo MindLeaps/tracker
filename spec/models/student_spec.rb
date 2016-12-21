@@ -4,6 +4,13 @@ require 'rails_helper'
 RSpec.describe Student, type: :model do
   let(:org) { create :organization }
 
+  describe 'relationships' do
+    it { should belong_to :group }
+    it { should belong_to :organization }
+    it { should have_many :grades }
+    it { should have_many :absences }
+  end
+
   describe 'validations' do
     subject { create :student, mlid: 'TEST1' }
 

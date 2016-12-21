@@ -12,7 +12,7 @@ class StudentsController < ApplicationController
 
   def create
     @student = Student.new student_params
-    return link_notice_and_redirect t(:student_created, name: @student.proper_name), new_student_path, 'Create another', @student if @student.save
+    return link_notice_and_redirect t(:student_created, name: @student.proper_name), new_student_path, I18n.t(:create_another), @student if @student.save
     render :new
   end
 
@@ -35,44 +35,19 @@ class StudentsController < ApplicationController
     @student = Student.find params.require :id
     @student.deleted_at = Time.zone.now
 
-    return undo_notice_and_redirect t(:student_deleted, name: @student.proper_name), undelete_student_path, students_path if @student.save
+    undo_notice_and_redirect t(:student_deleted, name: @student.proper_name), undelete_student_path, students_path if @student.save
   end
 
   def undelete
     @student = Student.find params.require :id
     @student.deleted_at = nil
 
-    return notice_and_redirect t(:student_restored, name: @student.proper_name), students_path if @student.save
-  end
-
-  def grades
-    @student = Student.find params[:id]
-    @grades = @student.current_grades_for_lesson_including_ungraded_skills params[:lesson_id]
-  end
-
-  def grade
-    @student = Student.find params[:id]
-    grades = generate_grades_from_params @student
-    @student.grade_lesson params[:lesson_id], grades
-    notice_and_redirect 'Student successfully graded.', grades_lesson_student_path
+    notice_and_redirect t(:student_restored, name: @student.proper_name), students_path if @student.save
   end
 
   private
 
   def student_params
     params.require(:student).permit(*Student.permitted_params)
-  end
-
-  def generate_grades_from_params(student)
-    filled_grades_attributes
-      .map { |g| Grade.new(id: g[:id], student: student, lesson_id: params[:lesson_id], grade_descriptor_id: g[:grade_descriptor_id]) }
-  end
-
-  def filled_grades_attributes
-    grades_attributes.select { |g| !g['grade_descriptor_id'].empty? || !g['id'].blank? }
-  end
-
-  def grades_attributes
-    params.require(:student).permit(grades_attributes: [:id, :skill, :grade_descriptor_id])[:grades_attributes].values
   end
 end
