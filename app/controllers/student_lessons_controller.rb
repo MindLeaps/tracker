@@ -17,26 +17,28 @@ class StudentLessonsController < ApplicationController
 
   private
 
-  def absence
-    params.require(:student).permit(:absences)[:absences]
+  def student_absent?
+    absence_param = params.require(:student).permit(:absences)[:absences]
+    ActiveRecord::Type::Boolean.new.cast(absence_param)
   end
 
   def mark_student_absence(student)
     lesson = Lesson.find params[:lesson_id]
-    if absence == '1'
+    if student_absent?
       lesson.mark_student_as_absent student
-    elsif absence == '0'
+    else
       lesson.mark_student_as_present student
     end
   end
 
   def generate_grades_from_params(student)
-    filled_grades_attributes
-      .map { |g| Grade.new(id: g[:id], student: student, lesson_id: params[:lesson_id], grade_descriptor_id: g[:grade_descriptor_id]) }
+    filled_grades_attributes.map do |g|
+      Grade.new(id: g[:id], student: student, lesson_id: params[:lesson_id], grade_descriptor_id: g[:grade_descriptor_id])
+    end
   end
 
   def filled_grades_attributes
-    grades_attributes.select { |g| !g['grade_descriptor_id'].empty? || !g['id'].blank? }
+    grades_attributes.select { |g| g['grade_descriptor_id'].present? || g['id'].present? }
   end
 
   def grades_attributes

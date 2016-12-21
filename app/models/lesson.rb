@@ -14,10 +14,9 @@ class Lesson < ApplicationRecord
   scope :by_subject, ->(subject_id) { where subject_id: subject_id }
 
   def mark_student_as_absent(student)
-    return if student_absent? student
+    return if student_absent?(student)
 
-    new_absence = Absence.new student: student, lesson: self
-    new_absence.save
+    Absence.create student: student, lesson: self
   end
 
   def mark_student_as_present(student)
@@ -28,6 +27,6 @@ class Lesson < ApplicationRecord
   end
 
   def student_absent?(student)
-    absences.map(&:student_id).include? student.id
+    absences.any? { |absence| absence.student_id == student.id }
   end
 end
