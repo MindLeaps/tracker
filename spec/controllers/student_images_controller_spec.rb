@@ -56,6 +56,13 @@ RSpec.describe StudentImagesController, type: :controller do
         it 'saves a new image' do
           expect(StudentImage.where(student_id: @student.id).length).to eq 1
         end
+
+        it 'generates a unique filename for each uploaded image' do
+          post :create, params: { student_id: @student.id, student_image: { image: [test_image] } }
+
+          student_images = StudentImage.where(student_id: @student.id)
+          expect(student_images[0].image.to_s).not_to eq student_images[1].image.to_s
+        end
       end
 
       context 'submits no image' do
