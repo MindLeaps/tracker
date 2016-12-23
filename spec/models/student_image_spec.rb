@@ -3,7 +3,7 @@ require 'rails_helper'
 
 RSpec.describe StudentImage, type: :model do
   describe 'validations' do
-    it { should validate_presence_of :filename }
+    it { should validate_presence_of :image }
   end
 
   describe 'relations' do

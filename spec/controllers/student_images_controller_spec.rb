@@ -47,7 +47,7 @@ RSpec.describe StudentImagesController, type: :controller do
         before :each do
           @student = create :student
 
-          post :create, params: { student_id: @student.id, student_image: { filename: [test_image] } }
+          post :create, params: { student_id: @student.id, student_image: { image: [test_image] } }
         end
 
         it { should route(:post, "students/#{@student.id}/student_images").to action: :create, student_id: @student.id }

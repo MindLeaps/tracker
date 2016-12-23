@@ -17,8 +17,8 @@ class StudentImagesController < ApplicationController
   private
 
   def student_images
-    images = params.require(:student_image).permit(filename: [])[:filename]
-    images.map { |i| StudentImage.new filename: i }
+    images = params.require(:student_image).permit(image: [])[:image]
+    images.map { |i| StudentImage.new image: i }
   end
 
   def image_missing

@@ -36,7 +36,7 @@ module ApplicationHelper
   end
 
   def student_mini_thumbnail(student)
-    return student.profile_image.filename.mini_thumb.url if student.profile_image
+    return student.profile_image.image.mini_thumb.url if student.profile_image
 
     'unknown_user.svg'
   end

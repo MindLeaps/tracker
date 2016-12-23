@@ -29,7 +29,7 @@
     <%= f.input :notes, input_html: {rows: 5} %>
     <hr />
     <%= f.simple_fields_for :student_images do |i| %>
-        <%= i.input :filename, as: :file %>
+        <%= i.input :image, as: :file %>
     <% end %>
     <hr />
     <%= f.button :submit, class: 'btn-outline-success' %>

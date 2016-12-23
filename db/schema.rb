@@ -125,7 +125,7 @@ ActiveRecord::Schema.define(version: 20170120002843) do
   end
 
   create_table "student_images", force: :cascade do |t|
-    t.string   "filename"
+    t.string   "image"
     t.integer  "student_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
