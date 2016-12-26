@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 class StudentImageUploader < CarrierWave::Uploader::Base
-  # Include RMagick or MiniMagick support:
-  # include CarrierWave::RMagick
   include CarrierWave::MiniMagick
+  include CarrierWave::ImageOptimizer
 
   # Provide a default URL as a default if there hasn't been a file uploaded:
   # def default_url
@@ -22,10 +21,12 @@ class StudentImageUploader < CarrierWave::Uploader::Base
   # Create different versions of your uploaded files:
   version :medium do
     process resize_to_fill: [250, 250]
+    process optimize: [{ quality: 70 }]
   end
 
   version :mini_thumb, from_version: :medium do
     process resize_to_fill: [32, 32]
+    process optimize: [{ quality: 70 }]
   end
 
   # Add a white list of extensions which are allowed to be uploaded.
