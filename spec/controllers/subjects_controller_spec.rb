@@ -23,6 +23,20 @@ RSpec.describe SubjectsController, type: :controller do
       end
     end
 
+    describe '#show' do
+      before :each do
+        @subject = create :subject_with_skills, number_of_skills: 3
+        get :show, params: { id: @subject.id }
+      end
+
+      it { should respond_with 200 }
+      it { should render_template 'show' }
+
+      it 'shows the selected subject' do
+        expect(assigns(:subject)).to eq @subject
+      end
+    end
+
     describe '#create' do
       context 'Creates the subject successfully' do
         before :each do

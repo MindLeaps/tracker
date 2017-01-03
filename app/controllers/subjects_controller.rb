@@ -11,6 +11,10 @@ class SubjectsController < ApplicationController
     render :index
   end
 
+  def show
+    @subject = Subject.find params.require(:id)
+  end
+
   private
 
   def subject_params
