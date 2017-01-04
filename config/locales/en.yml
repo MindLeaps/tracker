@@ -32,6 +32,7 @@ en:
   duplicate_lesson: Lesson already exists for group "%{group}" in "%{subject}" on selected date.
   duplicate_grade: "%{name} already scored %{mark} in %{skill} on %{date} in %{subject}."
   subject_created: Subject "%{subject}" successfully created.
+  subject_updated: Subject successfully updated.
   lesson_created: Lesson successfully created.
   skill_created: Skill "%{skill}" successfully created.
   create_grade_button: Save Student Grades
@@ -39,3 +40,5 @@ en:
   student_graded: Student successfully graded.
   student_absent: Absent
   student_not_graded: Not Graded
+  back_to_subjects: Back to All Subjects
+  cancel: Cancel

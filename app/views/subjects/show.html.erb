@@ -1,0 +1,17 @@
+<h3>Subject: <%= @subject.subject_name %></h3>
+
+<% if @subject.skills.size > 0 %>
+  <h4>Skills:</h4>
+  <ul>
+    <% @subject.skills.each do |skill| %>
+      <li><%= skill.skill_name %></li>
+    <% end %>
+  </ul>
+<% else %>
+    <h4>No skills present in subject</h4>
+<% end %>
+
+<div class="action-buttons">
+  <%= link_to t(:back_to_subjects), subjects_path %>
+  <%= link_to 'Edit', { action: :edit }, class: 'btn btn-secondary' %>
+</div>

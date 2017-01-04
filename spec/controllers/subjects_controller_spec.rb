@@ -23,6 +23,58 @@ RSpec.describe SubjectsController, type: :controller do
       end
     end
 
+    describe '#show' do
+      before :each do
+        @subject = create :subject_with_skills, number_of_skills: 3
+        get :show, params: { id: @subject.id }
+      end
+
+      it { should respond_with 200 }
+      it { should render_template 'show' }
+
+      it 'shows the selected subject' do
+        expect(assigns(:subject)).to eq @subject
+      end
+    end
+
+    describe '#edit' do
+      before :each do
+        @subject = create :subject_with_skills, number_of_skills: 3
+        get :edit, params: { id: @subject.id }
+      end
+
+      it { should respond_with 200 }
+      it { should render_template 'edit' }
+      it 'shows the subject for editing' do
+        expect(assigns(:subject)).to eq @subject
+      end
+    end
+
+    describe '#update' do
+      before :each do
+        @subject = create :subject_with_skills, subject_name: 'Test Subject', number_of_skills: 2
+        @new_skill = create :skill
+        post :update, params: { id: @subject.id, subject: {
+          subject_name: 'Updated Name',
+          organization_id: @subject.organization_id,
+          assignments_attributes: [
+            { id: @subject.assignments[0].id, skill_id: @subject.assignments[0].skill_id, _destroy: false },
+            { id: @subject.assignments[0].id, skill_id: @subject.assignments[1].skill_id, _destroy: false },
+            { skill_id: @new_skill.id }
+          ]
+        } }
+      end
+
+      it { should redirect_to subject_path @subject }
+      it 'updates the subject name' do
+        expect(@subject.reload.subject_name).to eq 'Updated Name'
+      end
+      it 'updates the subject skills' do
+        expect(@subject.reload.skills.length).to eq 3
+        expect(@subject.skills).to include @new_skill
+      end
+    end
+
     describe '#create' do
       context 'Creates the subject successfully' do
         before :each do
@@ -51,10 +103,10 @@ RSpec.describe SubjectsController, type: :controller do
           post :create, params: { subject: {
             subject_name: 'Created Subject II',
             organization_id: @org.id,
-            assignments_attributes: {
-              '123': { skill_id: @skill1.id },
-              '124': { skill_id: @skill2.id }
-            }
+            assignments_attributes: [
+              { skill_id: @skill1.id },
+              { skill_id: @skill2.id }
+            ]
           } }
 
           created_subject = Subject.last
