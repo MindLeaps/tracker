@@ -33,7 +33,7 @@ Rails.application.routes.draw do
   resources :lessons, only: [:index, :create, :show] do
     resources :students, controller: :student_lessons, only: [:show, :update]
   end
-  resources :subjects, only: [:index, :create, :show]
+  resources :subjects, only: [:index, :create, :show, :edit, :update]
   resources :skills, only: [:index, :create, :show, :new]
 
   root to: 'home#index'
