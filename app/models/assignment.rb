@@ -5,4 +5,8 @@ class Assignment < ApplicationRecord
 
   validates :skill, presence: true
   validates :subject, presence: true
+
+  def destroy
+    update_attribute :deleted_at, Time.zone.now
+  end
 end
