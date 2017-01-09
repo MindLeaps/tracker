@@ -1,10 +1,10 @@
 <ul class="main-nav nav nav-tabs">
-  <%= render partial: "shared/main_nav_item", locals: {name: "Students", url: url_for(controller: "students", action: "index")} %>
-  <%= render partial: "shared/main_nav_item", locals: {name: "Groups", url: url_for(controller: "groups", action: "index")} %>
-  <%= render partial: "shared/main_nav_item", locals: {name: "Chapters", url: url_for(controller: "chapters", action: "index")} %>
-  <%= render partial: "shared/main_nav_item", locals: {name: "Organizations", url: url_for(controller: "organizations", action: "index")} if current_user.is_super_admin? %>
-  <%= render partial: "shared/main_nav_item", locals: {name: "Users", url: url_for(controller: "users", action: "index")} if current_user.is_super_admin? %>
-  <%= render partial: "shared/main_nav_item", locals: {name: "Lessons", url: url_for(controller: "lessons", action: "index")} %>
-  <%= render partial: "shared/main_nav_item", locals: {name: "Subjects", url: url_for(controller: "subjects", action: "index")} %>
-  <%= render partial: "shared/main_nav_item", locals: {name: "Skills", url: url_for(controller: "skills", action: "index")} %>
+  <%= render partial: "shared/main_nav_item", locals: {name: "Students", url: main_app.students_path} %>
+  <%= render partial: "shared/main_nav_item", locals: {name: "Groups", url: main_app.groups_path} %>
+  <%= render partial: "shared/main_nav_item", locals: {name: "Chapters", url: main_app.chapters_path} %>
+  <%= render partial: "shared/main_nav_item", locals: {name: "Organizations", url: main_app.organizations_path} if current_user.is_super_admin? %>
+  <%= render partial: "shared/main_nav_item", locals: {name: "Users", url: main_app.users_path} if current_user.is_super_admin? %>
+  <%= render partial: "shared/main_nav_item", locals: {name: "Lessons", url: main_app.lessons_path} %>
+  <%= render partial: "shared/main_nav_item", locals: {name: "Subjects", url: main_app.subjects_path} %>
+  <%= render partial: "shared/main_nav_item", locals: {name: "Skills", url: main_app.skills_path} %>
 </ul>

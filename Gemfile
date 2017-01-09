@@ -24,6 +24,8 @@ gem 'jquery-rails'
 gem 'active_model_serializers', '~> 0.10.0'
 gem 'has_scope'
 
+# gem 'mindleaps_analytics', path: '../Tracker-Analytics'
+
 group :production do
   gem 'puma'
   gem 'SyslogLogger'

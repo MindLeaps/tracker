@@ -2,6 +2,8 @@
 # rubocop:disable Metrics/BlockLength
 
 Rails.application.routes.draw do
+  # mount MindleapsAnalytics::Engine, at: '/analytics'
+
   devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks', sessions: 'users/sessions' }, path: '/'
   devise_scope :user do
     post 'sign_in', to: 'users/sessions#token_signin'
