@@ -16,9 +16,26 @@ module Api
     end
 
     def create
-      @lesson = Lesson.new params.permit :group_id, :date, :subject_id
-      @lesson.save
-      respond_with @lesson, include: included_params, meta: { timestamp: Time.zone.now }
+      lesson = Lesson.find_by group_id: params[:group_id], subject_id: params[:subject_id], date: params[:date]
+      return existing_lesson(lesson) if lesson
+
+      new_lesson
+    end
+
+    private
+
+    def existing_lesson(lesson)
+      respond_with lesson, status: :ok, meta: { timestamp: Time.zone.now }
+    end
+
+    def new_lesson
+      lesson = Lesson.new lesson_params
+      lesson.save
+      respond_with lesson, meta: { timestamp: Time.zone.now }
+    end
+
+    def lesson_params
+      params.permit :group_id, :date, :subject_id
     end
   end
 end

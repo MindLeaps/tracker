@@ -125,6 +125,12 @@ RSpec.describe Api::LessonsController, type: :controller do
       end
 
       it { should respond_with 200 }
+
+      it 'responds with lesson' do
+        expect(lesson['subject_id']).to eq @subject.id
+        expect(lesson['group_id']).to eq @group.id
+        expect(Time.zone.parse(lesson['date'])).to eq Time.zone.today
+      end
     end
   end
 end
