@@ -24,7 +24,9 @@ def mark_absent(student, lesson)
 end
 
 def seed_student_grades(student, lesson)
-  lesson.subject.skills.each do |skill|
-    student.grades.create lesson: lesson, student: student, grade_descriptor: skill.grade_descriptors.sample
+  Grade.transaction do
+    lesson.subject.skills.each do |skill|
+      Grade.create lesson: lesson, student: student, grade_descriptor: skill.grade_descriptors.sample
+    end
   end
 end
