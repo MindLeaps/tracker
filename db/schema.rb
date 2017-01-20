@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161217023827) do
+ActiveRecord::Schema.define(version: 20170120002843) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -91,6 +91,7 @@ ActiveRecord::Schema.define(version: 20161217023827) do
     t.datetime "updated_at", null: false
     t.integer  "subject_id", null: false
     t.datetime "deleted_at"
+    t.index ["group_id", "subject_id", "date"], name: "index_lessons_on_group_id_and_subject_id_and_date", unique: true, where: "(deleted_at IS NULL)", using: :btree
     t.index ["group_id"], name: "index_lessons_on_group_id", using: :btree
     t.index ["subject_id"], name: "index_lessons_on_subject_id", using: :btree
   end
