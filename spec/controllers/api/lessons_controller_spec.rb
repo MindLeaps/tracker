@@ -121,19 +121,24 @@ RSpec.describe Api::LessonsController, type: :controller do
       it 'has a Location header with the resource URL' do
         expect(response.headers['Location']).to eq api_lesson_url id: Lesson.last.id
       end
+    end
 
-      context 'lesson already exists' do
-        before :each do
-          post :create, format: :json, params: { group_id: @group.id, subject_id: @subject.id, date: Time.zone.today.to_formatted_s }
-        end
+    context 'lesson already exists' do
+      before :each do
+        create :lesson, group_id: @group.id, subject_id: @subject.id, date: Time.zone.today.to_formatted_s
+        post :create, format: :json, params: { group_id: @group.id, subject_id: @subject.id, date: Time.zone.today.to_formatted_s }
+      end
 
-        it { should respond_with 200 }
+      it { should respond_with 200 }
 
-        it 'responds with lesson' do
-          expect(lesson['subject_id']).to eq @subject.id
-          expect(lesson['group_id']).to eq @group.id
-          expect(Time.zone.parse(lesson['date'])).to eq Time.zone.today
-        end
+      it 'responds with lesson' do
+        expect(lesson['subject_id']).to eq @subject.id
+        expect(lesson['group_id']).to eq @group.id
+        expect(Time.zone.parse(lesson['date'])).to eq Time.zone.today
+      end
+
+      it 'does not save the new lesson' do
+        expect(Lesson.all.length).to eq 1
       end
     end
   end

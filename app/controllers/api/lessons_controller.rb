@@ -16,26 +16,20 @@ module Api
     end
 
     def create
-      lesson = Lesson.find_by group_id: params[:group_id], subject_id: params[:subject_id], date: params[:date]
-      return existing_lesson(lesson) if lesson
-
-      new_lesson
+      lesson = Lesson.new params.permit :group_id, :date, :subject_id
+      begin
+        lesson.save
+      rescue ActiveRecord::RecordNotUnique
+        return respond_with_existing_lesson
+      end
+      respond_with lesson, meta: { timestamp: Time.zone.now }
     end
 
     private
 
-    def existing_lesson(lesson)
+    def respond_with_existing_lesson
+      lesson = Lesson.find_by group_id: params[:group_id], subject_id: params[:subject_id], date: params[:date]
       respond_with lesson, status: :ok, meta: { timestamp: Time.zone.now }
-    end
-
-    def new_lesson
-      lesson = Lesson.new lesson_params
-      lesson.save
-      respond_with lesson, meta: { timestamp: Time.zone.now }
-    end
-
-    def lesson_params
-      params.permit :group_id, :date, :subject_id
     end
   end
 end
