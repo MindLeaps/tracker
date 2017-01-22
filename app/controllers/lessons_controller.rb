@@ -10,6 +10,7 @@ class LessonsController < ApplicationController
 
   def show
     @lesson = Lesson.find params[:id]
+    @students = @lesson.group.students.exclude_deleted
   end
 
   def create

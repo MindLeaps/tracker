@@ -34,6 +34,7 @@ RSpec.describe 'User interacts with lessons' do
       group = create :group, group_name: 'Lesson Feature Test Group'
       create :student, first_name: 'Marinko', last_name: 'Marinkovic', group: group
       create :student, first_name: 'Ivan', last_name: 'Ivankovic', group: group
+      create :student, first_name: 'Deleted', last_name: 'Deletovic', group: group, deleted_at: Time.zone.now
       sub = create :subject, subject_name: 'Feature Testing III'
       create :lesson, subject: sub, group: group
 
@@ -45,6 +46,7 @@ RSpec.describe 'User interacts with lessons' do
       expect(page).to have_content 'Students'
       expect(page).to have_content 'Marinko'
       expect(page).to have_content 'Ivan'
+      expect(page).not_to have_content 'Deletovic'
     end
 
     describe 'grading' do
