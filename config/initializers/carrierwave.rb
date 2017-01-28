@@ -1,21 +1,23 @@
 # frozen_string_literal: true
-CarrierWave.configure do |config|
-  # For testing, upload files to local `tmp` folder.
-  if Rails.env.test? || Rails.env.cucumber?
-    config.storage = :file
-    config.enable_processing = false
-    config.root = "#{Rails.root}/tmp"
-  else
-    config.fog_provider = 'fog/aws'
-    config.fog_credentials = {
-      provider:              'AWS',
-      aws_access_key_id: Rails.application.secrets.aws_access_key_id,
-      aws_secret_access_key: Rails.application.secrets.aws_secret_access_key,
-      region:                Rails.application.secrets.aws_region
-    }
-    config.fog_directory = Rails.application.secrets.aws_bucket_name
-    config.fog_public = true
-    config.fog_use_ssl_for_aws = true
-    config.storage = :fog
+unless File.basename($0) == 'rake'
+  CarrierWave.configure do |config|
+    # For testing, upload files to local `tmp` folder.
+    if Rails.env.test? || Rails.env.cucumber?
+      config.storage = :file
+      config.enable_processing = false
+      config.root = "#{Rails.root}/tmp"
+    else
+      config.fog_provider = 'fog/aws'
+      config.fog_credentials = {
+        provider:              'AWS',
+        aws_access_key_id: Rails.application.secrets.aws_access_key_id,
+        aws_secret_access_key: Rails.application.secrets.aws_secret_access_key,
+        region:                Rails.application.secrets.aws_region
+      }
+      config.fog_directory = Rails.application.secrets.aws_bucket_name
+      config.fog_public = true
+      config.fog_use_ssl_for_aws = true
+      config.storage = :fog
+    end
   end
 end

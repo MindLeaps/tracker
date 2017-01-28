@@ -18,6 +18,9 @@
     - nginx-extras
     - zlib1g-dev
     - nodejs
+    - imagemagick
+    - jpegoptim
+    - optipng
 
   # LetsEncrypt setup, these must happen in order and should only happen on
   # very first deploy
@@ -154,7 +157,7 @@
 - name: Migrate the Database
   sudo: true
   sudo_user: mindleaps
-  shell: DEVISE_SECRET_KEY={{ devise_secret_key }} RAILS_ENV=production ~/.rvm/bin/rvm `cat ~/tracker/.ruby-version` do rails db:migrate chdir=/home/mindleaps/tracker
+  shell: DEVISE_SECRET_KEY={{ devise_secret_key }} RAILS_ENV=production ~/.rvm/bin/rvm `cat ~/tracker/.ruby-version` do rake db:migrate chdir=/home/mindleaps/tracker
 
 - name: Reset Postgres sequences of table primary key ids
   sudo: true
@@ -164,7 +167,7 @@
 - name: Precompile the assets
   sudo: true
   sudo_user: mindleaps
-  shell: DEVISE_SECRET_KEY={{ devise_secret_key }} RAILS_ENV=production ~/.rvm/bin/rvm `cat ~/tracker/.ruby-version` do rails assets:precompile chdir=/home/mindleaps/tracker
+  shell: DEVISE_SECRET_KEY={{ devise_secret_key }} RAILS_ENV=production ~/.rvm/bin/rvm `cat ~/tracker/.ruby-version` do rake assets:precompile chdir=/home/mindleaps/tracker
 
 - name: Install the systemd script for tracker
   sudo: true
