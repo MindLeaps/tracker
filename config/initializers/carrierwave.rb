@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-unless File.basename($0) == 'rake'
+unless $PROGRAM_NAME == 'rake' # we don't want to setup this stuff for every rake task
   CarrierWave.configure do |config|
     # For testing, upload files to local `tmp` folder.
     if Rails.env.test? || Rails.env.cucumber?

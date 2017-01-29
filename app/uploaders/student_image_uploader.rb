@@ -29,6 +29,10 @@ class StudentImageUploader < CarrierWave::Uploader::Base
     process optimize: [{ quality: 70 }]
   end
 
+  def store_dir
+    'student_images'
+  end
+
   # Add a white list of extensions which are allowed to be uploaded.
   # For images you might use something like this:
   # def extension_whitelist
