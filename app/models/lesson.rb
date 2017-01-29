@@ -8,6 +8,11 @@ class Lesson < ApplicationRecord
   scope :by_group, ->(group_id) { where group_id: group_id }
   scope :by_subject, ->(subject_id) { where subject_id: subject_id }
 
+  validates :date, uniqueness: {
+    scope: [:group, :subject],
+    message: ->(object, _data) { I18n.translate :duplicate_lesson, group: object.group.group_name, subject: object.subject.subject_name }
+  }
+
   def mark_student_as_absent(student)
     return if student_absent?(student)
 

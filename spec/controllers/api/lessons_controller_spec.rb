@@ -104,7 +104,7 @@ RSpec.describe Api::LessonsController, type: :controller do
       @group = create :group
     end
 
-    context 'creating a non-existing lesson' do
+    context 'creating a new lesson' do
       before :each do
         post :create, format: :json, params: { group_id: @group.id, subject_id: @subject.id, date: Time.zone.today.to_formatted_s }
       end

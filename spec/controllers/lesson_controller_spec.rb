@@ -68,6 +68,22 @@ RSpec.describe LessonsController, type: :controller do
           expect(created_lesson.subject).to eq @subject
         end
       end
+      context 'Tries to create an existing lesson' do
+        before :each do
+          @group = create :group
+          @subject = create :subject
+
+          create :lesson, group: @group, subject: @subject, date: Time.zone.today
+
+          post :create, params: { lesson: {
+            group_id: @group.id,
+            subject_id: @subject.id,
+            date: Time.zone.today
+          } }
+        end
+
+        it { should render_template :index }
+      end
     end
   end
 end
