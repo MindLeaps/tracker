@@ -65,6 +65,19 @@ RSpec.describe StudentImagesController, type: :controller do
         end
       end
 
+      context 'submits an image that fails to save' do
+        before :each do
+          @student = create :student
+
+          allow_any_instance_of(Student).to receive(:save).and_return false
+          post :create, params: { student_id: @student.id, student_image: { image: [test_image] } }
+        end
+
+        it { should render_template 'student_images/index' }
+
+        it { should respond_with 500 }
+      end
+
       context 'submits no image' do
         before :each do
           @student = create :student

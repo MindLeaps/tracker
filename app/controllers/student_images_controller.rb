@@ -8,8 +8,9 @@ class StudentImagesController < ApplicationController
   def create
     @student = Student.find params.require(:student_id)
     @student.student_images.concat student_images
-    @student.save
-    notice_and_redirect t(:images_uploaded), student_student_images_path
+    return notice_and_redirect t(:images_uploaded), student_student_images_path if @student.save
+
+    handle_save_error
   rescue ActionController::ParameterMissing => _
     image_missing
   end
@@ -25,5 +26,11 @@ class StudentImagesController < ApplicationController
     @new_image = StudentImage.new
     flash.alert = t :no_image_submitted
     render :index, status: :bad_request
+  end
+
+  def handle_save_error
+    logger.debug @student.errors
+    @new_image = StudentImage.new
+    render :index, status: :internal_server_error
   end
 end

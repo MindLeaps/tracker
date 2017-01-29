@@ -27,6 +27,6 @@
 <div class="action-buttons">
   <%= link_to 'Back to All Students', students_path %>
   <%= link_to 'Edit', { action: :edit }, class: 'btn btn-secondary' %>
-  <%= link_to 'Images', student_student_images_url(@student), class: 'btn btn-secondary' %>
+  <%= link_to 'Images', student_student_images_path(@student), class: 'btn btn-secondary' %>
   <%= button_to 'Delete', { action: :destroy, id: @student.id }, class: 'btn btn-danger', method: :delete %>
 </div>
