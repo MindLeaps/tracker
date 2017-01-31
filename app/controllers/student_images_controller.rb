@@ -7,19 +7,27 @@ class StudentImagesController < ApplicationController
 
   def create
     @student = Student.find params.require(:student_id)
-    @student.student_images.concat student_images
-    return notice_and_redirect t(:images_uploaded), student_student_images_path if @student.save
+    images = student_images @student
+    return notice_and_redirect t(:images_uploaded), student_student_images_path if save_images(images)
 
-    handle_save_error
-  rescue ActionController::ParameterMissing
+    handle_save_error images
+  rescue ActionController::ParameterMissing, ActiveRecord::RecordNotFound
     image_missing
   end
 
   private
 
-  def student_images
+  def student_images(student)
     images = params.require(:student_image).permit(image: [])[:image]
-    images.map { |i| StudentImage.new image: i }
+    images.map { |i| StudentImage.new image: i, student: student }
+  end
+
+  def save_images(student_images)
+    save_results = []
+    StudentImage.transaction do
+      save_results = student_images.map(&:save)
+    end
+    save_results.all? ? true : false
   end
 
   def image_missing
@@ -28,8 +36,17 @@ class StudentImagesController < ApplicationController
     render :index, status: :bad_request
   end
 
-  def handle_save_error
+  def handle_save_error(images)
     @new_image = StudentImage.new
+    flash.alert = images_validation_errors(images)
     render :index, status: :internal_server_error
+  end
+
+  def images_validation_errors(images)
+    errors = []
+    images.each do |image|
+      errors += image.errors.messages[:image]
+    end
+    errors
   end
 end

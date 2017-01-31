@@ -23,7 +23,7 @@ RSpec.describe StudentImagesController, type: :controller do
 
       it { should route(:get, "/students/#{@student.id}/student_images").to action: :index, student_id: @student.id }
       it { should respond_with 200 }
-      it { should render_template 'student_images/index' }
+      it { should render_template :index }
 
       it 'assigns the current student' do
         expect(assigns(:student)).to eq @student
@@ -69,13 +69,23 @@ RSpec.describe StudentImagesController, type: :controller do
         before :each do
           @student = create :student
 
-          allow_any_instance_of(Student).to receive(:save).and_return false
+          allow_any_instance_of(StudentImage).to receive(:save).and_return false
           post :create, params: { student_id: @student.id, student_image: { image: [test_image] } }
         end
 
-        it { should render_template 'student_images/index' }
+        it { should render_template :index }
 
         it { should respond_with 500 }
+      end
+
+      context 'submits an image for nonexisting student' do
+        before :each do
+          post :create, params: { student_id: 12_345, student_image: { image: [test_image] } }
+        end
+
+        it { should render_template :index }
+
+        it { should respond_with 400 }
       end
 
       context 'submits no image' do
@@ -86,7 +96,7 @@ RSpec.describe StudentImagesController, type: :controller do
         end
 
         it { should respond_with :bad_request }
-        it { should render_template 'student_images/index' }
+        it { should render_template :index }
         it { should set_flash[:alert].to 'No image submitted.' }
       end
     end
