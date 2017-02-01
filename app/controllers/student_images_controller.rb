@@ -23,11 +23,12 @@ class StudentImagesController < ApplicationController
   end
 
   def save_images(student_images)
-    save_results = []
     StudentImage.transaction do
-      save_results = student_images.map(&:save)
+      student_images.each { |i| raise ActiveRecord::Rollback unless i.save }
+
+      return true
     end
-    save_results.all? ? true : false
+    false
   end
 
   def image_missing
@@ -39,7 +40,7 @@ class StudentImagesController < ApplicationController
   def handle_save_error(images)
     @new_image = StudentImage.new
     flash.alert = images_validation_errors(images)
-    render :index, status: :internal_server_error
+    render :index, status: flash.alert.empty? ? :internal_server_error : :bad_request
   end
 
   def images_validation_errors(images)

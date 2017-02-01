@@ -65,7 +65,7 @@ RSpec.describe StudentImagesController, type: :controller do
         end
       end
 
-      context 'submits an image that fails to save' do
+      context 'submits a single image that fails to save' do
         before :each do
           @student = create :student
 
@@ -76,6 +76,38 @@ RSpec.describe StudentImagesController, type: :controller do
         it { should render_template :index }
 
         it { should respond_with 500 }
+      end
+
+      context 'submits two images' do
+        before :each do
+          @student = create :student
+        end
+
+        context 'both images are valid' do
+          before :each do
+            post :create, params: { student_id: @student.id, student_image: { image: [test_image, test_image] } }
+          end
+
+          it { should redirect_to student_student_images_url }
+
+          it 'saves both images' do
+            expect(@student.reload.student_images.length).to eq 2
+          end
+        end
+
+        context 'one image is invalid' do
+          before :each do
+            post :create, params: { student_id: @student.id, student_image: { image: [test_image, invalid_image] } }
+          end
+
+          it { should respond_with 400 }
+
+          it { should render_template :index }
+
+          it 'does not save any image' do
+            expect(@student.reload.student_images.length).to eq 0
+          end
+        end
       end
 
       context 'submits an image for nonexisting student' do
