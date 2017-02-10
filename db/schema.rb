@@ -124,6 +124,15 @@ ActiveRecord::Schema.define(version: 20170120002843) do
     t.index ["organization_id"], name: "index_skills_on_organization_id", using: :btree
   end
 
+  create_table "student_images", force: :cascade do |t|
+    t.string   "image"
+    t.integer  "student_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "deleted_at"
+    t.index ["student_id"], name: "index_student_images_on_student_id", using: :btree
+  end
+
   create_table "students", force: :cascade do |t|
     t.string   "first_name",                            null: false
     t.string   "last_name",                             null: false
@@ -149,8 +158,10 @@ ActiveRecord::Schema.define(version: 20170120002843) do
     t.integer  "organization_id",                       null: false
     t.string   "mlid",                                  null: false
     t.datetime "deleted_at"
+    t.integer  "profile_image_id"
     t.index ["group_id"], name: "index_students_on_group_id", using: :btree
     t.index ["organization_id"], name: "index_students_on_organization_id", using: :btree
+    t.index ["profile_image_id"], name: "index_students_on_profile_image_id", using: :btree
   end
 
   create_table "subjects", force: :cascade do |t|
@@ -187,4 +198,5 @@ ActiveRecord::Schema.define(version: 20170120002843) do
   add_foreign_key "absences", "lessons"
   add_foreign_key "absences", "students"
   add_foreign_key "authentication_tokens", "users"
+  add_foreign_key "students", "student_images", column: "profile_image_id"
 end

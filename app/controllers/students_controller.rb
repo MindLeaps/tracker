@@ -22,6 +22,7 @@ class StudentsController < ApplicationController
 
   def edit
     @student = Student.find params[:id]
+    @student.student_images.build
   end
 
   def update

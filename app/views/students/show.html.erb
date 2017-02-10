@@ -1,4 +1,7 @@
 <h1><%= @student.last_name %>, <%= @student.first_name %></h1>
+<% if @student.profile_image %>
+  <%= image_tag @student.profile_image.image.medium.url, class: 'student-profile-image' %>
+<% end %>
 <% if @student.deleted_at %>
   <p class="text-danger">Student deleted at: <%= @student.deleted_at %></p>
 <% end %>
@@ -24,5 +27,6 @@
 <div class="action-buttons">
   <%= link_to 'Back to All Students', students_path %>
   <%= link_to 'Edit', { action: :edit }, class: 'btn btn-secondary' %>
+  <%= link_to 'Images', student_student_images_path(@student), class: 'btn btn-secondary' %>
   <%= button_to 'Delete', { action: :destroy, id: @student.id }, class: 'btn btn-danger', method: :delete %>
 </div>

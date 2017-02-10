@@ -1,5 +1,6 @@
 <tr class="resource-row student-row">
     <td><a class="resource-row-link student-row-link text-xs-center" href="<%= url_for student %>"><%= student.mlid %></a></td>
+    <td><a class="resource-row-link-small-padding student-row-link text-xs-center" href="<%= url_for student %>"><%= image_tag student_mini_thumbnail(student), class: 'mini-thumb-profile-image' %></a></td>
     <td><a class="resource-row-link student-row-link" href="<%= url_for student %>"><%= student.last_name %></a></td>
     <td><a class="resource-row-link student-row-link" href="<%= url_for student %>"><%= student.first_name %></a></td>
     <td><a class="resource-row-link student-row-link text-xs-center" href="<%= url_for student %>"><%= student.gender %></a></td>

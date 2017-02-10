@@ -1,5 +1,5 @@
 <fieldset>
-  <%= simple_form_for student, wrapper: :horizontal_form, url: {action: action} do |f| %>
+  <%= simple_form_for student, wrapper: :horizontal_form, url: {action: action}, html: {multipart: true} do |f| %>
     <%= render partial: 'shared/errors', locals: {subject: student} %>
     <%= f.input :mlid, label: 'MLID' %>
     <%= f.input :first_name %>
@@ -27,6 +27,10 @@
     <%= f.input :hiv_tested %>
     <hr />
     <%= f.input :notes, input_html: {rows: 5} %>
+    <hr />
+    <%= f.simple_fields_for :student_images do |i| %>
+        <%= i.input :image, as: :file %>
+    <% end %>
     <hr />
     <%= f.button :submit, class: 'btn-outline-success' %>
   <%- end %>

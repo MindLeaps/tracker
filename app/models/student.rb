@@ -4,12 +4,18 @@ class Student < ApplicationRecord
   validates :mlid, uniqueness: {
     scope: :organization_id
   }
+  validate :profile_image_belongs_to_student, if: proc { |student| !student.profile_image.nil? }
+
   enum gender: { M: 0, F: 1 }
+
   belongs_to :group
   belongs_to :organization
   has_many :grades
   has_many :absences
+  has_many :student_images
+  belongs_to :profile_image, class_name: 'StudentImage'
   accepts_nested_attributes_for :grades
+  accepts_nested_attributes_for :student_images
 
   delegate :group_name, to: :group, allow_nil: true
 
@@ -25,7 +31,7 @@ class Student < ApplicationRecord
     [:mlid, :first_name, :last_name, :dob, :estimated_dob, :group_id, :gender, :quartier,
      :guardian_name, :guardian_occupation, :guardian_contact, :family_members, :health_insurance,
      :health_issues, :hiv_tested, :name_of_school, :school_level_completed, :year_of_dropout,
-     :reason_for_leaving, :notes, :organization_id]
+     :reason_for_leaving, :notes, :organization_id, :profile_image_id, student_images_attributes: [:image]]
   end
 
   def current_grades_for_lesson_including_ungraded_skills(lesson_id)
@@ -59,5 +65,9 @@ class Student < ApplicationRecord
 
   def existing_grade(new_grade, existing_grades)
     existing_grades.find { |g| g.id == new_grade.id }
+  end
+
+  def profile_image_belongs_to_student
+    errors.add(:profile_image, I18n.t(:wrong_image, student: proper_name, other_student: profile_image.student.proper_name)) if profile_image.student.id != id
   end
 end

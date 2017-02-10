@@ -14,7 +14,7 @@
       <% if notice %><div class="alert-success notice"><%= notice %></div><% end %>
       <% if link_notice %><div class="alert-success notice"><%= link_notice.try :html_safe %></div><% end %>
       <% if undo_notice %><div class="alert-danger notice undo-notice"><%= undo_notice.try :html_safe %></div><% end %>
-      <p class="alert"><%= alert %></p>
+      <% if alert %><div class="alert-danger notice"><%= alert %></div><% end %>
     </div>
   <% end %>
   <section class="container main-container">

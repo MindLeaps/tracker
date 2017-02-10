@@ -50,7 +50,7 @@ RSpec.describe StudentsController, type: :controller do
         expect(student.gender).to eql 'F'
       end
 
-      it 'creates a student with guardian inormation' do
+      it 'creates a student with guardian information' do
         post :create, params: { student: {
           mlid: '1G',
           first_name: 'Guardianed',
@@ -150,6 +150,19 @@ RSpec.describe StudentsController, type: :controller do
 
       it 'does not display deleted students' do
         expect(assigns(:students)).not_to include @deleted_student
+      end
+    end
+
+    describe '#update' do
+      before :each do
+        @student = create :student
+        @image = create :student_image, student: @student
+      end
+
+      it 'updates the student\'s profile image' do
+        post :update, params: { id: @student.id, student: { profile_image_id: @image.id } }
+
+        expect(@student.reload.profile_image).to eq @image
       end
     end
 

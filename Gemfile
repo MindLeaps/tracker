@@ -23,6 +23,11 @@ gem 'cocoon'
 gem 'jquery-rails'
 gem 'active_model_serializers', '~> 0.10.0'
 gem 'has_scope'
+gem 'carrierwave', '~> 1.0'
+gem 'carrierwave-bombshelter'
+gem 'carrierwave-imageoptimizer'
+gem 'fog-aws'
+gem 'mini_magick'
 
 # gem 'mindleaps_analytics', path: '../Tracker-Analytics'
 
@@ -55,6 +60,7 @@ group :development, :test do
 end
 
 group :development do
+  gem 'dotenv-rails'
   gem 'better_errors'
   gem 'binding_of_caller'
   # Access an IRB console on exception pages or by using <%= console %> in views

@@ -34,7 +34,7 @@ RSpec.describe Users::SessionsController, type: :controller do
       it { should respond_with 401 }
 
       it 'displays error message' do
-        expect(json['error']).to eq 'Invalid token or non-existant user'
+        expect(json['error']).to eq 'Invalid token or non-existent user'
       end
     end
   end
