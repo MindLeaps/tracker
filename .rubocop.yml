@@ -10,6 +10,10 @@ AllCops:
     - bin/rake
     - vendor/**/* # Vendor gem dir in Travis CI
 
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/*
+
 Metrics/LineLength:
   Max: 160
   # To make it possible to copy or click on URIs in the code, we allow lines

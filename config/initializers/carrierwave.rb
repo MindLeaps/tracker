@@ -5,7 +5,7 @@ unless File.basename($PROGRAM_NAME) == 'rake' # we don't want to setup this stuf
     if Rails.env.test? || Rails.env.cucumber?
       config.storage = :file
       config.enable_processing = false
-      config.root = "#{Rails.root}/tmp"
+      config.root = Rails.root.join 'tmp'
     else
       config.fog_provider = 'fog/aws'
       config.fog_credentials = {
