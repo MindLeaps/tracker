@@ -28,11 +28,11 @@ gem 'carrierwave-bombshelter'
 gem 'carrierwave-imageoptimizer'
 gem 'fog-aws'
 gem 'mini_magick'
+gem 'puma'
 
 # gem 'mindleaps_analytics', path: '../Tracker-Analytics'
 
 group :production do
-  gem 'puma'
   gem 'SyslogLogger'
   gem 'skylight'
   gem 'newrelic_rpm'
