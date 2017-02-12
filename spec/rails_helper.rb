@@ -12,8 +12,8 @@ require 'devise'
 
 WebMock.disable_net_connect!(allow_localhost: true)
 
-Dir[Rails.root.join('spec/helpers/**/*.rb')].each { |f| require f }
-Dir[Rails.root.join('spec/shared/**/*.rb')].each { |f| require f }
+Dir[Rails.root.join('spec', 'helpers', '**', '*.rb')].each { |f| require f }
+Dir[Rails.root.join('spec', 'shared', '**', '*.rb')].each { |f| require f }
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in

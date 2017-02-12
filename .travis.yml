@@ -2,11 +2,15 @@ dist: trusty
 language: ruby
 
 services:
-- postgresql
+  - postgresql
+
+before_install:
+  - gem update --system
+  - gem --version
 
 before_script:
-- psql -c 'create database tracker_test;' -U postgres
-    
+  - psql -c 'create database tracker_test;' -U postgres
+
 script:
 - RAILS_ENV=test bundle exec rake --trace db:migrate test
 

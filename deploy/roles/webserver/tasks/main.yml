@@ -85,6 +85,11 @@
   args:
     creates: "/home/mindleaps/.rvm"
 
+- name: Update rvm
+  sudo: true
+  sudo_user: mindleaps
+  shell: ~/.rvm/bin/rvm get stable
+
 - name: Dont install documentation with gems
   sudo: true
   sudo_user: mindleaps
@@ -148,6 +153,11 @@
   sudo: true
   sudo_user: mindleaps
   shell: ~/.rvm/bin/rvm `cat ~/tracker/.ruby-version` do gem install bundler chdir=/home/mindleaps/tracker
+
+- name: Update Rubygems
+  sudo: true
+  sudo_user: mindleaps
+  shell: ~/.rvm/bin/rvm `cat ~/tracker/.ruby-version` do rvm rubygems latest
 
 - name: Install all gems
   sudo: true
