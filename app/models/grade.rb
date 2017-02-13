@@ -29,6 +29,13 @@ class Grade < ApplicationRecord
     self
   end
 
+  def find_duplicate
+    Grade.joins(:grade_descriptor)
+         .where(student: student, lesson: lesson, grade_descriptors: { skill_id: grade_descriptor.skill.id }, deleted_at: nil)
+         .where.not(id: id)
+         .take
+  end
+
   private
 
   def all_relations_exist?
@@ -36,13 +43,8 @@ class Grade < ApplicationRecord
   end
 
   def grade_skill_must_be_unique_for_lesson_and_student
-    existing_grade = duplicate_grade
-    add_duplicate_grade_error(existing_grade) if existing_grade && existing_grade.id != id
-  end
-
-  def duplicate_grade
-    Grade.joins(:grade_descriptor)
-         .find_by(student: student, lesson: lesson, grade_descriptors: { skill_id: grade_descriptor.skill.id }, deleted_at: nil)
+    existing_grade = find_duplicate
+    add_duplicate_grade_error(existing_grade) if existing_grade
   end
 
   def add_duplicate_grade_error(duplicate_grade)

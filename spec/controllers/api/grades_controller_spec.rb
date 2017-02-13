@@ -138,20 +138,40 @@ RSpec.describe Api::GradesController, type: :controller do
   end
 
   describe 'create' do
-    before :each do
-      post :create, format: :json, params: { grade_descriptor_id: @gd1.id, lesson_id: @lesson.id, student_id: @student.id }
-    end
-    it { should respond_with 201 }
+    context 'successfully creates a new grade' do
+      before :each do
+        post :create, format: :json, params: { grade_descriptor_id: @gd1.id, lesson_id: @lesson.id, student_id: @student.id }
+      end
 
-    it 'creates a new grade' do
-      g = Grade.last
-      expect(g.grade_descriptor).to eq @gd1
-      expect(g.lesson).to eq @lesson
-      expect(g.student).to eq @student
+      it { should respond_with 201 }
+
+      it 'creates a new grade' do
+        g = Grade.last
+        expect(g.grade_descriptor).to eq @gd1
+        expect(g.lesson).to eq @lesson
+        expect(g.student).to eq @student
+      end
+
+      it 'responds with timestamp' do
+        expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
+      end
     end
 
-    it 'responds with timestamp' do
-      expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
+    context 'unsuccessful because of an already existing grade' do
+      before :each do
+        @existing_grade = create :grade, student: @student, lesson: @lesson, grade_descriptor: @gd1
+
+        post :create, format: :json, params: { grade_descriptor_id: @gd2.id, lesson_id: @lesson.id, student_id: @student.id }
+      end
+
+      it { should respond_with 409 }
+
+      it 'returns an already existing grade' do
+        expect(grade['id']).to eq @existing_grade.id
+        expect(grade['grade_descriptor_id']).to eq @existing_grade.grade_descriptor.id
+        expect(grade['student_id']).to eq @student.id
+        expect(grade['lesson_id']).to eq @lesson.id
+      end
     end
   end
 

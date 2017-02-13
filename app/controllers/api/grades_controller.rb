@@ -20,9 +20,11 @@ module Api
     end
 
     def create
-      @grade = Grade.new grade_params
-      @grade.save
-      respond_with :api, @grade, meta: { timestamp: Time.zone.now }, include: included_params
+      grade = Grade.new grade_params
+
+      respond_with_existing_grade(grade) unless grade.save
+
+      respond_with :api, grade, meta: { timestamp: Time.zone.now }, include: included_params unless performed?
     end
 
     def update
@@ -42,7 +44,13 @@ module Api
     private
 
     def grade_params
-      params.permit(:student_id, :grade_descriptor_id, :lesson_id)
+      params.permit :student_id, :grade_descriptor_id, :lesson_id
+    end
+
+    def respond_with_existing_grade(grade)
+      existing_grade = grade.find_duplicate
+
+      respond_with :api, existing_grade, status: :conflict, meta: { timestamp: Time.zone.now }, include: {} if existing_grade
     end
   end
 end
