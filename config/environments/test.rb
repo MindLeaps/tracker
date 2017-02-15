@@ -43,4 +43,9 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  # Bullet finds N + 1 queries: https://github.com/flyerhzm/bullet
+  Bullet.enable = true
+  Bullet.bullet_logger = true
+  Bullet.raise = true # raise an error if n+1 query occurs
 end
