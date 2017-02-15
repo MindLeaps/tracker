@@ -13,6 +13,7 @@ AllCops:
 Metrics/BlockLength:
   Exclude:
     - spec/**/*
+    - config/**/*
 
 Metrics/LineLength:
   Max: 160
