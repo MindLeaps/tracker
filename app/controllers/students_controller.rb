@@ -3,7 +3,7 @@ class StudentsController < ApplicationController
   has_scope :exclude_deleted, type: :boolean, default: true
 
   def index
-    @students = apply_scopes policy_scope(Student)
+    @students = apply_scopes policy_scope(Student.includes(:group, :profile_image))
   end
 
   def new
@@ -17,23 +17,23 @@ class StudentsController < ApplicationController
   end
 
   def show
-    @student = Student.find params[:id]
+    @student = Student.includes(:profile_image, :group).find params[:id]
   end
 
   def edit
-    @student = Student.find params[:id]
+    @student = Student.includes(:student_images).find params[:id]
     @student.student_images.build
   end
 
   def update
-    @student = Student.find params[:id]
+    @student = Student.includes(:organization).find params[:id]
     return redirect_to @student if @student.update_attributes student_params
 
     render :edit
   end
 
   def destroy
-    @student = Student.find params.require :id
+    @student = Student.includes(:organization).find params.require :id
     @student.deleted_at = Time.zone.now
 
     undo_notice_and_redirect t(:student_deleted, name: @student.proper_name), undelete_student_path, students_path if @student.save

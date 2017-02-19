@@ -3,7 +3,7 @@ class GroupsController < ApplicationController
   has_scope :exclude_deleted, type: :boolean, default: true
 
   before_action do
-    @groups = Group.all
+    @groups = Group.includes(:chapter, :students).all
   end
 
   def index
@@ -17,7 +17,7 @@ class GroupsController < ApplicationController
   end
 
   def show
-    @group = Group.find params[:id]
+    @group = Group.includes(:chapter).find params[:id]
     @students = @group.students.exclude_deleted
   end
 

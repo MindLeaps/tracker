@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 class ChaptersController < ApplicationController
-  before_action do
-    @chapters = Chapter.all
-  end
-
   def index
+    @chapters = Chapter.includes(groups: [:students]).all
     @chapter = Chapter.new
   end
 
@@ -15,7 +12,7 @@ class ChaptersController < ApplicationController
   end
 
   def show
-    @chapter = Chapter.find params.require :id
+    @chapter = Chapter.includes(:organization).find params.require :id
   end
 
   def edit
@@ -23,7 +20,7 @@ class ChaptersController < ApplicationController
   end
 
   def update
-    @chapter = Chapter.find params.require :id
+    @chapter = Chapter.includes(:organization).find params.require :id
     return notice_and_redirect t(:chapter_updated, chapter: @chapter.chapter_name), chapter_url if @chapter.update_attributes chapter_params
     render :edit, status: 422
   end

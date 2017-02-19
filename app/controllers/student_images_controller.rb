@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 class StudentImagesController < ApplicationController
   def index
-    @student = Student.find params.require :student_id
+    @student = Student.includes(:student_images).find params.require :student_id
     @new_image = StudentImage.new
   end
 

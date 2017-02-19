@@ -35,7 +35,7 @@ class Student < ApplicationRecord
   end
 
   def current_grades_for_lesson_including_ungraded_skills(lesson_id)
-    lesson = Lesson.find lesson_id
+    lesson = Lesson.includes(subject: [:skills]).find lesson_id
     skills = lesson.subject.skills
 
     skill_grades = Hash[skills.map { |skill| [skill.id, Grade.new(lesson_id: lesson_id, student_id: id, skill: skill)] }]
@@ -46,7 +46,7 @@ class Student < ApplicationRecord
   end
 
   def grade_lesson(lesson_id, new_grades)
-    existing_grades = Grade.where(lesson_id: lesson_id, student_id: id).includes(:grade_descriptor).all.to_a
+    existing_grades = Grade.includes(grade_descriptor: [:skill]).where(lesson_id: lesson_id, student_id: id).all.to_a
     new_grades.map do |grade|
       update_grade grade, existing_grade(grade, existing_grades)
     end
@@ -55,7 +55,7 @@ class Student < ApplicationRecord
   private
 
   def current_grades_for_lesson(lesson_id)
-    Grade.where(lesson_id: lesson_id, student_id: id).exclude_deleted
+    Grade.includes(grade_descriptor: [:skill]).where(lesson_id: lesson_id, student_id: id).exclude_deleted
   end
 
   def update_grade(grade, existing_grade)

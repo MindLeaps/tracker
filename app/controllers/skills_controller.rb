@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 class SkillsController < ApplicationController
   def index
-    @skills = Skill.all
+    @skills = Skill.includes(:organization).all
   end
 
   def create
@@ -11,7 +11,7 @@ class SkillsController < ApplicationController
   end
 
   def show
-    @skill = Skill.find params[:id]
+    @skill = Skill.includes(:organization).find params[:id]
   end
 
   def new
