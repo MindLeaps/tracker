@@ -2,7 +2,6 @@
 require 'rails_helper'
 
 RSpec.describe Api::AssignmentsController, type: :controller do
-  let(:json) { JSON.parse(response.body) }
   let(:assignments) { JSON.parse(response.body)['assignments'] }
   let(:assignment) { JSON.parse(response.body)['assignment'] }
   let(:admin) { create :admin }
@@ -30,7 +29,7 @@ RSpec.describe Api::AssignmentsController, type: :controller do
     end
 
     it 'responds with timestamp' do
-      expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
+      expect(response_timestamp).to be_within(1.second).of Time.zone.now
     end
 
     it 'responds only with assignments created or updated after a certain time' do
@@ -67,7 +66,7 @@ RSpec.describe Api::AssignmentsController, type: :controller do
     end
 
     it 'responds with timestamp' do
-      expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
+      expect(response_timestamp).to be_within(1.second).of Time.zone.now
     end
 
     describe 'include' do

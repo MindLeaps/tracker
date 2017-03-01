@@ -2,7 +2,6 @@
 require 'rails_helper'
 
 RSpec.describe Api::GroupsController, type: :controller do
-  let(:json) { JSON.parse(response.body) }
   let(:group) { JSON.parse(response.body)['group'] }
   let(:groups) { JSON.parse(response.body)['groups'] }
   let(:admin) { create :admin }
@@ -35,7 +34,7 @@ RSpec.describe Api::GroupsController, type: :controller do
     end
 
     it 'responds with timestamp' do
-      expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
+      expect(response_timestamp).to be_within(1.second).of Time.zone.now
     end
 
     it 'responds only with groups created or updated after a certain time' do
@@ -82,7 +81,7 @@ RSpec.describe Api::GroupsController, type: :controller do
     end
 
     it 'responds with timestamp' do
-      expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
+      expect(response_timestamp).to be_within(1.second).of Time.zone.now
     end
 
     describe 'include' do

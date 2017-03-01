@@ -2,7 +2,6 @@
 require 'rails_helper'
 
 RSpec.describe Api::GradesController, type: :controller do
-  let(:json) { JSON.parse(response.body) }
   let(:grade) { json['grade'] }
   let(:grades) { json['grades'] }
   let(:admin) { create :admin }
@@ -55,7 +54,7 @@ RSpec.describe Api::GradesController, type: :controller do
     end
 
     it 'responds with timestamp' do
-      expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
+      expect(response_timestamp).to be_within(1.second).of Time.zone.now
     end
 
     it 'lists only grades scoped by student' do
@@ -108,7 +107,7 @@ RSpec.describe Api::GradesController, type: :controller do
     end
 
     it 'responds with timestamp' do
-      expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
+      expect(response_timestamp).to be_within(1.second).of Time.zone.now
     end
 
     describe 'include' do
@@ -153,7 +152,7 @@ RSpec.describe Api::GradesController, type: :controller do
       end
 
       it 'responds with timestamp' do
-        expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
+        expect(response_timestamp).to be_within(1.second).of Time.zone.now
       end
     end
 

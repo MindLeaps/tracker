@@ -2,7 +2,6 @@
 require 'rails_helper'
 
 RSpec.describe Api::SubjectsController, type: :controller do
-  let(:json) { JSON.parse(response.body) }
   let(:admin) { create :admin }
 
   before :each do
@@ -29,7 +28,7 @@ RSpec.describe Api::SubjectsController, type: :controller do
     end
 
     it 'responds with timestamp' do
-      expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
+      expect(response_timestamp).to be_within(1.second).of Time.zone.now
     end
 
     it 'lists only subjects created or updated after a certain time' do
@@ -69,7 +68,7 @@ RSpec.describe Api::SubjectsController, type: :controller do
     end
 
     it 'responds with timestamp' do
-      expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
+      expect(response_timestamp).to be_within(1.second).of Time.zone.now
     end
 
     describe 'include' do

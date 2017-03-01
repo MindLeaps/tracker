@@ -2,7 +2,6 @@
 require 'rails_helper'
 
 RSpec.describe Api::OrganizationsController, type: :controller do
-  let(:json) { JSON.parse(response.body) }
   let(:organizations) { JSON.parse(response.body)['organizations'] }
   let(:organization) { JSON.parse(response.body)['organization'] }
   let(:admin) { create :admin }
@@ -30,7 +29,7 @@ RSpec.describe Api::OrganizationsController, type: :controller do
     end
 
     it 'responds with timestamp' do
-      expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
+      expect(response_timestamp).to be_within(1.second).of Time.zone.now
     end
 
     it 'excludes deleted organizations from the response' do
@@ -71,7 +70,7 @@ RSpec.describe Api::OrganizationsController, type: :controller do
     end
 
     it 'responds with timestamp' do
-      expect(Time.zone.parse(json['meta']['timestamp'])).to be_within(1.second).of Time.zone.now
+      expect(response_timestamp).to be_within(1.second).of Time.zone.now
     end
 
     describe 'include' do
