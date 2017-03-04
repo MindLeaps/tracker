@@ -19,8 +19,8 @@ RSpec.describe Api::StudentsController, type: :controller do
 
   describe '#show' do
     before :each do
-      @student = create :student
-      get :show, format: :json, params: { id: @student.id }
+      student = create :student
+      get :show, format: :json, params: { id: student.id }
     end
 
     it { should respond_with 200 }

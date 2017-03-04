@@ -33,7 +33,7 @@ RSpec.describe 'Student API', type: :request do
       get_with_token student_path(@student), params: { include: 'group,organization' }, as: :json
 
       expect(student['group']['group_name']).to eq @group.group_name
-      expect(student['organization']['organization_name']).to eq @organization.organization_name
+      expect(student['organization']['organization_name']).to eq @org.organization_name
     end
   end
 
