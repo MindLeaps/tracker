@@ -4,11 +4,11 @@ require 'rails_helper'
 RSpec.describe 'Subject API', type: :request do
   include_context 'super_admin_request'
 
-  let(:subject) { JSON.parse(response.body)['subject'] }
-  let(:subjects) { JSON.parse(response.body)['subjects'] }
-  let(:organization) { JSON.parse(response.body)['subject']['organization'] }
-  let(:lessons) { JSON.parse(response.body)['subject']['lessons'] }
-  let(:skills) { JSON.parse(response.body)['subject']['skills'] }
+  let(:subject) { json['subject'] }
+  let(:subjects) { json['subjects'] }
+  let(:organization) { json['subject']['organization'] }
+  let(:lessons) { json['subject']['lessons'] }
+  let(:skills) { json['subject']['skills'] }
 
   describe 'GET /subjects/:id' do
     before :each do
