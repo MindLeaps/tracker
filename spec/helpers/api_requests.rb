@@ -4,6 +4,10 @@ module Helpers
     get(*merge_auth_headers(args))
   end
 
+  def post_with_token(*args)
+    post(*merge_auth_headers(args))
+  end
+
   def merge_auth_headers(args)
     if args.length > 1
       if args[1][:headers]
