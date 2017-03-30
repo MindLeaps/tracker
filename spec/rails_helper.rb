@@ -77,6 +77,30 @@ RSpec.configure do |config|
   config.after(:each) do
     DatabaseCleaner.clean
   end
+
+  # Setup Bullet for detecting N+1 queries
+  if Bullet.enable?
+    config.before(:each) do
+      Bullet.start_request
+    end
+
+    config.after(:each) do
+      Bullet.perform_out_of_channel_notifications if Bullet.notification?
+      Bullet.end_request
+    end
+
+    config.around(:each, type: :controller) do |example|
+      Bullet.unused_eager_loading_enable = false
+      example.run
+      Bullet.unused_eager_loading_enable = true
+    end
+
+    config.around(:each, type: :request) do |example|
+      Bullet.enable = false
+      example.run
+      Bullet.enable = true
+    end
+  end
 end
 
 Shoulda::Matchers.configure do |config|

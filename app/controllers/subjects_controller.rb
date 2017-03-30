@@ -2,7 +2,7 @@
 class SubjectsController < ApplicationController
   def index
     @subject = Subject.new
-    @subjects = Subject.all
+    @subjects = Subject.includes(:assignments, :skills, :organization).all
   end
 
   def create
@@ -12,16 +12,16 @@ class SubjectsController < ApplicationController
   end
 
   def show
-    @subject = Subject.find params.require(:id)
+    @subject = Subject.includes(assignments: [:skill]).find params.require(:id)
   end
 
   def edit
-    @subject = Subject.find params.require(:id)
+    @subject = Subject.includes(:assignments).find params.require(:id)
   end
 
   def update
-    subject = Subject.find params.require(:id)
-    return notice_and_redirect(t(:subject_updated), subject) if subject.update_attributes subject_params
+    subject = Subject.includes(:organization).find params.require(:id)
+    notice_and_redirect(t(:subject_updated), subject) if subject.update_attributes subject_params
   end
 
   private

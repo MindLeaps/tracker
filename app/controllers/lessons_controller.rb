@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 class LessonsController < ApplicationController
   before_action do
-    @lessons = Lesson.all
+    @lessons = Lesson.includes(:subject, :group).all
   end
 
   def index
@@ -9,7 +9,7 @@ class LessonsController < ApplicationController
   end
 
   def show
-    @lesson = Lesson.find params[:id]
+    @lesson = Lesson.includes(:absences, :group, :subject).find(params[:id])
     @students = @lesson.group.students.exclude_deleted
   end
 

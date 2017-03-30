@@ -2,8 +2,6 @@
 require 'rails_helper'
 
 RSpec.describe Users::SessionsController, type: :controller do
-  let(:json) { JSON.parse(response.body) }
-
   describe '#token_signin' do
     before :each do
       @request.env['devise.mapping'] = Devise.mappings[:user]

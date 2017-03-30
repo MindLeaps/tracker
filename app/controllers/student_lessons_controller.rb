@@ -2,7 +2,7 @@
 class StudentLessonsController < ApplicationController
   def show
     @student = Student.find params[:id]
-    @lesson = Lesson.find params[:lesson_id]
+    @lesson = Lesson.includes(subject: [skills: [:grade_descriptors]]).find params[:lesson_id]
     @grades = @student.current_grades_for_lesson_including_ungraded_skills params[:lesson_id]
     @absence = @lesson.absences.map(&:student_id).include? @student.id
   end
@@ -23,7 +23,7 @@ class StudentLessonsController < ApplicationController
   end
 
   def mark_student_absence(student)
-    lesson = Lesson.find params[:lesson_id]
+    lesson = Lesson.includes(:absences).find params[:lesson_id]
     if student_absent?
       lesson.mark_student_as_absent student
     else
@@ -33,7 +33,9 @@ class StudentLessonsController < ApplicationController
 
   def generate_grades_from_params(student)
     filled_grades_attributes.map do |g|
-      Grade.new(id: g[:id], student: student, lesson_id: params[:lesson_id], grade_descriptor_id: g[:grade_descriptor_id])
+      Grade.new(id: g[:id], student: student, lesson_id: params[:lesson_id], grade_descriptor_id: g[:grade_descriptor_id]).tap do |grade|
+        ActiveRecord::Associations::Preloader.new.preload(grade, grade_descriptor: [:skill])
+      end
     end
   end
 
