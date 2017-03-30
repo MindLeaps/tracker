@@ -8,6 +8,14 @@ module Helpers
     post(*merge_auth_headers(args))
   end
 
+  def patch_with_token(*args)
+    patch(*merge_auth_headers(args))
+  end
+
+  def delete_with_token(*args)
+    delete(*merge_auth_headers(args))
+  end
+
   def merge_auth_headers(args)
     if args.length > 1
       if args[1][:headers]
