@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 # rubocop:disable Style/IndentArray
+
 require_relative 'seed_skills'
-require_relative 'seed_grades'
+require_relative 'seed_random_grades'
+require_relative 'seed_csv_grades'
 
 mindleaps = Organization.create organization_name: 'MindLeaps'
 mindleaps.chapters.create([
-  { chapter_name: 'Kigali' }
+  { chapter_name: 'Kigali' },
+  { chapter_name: 'Realistic' }
 ])
 
 kigali_chapter = mindleaps.chapters[0]
@@ -58,4 +61,6 @@ subjects = Subject.create([
 
 subjects[0].skills = seed_mindleaps_skills mindleaps
 
-seed_group_grades(kigali_chapter.groups[0], subjects[0])
+seed_group_random_grades(kigali_chapter.groups[0], subjects[0])
+
+# CSVDataSeeder.new.seed_data mindleaps.chapters[1], subjects[0]
