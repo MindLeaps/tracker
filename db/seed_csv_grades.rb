@@ -9,6 +9,15 @@ class CSVDataSeeder
     @students = {}
     @lessons = {}
     @group_names = { :'1' => 'A', :'2' => 'B', :'3' => 'C' }
+    @skill_names = {
+      memorization: 'Memorization',
+      grit: 'Grit',
+      teamwork: 'Teamwork',
+      discipline: 'Discipline',
+      self_esteem: 'Self-Esteem',
+      creativity: 'Creativity & Self-Expression',
+      language: 'Language'
+    }
   end
 
   def seed_data(chapter, default_subject)
@@ -56,7 +65,7 @@ class CSVDataSeeder
   def grade_student(student, lesson, grades)
     grades.each do |skill_name, mark|
       return lesson.mark_student_as_absent(student) if mark.nil?
-      skill = Skill.where(skill_name: skill_name.to_s.capitalize).first
+      skill = Skill.where(skill_name: @skill_names[skill_name]).first
       gd = GradeDescriptor.where(skill: skill, mark: mark).first
       Grade.create lesson: lesson, student: student, grade_descriptor: gd
     end
