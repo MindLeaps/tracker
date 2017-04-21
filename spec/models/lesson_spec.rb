@@ -6,6 +6,7 @@ RSpec.describe Lesson, type: :model do
     it { should belong_to :group }
     it { should belong_to :subject }
     it { should have_many :absences }
+    it { should have_many :grades }
   end
 
   describe 'validations' do

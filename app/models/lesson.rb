@@ -3,6 +3,7 @@ class Lesson < ApplicationRecord
   belongs_to :group
   belongs_to :subject
   has_many :absences
+  has_many :grades
 
   validates :group, :date, :subject, presence: true
   scope :by_group, ->(group_id) { where group_id: group_id }
