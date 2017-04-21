@@ -13,22 +13,17 @@ class CSVDataSeeder
     language: 'Language'
   }.freeze
 
-  def initialize(csv_file_path = './db/seed_data/realistic_data.csv')
+  def initialize(csv_file_path)
     @csv_file_path = csv_file_path
     @groups = {}
     @students = {}
     @lessons = {}
-    @group_names = { :'1' => 'A', :'2' => 'B', :'3' => 'C' }
+    @group_names = { 1 => 'A', 2 => 'B', 3 => 'C' }
   end
 
   def seed_data(chapter, default_subject)
     @subject = default_subject
-    read_csv_file.each do |r|
-      create_group(r[:group], chapter)
-      create_student(r[:id], r[:child_name], r[:last_name], r[:group], chapter, r[:gender] - 1, r[:age])
-      create_lesson(r[:group], r[:date])
-      grade_student @students[:"#{r[:id]}"], @lessons[:"#{r[:group]}-#{r[:date]}"], get_row_grades(r)
-    end
+    read_csv_file.each { |r| seed_row r, chapter }
   end
 
   private
@@ -37,22 +32,32 @@ class CSVDataSeeder
     SmarterCSV.process(@csv_file_path, skip_lines: 2)
   end
 
+  def seed_row(r, chapter)
+    group = create_group(r[:group], chapter)
+    student = create_student(r[:id], group, chapter, r[:gender] - 1, r[:age])
+    lesson = create_lesson(group, r[:date])
+    grade_student student, lesson, get_row_grades(r)
+  end
+
   def create_group(group_id, chapter)
-    return if @groups.key? :"#{group_id}"
-
-    @groups[:"#{group_id}"] = chapter.groups.create(group_name: @group_names[:"#{group_id}"])
+    @groups[group_id] ||= chapter.groups.create group_name: @group_names[group_id]
   end
 
-  def create_student(id, first_name, last_name, group_id, chapter, gender, age)
-    return if @students.key? :"#{id}"
-
-    @students[:"#{id}"] = Student.create(mlid: id, first_name: first_name, last_name: last_name, gender: gender, dob: age.years.ago, estimated_dob: 'true', group: @groups[:"#{group_id}"], organization: chapter.organization)
+  def create_student(id, group, chapter, gender, age)
+    @students[id] ||= Student.create(
+      mlid: id,
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name,
+      gender: gender,
+      dob: age.years.ago,
+      estimated_dob: 'true',
+      group: group,
+      organization: chapter.organization
+    )
   end
 
-  def create_lesson(group_id, date)
-    return if @lessons.key? :"#{group_id}-#{date}"
-    d = Date.strptime date, '%m/%d/%y'
-    @lessons[:"#{group_id}-#{date}"] = Lesson.create group: @groups[:"#{group_id}"], date: d, subject: @subject
+  def create_lesson(group, date)
+    @lessons[:"#{group.id}-#{date}"] ||= Lesson.create group: group, date: (Date.strptime date, '%m/%d/%y'), subject: @subject
   end
 
   def get_row_grades(row)
