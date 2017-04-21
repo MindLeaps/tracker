@@ -58,6 +58,7 @@ group :development, :test do
   gem 'chromedriver-helper'
   gem 'coveralls', require: false
   gem 'webmock'
+  gem 'smarter_csv'
 end
 
 group :development do
