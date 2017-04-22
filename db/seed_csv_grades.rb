@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# rubocop:disable Rails/Output
+
 require 'smarter_csv'
 
 class CSVDataSeeder
@@ -46,7 +48,7 @@ class CSVDataSeeder
   end
 
   def generate_group_name(group_id)
-    return group_id if group_id.to_str
+    return group_id if group_id.respond_to? :to_str
 
     @group_names[group_id]
   end
@@ -65,11 +67,12 @@ class CSVDataSeeder
   end
 
   def create_lesson(group, date)
-    @lessons[:"#{group.id}-#{date}"] ||= Lesson.create group: group, date: parse_date(date), subject: @subject
+    d = parse_date(date)
+    @lessons[:"#{group.id}-#{date}"] ||=
+      puts("Lesson: #{d} - Chapter: #{group.chapter.chapter_name} - Group: #{group.group_name}") || Lesson.create(group: group, date: d, subject: @subject)
   end
 
   def parse_date(date_string)
-    puts date_string
     return Date.strptime date_string, '%m/%d/%y' if date_string.split('/')[2].length == 2
 
     Date.strptime date_string, '%m/%d/%Y'
@@ -99,8 +102,6 @@ class CSVDataSeeder
     Grade.transaction do
       new_grades.each(&:save!)
     end
-  rescue ActiveRecord::RecordInvalid => e
-    byebug
   end
 
   def get_skill_id(skill_name)

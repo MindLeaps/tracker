@@ -7,8 +7,9 @@ require_relative 'seed_csv_grades'
 
 mindleaps = Organization.create organization_name: 'MindLeaps'
 mindleaps.chapters.create([
-  { chapter_name: 'Kigali' },
-  { chapter_name: 'Realistic' }
+  { chapter_name: 'Random' },
+  { chapter_name: 'Rwanda' },
+  { chapter_name: 'Uganda' }
 ])
 
 kigali_chapter = mindleaps.chapters[0]
@@ -61,7 +62,7 @@ subjects = Subject.create([
 
 subjects[0].skills = seed_mindleaps_skills mindleaps
 
-# seed_group_random_grades(kigali_chapter.groups[0], subjects[0])
+seed_group_random_grades(kigali_chapter.groups[0], subjects[0])
 
-# CSVDataSeeder.new('./db/seed_data/realistic_data.csv').seed_data mindleaps.chapters[1], subjects[0]
 CSVDataSeeder.new('./db/seed_data/rwanda_data.csv').seed_data mindleaps.chapters[1], subjects[0]
+CSVDataSeeder.new('./db/seed_data/uganda_data.csv').seed_data mindleaps.chapters[2], subjects[0]
