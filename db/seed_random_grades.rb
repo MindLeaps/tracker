@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
+# rubocop:disable Rails/Output
+
 def seed_group_random_grades(group, subject)
   current_date = 6.months.ago
 
   60.times do
+    puts("Lesson: #{current_date} - Chapter: #{group.chapter.chapter_name} - Group: #{group.group_name}")
     lesson = Lesson.create subject: subject, date: current_date, group: group
 
     group.students.each do |student|
