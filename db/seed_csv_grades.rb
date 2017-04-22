@@ -19,6 +19,8 @@ class CSVDataSeeder
     @students = {}
     @lessons = {}
     @group_names = { 1 => 'A', 2 => 'B', 3 => 'C' }
+    @skill_ids = {}
+    @gds = {}
   end
 
   def seed_data(chapter, default_subject)
@@ -29,18 +31,24 @@ class CSVDataSeeder
   private
 
   def read_csv_file
-    SmarterCSV.process(@csv_file_path, skip_lines: 2)
+    SmarterCSV.process@csv_file_path
   end
 
   def seed_row(r, chapter)
     group = create_group(r[:group], chapter)
-    student = create_student(r[:id], group, chapter, r[:gender] - 1, r[:age])
+    student = create_student(r[:id], group, chapter, (r[:gender] || 1) - 1, r[:age] || 13)
     lesson = create_lesson(group, r[:date])
     grade_student student, lesson, get_row_grades(r)
   end
 
   def create_group(group_id, chapter)
-    @groups[group_id] ||= chapter.groups.create group_name: @group_names[group_id]
+    @groups[group_id] ||= chapter.groups.create group_name: generate_group_name(group_id)
+  end
+
+  def generate_group_name(group_id)
+    return group_id if group_id.to_str
+
+    @group_names[group_id]
   end
 
   def create_student(id, group, chapter, gender, age)
@@ -57,7 +65,14 @@ class CSVDataSeeder
   end
 
   def create_lesson(group, date)
-    @lessons[:"#{group.id}-#{date}"] ||= Lesson.create group: group, date: (Date.strptime date, '%m/%d/%y'), subject: @subject
+    @lessons[:"#{group.id}-#{date}"] ||= Lesson.create group: group, date: parse_date(date), subject: @subject
+  end
+
+  def parse_date(date_string)
+    puts date_string
+    return Date.strptime date_string, '%m/%d/%y' if date_string.split('/')[2].length == 2
+
+    Date.strptime date_string, '%m/%d/%Y'
   end
 
   def get_row_grades(row)
@@ -73,11 +88,26 @@ class CSVDataSeeder
   end
 
   def grade_student(student, lesson, grades)
+    new_grades = []
     grades.each do |skill_name, mark|
       return lesson.mark_student_as_absent(student) if mark.nil?
-      skill = Skill.where(skill_name: DEFAULT_SKILL_NAMES[skill_name]).first
-      gd = GradeDescriptor.where(skill: skill, mark: mark).first
-      Grade.create lesson: lesson, student: student, grade_descriptor: gd
+
+      skill_id = get_skill_id skill_name
+      gd = get_gd skill_id, mark
+      new_grades << Grade.new(lesson: lesson, student: student, grade_descriptor: gd)
     end
+    Grade.transaction do
+      new_grades.each(&:save!)
+    end
+  rescue ActiveRecord::RecordInvalid => e
+    byebug
+  end
+
+  def get_skill_id(skill_name)
+    @skill_ids[:"#{skill_name}"] ||= Skill.where(skill_name: DEFAULT_SKILL_NAMES[skill_name]).first.id
+  end
+
+  def get_gd(skill_id, mark)
+    @gds[:"#{skill_id}-#{mark}"] ||= GradeDescriptor.where(skill_id: skill_id, mark: mark).first
   end
 end
