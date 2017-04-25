@@ -18,7 +18,7 @@ class GroupsController < ApplicationController
 
   def show
     @group = Group.includes(:chapter).find params[:id]
-    @students = @group.students.exclude_deleted
+    @students = @group.students.exclude_deleted.includes :profile_image
   end
 
   def edit

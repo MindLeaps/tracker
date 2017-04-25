@@ -20,6 +20,7 @@ RSpec.describe 'User interacts with Groups' do
       @chapter1 = create :chapter, chapter_name: 'Old Chapter'
       @chapter2 = create :chapter, chapter_name: 'New Chapter', organization: @chapter1.organization
       @group = create :group, group_name: 'Test Group', chapter: @chapter1
+      create_list :student, 3, group: @group
     end
 
     it 'edits the name and chapter of an existing group' do
