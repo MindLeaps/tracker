@@ -105,4 +105,22 @@ RSpec.describe GroupsController, type: :controller do
       it { should render_template :edit }
     end
   end
+
+  describe '#destroy' do
+    before :each do
+      @group = create :group
+
+      @students = create_list :student, 2, group: @group
+
+      post :destroy, params: { id: @group.id }
+    end
+
+    it { should redirect_to groups_path }
+
+    it { should set_flash[:undo_notice] }
+
+    it 'Marks the group as deleted' do
+      expect(@group.reload.deleted_at).to be_within(1.second).of Time.zone.now
+    end
+  end
 end

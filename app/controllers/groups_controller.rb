@@ -31,6 +31,12 @@ class GroupsController < ApplicationController
     render :edit, status: 422
   end
 
+  def destroy
+    group = Group.find params.require :id
+    group.deleted_at = Time.zone.now
+    undo_notice_and_redirect t(:group_deleted, group: group.group_name), undelete_group_path, groups_path if group.save
+  end
+
   private
 
   def group_params

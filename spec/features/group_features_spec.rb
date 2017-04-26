@@ -36,4 +36,20 @@ RSpec.describe 'User interacts with Groups' do
       expect(page).to have_content 'New Chapter'
     end
   end
+
+  describe 'Group deleting' do
+    before :each do
+      @group = create :group, group_name: 'About to be Deleted'
+      @students = create_list :student, 3, group: @group
+    end
+
+    it 'marks the group as deleted' do
+      visit '/groups'
+      click_link 'About to be Deleted'
+      click_button 'Delete'
+
+      expect(page).to have_content 'Group "About to be Deleted" successfully deleted.'
+      expect(@group.reload.deleted_at).to be_within(1.second).of Time.zone.now
+    end
+  end
 end
