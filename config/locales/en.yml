@@ -20,32 +20,32 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  student_created: Student "%{name}" successfully created.
+  student_created: Student "%{name}" created.
   create_another: Create another
   student_delete_confirmation: Are you sure you want to delete student "%{name}"?
-  student_deleted: Student "%{name}" successfully deleted.
-  student_restored: Student "%{name}" successfully restored.
-  group_created: Group "%{group}" successfully created.
-  group_updated: Group "%{group}" successfully updated.
-  group_deleted: Group "%{group}" successfully deleted.
-  group_restored: Group "%{group}" successfully restored.
-  chapter_created: Chapter "%{chapter}" successfully created.
-  chapter_updated: Chapter "%{chapter}" successfully updated.
+  student_deleted: Student "%{name}" deleted.
+  student_restored: Student "%{name}" restored.
+  group_created: Group "%{group}" created.
+  group_updated: Group "%{group}" updated.
+  group_deleted: Group "%{group}" deleted.
+  group_restored: Group "%{group}" restored.
+  chapter_created: Chapter "%{chapter}" created.
+  chapter_updated: Chapter "%{chapter}" updated.
   duplicate_lesson: Lesson already exists for group "%{group}" in "%{subject}" on selected date.
   duplicate_grade: "%{name} already scored %{mark} in %{skill} on %{date} in %{subject}."
-  subject_created: Subject "%{subject}" successfully created.
-  subject_updated: Subject successfully updated.
-  lesson_created: Lesson successfully created.
-  skill_created: Skill "%{skill}" successfully created.
+  subject_created: Subject "%{subject}" created.
+  subject_updated: Subject updated.
+  lesson_created: Lesson created.
+  skill_created: Skill "%{skill}" created.
   create_grade_button: Save Student Grades
   invalid_token: Invalid token or non-existent user
-  student_graded: Student successfully graded.
+  student_graded: Student graded.
   student_absent: Absent
   student_not_graded: Not Graded
   back_to_subjects: Back to All Subjects
   cancel: Cancel
   student_has_no_images: This student has no images
-  images_uploaded: Images successfully uploaded.
+  images_uploaded: Images uploaded.
   no_image_submitted: No image submitted.
   wrong_image: Image of %{other_student} cannot be a profile image for %{student}
 

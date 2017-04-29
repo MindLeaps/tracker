@@ -52,7 +52,7 @@ RSpec.describe StudentImagesController, type: :controller do
 
         it { should route(:post, "students/#{@student.id}/student_images").to action: :create, student_id: @student.id }
         it { should redirect_to student_student_images_url }
-        it { should set_flash[:notice].to 'Images successfully uploaded.' }
+        it { should set_flash[:notice].to 'Images uploaded.' }
         it 'saves a new image' do
           expect(StudentImage.where(student_id: @student.id).length).to eq 1
         end

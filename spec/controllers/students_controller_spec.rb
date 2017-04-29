@@ -190,7 +190,7 @@ RSpec.describe StudentsController, type: :controller do
 
       it { should redirect_to students_path }
 
-      it { should set_flash[:notice].to "Student \"#{@student.proper_name}\" successfully restored." }
+      it { should set_flash[:notice].to "Student \"#{@student.proper_name}\" restored." }
 
       it 'Marks the student as not deleted' do
         expect(@student.reload.deleted_at).to be_nil

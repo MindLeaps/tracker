@@ -25,7 +25,7 @@ RSpec.describe 'User interacts with student images' do
       attach_file 'student_image[image][]', [test_image_path, test_image_path]
       click_button 'Upload'
 
-      expect(page).to have_content 'Images successfully uploaded.'
+      expect(page).to have_content 'Images uploaded.'
       expect(page).to have_selector 'img.student-image', count: 4
     end
 

@@ -11,7 +11,7 @@ RSpec.describe 'User interacts with Groups' do
       click_button 'Create'
 
       expect(page).to have_content 'Feature Test Group'
-      expect(page).to have_content 'Group "Feature Test Group" successfully created.'
+      expect(page).to have_content 'Group "Feature Test Group" created.'
     end
   end
 
@@ -31,7 +31,7 @@ RSpec.describe 'User interacts with Groups' do
       select 'New Chapter', from: 'group_chapter_id'
       click_button 'Update'
 
-      expect(page).to have_content 'Group "Edited Group" successfully updated.'
+      expect(page).to have_content 'Group "Edited Group" updated.'
       expect(page).to have_content 'Edited Group'
       expect(page).to have_content 'New Chapter'
     end
@@ -48,12 +48,12 @@ RSpec.describe 'User interacts with Groups' do
       click_link 'About to be Deleted'
       click_button 'Delete'
 
-      expect(page).to have_content 'Group "About to be Deleted" successfully deleted.'
+      expect(page).to have_content 'Group "About to be Deleted" deleted.'
       expect(@group.reload.deleted_at).to be_within(1.second).of Time.zone.now
 
       click_button 'Undo'
 
-      expect(page).to have_content 'Group "About to be Deleted" successfully restored.'
+      expect(page).to have_content 'Group "About to be Deleted" restored.'
       expect(@group.reload.deleted_at).to be_nil
     end
   end

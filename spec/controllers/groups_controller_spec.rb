@@ -102,7 +102,7 @@ RSpec.describe GroupsController, type: :controller do
 
       it { should redirect_to group_url }
 
-      it { should set_flash[:notice].to 'Group "Updated Name" successfully updated.' }
+      it { should set_flash[:notice].to 'Group "Updated Name" updated.' }
 
       it 'updates the edited group' do
         expect(@group.reload.group_name).to eq 'Updated Name'
@@ -147,7 +147,7 @@ RSpec.describe GroupsController, type: :controller do
 
     it { should redirect_to groups_path }
 
-    it { should set_flash[:notice].to "Group \"#{@group.group_name}\" successfully restored." }
+    it { should set_flash[:notice].to "Group \"#{@group.group_name}\" restored." }
 
     it 'Removes the group\'s deleted timestamp' do
       expect(@group.reload.deleted_at).to be_nil

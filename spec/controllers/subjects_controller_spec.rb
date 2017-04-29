@@ -86,7 +86,7 @@ RSpec.describe SubjectsController, type: :controller do
         end
 
         it { should redirect_to subjects_path }
-        it { should set_flash[:notice].to 'Subject "Created Subject I" successfully created.' }
+        it { should set_flash[:notice].to 'Subject "Created Subject I" created.' }
 
         it 'Creates the subject without skills' do
           created_subject = Subject.last
