@@ -16,7 +16,7 @@ RSpec.describe 'User interacts with lessons' do
       select 'Feature Testing I', from: 'lesson_subject_id'
       click_button 'Create'
 
-      expect(page).to have_content 'Lesson successfully created'
+      expect(page).to have_content 'Lesson created'
     end
 
     it 'lists all existing lessons' do
@@ -85,7 +85,7 @@ RSpec.describe 'User interacts with lessons' do
 
         click_button 'Save Student Grades'
 
-        expect(page).to have_content 'Student successfully graded.'
+        expect(page).to have_content 'Student graded.'
         expect(page).to have_content 'Featuring'
         expect(page).to have_content 'Mark Two For Skill One'
         expect(page).to have_content 'Testing'
@@ -100,7 +100,7 @@ RSpec.describe 'User interacts with lessons' do
         check 'student_absences'
 
         click_button 'Save Student Grades'
-        expect(page).to have_content 'Student successfully graded.'
+        expect(page).to have_content 'Student graded.'
         expect(page).to have_checked_field 'student_absences'
 
         click_link 'Back to Lesson'

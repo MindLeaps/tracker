@@ -57,7 +57,7 @@ RSpec.describe SkillsController, type: :controller do
         end
 
         it { should redirect_to Skill.last }
-        it { should set_flash[:notice].to 'Skill "Skills Controller Spec Skill" successfully created.' }
+        it { should set_flash[:notice].to 'Skill "Skills Controller Spec Skill" created.' }
       end
       context 'Lesson creation unsuccessful' do
         before :each do

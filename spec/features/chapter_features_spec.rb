@@ -11,7 +11,7 @@ RSpec.describe 'User interacts with Chapters' do
       click_button 'Create'
 
       expect(page).to have_content 'Chapter One'
-      expect(page).to have_content 'Chapter "Chapter One" successfully created.'
+      expect(page).to have_content 'Chapter "Chapter One" created.'
     end
   end
 
@@ -31,7 +31,7 @@ RSpec.describe 'User interacts with Chapters' do
       select 'New Organization', from: 'chapter_organization_id'
       click_button 'Update'
 
-      expect(page).to have_content 'Chapter "Edited Chapter" successfully updated.'
+      expect(page).to have_content 'Chapter "Edited Chapter" updated.'
       expect(page).to have_content 'Edited Chapter'
       expect(page).to have_content 'New Organization'
     end

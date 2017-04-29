@@ -34,7 +34,7 @@ RSpec.describe 'User interacts with skills', js: true do
 
       click_button 'Create'
 
-      expect(page).to have_content 'Skill "Feature Test Skill" successfully created.'
+      expect(page).to have_content 'Skill "Feature Test Skill" created.'
       expect(page).to have_content 'Feature Test Skill'
     end
 

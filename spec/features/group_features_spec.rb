@@ -11,7 +11,7 @@ RSpec.describe 'User interacts with Groups' do
       click_button 'Create'
 
       expect(page).to have_content 'Feature Test Group'
-      expect(page).to have_content 'Group "Feature Test Group" successfully created.'
+      expect(page).to have_content 'Group "Feature Test Group" created.'
     end
   end
 
@@ -20,6 +20,7 @@ RSpec.describe 'User interacts with Groups' do
       @chapter1 = create :chapter, chapter_name: 'Old Chapter'
       @chapter2 = create :chapter, chapter_name: 'New Chapter', organization: @chapter1.organization
       @group = create :group, group_name: 'Test Group', chapter: @chapter1
+      create_list :student, 3, group: @group
     end
 
     it 'edits the name and chapter of an existing group' do
@@ -30,9 +31,30 @@ RSpec.describe 'User interacts with Groups' do
       select 'New Chapter', from: 'group_chapter_id'
       click_button 'Update'
 
-      expect(page).to have_content 'Group "Edited Group" successfully updated.'
+      expect(page).to have_content 'Group "Edited Group" updated.'
       expect(page).to have_content 'Edited Group'
       expect(page).to have_content 'New Chapter'
+    end
+  end
+
+  describe 'Group deleting and undeleting' do
+    before :each do
+      @group = create :group, group_name: 'About to be Deleted'
+      @students = create_list :student, 3, group: @group
+    end
+
+    it 'marks the group as deleted' do
+      visit '/groups'
+      click_link 'About to be Deleted'
+      click_button 'Delete'
+
+      expect(page).to have_content 'Group "About to be Deleted" deleted.'
+      expect(@group.reload.deleted_at).to be_within(1.second).of Time.zone.now
+
+      click_button 'Undo'
+
+      expect(page).to have_content 'Group "About to be Deleted" restored.'
+      expect(@group.reload.deleted_at).to be_nil
     end
   end
 end

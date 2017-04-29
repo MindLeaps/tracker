@@ -59,7 +59,7 @@ RSpec.describe LessonsController, type: :controller do
         end
 
         it { should redirect_to lessons_path }
-        it { should set_flash[:notice].to 'Lesson successfully created.' }
+        it { should set_flash[:notice].to 'Lesson created.' }
 
         it 'creates the Lesson' do
           created_lesson = Lesson.last

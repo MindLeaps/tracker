@@ -64,7 +64,7 @@ RSpec.describe ChaptersController, type: :controller do
 
       it { should redirect_to chapter_url }
 
-      it { should set_flash[:notice].to 'Chapter "Updated Name" successfully updated.' }
+      it { should set_flash[:notice].to 'Chapter "Updated Name" updated.' }
 
       it 'updates the existing chapter' do
         expect(@chapter.reload.chapter_name).to eq 'Updated Name'

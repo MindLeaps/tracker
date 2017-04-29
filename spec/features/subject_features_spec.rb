@@ -21,7 +21,7 @@ RSpec.describe 'User interacts with subjects', js: true do
       select 'Feature Test Skill I', from: 'Skill'
       click_button 'Create'
 
-      expect(page).to have_content 'Subject "Classical Dance" successfully created'
+      expect(page).to have_content 'Subject "Classical Dance" created'
       expect(page).to have_css '.subject-row', count: 1
     end
 
@@ -71,7 +71,7 @@ RSpec.describe 'User interacts with subjects', js: true do
       click_button 'Update'
 
       expect(page).to have_current_path subject_path(subject)
-      expect(page).to have_content 'Subject successfully updated.'
+      expect(page).to have_content 'Subject updated.'
       expect(page).to have_content 'New Skill'
     end
   end

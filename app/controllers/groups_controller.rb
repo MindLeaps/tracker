@@ -3,7 +3,7 @@ class GroupsController < ApplicationController
   has_scope :exclude_deleted, type: :boolean, default: true
 
   before_action do
-    @groups = Group.includes(:chapter, :students).all
+    @groups = apply_scopes Group.includes(:chapter, :students)
   end
 
   def index
@@ -18,7 +18,7 @@ class GroupsController < ApplicationController
 
   def show
     @group = Group.includes(:chapter).find params[:id]
-    @students = @group.students.exclude_deleted
+    @students = @group.students.exclude_deleted.includes :profile_image
   end
 
   def edit
@@ -29,6 +29,18 @@ class GroupsController < ApplicationController
     @group = Group.find params.require :id
     return notice_and_redirect t(:group_updated, group: @group.group_name), group_url if @group.update_attributes group_params
     render :edit, status: 422
+  end
+
+  def destroy
+    group = Group.find params.require :id
+    group.deleted_at = Time.zone.now
+    undo_notice_and_redirect t(:group_deleted, group: group.group_name), undelete_group_path, groups_path if group.save
+  end
+
+  def undelete
+    group = Group.find params.require :id
+    group.deleted_at = nil
+    notice_and_redirect t(:group_restored, group: group.group_name), groups_path if group.save
   end
 
   private

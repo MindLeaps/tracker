@@ -14,6 +14,6 @@ RSpec.describe 'Create student' do
     click_link 'Mea'
     click_button 'Delete'
 
-    expect(page).to have_content 'Student "Mea, Deleto" successfully deleted.'
+    expect(page).to have_content 'Student "Mea, Deleto" deleted.'
   end
 end
