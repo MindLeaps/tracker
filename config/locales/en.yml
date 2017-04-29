@@ -28,6 +28,7 @@ en:
   group_created: Group "%{group}" successfully created.
   group_updated: Group "%{group}" successfully updated.
   group_deleted: Group "%{group}" successfully deleted.
+  group_restored: Group "%{group}" successfully restored.
   chapter_created: Chapter "%{chapter}" successfully created.
   chapter_updated: Chapter "%{chapter}" successfully updated.
   duplicate_lesson: Lesson already exists for group "%{group}" in "%{subject}" on selected date.

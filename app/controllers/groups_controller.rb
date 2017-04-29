@@ -3,7 +3,7 @@ class GroupsController < ApplicationController
   has_scope :exclude_deleted, type: :boolean, default: true
 
   before_action do
-    @groups = Group.includes(:chapter, :students).all
+    @groups = apply_scopes Group.includes(:chapter, :students)
   end
 
   def index
@@ -35,6 +35,12 @@ class GroupsController < ApplicationController
     group = Group.find params.require :id
     group.deleted_at = Time.zone.now
     undo_notice_and_redirect t(:group_deleted, group: group.group_name), undelete_group_path, groups_path if group.save
+  end
+
+  def undelete
+    group = Group.find params.require :id
+    group.deleted_at = nil
+    notice_and_redirect t(:group_restored, group: group.group_name), groups_path if group.save
   end
 
   private

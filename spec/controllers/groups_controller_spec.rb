@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe GroupsController, type: :controller do
@@ -22,15 +23,28 @@ RSpec.describe GroupsController, type: :controller do
   end
 
   describe '#index' do
-    it 'gets a list of groups' do
-      group1 = create :group
-      group2 = create :group
+    before :each do
+      @groups = create_list :group, 3
+      @deleted_group = create :group, deleted_at: 1.second.ago
 
       get :index
+    end
 
+    it 'gets a list of groups' do
       expect(response).to be_success
-      expect(assigns(:groups)).to include group1
-      expect(assigns(:groups)).to include group2
+      expect(assigns(:groups).length).to eq 3
+      expect(assigns(:groups)).to include(*@groups)
+    end
+
+    it 'does not include deleted groups' do
+      expect(assigns(:groups)).not_to include @deleted_group
+    end
+
+    it 'includes deleted groups' do
+      get :index, params: { exclude_deleted: false }
+
+      expect(assigns(:groups).length).to eq 4
+      expect(assigns(:groups)).to include @deleted_group
     end
   end
 
@@ -121,6 +135,22 @@ RSpec.describe GroupsController, type: :controller do
 
     it 'Marks the group as deleted' do
       expect(@group.reload.deleted_at).to be_within(1.second).of Time.zone.now
+    end
+  end
+
+  describe '#undelete' do
+    before :each do
+      @group = create :group, deleted_at: Time.zone.now
+
+      post :undelete, params: { id: @group.id }
+    end
+
+    it { should redirect_to groups_path }
+
+    it { should set_flash[:notice].to "Group \"#{@group.group_name}\" successfully restored." }
+
+    it 'Removes the group\'s deleted timestamp' do
+      expect(@group.reload.deleted_at).to be_nil
     end
   end
 end
