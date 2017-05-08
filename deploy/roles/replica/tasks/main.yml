@@ -10,3 +10,17 @@
     src: postgresql.conf.j2
     dest: /etc/postgresql/9.5/main/postgresql.conf
   notify: restart postgresql
+
+- name: Install .pgpass file
+  template:
+    src: pgpass.j2
+    dest: /var/lib/postgresql/.pgpass
+    owner: postgres
+    mode: '0600'
+  notify: restart postgresql
+
+- name: Install custom recovery.conf
+  template:
+    src: recovery.conf.j2
+    dest: /mnt/data/db/recovery.conf
+  notify: restart postgresql

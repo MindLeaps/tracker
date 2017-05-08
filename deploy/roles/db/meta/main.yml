@@ -8,3 +8,6 @@ dependencies:
     postgresql_users:
     - name: tracker
       password: "{{ database_password }}"
+    - name: backup_replicator
+      password: "{{ database_backup_replicator_password }}"
+      role_attr_flags: REPLICATION
