@@ -1,0 +1,7 @@
+---
+dependencies:
+  - db_volume
+  - role: geerlingguy.ansible-role-postgresql
+    postgresql_data_dir: /mnt/data/db
+    postgresql_databases:
+    - name: tracker

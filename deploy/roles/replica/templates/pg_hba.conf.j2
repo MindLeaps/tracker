@@ -5,5 +5,4 @@ local   all             postgres                                    peer
 local   all             all                                         trust
 
 # IPv4 local connections:
-host    all             all             {{ database_address }}/16   md5
-host    replication     backup_replicator {{ database_address }}/16 md5
+host    all             all             0.0.0.0/0                   md5
