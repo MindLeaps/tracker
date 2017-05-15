@@ -24,3 +24,23 @@
     src: recovery.conf.j2
     dest: /mnt/data/db/recovery.conf
   notify: restart postgresql
+
+- name: Creates the backup directory
+  file:
+    owner: postgres
+    path: /mnt/data/backups
+    state: directory
+    mode: 0766
+
+- name: Copy the backup script
+  template:
+    src: pg_dump_backup.sh.j2
+    dest: /usr/local/bin/pg_dump_backup.sh
+    mode: 0755
+
+- name: Install the cron backup script
+  cron:
+    user: postgres
+    name: "Dump Database"
+    hour: "*/3"
+    job: "sh /usr/local/bin/pg_dump_backup.sh"
