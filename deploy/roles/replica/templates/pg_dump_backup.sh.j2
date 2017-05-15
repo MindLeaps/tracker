@@ -1,0 +1,3 @@
+#!/bin/sh
+
+pg_dump -Fc tracker > "/mnt/data/backups/tracker_$(date +%s).dump"
