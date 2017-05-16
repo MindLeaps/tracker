@@ -42,5 +42,6 @@
   cron:
     user: postgres
     name: "Dump Database"
+    minute: 0
     hour: "*/3"
     job: "sh /usr/local/bin/pg_dump_backup.sh"
