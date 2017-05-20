@@ -52,6 +52,16 @@
   args:
     creates: "{{ ssl_certificate }}"
 
+- name: Renew SSL Certificate
+  shell: "/etc/certbot-auto renew"
+
+- name: Setup the cronjob for SSL Certificate renewal
+  cron:
+    name: "Renew SSL Certificate"
+    minute: 1
+    hour: 0
+    job: "/etc/certbot-auto renew && systemctl restart nginx"
+
   # Full nginx config serving SSL and forwarding to the app
 - name: Install nginx config
   sudo: true
