@@ -25,6 +25,31 @@
     dest: /mnt/data/db/recovery.conf
   notify: restart postgresql
 
+- name: Install Pip
+  apt:
+    name: python-pip
+    state: present
+
+- name: Install AWS CLI
+  pip:
+    name: awscli
+
+- name: Create .aws directory
+  become: yes
+  become_user: postgres
+  file:
+    owner: postgres
+    path: ~/.aws
+    state: directory
+    mode: 0700
+
+- name: Install AWS Credentials
+  become: yes
+  become_user: postgres
+  template:
+    src: aws_credentials.j2
+    dest: ~/.aws/credentials
+
 - name: Creates the backup directory
   file:
     owner: postgres
