@@ -21,7 +21,7 @@ Environment=AWS_ACCESS_KEY_ID={{ aws_access_key_id }}
 Environment=AWS_SECRET_ACCESS_KEY={{ aws_secret_access_key }}
 Environment=AWS_BUCKET_NAME={{ aws_bucket_name }}
 Environment=AWS_REGION={{ aws_region }}
-ExecStart=/home/mindleaps/.rvm/bin/rvm all do rails s
+ExecStart=/home/mindleaps/.rvm/bin/rvm . do rails s
 
 Restart=always
 
