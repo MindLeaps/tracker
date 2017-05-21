@@ -8,6 +8,6 @@ FactoryGirl.define do
     dob { Faker::Time.between 20.years.ago, 10.years.ago }
     estimated_dob { Faker::Boolean.boolean 0.2 }
     gender { Faker::Number.between 0, 1 }
-    organization { create :organization }
+    organization
   end
 end
