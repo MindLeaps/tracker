@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Chapter < ApplicationRecord
   validates :chapter_name, presence: true
   validates :organization, presence: true, unless: ->(chapter) { chapter.organization_id.nil? }

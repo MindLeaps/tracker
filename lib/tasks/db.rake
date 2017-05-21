@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 namespace :db do
   desc 'Reset Postgres sequences of table primary keys to highest value'
   task correct_sequence_ids: :environment do

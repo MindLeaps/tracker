@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # rubocop:disable Style/IndentArray
 # rubocop:disable Metrics/LineLength
 # rubocop:disable Metrics/MethodLength

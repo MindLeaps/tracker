@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class User < ApplicationRecord
   has_many :authentication_tokens
   rolify
@@ -29,7 +30,7 @@ class User < ApplicationRecord
   def organizations
     return Organization.all.to_a if administrator?
 
-    Organization.with_role([:user, :admin], self).to_a
+    Organization.with_role(%i[user admin], self).to_a
   end
 
   class << self

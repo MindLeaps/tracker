@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # rubocop:disable Style/IndentArray
 
 require_relative 'seed_skills'

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 FactoryGirl.define do
   factory :authentication_token do
     body { Faker::Code.ean }

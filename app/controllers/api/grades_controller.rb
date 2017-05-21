@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Api
   class GradesController < ApiController
     has_scope :by_student, as: :student_id

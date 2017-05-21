@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Group < ApplicationRecord
   validates :group_name, presence: true
   validates :group_name, uniqueness: {

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class ChaptersController < ApplicationController
   def index
     @chapters = Chapter.includes(groups: [:students]).all

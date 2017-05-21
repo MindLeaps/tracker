@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 FactoryGirl.define do
   factory :subject do
     sequence(:subject_name) { |n| "#{Faker::Educator.course}-#{n}" }

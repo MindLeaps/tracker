@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class GradeSerializer < ActiveModel::Serializer
   attributes :id, :student_id, :lesson_id, :grade_descriptor_id, :deleted_at
 

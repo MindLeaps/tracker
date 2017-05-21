@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class CreateGradeDescriptors < ActiveRecord::Migration[5.0]
   def change
     create_table :grade_descriptors do |t|
@@ -6,7 +7,7 @@ class CreateGradeDescriptors < ActiveRecord::Migration[5.0]
       t.string :grade_description
       t.belongs_to :skill, null: false
 
-      t.index [:mark, :skill_id], unique: true
+      t.index %i[mark skill_id], unique: true
     end
   end
 end

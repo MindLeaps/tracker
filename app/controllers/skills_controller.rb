@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class SkillsController < ApplicationController
   def index
     @skills = Skill.includes(:organization).all
@@ -21,6 +22,6 @@ class SkillsController < ApplicationController
   private
 
   def skill_parameters
-    params.require(:skill).permit(:skill_name, :organization_id, :skill_description, grade_descriptors_attributes: [:mark, :grade_description, :_destroy])
+    params.require(:skill).permit(:skill_name, :organization_id, :skill_description, grade_descriptors_attributes: %i[mark grade_description _destroy])
   end
 end

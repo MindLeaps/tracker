@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Grade < ApplicationRecord
   validates :lesson, :student, :grade_descriptor, presence: true
   validate :grade_skill_must_be_unique_for_lesson_and_student, if: :all_relations_exist?

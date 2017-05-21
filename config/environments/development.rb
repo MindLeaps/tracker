@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 Rails.application.configure do
   OpenSSL::SSL.send(:remove_const, :VERIFY_PEER)
   OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
@@ -64,5 +65,5 @@ Rails.application.configure do
   end
 
   # Enabling Skylight.io in development - must have auth token in environment to work properly
-  config.skylight.environments += %w(development)
+  config.skylight.environments += %w[development]
 end
