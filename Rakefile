@@ -15,6 +15,7 @@ task :rubocop do
   end
 end
 
+Rake::Task['test'].clear # Overriding Rails default test task which runs minitest
 desc 'Run Rubocop and then Spec'
 task test: %i[rubocop spec] do
   puts 'Tests OK'
