@@ -152,42 +152,58 @@
 
 - name: Install libs required by RVM
   sudo: true
-  shell: /home/mindleaps/.rvm/bin/rvm --autolibs=enabled requirements `cat ~/tracker/.ruby-version`
+  shell: /home/mindleaps/.rvm/bin/rvm --autolibs=enabled requirements .
+  args:
+    chdir: /home/mindleaps/tracker
 
 - name: Install the ruby version needed by mindleaps
   sudo: true
   sudo_user: mindleaps
-  shell: ~/.rvm/bin/rvm install `cat ~/tracker/.ruby-version`
+  shell: ~/.rvm/bin/rvm install .
+  args:
+    chdir: /home/mindleaps/tracker
 
 - name: Install Bundler
   sudo: true
   sudo_user: mindleaps
-  shell: ~/.rvm/bin/rvm `cat ~/tracker/.ruby-version` do gem install bundler chdir=/home/mindleaps/tracker
+  shell: ~/.rvm/bin/rvm . do gem install bundler
+  args:
+    chdir: /home/mindleaps/tracker
 
 - name: Update Rubygems
   sudo: true
   sudo_user: mindleaps
-  shell: ~/.rvm/bin/rvm `cat ~/tracker/.ruby-version` do rvm rubygems latest
+  shell: ~/.rvm/bin/rvm . do rvm rubygems latest
+  args:
+      chdir: /home/mindleaps/tracker
 
 - name: Install all gems
   sudo: true
   sudo_user: mindleaps
-  shell: ~/.rvm/bin/rvm `cat ~/tracker/.ruby-version` do bundle install chdir=/home/mindleaps/tracker
+  shell: ~/.rvm/bin/rvm . do bundle install
+  args:
+    chdir: /home/mindleaps/tracker
 
 - name: Migrate the Database
   sudo: true
   sudo_user: mindleaps
-  shell: DEVISE_SECRET_KEY={{ devise_secret_key }} RAILS_ENV=production ~/.rvm/bin/rvm `cat ~/tracker/.ruby-version` do rake db:migrate chdir=/home/mindleaps/tracker
+  shell: DEVISE_SECRET_KEY={{ devise_secret_key }} RAILS_ENV=production ~/.rvm/bin/rvm . do rake db:migrate
+  args:
+    chdir: /home/mindleaps/tracker
 
 - name: Reset Postgres sequences of table primary key ids
   sudo: true
   sudo_user: mindleaps
-  shell: DEVISE_SECRET_KEY={{ devise_secret_key }} RAILS_ENV=production ~/.rvm/bin/rvm `cat ~/tracker/.ruby-version` do rake db:correct_sequence_ids chdir=/home/mindleaps/tracker
+  shell: DEVISE_SECRET_KEY={{ devise_secret_key }} RAILS_ENV=production ~/.rvm/bin/rvm . do rake db:correct_sequence_ids
+  args:
+    chdir: /home/mindleaps/tracker
 
 - name: Precompile the assets
   sudo: true
   sudo_user: mindleaps
-  shell: DEVISE_SECRET_KEY={{ devise_secret_key }} RAILS_ENV=production ~/.rvm/bin/rvm `cat ~/tracker/.ruby-version` do rake assets:precompile chdir=/home/mindleaps/tracker
+  shell: DEVISE_SECRET_KEY={{ devise_secret_key }} RAILS_ENV=production ~/.rvm/bin/rvm . do rake assets:precompile
+  args:
+    chdir: /home/mindleaps/tracker
 
 - name: Install the systemd script for tracker
   sudo: true
