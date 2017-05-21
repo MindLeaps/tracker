@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Skill < ApplicationRecord
   validates :skill_name, :organization, presence: true
   validate :grade_descriptors_must_have_unique_marks

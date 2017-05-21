@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 FactoryGirl.define do
   factory :grade_descriptor do
     sequence(:mark) { |n| n }

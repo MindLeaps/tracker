@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class StudentLessonsController < ApplicationController
   def show
     @student = Student.find params[:id]
@@ -44,6 +45,6 @@ class StudentLessonsController < ApplicationController
   end
 
   def grades_attributes
-    params.require(:student).permit(grades_attributes: [:id, :skill, :grade_descriptor_id])[:grades_attributes].values
+    params.require(:student).permit(grades_attributes: %i[id skill grade_descriptor_id])[:grades_attributes].values
   end
 end

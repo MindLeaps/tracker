@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class AddDeletedAtToGroups < ActiveRecord::Migration[5.0]
   def change
     add_column :groups, :deleted_at, :datetime

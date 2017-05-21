@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Lesson < ApplicationRecord
   belongs_to :group
   belongs_to :subject
@@ -10,7 +11,7 @@ class Lesson < ApplicationRecord
   scope :by_subject, ->(subject_id) { where subject_id: subject_id }
 
   validates :date, uniqueness: {
-    scope: [:group, :subject],
+    scope: %i[group subject],
     message: ->(object, _data) { I18n.translate :duplicate_lesson, group: object.group.group_name, subject: object.subject.subject_name }
   }
 

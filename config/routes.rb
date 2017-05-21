@@ -10,35 +10,35 @@ Rails.application.routes.draw do
   end
 
   scope module: :api, as: :api, constraints: ->(req) { req.format == :json } do
-    resources :organizations, only: [:index, :show]
-    resources :chapters, only: [:index, :show]
-    resources :groups, only: [:index, :show]
-    resources :students, only: [:index, :show]
-    resources :lessons, only: [:index, :show, :create]
-    resources :grades, only: [:show, :create, :index, :update, :destroy]
-    resources :subjects, only: [:index, :show]
-    resources :skills, only: [:index, :show]
-    resources :grade_descriptors, only: [:index, :show]
-    resources :assignments, only: [:index, :show]
+    resources :organizations, only: %i[index show]
+    resources :chapters, only: %i[index show]
+    resources :groups, only: %i[index show]
+    resources :students, only: %i[index show]
+    resources :lessons, only: %i[index show create]
+    resources :grades, only: %i[show create index update destroy]
+    resources :subjects, only: %i[index show]
+    resources :skills, only: %i[index show]
+    resources :grade_descriptors, only: %i[index show]
+    resources :assignments, only: %i[index show]
   end
 
-  resources :users, only: [:index, :create, :show, :update]
-  resources :organizations, only: [:index, :create, :show]
-  resources :chapters, only: [:index, :create, :show, :edit, :update]
-  resources :groups, only: [:index, :create, :show, :edit, :update, :destroy] do
+  resources :users, only: %i[index create show update]
+  resources :organizations, only: %i[index create show]
+  resources :chapters, only: %i[index create show edit update]
+  resources :groups, only: %i[index create show edit update destroy] do
     member { post :undelete }
   end
-  resources :students, only: [:index, :new, :create, :show, :edit, :update, :destroy] do
-    resources :student_images, only: [:index, :create]
+  resources :students, only: %i[index new create show edit update destroy] do
+    resources :student_images, only: %i[index create]
     member do
       post :undelete
     end
   end
-  resources :lessons, only: [:index, :create, :show] do
-    resources :students, controller: :student_lessons, only: [:show, :update]
+  resources :lessons, only: %i[index create show] do
+    resources :students, controller: :student_lessons, only: %i[show update]
   end
-  resources :subjects, only: [:index, :create, :show, :edit, :update]
-  resources :skills, only: [:index, :create, :show, :new]
+  resources :subjects, only: %i[index create show edit update]
+  resources :skills, only: %i[index create show new]
 
   root to: 'home#index'
 

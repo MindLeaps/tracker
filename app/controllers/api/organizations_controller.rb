@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Api
   class OrganizationsController < ApiController
     has_scope :exclude_deleted, type: :boolean

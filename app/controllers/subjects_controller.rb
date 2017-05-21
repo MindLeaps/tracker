@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class SubjectsController < ApplicationController
   def index
     @subject = Subject.new
@@ -27,6 +28,6 @@ class SubjectsController < ApplicationController
   private
 
   def subject_params
-    params.require(:subject).permit :subject_name, :organization_id, assignments_attributes: [:id, :skill_id, :_destroy]
+    params.require(:subject).permit :subject_name, :organization_id, assignments_attributes: %i[id skill_id _destroy]
   end
 end

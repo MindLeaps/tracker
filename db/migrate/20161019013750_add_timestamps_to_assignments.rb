@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class AddTimestampsToAssignments < ActiveRecord::Migration[5.0]
   def change
     add_column :assignments, :created_at, :datetime

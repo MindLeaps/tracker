@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 FactoryGirl.define do
   factory :chapter do
     sequence(:chapter_name) { |n| "#{Faker::StarWars.planet}-#{n}" }

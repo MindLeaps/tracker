@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Api
   class SkillsController < ApiController
     has_scope :after_timestamp

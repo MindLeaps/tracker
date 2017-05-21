@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class StudentsController < ApplicationController
   has_scope :exclude_deleted, type: :boolean, default: true
 

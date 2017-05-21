@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class StudentPolicy < ApplicationPolicy
   class Scope
     attr_reader :user, :scope

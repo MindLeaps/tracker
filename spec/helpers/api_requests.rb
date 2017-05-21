@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Helpers
   def get_with_token(*args)
     get(*merge_auth_headers(args))

@@ -1,5 +1,6 @@
 AllCops:
   Include:
+    - Gemfile
     - Rakefile
     - config.ru
   Exclude:
@@ -15,6 +16,9 @@ Metrics/BlockLength:
     - spec/**/*
     - config/**/*
 
+Lint/AmbiguousBlockAssociation:
+  Enabled: false
+
 Metrics/LineLength:
   Max: 160
   # To make it possible to copy or click on URIs in the code, we allow lines
@@ -23,9 +27,6 @@ Metrics/LineLength:
   URISchemes:
     - http
     - https
-
-Rails/HttpPositionalArguments:
-  Enabled: false
 
 Style/Documentation:
   Enabled: false

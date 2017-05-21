@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class AddMlidToStudents < ActiveRecord::Migration[5.0]
   def change
     add_column :students, :mlid, :string
