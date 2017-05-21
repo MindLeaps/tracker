@@ -6,9 +6,14 @@ RSpec.describe 'User interacts with Chapters' do
   include_context 'login_with_admin'
 
   describe 'Chapter creation' do
+    before :each do
+      @org = create :organization, organization_name: 'New Org'
+    end
+
     it 'creates a new Chapter', js: true do
       visit '/chapters'
       fill_in 'Chapter name', with: 'Chapter One'
+      select 'New Org', from: 'chapter_organization_id'
       click_button 'Create'
 
       expect(page).to have_content 'Chapter One'

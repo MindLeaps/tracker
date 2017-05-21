@@ -1,4 +1,21 @@
 ---
+- name: Add apt key for yarn
+  apt_key:
+    url: https://dl.yarnpkg.com/debian/pubkey.gpg
+    state: present
+
+- name: Add apt repository for yarn
+  apt_repository:
+    repo: deb https://dl.yarnpkg.com/debian/ stable main
+    state: present
+    filename: yarn
+    update_cache: yes
+
+- name: Update apt repository cache
+  sudo: true
+  apt:
+    update_cache: yes
+
 - name: Install required packages
   sudo: true
   apt: pkg={{ item }} state=installed
@@ -21,6 +38,7 @@
     - imagemagick
     - jpegoptim
     - optipng
+    - yarn
 
   # LetsEncrypt setup, these must happen in order and should only happen on
   # very first deploy

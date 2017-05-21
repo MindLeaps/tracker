@@ -6,9 +6,14 @@ RSpec.describe 'User interacts with Groups' do
   include_context 'login_with_admin'
 
   describe 'Group creation' do
+    before :each do
+      create :chapter, chapter_name: 'Chapter One'
+    end
+
     it 'creates a new group', js: true do
       visit '/groups'
       fill_in 'Group name', with: 'Feature Test Group'
+      select 'Chapter One', from: 'group_chapter_id'
       click_button 'Create'
 
       expect(page).to have_content 'Feature Test Group'

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # rubocop:disable Metrics/MethodLength
-class RolifyCreateRoles < ActiveRecord::Migration
+class RolifyCreateRoles < ActiveRecord::Migration[5.0]
   def change
     create_table(:roles) do |t|
       t.string :name

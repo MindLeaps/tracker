@@ -23,15 +23,29 @@ RSpec.describe ChaptersController, type: :controller do
     end
   end
 
-  describe '#new' do
-    it 'creates a chapter when supplied valid params' do
-      post :create, params: { chapter: { chapter_name: 'Rugerero', organization_id: test_organization.id } }
-      expect(response).to redirect_to controller: :chapters, action: :index
+  describe '#create' do
+    context 'supplied valid params' do
+      it 'creates a chapter' do
+        post :create, params: { chapter: { chapter_name: 'Rugerero', organization_id: test_organization.id } }
+        expect(response).to redirect_to controller: :chapters, action: :index
 
-      chapter = Chapter.last
-      expect(chapter.chapter_name).to eql 'Rugerero'
-      expect(chapter.organization_id).to eql test_organization.id
-      expect(chapter.organization.organization_name).to eql 'Newly Created Test Org'
+        chapter = Chapter.last
+        expect(chapter.chapter_name).to eql 'Rugerero'
+        expect(chapter.organization_id).to eql test_organization.id
+        expect(chapter.organization.organization_name).to eql 'Newly Created Test Org'
+      end
+    end
+
+    context 'supplied no name' do
+      before :each do
+        @existing_chapter = create :chapter
+        post :create, params: { chapter: { organization_id: test_organization.id } }
+      end
+
+      it { should render_template :index }
+      it 'Assigns the chapters for index rendering' do
+        expect(assigns[:chapters]).to include @existing_chapter
+      end
     end
   end
 
