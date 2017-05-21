@@ -10,8 +10,8 @@ RSpec.describe Chapter, type: :model do
   end
 
   describe 'is valid' do
-    it 'with a valid, unique name' do
-      chapter = Chapter.new chapter_name: 'Totally valid chapter'
+    it 'with a valid, unique name in an organization' do
+      chapter = Chapter.new chapter_name: 'Totally valid chapter', organization: @org1
       expect(chapter).to be_valid
       expect(chapter.chapter_name).to eql 'Totally valid chapter'
     end

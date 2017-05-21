@@ -9,12 +9,12 @@ class Student < ApplicationRecord
 
   enum gender: { M: 0, F: 1 }
 
-  belongs_to :group
+  belongs_to :group, optional: true
   belongs_to :organization
   has_many :grades
   has_many :absences
   has_many :student_images
-  belongs_to :profile_image, class_name: 'StudentImage'
+  belongs_to :profile_image, class_name: 'StudentImage', optional: true
   accepts_nested_attributes_for :grades
   accepts_nested_attributes_for :student_images
 

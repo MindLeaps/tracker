@@ -2,13 +2,14 @@
 
 class ChaptersController < ApplicationController
   def index
-    @chapters = Chapter.includes(groups: [:students]).all
+    @chapters = Chapter.includes(:organization, groups: [:students]).all
     @chapter = Chapter.new
   end
 
   def create
     @chapter = Chapter.new chapter_params
     return notice_and_redirect t(:chapter_created, chapter: @chapter.chapter_name), chapters_url if @chapter.save
+    @chapters = Chapter.includes(:organization, groups: [:students]).all
     render :index
   end
 
