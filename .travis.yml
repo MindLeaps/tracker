@@ -7,6 +7,7 @@ services:
 before_install:
   - gem update --system
   - gem --version
+  - bundle lock
 
 before_script:
   - psql -c 'create database tracker_test;' -U postgres
