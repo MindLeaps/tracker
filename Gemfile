@@ -33,7 +33,7 @@ gem 'puma'
 gem 'simple_form'
 gem 'skylight'
 
-# gem 'mindleaps_analytics', path: '../Tracker-Analytics'
+gem 'mindleaps_analytics', path: ENV['MINDLEAPS_ANALYTICS_PATH'] if ENV['MINDLEAPS_ANALYTICS_PATH']
 
 group :production do
   gem 'newrelic_rpm'
