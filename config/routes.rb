@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  # mount MindleapsAnalytics::Engine, at: '/analytics'
+  mount MindleapsAnalytics::Engine, at: '/analytics' if defined?(MindleapsAnalytics)
 
   devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks', sessions: 'users/sessions' }, path: '/'
   devise_scope :user do
