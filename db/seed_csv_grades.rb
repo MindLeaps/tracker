@@ -33,7 +33,7 @@ class CSVDataSeeder
   private
 
   def read_csv_file
-    SmarterCSV.process@csv_file_path
+    SmarterCSV.process @csv_file_path
   end
 
   def seed_row(r, chapter)
