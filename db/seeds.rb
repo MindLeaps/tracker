@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Style/IndentArray
+# rubocop:disable Layout/IndentArray
 
 require_relative 'seed_skills'
 require_relative 'seed_random_grades'
