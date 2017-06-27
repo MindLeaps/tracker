@@ -68,7 +68,7 @@ GEM
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.10.0)
     byebug (9.0.6)
-    capybara (2.14.3)
+    capybara (2.14.4)
       addressable
       mime-types (>= 1.16)
       nokogiri (>= 1.3.3)
@@ -88,7 +88,7 @@ GEM
       image_optimizer (~> 1.6)
     case_transform (0.2)
       activesupport
-    childprocess (0.7.0)
+    childprocess (0.7.1)
       ffi (~> 1.0, >= 1.0.11)
     chromedriver-helper (1.1.0)
       archive-zip (~> 0.7.0)
@@ -121,7 +121,7 @@ GEM
       railties (>= 3.2, < 5.2)
     enum_help (0.0.17)
       activesupport (>= 3.0.0)
-    erubi (1.6.0)
+    erubi (1.6.1)
     erubis (2.7.0)
     excon (0.57.0)
     execjs (2.7.0)
