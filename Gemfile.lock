@@ -123,7 +123,7 @@ GEM
       activesupport (>= 3.0.0)
     erubi (1.6.1)
     erubis (2.7.0)
-    excon (0.57.0)
+    excon (0.57.1)
     execjs (2.7.0)
     factory_girl (4.8.0)
       activesupport (>= 3.0.0)
