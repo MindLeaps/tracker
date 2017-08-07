@@ -3,7 +3,7 @@
 class OrganizationsController < ApplicationController
   def index
     authorize Organization
-    @organizations = Organization.all
+    @organizations = Organization.includes(:chapters).all
     @organization = Organization.new
   end
 
@@ -17,5 +17,14 @@ class OrganizationsController < ApplicationController
   def show
     authorize Organization
     @organization = Organization.find params[:id]
+  end
+
+  def add_member
+    authorize Organization
+
+    organization = Organization.find params[:id]
+
+
+    redirect_to organization_url params.require(:id)
   end
 end
