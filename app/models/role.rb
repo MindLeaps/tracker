@@ -17,12 +17,28 @@ class Role < ApplicationRecord
   ROLES = {
     super_admin: 'Super Administrator',
     admin: 'Administrator',
-    user: 'User'
+    teacher: 'Teacher'
   }.freeze
 
   ROLE_LEVELS = {
     super_admin: 3,
     admin: 2,
-    user: 1
+    teacher: 1
   }.freeze
+
+  def policy
+    self.name.classify.constantize.new
+  end
+end
+
+class SuperAdmin
+  def can_add_member?
+    true
+  end
+end
+
+class Admin
+end
+
+class Teacher
 end

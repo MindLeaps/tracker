@@ -10,7 +10,7 @@ FactoryGirl.define do
       organization nil
       token nil
     end
-    after(:create) { |user| user.update_role :user }
+    after(:create) { |user| user.update_role :teacher }
 
     factory :admin do
       after(:create) { |user| user.update_role :admin }

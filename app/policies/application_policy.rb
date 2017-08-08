@@ -36,6 +36,14 @@ class ApplicationPolicy
     user.is_super_admin? || user.is_admin?
   end
 
+  def add_member?
+    user.roles.map(&:policy).any? do |policy|
+      if policy.respond_to?(:can_add_member?)
+        policy.can_add_member?
+      end
+    end
+  end
+
   def scope
     Pundit.policy_scope!(user, record.class)
   end

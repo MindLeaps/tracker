@@ -20,6 +20,7 @@ RSpec.describe OrganizationPolicy do
 
       it { is_expected.to permit_action :show }
       it { is_expected.to permit_action :update }
+      it { is_expected.to permit_action :add_member }
     end
   end
 
