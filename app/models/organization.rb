@@ -15,4 +15,8 @@ class Organization < ApplicationRecord
     user.add_role role, self
     user.save
   end
+
+  def members
+    User.includes(:roles).where('roles.resource_id' => id)
+  end
 end

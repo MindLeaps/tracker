@@ -5,9 +5,9 @@
   <div class="col-sm-6">
     <h1><%= user_name @user %></h1>
     <ul>
-    <li>Email: <%= @user.email %></li>
-    <li>Current Role: <%= Role::ROLES[@user.current_role] %></li>
-
+      <li>Email: <%= @user.email %></li>
+      <li>Current Role: <%= Role::ROLES[@user.current_role] %></li>
+    </ul>
     <% unless @user.id == current_user.id %>
     <section class="role-administration">
       <legend>User Roles</legend>
@@ -19,4 +19,3 @@
     <%- end %>
   </div>
 </div>
-

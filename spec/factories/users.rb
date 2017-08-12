@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :user do
-    name 'Test User'
+    name { Faker::Name.name }
     email { Faker::Internet.safe_email }
     sequence(:uid) { |n| n }
     provider 'google_oauth2'
@@ -10,7 +10,6 @@ FactoryGirl.define do
       organization nil
       token nil
     end
-    after(:create) { |user| user.update_role :teacher }
 
     factory :admin do
       after(:create) { |user| user.update_role :admin }
@@ -22,6 +21,10 @@ FactoryGirl.define do
 
     factory :admin_of do
       after(:create) { |user, evaluator| user.add_role :admin, evaluator.organization }
+    end
+
+    factory :teacher_in do
+      after(:create) { |user, evaluator| user.add_role :teacher, evaluator.organization }
     end
   end
 end

@@ -47,4 +47,20 @@ RSpec.describe Organization, type: :model do
       expect(User.find_by(email: 'someone@example.com')).to be_nil
     end
   end
+
+  describe '#members' do
+    let(:org) { create :organization }
+    let(:other_org) { create :organization }
+
+    before :each do
+      @members = create_list :teacher_in, 2, organization: org
+      @non_members = create_list :teacher_in, 3, organization: other_org
+      @members << create(:admin_of, organization: org)
+    end
+
+    it 'returns users who have a role in the organization' do
+      expect(org.members.length).to eq 3
+      expect(org.members).to include(*@members)
+    end
+  end
 end

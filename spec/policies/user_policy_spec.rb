@@ -29,8 +29,8 @@ RSpec.describe UserPolicy do
       it { is_expected.to permit_action :update }
     end
 
-    context 'on a normal user' do
-      let(:user) { create :user }
+    context 'on a teacher' do
+      let(:user) { create :teacher_in }
 
       it { is_expected.to permit_action :show }
       it { is_expected.to permit_action :update }
@@ -68,8 +68,8 @@ RSpec.describe UserPolicy do
       it { is_expected.to forbid_action :update }
     end
 
-    context 'on a normal user' do
-      let(:user) { create :user }
+    context 'on a teacher' do
+      let(:user) { create :teacher_in }
 
       it { is_expected.to permit_action :show }
       it { is_expected.to permit_action :update }
@@ -83,8 +83,8 @@ RSpec.describe UserPolicy do
     end
   end
 
-  context 'as a regular user' do
-    let(:current_user) { create :user }
+  context 'as a teacher' do
+    let(:current_user) { create :teacher_in }
 
     context 'on a User resouce' do
       let(:user) { User }
@@ -107,8 +107,8 @@ RSpec.describe UserPolicy do
       it { is_expected.to forbid_action :update }
     end
 
-    context 'on another normal user' do
-      let(:user) { create :user }
+    context 'on another teacher' do
+      let(:user) { create :teacher_in }
 
       it { is_expected.to forbid_action :show }
       it { is_expected.to forbid_action :update }
