@@ -25,20 +25,4 @@ class Role < ApplicationRecord
     admin: 2,
     teacher: 1
   }.freeze
-
-  def policy
-    self.name.classify.constantize.new
-  end
-end
-
-class SuperAdmin
-  def can_add_member?
-    true
-  end
-end
-
-class Admin
-end
-
-class Teacher
 end

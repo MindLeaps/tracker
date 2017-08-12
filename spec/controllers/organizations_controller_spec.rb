@@ -37,15 +37,31 @@ RSpec.describe OrganizationsController, type: :controller do
       @org = create :organization
       @existing_user = create :user
 
-      post :add_member, params: { id: @org.id, member: { email: @existing_user.email, role: 'admin' } }
+      post :add_member, params: { id: @org.id, member: { email: 'new_user@example.com', role: 'admin' } }
     end
 
     it { should redirect_to organization_path @org }
 
-    it 'adds a member with a specified role to the organization' do
-      expect(response).to be_success
+    it 'creates a new user with a specified role in the organization' do
+      new_user = User.find_by(email: 'new_user@example.com')
 
-      expect(@existing_user.has_role?(:admin, org)).to be true
+      expect(new_user.has_role?(:admin, @org)).to be true
+    end
+
+    it 'assigns an existing user, outside of the organization, a role in the organization' do
+      post :add_member, params: { id: @org.id, member: { email: @existing_user.email, role: 'admin' } }
+
+      expect(@existing_user.has_role?(:admin, @org)).to be true
+    end
+
+    context 'email is missing' do
+      before :each do
+        post :add_member, params: { id: @org.id, member: {} }
+      end
+
+      it { should respond_with :bad_request }
+      it { should render_template :show }
+      it { should set_flash[:alert].to 'Member Email missing' }
     end
   end
 end

@@ -48,6 +48,7 @@ en:
   images_uploaded: Images uploaded.
   no_image_submitted: No image submitted.
   wrong_image: Image of %{other_student} cannot be a profile image for %{student}
+  member_email_missing: Member Email missing
 
   errors:
     messages:

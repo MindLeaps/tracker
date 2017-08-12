@@ -16,15 +16,22 @@ class OrganizationsController < ApplicationController
 
   def show
     authorize Organization
-    @organization = Organization.includes(chapters: {groups: [:students]}).find params[:id]
+    @organization = Organization.includes(chapters: { groups: [:students] }).find params[:id]
   end
 
   def add_member
-    authorize Organization
+    @organization = Organization.find params.require :id
+    member_params.tap do |p|
+      redirect_to @organization if @organization.add_user_with_role p.require(:email), p.require(:role).to_sym
+    end
+  rescue ActionController::ParameterMissing
+    flash[:alert] = t :member_email_missing
+    render :show, status: :bad_request
+  end
 
-    organization = Organization.find params[:id]
+  private
 
-
-    redirect_to organization_url params.require(:id)
+  def member_params
+    params.require(:member).permit(:email, :role)
   end
 end

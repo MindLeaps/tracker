@@ -29,4 +29,22 @@ RSpec.describe Organization, type: :model do
       expect(org).to_not be_valid
     end
   end
+
+  describe '#add_user_with_role' do
+    let(:org) { create :organization }
+
+    it 'Adds a new user with a specified role in the organization' do
+      expect(org.add_user_with_role('someone@example.com', :admin)).to be true
+
+      user = User.find_by email: 'someone@example.com'
+      expect(user.has_role?(:admin)).to be false
+      expect(user.has_role?(:admin, org)).to be true
+    end
+
+    it 'Does not add a new user if a passed role is invalid' do
+      expect(org.add_user_with_role('someone@example.com', :nonexistant)).to be false
+
+      expect(User.find_by(email: 'someone@example.com')).to be_nil
+    end
+  end
 end
