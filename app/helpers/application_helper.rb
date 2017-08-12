@@ -30,6 +30,14 @@ module ApplicationHelper
     user.name || 'Inactive User'
   end
 
+  def name_or_email(user)
+    user.name || user.email
+  end
+
+  def role_name(role)
+    Role::ROLES[role.name.to_sym]
+  end
+
   def lesson_student_average_grade(lesson, student)
     return t(:student_absent) if lesson.student_absent? student
 

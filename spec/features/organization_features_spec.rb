@@ -26,12 +26,10 @@ RSpec.describe 'Interaction with Organizations' do
       click_link @organization.organization_name
     end
 
-    it 'displays the organization\'s chapters' do
-      expect(page).to have_content(*@chapters.map(&:chapter_name))
-    end
+    it 'displays the organization\'s members and chapters' do
+      @existing_members.each { |m| expect(page).to have_content m.name }
 
-    it 'displays the organization\'s members' do
-      expect(page).to have_content(*@existing_members.map(&:name))
+      @chapters.each { |c| expect(page).to have_content c.chapter_name }
     end
   end
 
