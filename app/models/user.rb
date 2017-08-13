@@ -2,7 +2,7 @@
 
 class User < ApplicationRecord
   has_many :authentication_tokens
-  rolify
+  rolify before_add: :before_add_role
   validates :email, presence: true
   validates :email, uniqueness: true, allow_blank: true
 
@@ -30,7 +30,24 @@ class User < ApplicationRecord
   def organizations
     return Organization.all.to_a if administrator?
 
-    Organization.with_role(%i[user admin], self).to_a
+    Organization.with_role(Role::ROLES.keys, self).to_a
+  end
+
+  def grant_role_in(role, organization)
+    add_role role, organization
+  rescue ActiveRecord::RecordNotSaved
+    return nil
+  end
+
+  private
+
+  def before_add_role(role)
+    raise ActiveRecord::Rollback if Role::ROLES[role.name.to_sym].nil?
+    raise ActiveRecord::Rollback if already_member_of? role.resource_id
+  end
+
+  def already_member_of?(organization_id)
+    roles.where(resource_id: organization_id).count.positive?
   end
 
   class << self

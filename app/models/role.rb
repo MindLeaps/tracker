@@ -17,12 +17,14 @@ class Role < ApplicationRecord
   ROLES = {
     super_admin: 'Super Administrator',
     admin: 'Administrator',
-    teacher: 'Teacher'
+    teacher: 'Teacher',
+    researcher: 'Researcher'
   }.freeze
 
   ROLE_LEVELS = {
-    super_admin: 3,
-    admin: 2,
-    teacher: 1
+    super_admin: 1000,
+    admin: 500,
+    teacher: 200,
+    researcher: 100
   }.freeze
 end

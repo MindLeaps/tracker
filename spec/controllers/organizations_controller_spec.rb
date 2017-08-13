@@ -54,6 +54,16 @@ RSpec.describe OrganizationsController, type: :controller do
       expect(@existing_user.has_role?(:admin, @org)).to be true
     end
 
+    context 'trying to add another role to an existing member of the organization' do
+      before :each do
+        post :add_member, params: { id: @org.id, member: { email: 'new_user@example.com', role: 'teacher' } }
+      end
+
+      it { should respond_with :conflict }
+      it { should render_template :show }
+      it { should set_flash[:alert].to 'User is already a member of the organization' }
+    end
+
     context 'email is missing' do
       before :each do
         post :add_member, params: { id: @org.id, member: {} }

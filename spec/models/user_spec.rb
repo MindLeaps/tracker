@@ -19,28 +19,66 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe 'is valid' do
-    it 'with a valid, unique email' do
-      user = User.new email: 'some_unique_email@example.com'
-      expect(user).to be_valid
-      expect(user.email).to eql 'some_unique_email@example.com'
+  describe 'validations' do
+    describe 'is valid' do
+      it 'with a valid, unique email' do
+        user = User.new email: 'some_unique_email@example.com'
+        expect(user).to be_valid
+        expect(user.email).to eql 'some_unique_email@example.com'
+      end
+    end
+
+    describe 'is not valid' do
+      let(:org) { create :organization }
+
+      it 'without the email field' do
+        user = User.new
+        expect(user).to_not be_valid
+      end
+
+      it 'with an empty email field' do
+        user = User.new email: ''
+        expect(user).to_not be_valid
+      end
+
+      it 'with a duplicated email field' do
+        user = User.new email: 'existing_user_email@example.com'
+        expect(user).to_not be_valid
+      end
     end
   end
 
-  describe 'is not valid' do
-    it 'without the email field' do
-      user = User.new
-      expect(user).to_not be_valid
+  describe '#grant_role_in' do
+    let(:org1) { create :organization }
+    let(:org2) { create :organization }
+    let(:user) { create :user }
+
+    it 'grants a role in the specified organization' do
+      user.grant_role_in :teacher, org1
+
+      expect(user.has_role?(:teacher, org1)).to eq true
     end
 
-    it 'with an empty email field' do
-      user = User.new email: ''
-      expect(user).to_not be_valid
+    it 'grants roles in multiple organizations' do
+      user.grant_role_in :teacher, org1
+      user.grant_role_in :admin, org2
+
+      expect(user.has_role?(:teacher, org1)).to eq true
+      expect(user.has_role?(:admin, org2)).to eq true
     end
 
-    it 'with a duplicated email field' do
-      user = User.new email: 'existing_user_email@example.com'
-      expect(user).to_not be_valid
+    it 'does not grant more than one role in a single organization' do
+      user.grant_role_in :teacher, org1
+      user.grant_role_in :admin, org1
+
+      expect(user.has_role?(:teacher, org1)).to eq true
+      expect(user.has_role?(:admin, org1)).to eq false
+    end
+
+    it 'does not grant a role that is not specified in the Role::ROLES hash' do
+      user.grant_role_in :nonexistant, org1
+
+      expect(user.has_role?(:nonexistant, org1)).to eq false
     end
   end
 
@@ -118,12 +156,12 @@ RSpec.describe User, type: :model do
         expect(subject).to include org
       end
     end
-    context 'user is an admin of one organization and a user of another' do
+    context 'user is an admin of one organization and a teacher in another' do
       let(:org1) { create :organization }
       let(:org2) { create :organization }
       let(:user) { create :admin_of, organization: org1 }
       before :each do
-        user.add_role :user, org2
+        user.grant_role_in :teacher, org2
       end
 
       it 'returns an array containing both organizations' do

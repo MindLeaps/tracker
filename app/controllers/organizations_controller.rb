@@ -22,7 +22,8 @@ class OrganizationsController < ApplicationController
   def add_member
     @organization = Organization.find params.require :id
     member_params.tap do |p|
-      redirect_to @organization if @organization.add_user_with_role p.require(:email), p.require(:role).to_sym
+      return redirect_to @organization if @organization.add_user_with_role p.require(:email), p.require(:role).to_sym
+      member_conflict_response
     end
   rescue ActionController::ParameterMissing
     flash[:alert] = t :member_email_missing
@@ -33,5 +34,10 @@ class OrganizationsController < ApplicationController
 
   def member_params
     params.require(:member).permit(:email, :role)
+  end
+
+  def member_conflict_response
+    flash[:alert] = t :already_member
+    render :show, status: :conflict
   end
 end

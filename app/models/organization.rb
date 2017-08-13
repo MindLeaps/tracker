@@ -10,10 +10,10 @@ class Organization < ApplicationRecord
   def add_user_with_role(email, role)
     return false unless Role::ROLES.keys.include? role
 
-    user = User.find_by(email: email) || User.new(email: email)
+    user = User.find_or_create_by!(email: email)
+    return false if user.invalid?
 
-    user.add_role role, self
-    user.save
+    user.grant_role_in role, self
   end
 
   def members

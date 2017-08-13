@@ -34,7 +34,7 @@ RSpec.describe Organization, type: :model do
     let(:org) { create :organization }
 
     it 'Adds a new user with a specified role in the organization' do
-      expect(org.add_user_with_role('someone@example.com', :admin)).to be true
+      expect(org.add_user_with_role('someone@example.com', :admin)).to be_truthy
 
       user = User.find_by email: 'someone@example.com'
       expect(user.has_role?(:admin)).to be false
