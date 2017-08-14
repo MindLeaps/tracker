@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
+  before_action :better_errors_hack, if: -> { Rails.env.development? } # Hack to make better errors work with Puma
   before_action :authenticate_user!
 
   def session_path(*args)
@@ -31,4 +32,11 @@ class ApplicationController < ActionController::Base
   add_flash_types :undo_notice, :link_notice
 
   helper_method :session_path
+
+  private
+
+  # https://github.com/charliesome/better_errors/issues/341
+  def better_errors_hack
+    request.env['puma.config'].options.user_options.delete(:app) if request.env.key?('puma.config')
+  end
 end
