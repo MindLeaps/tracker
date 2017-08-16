@@ -50,7 +50,7 @@ GEM
       io-like (~> 0.3.0)
     arel (8.0.0)
     ast (2.3.0)
-    autoprefixer-rails (7.1.2.4)
+    autoprefixer-rails (7.1.2.6)
       execjs
     bcrypt (3.1.11)
     better_errors (2.3.0)
@@ -310,7 +310,7 @@ GEM
     sdoc (0.4.2)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
-    selenium-webdriver (3.5.0)
+    selenium-webdriver (3.5.1)
       childprocess (~> 0.5)
       rubyzip (~> 1.0)
     shoulda-matchers (3.1.2)
