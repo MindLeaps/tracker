@@ -145,6 +145,29 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe '#membership_organizations' do
+    subject { user.membership_organizations }
+    let(:org) { create :organization }
+    let(:org2) { create :organization }
+    let(:user) { create :admin_of, organization: org }
+
+    context 'user is a member of only one organization' do
+      it 'returns an array containing one organization' do
+        expect(subject.length).to eq 1
+        expect(subject).to include org
+      end
+    end
+
+    context 'user is an admin of one organization and teacher in another' do
+      it 'returns an array containing both organizations' do
+        user.grant_role_in :teacher, org2
+
+        expect(subject.length).to eq 2
+        expect(subject).to include org, org2
+      end
+    end
+  end
+
   describe '#organizations' do
     subject { user.organizations }
     context 'user is an admin of one organization' do
@@ -179,6 +202,111 @@ RSpec.describe User, type: :model do
 
       it 'returns an array containing all 3 organizations' do
         expect(subject).to include @org1, @org2, @org3
+      end
+    end
+  end
+
+  describe '#global_administrator?' do
+    subject { user.global_administrator? }
+    context 'user is global Super Administrator' do
+      let(:user) { create :super_admin }
+
+      it { is_expected.to be true }
+    end
+    context 'user is global Administrator' do
+      let(:user) { create :admin }
+
+      it { is_expected.to be true }
+    end
+    context 'user is administrator of an organizations' do
+      let(:org) { create :organization }
+      let(:user) { create :admin_of, organization: org }
+
+      it { is_expected.to be false }
+    end
+  end
+
+  describe '#role_level_in' do
+    subject { user.role_level_in(current_org) }
+    let(:current_org) { create :organization }
+
+    context 'user is a global super admin' do
+      let(:user) { create :super_admin }
+
+      it { is_expected.to eq Role::ROLE_LEVELS[:super_admin] }
+    end
+
+    context 'user is a global admin' do
+      let(:user) { create :admin }
+
+      it { is_expected.to eq Role::ROLE_LEVELS[:admin] }
+    end
+
+    context 'user is an admin in current organization' do
+      let(:user) { create :admin_of, organization: current_org }
+
+      it { is_expected.to eq Role::ROLE_LEVELS[:admin] }
+    end
+
+    context 'user has no global roles, nor a role in the current organization' do
+      let(:org2) { create :organization }
+      let(:user) { create :teacher_in, organization: org2 }
+
+      it { is_expected.to eq Role::MINIMAL_ROLE_LEVEL }
+    end
+  end
+
+  describe '#global_roles' do
+    subject { user.global_roles }
+    let(:org) { create :organization }
+
+    context 'user is a global super admin' do
+      let(:user) { create :super_admin }
+
+      it { is_expected.to contain_exactly(*user.roles.all) }
+    end
+
+    context 'user is a global admin and a local teacher' do
+      let(:user) { create :admin }
+
+      it 'contains only global admin role' do
+        user.grant_role_in :teacher, org
+        expect(subject).to(contain_exactly(*user.roles.where(name: :admin)))
+      end
+    end
+
+    context 'user is a local teacher' do
+      let(:user) { create :teacher_in, organization: org }
+
+      it { is_expected.to match_array [] }
+    end
+  end
+
+  describe '#role_in' do
+    let(:org) { create :organization }
+    let(:org2) { create :organization }
+
+    context 'user is an admin of the organization' do
+      let(:user) { create :admin_of, organization: org }
+
+      it 'returns user\'s admin role in the organization' do
+        expect(user.role_in(org)).to eq user.roles.first
+      end
+
+      context 'user is also a teacher in another organization' do
+        before { user.grant_role_in :teacher, org2 }
+
+        it 'returns user\'s teacher role in second organization' do
+          expect(user.role_in(org2)).to eq user.roles.find_by resource_id: org2.id, name: 'teacher'
+        end
+      end
+    end
+
+    context 'user is a global admin' do
+      let(:user) { create :admin }
+
+      it 'returns nil' do
+        expect(user.role_in(org)).to be_nil
       end
     end
   end

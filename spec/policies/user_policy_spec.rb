@@ -118,7 +118,7 @@ RSpec.describe UserPolicy do
       let(:user) { current_user }
 
       it { is_expected.to permit_action :show }
-      it { is_expected.to forbid_action :update }
+      it { is_expected.to permit_action :update }
     end
   end
 end

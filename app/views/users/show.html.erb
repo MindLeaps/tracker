@@ -6,16 +6,26 @@
     <h1><%= user_name @user %></h1>
     <ul>
       <li>Email: <%= @user.email %></li>
-      <li>Current Role: <%= Role::ROLES[@user.current_role] %></li>
     </ul>
-    <% unless @user.id == current_user.id %>
-    <section class="role-administration">
-      <legend>User Roles</legend>
-      <%= simple_form_for @user, url: {action: 'update'} do |f| %>
-        <%= f.input :roles, collection: Role::ROLES.invert, as: :radio_buttons, checked: @user.current_role, label: '', class: 'role-selection' %>
-        <%= f.button :submit, class: 'btn-outline-success' %>
-      <%- end %>
-    </section>
-    <%- end %>
+    <h4>Membership</h4>
+    <ul>
+      <% @user.roles.each do |role| %>
+        <li><%= role.resource.organization_name %>: <%= Role::ROLES[role.name.to_sym] %></li>
+      <% end %>
+    </ul>
   </div>
+  <% unless @user.id == current_user.id %>
+    <div class="col">
+      <section class="role-administration">
+        <h3>Change User Roles</h3>
+        <% @user.roles.each do |role| %>
+          <legend><%= role.resource.organization_name %></legend>
+          <%= simple_form_for @user, action: :update do |f| %>
+            <%= f.input "roles[#{role.resource_id}]", collection: Role::ROLES.invert, checked: role.name.to_sym , as: :radio_buttons, label: '', class: 'role-selection' %>
+            <%= f.button :submit, class: 'btn-outline-success' %>
+          <%- end %>
+        <% end %>
+      </section>
+    </div>
+  <%- end %>
 </div>

@@ -14,6 +14,10 @@ class Role < ApplicationRecord
 
   scopify
 
+  def role_level
+    ROLE_LEVELS[name.to_sym]
+  end
+
   ROLES = {
     super_admin: 'Super Administrator',
     admin: 'Administrator',
@@ -27,4 +31,12 @@ class Role < ApplicationRecord
     teacher: 200,
     researcher: 100
   }.freeze
+
+  MINIMAL_ROLE_LEVEL = 0
+
+  class << self
+    def max_role_level(roles)
+      roles.map(&:role_level).max
+    end
+  end
 end

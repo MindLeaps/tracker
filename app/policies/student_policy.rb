@@ -13,7 +13,7 @@ class StudentPolicy < ApplicationPolicy
       if user.administrator?
         scope.all
       else
-        scope.where organization: user.organizations
+        scope.where(organization: user.organizations)
       end
     end
   end

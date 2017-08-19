@@ -8,12 +8,19 @@ class User < ApplicationRecord
 
   devise :trackable, :token_authenticatable, :omniauthable, omniauth_providers: [:google_oauth2]
 
-  def current_role
-    Role::ROLES.keys.find { |role| has_role? role }
+  def role_level_in(organization)
+    levels = global_roles.map(&:role_level)
+    levels << local_role_level_in(organization)
+    levels.max
   end
 
-  def current_role_level
-    Role::ROLE_LEVELS[current_role]
+  def global_roles
+    roles.where resource_id: nil
+  end
+
+  def role_in(organization)
+    # Returns only an explicit role in the passed organization, not including global roles
+    roles.find_by resource_id: organization.id
   end
 
   def update_role(new_role)
@@ -28,9 +35,18 @@ class User < ApplicationRecord
   end
 
   def organizations
-    return Organization.all.to_a if administrator?
+    return Organization.all if administrator?
 
-    Organization.with_role(Role::ROLES.keys, self).to_a
+    membership_organizations
+  end
+
+  def global_administrator?
+    is_admin? || is_super_admin?
+  end
+
+  def membership_organizations
+    # All organizations in which this user has an explicit role, not including global roles
+    Organization.where(id: roles.pluck(:resource_id))
   end
 
   def grant_role_in(role, organization)
@@ -48,6 +64,13 @@ class User < ApplicationRecord
 
   def already_member_of?(organization_id)
     roles.where(resource_id: organization_id).count.positive?
+  end
+
+  def local_role_level_in(organization)
+    # Role level in explicit organization, excluding global roles
+    role = role_in organization
+    return Role::MINIMAL_ROLE_LEVEL if role.nil?
+    role.role_level
   end
 
   class << self
