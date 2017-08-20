@@ -9,7 +9,7 @@
     </ul>
     <h4>Membership</h4>
     <ul>
-      <% @user.roles.each do |role| %>
+      <% @user.roles.instance_scoped(Organization).each do |role| %>
         <li><%= role.resource.organization_name %>: <%= Role::ROLES[role.name.to_sym] %></li>
       <% end %>
     </ul>
@@ -18,11 +18,20 @@
     <div class="col">
       <section class="role-administration">
         <h3>Change User Roles</h3>
-        <% @user.roles.each do |role| %>
-          <legend><%= role.resource.organization_name %></legend>
-          <%= simple_form_for @user, action: :update do |f| %>
-            <%= f.input "roles[#{role.resource_id}]", collection: Role::ROLES.invert, checked: role.name.to_sym , as: :radio_buttons, label: '', class: 'role-selection' %>
-            <%= f.button :submit, class: 'btn-outline-success' %>
+        <% current_user.organizations.each do |org| %>
+          <%= simple_form_for @user, action: :update, html: { id: "user-roles-for[#{org.id}]" } do |f| %>
+            <fieldset>
+              <legend><%= org.organization_name %></legend>
+              <div class="form-group radio_buttons user_roles_for[<%= org.id %>]">
+                <% Role::ROLES.each do |role_value, role_name| %>
+                  <label class="radio-label">
+                  <%= radio_button_tag role_value, role_value.to_s, user_role_in(@user, org) == role_value, name: "user[roles[#{org.id}]]" %>
+                  <%= role_name %>
+                  </label>
+                <% end %>
+              </div>
+            </fieldset>
+            <%= f.button :submit, t(:update_role_button), class: 'btn-outline-success' %>
           <%- end %>
         <% end %>
       </section>

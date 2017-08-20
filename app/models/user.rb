@@ -30,6 +30,20 @@ class User < ApplicationRecord
     add_role new_role
   end
 
+  def update_role_in(new_role, org)
+    ret = true
+    User.transaction do
+      unless has_role? new_role, org
+        revoke_role_in org
+        unless grant_role_in new_role, org
+          ret = false
+          raise ActiveRecord::Rollback
+        end
+      end
+    end
+    ret
+  end
+
   def administrator?(organization = nil)
     is_admin_of?(organization) || is_super_admin?
   end
@@ -71,6 +85,12 @@ class User < ApplicationRecord
     role = role_in organization
     return Role::MINIMAL_ROLE_LEVEL if role.nil?
     role.role_level
+  end
+
+  def revoke_role_in(org)
+    role = role_in org
+    return if role.nil?
+    revoke role.name.to_sym, org
   end
 
   class << self

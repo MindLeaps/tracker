@@ -310,4 +310,41 @@ RSpec.describe User, type: :model do
       end
     end
   end
+
+  describe '#update_role_in' do
+    let(:org) { create :organization }
+    let(:user) { create :teacher_in, organization: org }
+
+    context 'updates the user\'s role from teacher to admin of an organization' do
+      it 'removes the user\'s old teacher role' do
+        user.update_role_in(:admin, org)
+        expect(user.has_role?(:teacher, org)).to be false
+      end
+
+      it 'grants the user a new admin role ' do
+        user.update_role_in(:admin, org)
+        expect(user.has_role?(:admin, org)).to be true
+      end
+
+      it 'returns true' do
+        expect(user.update_role_in(:admin, org)).to be true
+      end
+    end
+
+    context 'tries to perform an invalid role update' do
+      it 'does not remove the old teacher role' do
+        user.update_role_in(:nonexist, org)
+        expect(user.has_role?(:teacher, org)).to be true
+      end
+
+      it 'does not grant a new nonexist role' do
+        user.update_role_in(:nonexist, org)
+        expect(user.has_role?(:nonexist, org)).to be false
+      end
+
+      it 'returns false' do
+        expect(user.update_role_in(:nonexist, org)).to be false
+      end
+    end
+  end
 end

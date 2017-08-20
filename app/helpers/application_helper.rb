@@ -49,4 +49,8 @@ module ApplicationHelper
 
     'unknown_user.svg'
   end
+
+  def user_role_in(user, organization)
+    user.role_in(organization).try(:name).try(:to_sym)
+  end
 end

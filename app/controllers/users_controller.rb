@@ -18,12 +18,23 @@ class UsersController < ApplicationController
   end
 
   def show
-    @user = User.includes(roles: [:resource]).find params[:id]
+    @user = User.find params[:id]
   end
 
   def update
-    @user = User.find params[:id]
-    @user.update_role params.require(:user)[:roles]
-    redirect_to @user
+    @user = User.find params.require :id
+    org_role = parse_org_role(params.require(:user).require(:roles))
+
+    return redirect_to @user if @user.update_role_in org_role[:role], org_role[:org]
+    render :show, status: :bad_request
+  end
+
+  private
+
+  def parse_org_role(org_role)
+    org_role.each do |org_id, role_name|
+      org = Organization.find org_id
+      return { org: org, role: role_name }
+    end
   end
 end
