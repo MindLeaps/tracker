@@ -48,40 +48,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '#grant_role_in' do
-    let(:org1) { create :organization }
-    let(:org2) { create :organization }
-    let(:user) { create :user }
-
-    it 'grants a role in the specified organization' do
-      user.grant_role_in :teacher, org1
-
-      expect(user.has_role?(:teacher, org1)).to eq true
-    end
-
-    it 'grants roles in multiple organizations' do
-      user.grant_role_in :teacher, org1
-      user.grant_role_in :admin, org2
-
-      expect(user.has_role?(:teacher, org1)).to eq true
-      expect(user.has_role?(:admin, org2)).to eq true
-    end
-
-    it 'does not grant more than one role in a single organization' do
-      user.grant_role_in :teacher, org1
-      user.grant_role_in :admin, org1
-
-      expect(user.has_role?(:teacher, org1)).to eq true
-      expect(user.has_role?(:admin, org1)).to eq false
-    end
-
-    it 'does not grant a role that is not specified in the Role::ROLES hash' do
-      user.grant_role_in :nonexistant, org1
-
-      expect(user.has_role?(:nonexistant, org1)).to eq false
-    end
-  end
-
   describe '#administrator?' do
     context 'when user is global super administrator' do
       let(:user) { create :super_admin }
@@ -160,7 +126,7 @@ RSpec.describe User, type: :model do
 
     context 'user is an admin of one organization and teacher in another' do
       it 'returns an array containing both organizations' do
-        user.grant_role_in :teacher, org2
+        user.update_role_in :teacher, org2
 
         expect(subject.length).to eq 2
         expect(subject).to include org, org2
@@ -184,7 +150,7 @@ RSpec.describe User, type: :model do
       let(:org2) { create :organization }
       let(:user) { create :admin_of, organization: org1 }
       before :each do
-        user.grant_role_in :teacher, org2
+        user.update_role_in :teacher, org2
       end
 
       it 'returns an array containing both organizations' do
@@ -270,7 +236,7 @@ RSpec.describe User, type: :model do
       let(:user) { create :admin }
 
       it 'contains only global admin role' do
-        user.grant_role_in :teacher, org
+        user.update_role_in :teacher, org
         expect(subject).to(contain_exactly(*user.roles.where(name: :admin)))
       end
     end
@@ -294,7 +260,7 @@ RSpec.describe User, type: :model do
       end
 
       context 'user is also a teacher in another organization' do
-        before { user.grant_role_in :teacher, org2 }
+        before { user.update_role_in :teacher, org2 }
 
         it 'returns user\'s teacher role in second organization' do
           expect(user.role_in(org2)).to eq user.roles.find_by resource_id: org2.id, name: 'teacher'
@@ -313,7 +279,24 @@ RSpec.describe User, type: :model do
 
   describe '#update_role_in' do
     let(:org) { create :organization }
+    let(:org2) { create :organization }
     let(:user) { create :teacher_in, organization: org }
+
+    context 'grants a new role in the organization' do
+      it 'grants a role in the specified organization' do
+        user.update_role_in :teacher, org
+
+        expect(user.has_role?(:teacher, org)).to eq true
+      end
+
+      it 'grants roles in multiple organizations' do
+        user.update_role_in :teacher, org
+        user.update_role_in :admin, org2
+
+        expect(user.has_role?(:teacher, org)).to eq true
+        expect(user.has_role?(:admin, org2)).to eq true
+      end
+    end
 
     context 'updates the user\'s role from teacher to admin of an organization' do
       it 'removes the user\'s old teacher role' do
@@ -346,5 +329,22 @@ RSpec.describe User, type: :model do
         expect(user.update_role_in(:nonexist, org)).to be false
       end
     end
+  end
+
+  describe '#member_of' do
+    let(:org) { create :organization }
+    let(:org2) { create :organization }
+    let(:user) { create :admin_of, organization: org }
+    let(:user2) { create :teacher_in, organization: org2 }
+    let(:global_user) { create :super_admin }
+
+    it { expect(user.member_of?(org)).to be true }
+    it { expect(user.member_of?(org2)).to be false }
+
+    it { expect(user2.member_of?(org)).to be false }
+    it { expect(user2.member_of?(org2)).to be true }
+
+    it { expect(global_user.member_of?(org)).to be false }
+    it { expect(global_user.member_of?(org2)).to be false }
   end
 end

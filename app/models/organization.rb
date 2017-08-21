@@ -11,9 +11,9 @@ class Organization < ApplicationRecord
     return false unless Role::ROLES.keys.include? role
 
     user = User.find_or_create_by!(email: email)
-    return false if user.invalid?
+    return false if user.invalid? || user.member_of?(self)
 
-    user.grant_role_in role, self
+    user.update_role_in role, self
   end
 
   def members

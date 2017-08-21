@@ -31,17 +31,10 @@ class User < ApplicationRecord
   end
 
   def update_role_in(new_role, org)
-    ret = true
-    User.transaction do
-      unless has_role? new_role, org
-        revoke_role_in org
-        unless grant_role_in new_role, org
-          ret = false
-          raise ActiveRecord::Rollback
-        end
-      end
-    end
-    ret
+    update_local_role new_role, org
+    true
+  rescue ActiveRecord::RecordNotSaved
+    return false
   end
 
   def administrator?(organization = nil)
@@ -63,21 +56,15 @@ class User < ApplicationRecord
     Organization.where(id: roles.pluck(:resource_id))
   end
 
-  def grant_role_in(role, organization)
-    add_role role, organization
-  rescue ActiveRecord::RecordNotSaved
-    return nil
+  def member_of?(organization_id)
+    roles.where(resource_id: organization_id).count.positive?
   end
 
   private
 
   def before_add_role(role)
     raise ActiveRecord::Rollback if Role::ROLES[role.name.to_sym].nil?
-    raise ActiveRecord::Rollback if already_member_of? role.resource_id
-  end
-
-  def already_member_of?(organization_id)
-    roles.where(resource_id: organization_id).count.positive?
+    raise ActiveRecord::Rollback if member_of? role.resource_id
   end
 
   def local_role_level_in(organization)
@@ -91,6 +78,15 @@ class User < ApplicationRecord
     role = role_in org
     return if role.nil?
     revoke role.name.to_sym, org
+  end
+
+  def update_local_role(new_role, org)
+    User.transaction do
+      unless has_role?(new_role, org)
+        revoke_role_in org
+        add_role new_role, org
+      end
+    end
   end
 
   class << self
