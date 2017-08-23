@@ -25,7 +25,7 @@ class UsersController < ApplicationController
     @user = User.find params.require :id
     org_role = parse_org_role(params.require(:user).require(:roles))
 
-    return redirect_to @user if @user.update_role_in org_role[:role], org_role[:org]
+    return redirect_to @user if RoleService.update_local_role @user, org_role[:role], org_role[:org]
     render :show, status: :bad_request
   end
 

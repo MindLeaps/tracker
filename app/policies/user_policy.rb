@@ -12,6 +12,6 @@ class UserPolicy < ApplicationPolicy
   private
 
   def higher_global_role_level?(user1, user2)
-    Role.max_role_level(user1.global_roles) > Role.max_role_level(user2.global_roles)
+    Role.max_role_level(user1.roles.global) > Role.max_role_level(user2.roles.global)
   end
 end

@@ -126,7 +126,7 @@ RSpec.describe User, type: :model do
 
     context 'user is an admin of one organization and teacher in another' do
       it 'returns an array containing both organizations' do
-        user.update_role_in :teacher, org2
+        RoleService.update_local_role user, :teacher, org2
 
         expect(subject.length).to eq 2
         expect(subject).to include org, org2
@@ -150,7 +150,7 @@ RSpec.describe User, type: :model do
       let(:org2) { create :organization }
       let(:user) { create :admin_of, organization: org1 }
       before :each do
-        user.update_role_in :teacher, org2
+        RoleService.update_local_role user, :teacher, org2
       end
 
       it 'returns an array containing both organizations' do
@@ -222,32 +222,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '#global_roles' do
-    subject { user.global_roles }
-    let(:org) { create :organization }
-
-    context 'user is a global super admin' do
-      let(:user) { create :super_admin }
-
-      it { is_expected.to contain_exactly(*user.roles.all) }
-    end
-
-    context 'user is a global admin and a local teacher' do
-      let(:user) { create :admin }
-
-      it 'contains only global admin role' do
-        user.update_role_in :teacher, org
-        expect(subject).to(contain_exactly(*user.roles.where(name: :admin)))
-      end
-    end
-
-    context 'user is a local teacher' do
-      let(:user) { create :teacher_in, organization: org }
-
-      it { is_expected.to match_array [] }
-    end
-  end
-
   describe '#role_in' do
     let(:org) { create :organization }
     let(:org2) { create :organization }
@@ -260,7 +234,7 @@ RSpec.describe User, type: :model do
       end
 
       context 'user is also a teacher in another organization' do
-        before { user.update_role_in :teacher, org2 }
+        before { RoleService.update_local_role user, :teacher, org2 }
 
         it 'returns user\'s teacher role in second organization' do
           expect(user.role_in(org2)).to eq user.roles.find_by resource_id: org2.id, name: 'teacher'
@@ -273,60 +247,6 @@ RSpec.describe User, type: :model do
 
       it 'returns nil' do
         expect(user.role_in(org)).to be_nil
-      end
-    end
-  end
-
-  describe '#update_role_in' do
-    let(:org) { create :organization }
-    let(:org2) { create :organization }
-    let(:user) { create :teacher_in, organization: org }
-
-    context 'grants a new role in the organization' do
-      it 'grants a role in the specified organization' do
-        user.update_role_in :teacher, org
-
-        expect(user.has_role?(:teacher, org)).to eq true
-      end
-
-      it 'grants roles in multiple organizations' do
-        user.update_role_in :teacher, org
-        user.update_role_in :admin, org2
-
-        expect(user.has_role?(:teacher, org)).to eq true
-        expect(user.has_role?(:admin, org2)).to eq true
-      end
-    end
-
-    context 'updates the user\'s role from teacher to admin of an organization' do
-      it 'removes the user\'s old teacher role' do
-        user.update_role_in(:admin, org)
-        expect(user.has_role?(:teacher, org)).to be false
-      end
-
-      it 'grants the user a new admin role ' do
-        user.update_role_in(:admin, org)
-        expect(user.has_role?(:admin, org)).to be true
-      end
-
-      it 'returns true' do
-        expect(user.update_role_in(:admin, org)).to be true
-      end
-    end
-
-    context 'tries to perform an invalid role update' do
-      it 'does not remove the old teacher role' do
-        user.update_role_in(:nonexist, org)
-        expect(user.has_role?(:teacher, org)).to be true
-      end
-
-      it 'does not grant a new nonexist role' do
-        user.update_role_in(:nonexist, org)
-        expect(user.has_role?(:nonexist, org)).to be false
-      end
-
-      it 'returns false' do
-        expect(user.update_role_in(:nonexist, org)).to be false
       end
     end
   end

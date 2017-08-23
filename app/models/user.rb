@@ -9,13 +9,9 @@ class User < ApplicationRecord
   devise :trackable, :token_authenticatable, :omniauthable, omniauth_providers: [:google_oauth2]
 
   def role_level_in(organization)
-    levels = global_roles.map(&:role_level)
+    levels = roles.global.map(&:role_level)
     levels << local_role_level_in(organization)
     levels.max
-  end
-
-  def global_roles
-    roles.where resource_id: nil
   end
 
   def role_in(organization)
@@ -28,13 +24,6 @@ class User < ApplicationRecord
 
     Role::ROLES.keys.each { |role| revoke role }
     add_role new_role
-  end
-
-  def update_role_in(new_role, org)
-    update_local_role new_role, org
-    true
-  rescue ActiveRecord::RecordNotSaved
-    return false
   end
 
   def administrator?(organization = nil)
@@ -72,21 +61,6 @@ class User < ApplicationRecord
     role = role_in organization
     return Role::MINIMAL_ROLE_LEVEL if role.nil?
     role.role_level
-  end
-
-  def revoke_role_in(org)
-    role = role_in org
-    return if role.nil?
-    revoke role.name.to_sym, org
-  end
-
-  def update_local_role(new_role, org)
-    User.transaction do
-      unless has_role?(new_role, org)
-        revoke_role_in org
-        add_role new_role, org
-      end
-    end
   end
 
   class << self

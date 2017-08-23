@@ -13,7 +13,7 @@ class Organization < ApplicationRecord
     user = User.find_or_create_by!(email: email)
     return false if user.invalid? || user.member_of?(self)
 
-    user.update_role_in role, self
+    RoleService.update_local_role user, role, self
   end
 
   def members
