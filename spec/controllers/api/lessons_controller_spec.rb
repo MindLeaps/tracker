@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Api::LessonsController, type: :controller do
   let(:lesson) { JSON.parse(response.body)['lesson'] }
-  let(:admin) { create :admin }
+  let(:admin) { create :global_admin }
 
   before :each do
     sign_in admin

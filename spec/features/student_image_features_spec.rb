@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'User interacts with student images' do
   context 'As a global administrator' do
-    include_context 'login_with_admin'
+    include_context 'login_with_global_admin'
 
     before :each do
       @student = create :student

@@ -7,7 +7,7 @@ RSpec.describe StudentLessonsController, type: :controller do
 
   context 'logged in as a global administrator' do
     let(:organization) { create :organization }
-    let(:signed_in_user) { create :admin }
+    let(:signed_in_user) { create :global_admin }
 
     before :each do
       sign_in signed_in_user

@@ -10,7 +10,7 @@
     <h4>Membership</h4>
     <ul>
       <% @user.roles.instance_scoped(Organization).each do |role| %>
-        <li><%= role.resource.organization_name %>: <%= Role::ROLES[role.name.to_sym] %></li>
+        <li><%= role.resource.organization_name %>: <%= Role::LOCAL_ROLES[role.name.to_sym] %></li>
       <% end %>
     </ul>
   </div>
@@ -23,7 +23,7 @@
             <fieldset>
               <legend><%= org.organization_name %></legend>
               <div class="form-group radio_buttons user_roles_for[<%= org.id %>]">
-                <% Role::ROLES.each do |role_value, role_name| %>
+                <% Role::LOCAL_ROLES.each do |role_value, role_name| %>
                   <label class="radio-label">
                   <%= radio_button_tag role_value, role_value.to_s, user_role_in(@user, org) == role_value, name: "user[roles[#{org.id}]]" %>
                   <%= role_name %>

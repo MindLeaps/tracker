@@ -6,7 +6,7 @@ RSpec.describe 'Create student' do
   before :each do
     create :organization
   end
-  include_context 'login_with_admin'
+  include_context 'login_with_global_admin'
 
   it 'creates Rick', js: true do
     visit '/students'

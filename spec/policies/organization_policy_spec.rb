@@ -23,8 +23,8 @@ RSpec.describe OrganizationPolicy do
     end
   end
 
-  context 'as an administrator' do
-    let(:user) { create :admin }
+  context 'as a global administrator' do
+    let(:user) { create :global_admin }
 
     context 'on an Organization resource' do
       let(:organization) { Organization }

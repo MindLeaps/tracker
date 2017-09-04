@@ -64,7 +64,7 @@ RSpec.describe User, type: :model do
     end
 
     context 'user is global administrator' do
-      let(:user) { create :admin }
+      let(:user) { create :global_admin }
 
       it 'is true globally' do
         expect(user.administrator?).to eq true
@@ -159,7 +159,7 @@ RSpec.describe User, type: :model do
       end
     end
     context 'user is a global admin' do
-      let(:user) { create :admin }
+      let(:user) { create :global_admin }
       before :each do
         @org1 = create :organization
         @org2 = create :organization
@@ -180,7 +180,7 @@ RSpec.describe User, type: :model do
       it { is_expected.to be true }
     end
     context 'user is global Administrator' do
-      let(:user) { create :admin }
+      let(:user) { create :global_admin }
 
       it { is_expected.to be true }
     end
@@ -203,9 +203,9 @@ RSpec.describe User, type: :model do
     end
 
     context 'user is a global admin' do
-      let(:user) { create :admin }
+      let(:user) { create :global_admin }
 
-      it { is_expected.to eq Role::ROLE_LEVELS[:admin] }
+      it { is_expected.to eq Role::ROLE_LEVELS[:global_admin] }
     end
 
     context 'user is an admin in current organization' do
@@ -243,7 +243,7 @@ RSpec.describe User, type: :model do
     end
 
     context 'user is a global admin' do
-      let(:user) { create :admin }
+      let(:user) { create :global_admin }
 
       it 'returns nil' do
         expect(user.role_in(org)).to be_nil

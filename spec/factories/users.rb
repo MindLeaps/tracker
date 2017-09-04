@@ -11,8 +11,8 @@ FactoryGirl.define do
       token nil
     end
 
-    factory :admin do
-      after(:create) { |user| user.update_role :admin }
+    factory :global_admin do
+      after(:create) { |user| user.update_role :global_admin }
     end
 
     factory :super_admin do

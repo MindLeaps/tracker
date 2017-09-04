@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'User interacts with lessons' do
   context 'As a global administrator' do
-    include_context 'login_with_admin'
+    include_context 'login_with_global_admin'
 
     it 'creates a lesson' do
       create :group, group_name: 'Lesson Group'

@@ -1,4 +1,4 @@
 <tr class="resource-row member-row">
   <td><a class="resource-row-link member-row-link" href="<%= url_for member %>"><%= name_or_email(member) %></a></td>
-  <td><a class="resource-row-link member-row-link" href="<%= url_for member %>"><%=  member.roles.map { |r| role_name(r) }.join(', ') %></a></td>
+  <td><a class="resource-row-link member-row-link" href="<%= url_for member %>"><%=  member.roles.map(&:label).join(', ') %></a></td>
 </tr>

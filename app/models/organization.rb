@@ -8,7 +8,7 @@ class Organization < ApplicationRecord
   has_many :students
 
   def add_user_with_role(email, role)
-    return false unless Role::ROLES.keys.include? role
+    return false unless Role::LOCAL_ROLES.keys.include? role
 
     user = User.find_or_create_by!(email: email)
     return false if user.invalid? || user.member_of?(self)

@@ -9,7 +9,7 @@ class User < ApplicationRecord
   devise :trackable, :token_authenticatable, :omniauthable, omniauth_providers: [:google_oauth2]
 
   def role_level_in(organization)
-    levels = roles.global.map(&:role_level)
+    levels = roles.global.map(&:level)
     levels << local_role_level_in(organization)
     levels.max
   end
@@ -22,12 +22,12 @@ class User < ApplicationRecord
   def update_role(new_role)
     return if has_role? new_role
 
-    Role::ROLES.keys.each { |role| revoke role }
+    Role::LOCAL_ROLES.keys.each { |role| revoke role }
     add_role new_role
   end
 
   def administrator?(organization = nil)
-    is_admin_of?(organization) || is_super_admin?
+    is_admin_of?(organization) || global_administrator?
   end
 
   def organizations
@@ -37,7 +37,7 @@ class User < ApplicationRecord
   end
 
   def global_administrator?
-    is_admin? || is_super_admin?
+    is_global_admin? || is_super_admin?
   end
 
   def membership_organizations
@@ -52,7 +52,7 @@ class User < ApplicationRecord
   private
 
   def before_add_role(role)
-    raise ActiveRecord::Rollback if Role::ROLES[role.name.to_sym].nil?
+    raise ActiveRecord::Rollback if Role::LOCAL_ROLES[role.symbol].nil? && Role::GLOBAL_ROLES[role.symbol].nil?
     raise ActiveRecord::Rollback if member_of? role.resource_id
   end
 
@@ -60,7 +60,7 @@ class User < ApplicationRecord
     # Role level in explicit organization, excluding global roles
     role = role_in organization
     return Role::MINIMAL_ROLE_LEVEL if role.nil?
-    role.role_level
+    role.level
   end
 
   class << self

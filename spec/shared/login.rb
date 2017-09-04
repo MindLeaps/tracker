@@ -2,9 +2,9 @@
 
 require 'rails_helper'
 
-RSpec.shared_context 'login_with_admin' do
+RSpec.shared_context 'login_with_global_admin' do
   before(:each) do
-    login create :admin
+    login create :global_admin
   end
 end
 
