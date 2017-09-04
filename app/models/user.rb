@@ -19,13 +19,6 @@ class User < ApplicationRecord
     roles.find_by resource_id: organization.id
   end
 
-  def update_role(new_role)
-    return if has_role? new_role
-
-    Role::LOCAL_ROLES.keys.each { |role| revoke role }
-    add_role new_role
-  end
-
   def administrator?(organization = nil)
     is_admin_of?(organization) || global_administrator?
   end

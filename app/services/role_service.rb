@@ -2,6 +2,13 @@
 
 class RoleService
   class << self
+    def update_global_role(user, new_role)
+      role_update_global_transaction user, new_role
+      true
+    rescue ActiveRecord::RecordNotSaved
+      return false
+    end
+
     def update_local_role(user, new_role, org)
       role_update_transaction user, new_role, org
       true
@@ -10,6 +17,15 @@ class RoleService
     end
 
     private
+
+    def role_update_global_transaction(user, new_role)
+      User.transaction do
+        unless user.has_role? new_role
+          user.roles.global.each { |r| user.revoke r.symbol }
+          user.add_role new_role
+        end
+      end
+    end
 
     def role_update_transaction(user, new_role, org)
       User.transaction do
@@ -23,7 +39,7 @@ class RoleService
     def revoke_role_in(user, org)
       role = user.role_in org
       return if role.nil?
-      user.revoke role.name.to_sym, org
+      user.revoke role.symbol, org
     end
   end
 end

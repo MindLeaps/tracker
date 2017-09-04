@@ -56,4 +56,34 @@ RSpec.describe RoleService do
       end
     end
   end
+
+  describe '#update_global_role' do
+    context 'User does not have any roles' do
+      let(:user) { create :user }
+
+      it 'grants the user a global administrator role and returns true' do
+        expect(RoleService.update_global_role(user, :global_admin)).to be true
+        expect(user.has_role?(:global_admin)).to be true
+      end
+
+      it 'does not grant an invalid global role and returns false' do
+        expect(RoleService.update_global_role(user, :nonexist)).to be false
+        expect(user.has_role?(:nonexist)).to be false
+      end
+    end
+
+    context 'User already has a global guest role' do
+      let(:user) { create :global_guest }
+
+      it 'grants the user a global administrator role and returns true' do
+        expect(RoleService.update_global_role(user, :global_admin)).to be true
+        expect(user.has_role?(:global_admin)).to be true
+      end
+
+      it 'removes the existing global guest role' do
+        RoleService.update_global_role user, :global_admin
+        expect(user.has_role?(:global_guest)).to be false
+      end
+    end
+  end
 end

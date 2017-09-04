@@ -12,15 +12,15 @@ FactoryGirl.define do
     end
 
     factory :global_guest do
-      after(:create) { |user| user.update_role :global_guest }
+      after(:create) { |user| user.add_role :global_guest }
     end
 
     factory :global_admin do
-      after(:create) { |user| user.update_role :global_admin }
+      after(:create) { |user| user.add_role :global_admin }
     end
 
     factory :super_admin do
-      after(:create) { |user| user.update_role :super_admin }
+      after(:create) { |user| user.add_role :super_admin }
     end
 
     factory :admin_of do
