@@ -11,6 +11,10 @@ FactoryGirl.define do
       token nil
     end
 
+    factory :global_guest do
+      after(:create) { |user| user.update_role :global_guest }
+    end
+
     factory :global_admin do
       after(:create) { |user| user.update_role :global_admin }
     end

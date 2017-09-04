@@ -267,4 +267,24 @@ RSpec.describe User, type: :model do
     it { expect(global_user.member_of?(org)).to be false }
     it { expect(global_user.member_of?(org2)).to be false }
   end
+
+  describe 'global_roles?' do
+    let(:org) { create :organization }
+
+    it 'is true for users with a global role' do
+      user = create :super_admin
+      expect(user.global_roles?).to be true
+      user = create :global_admin
+      expect(user.global_roles?).to be true
+      user = create :global_guest
+      expect(user.global_roles?).to be true
+    end
+
+    it 'is false for users without a global role' do
+      user = create :teacher_in, organization: org
+      expect(user.global_roles?).to be false
+      user = create :admin_of, organization: org
+      expect(user.global_roles?).to be false
+    end
+  end
 end

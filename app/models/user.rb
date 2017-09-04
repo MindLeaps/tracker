@@ -30,6 +30,10 @@ class User < ApplicationRecord
     is_admin_of?(organization) || global_administrator?
   end
 
+  def global_roles?
+    roles.global.present?
+  end
+
   def organizations
     return Organization.all if administrator?
 

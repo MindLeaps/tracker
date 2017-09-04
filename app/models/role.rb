@@ -30,7 +30,8 @@ class Role < ApplicationRecord
 
   GLOBAL_ROLES = {
     super_admin: 'Super Administrator',
-    global_admin: 'Global Administrator'
+    global_admin: 'Global Administrator',
+    global_guest: 'Global Guest'
   }.freeze
 
   LOCAL_ROLES = {
@@ -44,7 +45,8 @@ class Role < ApplicationRecord
     global_admin: 800,
     admin: 500,
     teacher: 200,
-    researcher: 100
+    researcher: 100,
+    global_guest: 100
   }.freeze
 
   MINIMAL_ROLE_LEVEL = 0
