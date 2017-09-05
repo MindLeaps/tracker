@@ -15,6 +15,10 @@ FactoryGirl.define do
       after(:create) { |user| user.add_role :global_guest }
     end
 
+    factory :global_researcher do
+      after(:create) { |user| user.add_role :global_researcher }
+    end
+
     factory :global_admin do
       after(:create) { |user| user.add_role :global_admin }
     end
