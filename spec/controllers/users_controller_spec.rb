@@ -98,4 +98,17 @@ RSpec.describe UsersController, type: :controller do
       end
     end
   end
+
+  describe '#revoke_global_role' do
+    context 'revoke a global guest role from a user' do
+      let(:user) { create :global_guest }
+      before { delete :revoke_global_role, params: { id: user.id } }
+
+      it { should redirect_to user }
+
+      it 'revoke the role' do
+        expect(user.has_role?(:global_guest)).to be false
+      end
+    end
+  end
 end

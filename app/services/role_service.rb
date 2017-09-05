@@ -16,6 +16,12 @@ class RoleService
       return false
     end
 
+    def revoke_global_role(user)
+      User.transaction do
+        user.roles.global.each { |r| user.revoke r.symbol }
+      end
+    end
+
     private
 
     def role_update_global_transaction(user, new_role)

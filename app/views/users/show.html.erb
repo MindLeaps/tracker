@@ -34,8 +34,9 @@
               </label>
             <% end %>
           </div>
-          <%= f.button :submit, t(:update_global_role_button), class: 'btn-outline-success' %>
+          <%= f.button :submit, t(:update_global_role_button), class: 'btn-outline-success float-submit' %>
         <%- end %>
+        <%= button_to t(:revoke_global_role_button), revoke_global_role_user_path(@user), method: :delete, class: 'btn btn-outline-danger' if @user.global_role? %>
         <% current_user.organizations.each do |org| %>
           <%= simple_form_for @user, html: { id: "user-roles-for[#{org.id}]" } do |f| %>
               <legend><%= org.organization_name %></legend>

@@ -23,7 +23,10 @@ Rails.application.routes.draw do
   end
 
   resources :users, only: %i[index create show update] do
-    member { put :update_global_role }
+    member do
+      put :update_global_role
+      delete :revoke_global_role
+    end
   end
   resources :organizations, only: %i[index create show] do
     member { post :add_member }

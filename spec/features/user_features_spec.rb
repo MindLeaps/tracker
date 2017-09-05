@@ -7,6 +7,7 @@ RSpec.describe 'User interacts with other users', js: true do
     include_context 'login_with_super_admin'
 
     before :each do
+      Bullet.enable = false
       @org = create :organization
       @org2 = create :organization
 
@@ -16,8 +17,11 @@ RSpec.describe 'User interacts with other users', js: true do
       click_link 'Users'
     end
 
+    after :each do
+      Bullet.enable = true
+    end
+
     it 'changes user\'s role, in the organization, from teacher to administrator and add an admin role in other organization' do
-      Bullet.enable = false
       click_link user_name(@other_user)
       form_for(@org2).choose('Teacher')
       form_for(@org2).click_button 'Update User Role'
@@ -31,10 +35,9 @@ RSpec.describe 'User interacts with other users', js: true do
       expect(@other_user.has_role?(:admin, @org)).to be true
       expect(@other_user.has_role?(:teacher, @org2)).to be true
       expect(@other_user.has_role?(:teacher, @org)).to be false
-      Bullet.enable = true
     end
 
-    it 'changes the user\'s global role from global guest to global admin' do
+    it 'changes the user\'s global role from global guest to global admin, then removes global role' do
       Bullet.enable = false
       click_link user_name(@global_guest)
       expect(page).to have_content Role::GLOBAL_ROLES[:global_guest]
@@ -45,7 +48,10 @@ RSpec.describe 'User interacts with other users', js: true do
       expect(global_form.find_field('Global Administrator')).to be_checked
       expect(@global_guest.has_role?(:global_admin)).to be true
       expect(@global_guest.has_role?(:global_guest)).to be false
-      Bullet.enable = true
+
+      click_button 'Revoke Global User Role'
+      expect(@global_guest.has_role?(:global_guest)).to be false
+      expect(@global_guest.has_role?(:global_admin)).to be false
     end
   end
 end

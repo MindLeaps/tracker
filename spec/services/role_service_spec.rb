@@ -86,4 +86,15 @@ RSpec.describe RoleService do
       end
     end
   end
+
+  describe '#revoke_global_role' do
+    context 'user has a global guest role' do
+      let(:user) { create :global_guest }
+
+      it 'revokes the role from a user' do
+        RoleService.revoke_global_role user
+        expect(user.has_role?(:global_guest)).to be false
+      end
+    end
+  end
 end
