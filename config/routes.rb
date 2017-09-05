@@ -22,7 +22,9 @@ Rails.application.routes.draw do
     resources :assignments, only: %i[index show]
   end
 
-  resources :users, only: %i[index create show update]
+  resources :users, only: %i[index create show update] do
+    member { put :update_global_role }
+  end
   resources :organizations, only: %i[index create show] do
     member { post :add_member }
   end

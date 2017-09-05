@@ -9,7 +9,7 @@ class ApplicationPolicy
   end
 
   def index?
-    user.global_roles?
+    user.global_role?
   end
 
   def show?

@@ -29,6 +29,14 @@ class UsersController < ApplicationController
     render :show, status: :bad_request
   end
 
+  def update_global_role
+    @user = User.find params.require :id
+    new_role = params.require(:user).require(:role).to_sym
+
+    return redirect_to @user if RoleService.update_global_role @user, new_role
+    render :show, status: :bad_request
+  end
+
   private
 
   def parse_org_role(org_role)

@@ -23,8 +23,12 @@ class User < ApplicationRecord
     is_admin_of?(organization) || global_administrator?
   end
 
-  def global_roles?
+  def global_role?
     roles.global.present?
+  end
+
+  def global_role
+    roles.global.first
   end
 
   def organizations

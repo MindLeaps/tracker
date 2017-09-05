@@ -25,7 +25,7 @@ class Role < ApplicationRecord
   end
 
   def label
-    LOCAL_ROLES[symbol]
+    GLOBAL_ROLES[symbol] || LOCAL_ROLES[symbol]
   end
 
   GLOBAL_ROLES = {

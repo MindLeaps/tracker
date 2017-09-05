@@ -47,6 +47,10 @@ module ApplicationHelper
   end
 
   def user_role_in(user, organization)
-    user.role_in(organization).try(:name).try(:to_sym)
+    user.role_in(organization).try(:symbol)
+  end
+
+  def user_global_role(user)
+    user.global_role.try(:symbol)
   end
 end

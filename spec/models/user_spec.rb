@@ -273,18 +273,18 @@ RSpec.describe User, type: :model do
 
     it 'is true for users with a global role' do
       user = create :super_admin
-      expect(user.global_roles?).to be true
+      expect(user.global_role?).to be true
       user = create :global_admin
-      expect(user.global_roles?).to be true
+      expect(user.global_role?).to be true
       user = create :global_guest
-      expect(user.global_roles?).to be true
+      expect(user.global_role?).to be true
     end
 
     it 'is false for users without a global role' do
       user = create :teacher_in, organization: org
-      expect(user.global_roles?).to be false
+      expect(user.global_role?).to be false
       user = create :admin_of, organization: org
-      expect(user.global_roles?).to be false
+      expect(user.global_role?).to be false
     end
   end
 end

@@ -51,6 +51,7 @@ en:
   member_email_missing: Member Email missing
   already_member: User is already a member of the organization
   update_role_button: Update User Role
+  update_global_role_button: Update Global User Role
 
   errors:
     messages:
