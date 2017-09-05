@@ -22,8 +22,9 @@ Rails.application.routes.draw do
     resources :assignments, only: %i[index show]
   end
 
-  resources :users, only: %i[index create show update] do
+  resources :users, only: %i[index create show] do
     member do
+      put :update_local_role
       put :update_global_role
       delete :revoke_global_role
     end

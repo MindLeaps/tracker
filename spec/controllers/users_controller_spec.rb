@@ -22,13 +22,13 @@ RSpec.describe UsersController, type: :controller do
     end
   end
 
-  describe '#update' do
+  describe '#update_local_role' do
     let(:org) { create :organization }
     let(:org2) { create :organization }
     let(:user) { create :teacher_in, organization: org }
 
     context 'promotes the user, from teacher to admin, of an organization' do
-      before { put :update, params: { id: user.id, user: { roles: { :"#{org.id}" => :admin } } } }
+      before { put :update_local_role, params: { id: user.id, user: { roles: { :"#{org.id}" => :admin } } } }
 
       it { should redirect_to user }
 
@@ -43,14 +43,14 @@ RSpec.describe UsersController, type: :controller do
 
     context 'giver the user a role in a new organization' do
       it 'grants user a teacher role' do
-        put :update, params: { id: user.id, user: { roles: { :"#{org2.id}" => :teacher } } }
+        put :update_local_role, params: { id: user.id, user: { roles: { :"#{org2.id}" => :teacher } } }
 
         expect(user.has_role?(:teacher, org2)).to be true
       end
     end
 
     context 'tries to give user an invalid role' do
-      before { put :update, params: { id: user.id, user: { roles: { :"#{org.id}" => :nonrole } } } }
+      before { put :update_local_role, params: { id: user.id, user: { roles: { :"#{org.id}" => :nonrole } } } }
 
       it { should respond_with :bad_request }
 

@@ -21,7 +21,7 @@ class UsersController < ApplicationController
     @user = User.find params[:id]
   end
 
-  def update
+  def update_local_role
     @user = User.find params.require :id
     org_role = parse_org_role(params.require(:user).require(:roles))
 
