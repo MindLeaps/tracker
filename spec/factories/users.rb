@@ -34,5 +34,9 @@ FactoryGirl.define do
     factory :teacher_in do
       after(:create) { |user, evaluator| user.add_role :teacher, evaluator.organization }
     end
+
+    factory :researcher_in do
+      after(:create) { |user, evaluator| user.add_role :researcher, evaluator.organization }
+    end
   end
 end

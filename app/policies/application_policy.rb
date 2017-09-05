@@ -13,19 +13,19 @@ class ApplicationPolicy
   end
 
   def show?
-    scope.where(id: record.id).exists?
+    user.global_role? || user_in_record_organization?
   end
 
   def create?
-    user.global_administrator?
+    new? && (user_in_record_organization? || user.global_administrator?)
   end
 
   def new?
-    create?
+    !user.read_only?
   end
 
   def update?
-    user.global_administrator?
+    create?
   end
 
   def edit?
@@ -33,7 +33,7 @@ class ApplicationPolicy
   end
 
   def destroy?
-    user.global_administrator?
+    create?
   end
 
   def scope
@@ -51,5 +51,11 @@ class ApplicationPolicy
     def resolve
       scope
     end
+  end
+
+  protected
+
+  def user_in_record_organization?
+    user.membership_organizations.pluck(:id).include?(record.organization_id)
   end
 end

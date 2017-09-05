@@ -287,4 +287,45 @@ RSpec.describe User, type: :model do
       expect(user.global_role?).to be false
     end
   end
+
+  describe '#read_only?' do
+    subject { user.read_only? }
+    let(:org) { create :organization }
+
+    context 'User is a Global Guest' do
+      let(:user) { create :global_guest }
+
+      it { is_expected.to be true }
+    end
+
+    context 'User is a Global Admin' do
+      let(:user) { create :global_admin }
+
+      it { is_expected.to be false }
+    end
+
+    context 'User is a local teacher' do
+      let(:user) { create :teacher_in, organization: org }
+
+      it { is_expected.to be false }
+    end
+
+    context 'User is a global researcher' do
+      let(:user) { create :global_researcher }
+
+      it { is_expected.to be true }
+    end
+
+    context 'User is a global administrator and local researcher' do
+      let(:user) { create(:global_admin).tap { |u| u.add_role :researcher, org } }
+
+      it { is_expected.to be false }
+    end
+
+    context 'User is a global researcher and local admin' do
+      let(:user) { create(:global_researcher).tap { |u| u.add_role :admin, org } }
+
+      it { is_expected.to be false }
+    end
+  end
 end

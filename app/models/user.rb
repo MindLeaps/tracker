@@ -50,6 +50,10 @@ class User < ApplicationRecord
     roles.where(resource_id: organization_id).count.positive?
   end
 
+  def read_only?
+    (roles.pluck(:name).map(&:to_sym) - Role::READ_ONLY_ROLES).empty?
+  end
+
   private
 
   def before_add_role(role)

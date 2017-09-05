@@ -52,6 +52,8 @@ class Role < ApplicationRecord
     global_guest: 100
   }.freeze
 
+  READ_ONLY_ROLES = %i[global_guest global_researcher researcher].freeze
+
   MINIMAL_ROLE_LEVEL = 0
 
   class << self
