@@ -2,7 +2,7 @@
 
 class User < ApplicationRecord
   has_many :authentication_tokens
-  rolify before_add: :before_add_role
+  rolify before_add: :before_add_role, strict: true
   validates :email, presence: true
   validates :email, uniqueness: true, allow_blank: true
 
