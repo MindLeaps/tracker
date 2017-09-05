@@ -38,19 +38,19 @@
         <%- end %>
         <%= button_to t(:revoke_global_role_button), revoke_global_role_user_path(@user), method: :delete, class: 'btn btn-outline-danger' if @user.global_role? %>
         <% current_user.organizations.each do |org| %>
-          <%= simple_form_for @user, url: update_local_role_user_path(@user), method: :put, html: { id: "user-roles-for[#{org.id}]" } do |f| %>
+          <%= simple_form_for @user, url: user_membership_path(@user, org), method: :put, html: { id: "user-roles-for[#{org.id}]" } do |f| %>
               <legend><%= org.organization_name %></legend>
               <div class="form-group radio_buttons user_roles_for[<%= org.id %>]">
                 <% Role::LOCAL_ROLES.each do |role_value, role_name| %>
                   <label class="radio-label">
-                  <%= radio_button_tag role_value, role_value.to_s, user_role_in(@user, org) == role_value, name: "user[roles[#{org.id}]]" %>
+                  <%= radio_button_tag role_value, role_value.to_s, user_role_in(@user, org) == role_value, name: "role" %>
                   <%= role_name %>
                   </label>
                 <% end %>
               </div>
             <%= f.button :submit, t(:update_role_button), class: 'btn-outline-success float-submit' %>
           <%- end %>
-          <%= button_to t(:revoke_local_role_button, org: org.organization_name), revoke_local_role_user_path(@user), method: :delete, params: { organization_id: org.id }, class: 'btn btn-outline-danger' if @user.member_of?(org) %>
+          <%= button_to t(:revoke_local_role_button, org: org.organization_name), user_membership_path(@user, org), method: :delete, class: 'btn btn-outline-danger' if @user.member_of?(org) %>
         <% end %>
       </section>
     </div>
