@@ -16,4 +16,18 @@ class MembershipsController < ApplicationController
     RoleService.revoke_local_role user, org
     redirect_to user
   end
+
+  def update_global_role
+    @user = User.find params.require :user_id
+    new_role = params.require(:role).to_sym
+
+    return redirect_to @user if RoleService.update_global_role @user, new_role
+    render 'users/show', status: :bad_request
+  end
+
+  def revoke_global_role
+    @user = User.find params.require :user_id
+    RoleService.revoke_global_role @user
+    redirect_to @user
+  end
 end
