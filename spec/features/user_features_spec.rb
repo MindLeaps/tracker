@@ -37,6 +37,15 @@ RSpec.describe 'User interacts with other users', js: true do
       expect(@other_user.has_role?(:teacher, @org)).to be false
     end
 
+    it 'revokes the user\'s role in the organization' do
+      click_link user_name(@other_user)
+
+      expect(page).to have_content "#{@org.organization_name}: Teacher"
+      click_button "Revoke Role in #{@org.organization_name}"
+      expect(@other_user.has_role?(:teacher, @org)).to be false
+      expect(page).not_to have_content "#{@org.organization_name}: Teacher"
+    end
+
     it 'changes the user\'s global role from global guest to global admin, then removes global role' do
       Bullet.enable = false
       click_link user_name(@global_guest)

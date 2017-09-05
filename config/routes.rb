@@ -27,6 +27,7 @@ Rails.application.routes.draw do
       put :update_local_role
       put :update_global_role
       delete :revoke_global_role
+      delete :revoke_local_role
     end
   end
   resources :organizations, only: %i[index create show] do

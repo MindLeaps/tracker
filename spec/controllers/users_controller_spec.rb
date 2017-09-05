@@ -99,6 +99,20 @@ RSpec.describe UsersController, type: :controller do
     end
   end
 
+  describe '#revoke_local_role' do
+    context 'revoke a role, in organization, from a user' do
+      let(:org) { create :organization }
+      let(:user) { create :teacher_in, organization: org }
+      before { delete :revoke_local_role, params: { id: user.id, organization_id: org.id } }
+
+      it { should redirect_to user }
+
+      it 'revokes the teacher role in organization' do
+        expect(user.has_role?(:teacher, org)).to be false
+      end
+    end
+  end
+
   describe '#revoke_global_role' do
     context 'revoke a global guest role from a user' do
       let(:user) { create :global_guest }

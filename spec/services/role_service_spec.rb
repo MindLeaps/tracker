@@ -87,6 +87,36 @@ RSpec.describe RoleService do
     end
   end
 
+  describe '#revoke_local_role' do
+    context 'user has a local teacher role' do
+      let(:org) { create :organization }
+      let(:user) { create :teacher_in, organization: org }
+
+      it 'revokes a teacher role in organization from user' do
+        RoleService.revoke_local_role user, org
+        expect(user.has_role?(:teacher, org)).to be false
+      end
+    end
+
+    context 'user has a local teacher role, and an admin role in another organization' do
+      let(:org) { create :organization }
+      let(:org2) { create :organization }
+      let(:user) { create :teacher_in, organization: org }
+      before :each do
+        user.add_role :admin, org2
+        RoleService.revoke_local_role user, org
+      end
+
+      it 'revokes a teacher role in organization from user' do
+        expect(user.has_role?(:teacher, org)).to be false
+      end
+
+      it 'does not revoke an admin role' do
+        expect(user.has_role?(:admin, org2)).to be true
+      end
+    end
+  end
+
   describe '#revoke_global_role' do
     context 'user has a global guest role' do
       let(:user) { create :global_guest }

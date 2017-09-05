@@ -16,6 +16,12 @@ class RoleService
       return false
     end
 
+    def revoke_local_role(user, org)
+      User.transaction do
+        user.roles.instance_scoped(org).each { |r| user.revoke r.symbol, org }
+      end
+    end
+
     def revoke_global_role(user)
       User.transaction do
         user.roles.global.each { |r| user.revoke r.symbol }

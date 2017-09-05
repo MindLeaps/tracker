@@ -48,8 +48,9 @@
                   </label>
                 <% end %>
               </div>
-            <%= f.button :submit, t(:update_role_button), class: 'btn-outline-success' %>
+            <%= f.button :submit, t(:update_role_button), class: 'btn-outline-success float-submit' %>
           <%- end %>
+          <%= button_to t(:revoke_local_role_button, org: org.organization_name), revoke_local_role_user_path(@user), method: :delete, params: { organization_id: org.id }, class: 'btn btn-outline-danger' if @user.member_of?(org) %>
         <% end %>
       </section>
     </div>

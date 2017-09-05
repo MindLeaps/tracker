@@ -37,6 +37,13 @@ class UsersController < ApplicationController
     render :show, status: :bad_request
   end
 
+  def revoke_local_role
+    user = User.find params.require :id
+    org = Organization.find params.require :organization_id
+    RoleService.revoke_local_role user, org
+    redirect_to user
+  end
+
   def revoke_global_role
     @user = User.find params.require :id
     RoleService.revoke_global_role @user
