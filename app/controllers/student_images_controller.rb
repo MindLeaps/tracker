@@ -1,18 +1,23 @@
 # frozen_string_literal: true
 
 class StudentImagesController < ApplicationController
+  skip_after_action :verify_policy_scoped, only: :index
+
   def index
     @student = Student.includes(:student_images).find params.require :student_id
+    authorize @student, :show?
     @new_image = StudentImage.new
   end
 
   def create
     @student = Student.find params.require(:student_id)
+    authorize @student, :update?
     images = student_images @student
     return notice_and_redirect t(:images_uploaded), student_student_images_path if save_images(images)
 
     handle_save_error images
   rescue ActionController::ParameterMissing, ActiveRecord::RecordNotFound
+    skip_authorization
     image_missing
   end
 
