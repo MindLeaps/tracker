@@ -49,10 +49,11 @@ class Role < ApplicationRecord
     teacher: 200,
     researcher: 100,
     global_researcher: 100,
-    global_guest: 100
+    global_guest: 100,
+    guest: 100
   }.freeze
 
-  READ_ONLY_ROLES = %i[global_guest global_researcher researcher].freeze
+  READ_ONLY_ROLES = %i[global_guest guest global_researcher researcher].freeze
 
   MINIMAL_ROLE_LEVEL = 0
 

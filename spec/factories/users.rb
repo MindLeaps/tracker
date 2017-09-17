@@ -7,6 +7,7 @@ FactoryGirl.define do
     sequence(:uid) { |n| n }
     provider 'google_oauth2'
     transient do
+      role nil
       organization nil
       token nil
     end
@@ -35,8 +36,20 @@ FactoryGirl.define do
       after(:create) { |user, evaluator| user.add_role :teacher, evaluator.organization }
     end
 
+    factory :guest_in do
+      after(:create) { |user, evaluator| user.add_role :guest, evaluator.organization }
+    end
+
     factory :researcher_in do
       after(:create) { |user, evaluator| user.add_role :researcher, evaluator.organization }
+    end
+
+    factory :user_with_role do
+      after(:create) { |user, evaluator| evaluator.role && user.add_role(evaluator.role, evaluator.organization) }
+    end
+
+    factory :user_with_global_role do
+      after(:create) { |user, evaluator| evaluator.role && user.add_role(evaluator.role) }
     end
   end
 end
