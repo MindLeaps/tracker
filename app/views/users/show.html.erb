@@ -15,7 +15,7 @@
     <%- end %>
     <h4>Membership</h4>
     <ul>
-      <% @user.roles.instance_scoped(Organization).each do |role| %>
+      <% @user.roles.includes(:resource).instance_scoped(Organization).each do |role| %>
         <li><%= role.resource.organization_name %>: <%= Role::LOCAL_ROLES[role.name.to_sym] %></li>
       <% end %>
     </ul>
