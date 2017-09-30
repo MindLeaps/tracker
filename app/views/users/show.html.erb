@@ -24,33 +24,40 @@
     <div class="col">
       <section class="role-administration">
         <h3>Change User Roles</h3>
-        <%= simple_form_for @user, url: update_global_role_user_memberships_path(@user), method: :put, html: { id: "user-roles-global" } do |f| %>
-          <legend>Global Role</legend>
-          <div class="form-group radio_buttons user_roles_global">
-            <% Role::GLOBAL_ROLES.each do |role_value, role_name| %>
-              <label class="radio-label">
-                <%= radio_button_tag role_value, role_value.to_s, user_global_role(@user) == role_value, name: "role" %>
-                <%= role_name %>
-              </label>
-            <% end %>
-          </div>
-          <%= f.button :submit, t(:update_global_role_button), class: 'btn-outline-success float-submit' %>
-        <%- end %>
-        <%= button_to t(:revoke_global_role_button), revoke_global_role_user_memberships_path(@user), method: :delete, class: 'btn btn-outline-danger' if @user.global_role? %>
-        <% current_user.organizations.each do |org| %>
-          <%= simple_form_for @user, url: user_membership_path(@user, org), method: :put, html: { id: "user-roles-for[#{org.id}]" } do |f| %>
-              <legend><%= org.organization_name %></legend>
-              <div class="form-group radio_buttons user_roles_for[<%= org.id %>]">
-                <% Role::LOCAL_ROLES.each do |role_value, role_name| %>
-                  <label class="radio-label">
-                  <%= radio_button_tag role_value, role_value.to_s, user_role_in(@user, org) == role_value, name: "role" %>
+        <div class="form-container">
+          <%= simple_form_for @user, url: update_global_role_user_memberships_path(@user), method: :put, html: { id: "user-roles-global" } do |f| %>
+            <legend>Global Role</legend>
+            <div class="form-group radio_buttons user_roles_global">
+              <% Role::GLOBAL_ROLES.each do |role_value, role_name| %>
+                <label class="radio-label">
+                  <%= radio_button_tag role_value, role_value.to_s, user_global_role(@user) == role_value, name: "role" %>
                   <%= role_name %>
-                  </label>
-                <% end %>
-              </div>
-            <%= f.button :submit, t(:update_role_button), class: 'btn-outline-success float-submit' %>
+                </label>
+              <% end %>
+            </div>
+            <%= f.button :submit, t(:update_global_role_button), class: 'btn-outline-success float-submit' %>
           <%- end %>
-          <%= button_to t(:revoke_local_role_button, org: org.organization_name), user_membership_path(@user, org), method: :delete, class: 'btn btn-outline-danger' if @user.member_of?(org) %>
+          <%= button_to t(:revoke_global_role_button), revoke_global_role_user_memberships_path(@user), method: :delete, class: 'btn btn-outline-danger' if @user.global_role? %>
+          <div class="clearfix"></div>
+        </div>
+
+        <% current_user.organizations.each do |org| %>
+          <div class="form-container">
+            <%= simple_form_for @user, url: user_membership_path(@user, org), method: :put, html: { id: "user-roles-for[#{org.id}]" } do |f| %>
+                <legend><%= org.organization_name %></legend>
+                <div class="form-group radio_buttons user_roles_for[<%= org.id %>]">
+                  <% Role::LOCAL_ROLES.each do |role_value, role_name| %>
+                    <label class="radio-label">
+                    <%= radio_button_tag role_value, role_value.to_s, user_role_in(@user, org) == role_value, name: "role" %>
+                    <%= role_name %>
+                    </label>
+                  <% end %>
+                </div>
+              <%= f.button :submit, t(:update_role_button), class: 'btn-outline-success float-submit' %>
+            <%- end %>
+            <%= button_to t(:revoke_local_role_button, org: org.organization_name), user_membership_path(@user, org), method: :delete, class: 'btn btn-outline-danger' if @user.member_of?(org) %>
+            <div class="clearfix"></div>
+          </div>
         <% end %>
       </section>
     </div>
