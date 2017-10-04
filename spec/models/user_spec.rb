@@ -170,6 +170,18 @@ RSpec.describe User, type: :model do
         expect(subject).to include @org1, @org2, @org3
       end
     end
+    context 'user is a global researcher' do
+      let(:user) { create :global_researcher }
+      before :each do
+        @org1 = create :organization
+        @org2 = create :organization
+        @org3 = create :organization
+      end
+
+      it 'returns an array containing all 3 organizations' do
+        expect(subject).to include @org1, @org2, @org3
+      end
+    end
   end
 
   describe '#global_administrator?' do

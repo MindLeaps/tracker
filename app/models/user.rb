@@ -32,7 +32,7 @@ class User < ApplicationRecord
   end
 
   def organizations
-    return Organization.all if administrator?
+    return Organization.all if global_role?
 
     membership_organizations
   end
