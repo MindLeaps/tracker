@@ -203,7 +203,7 @@ RSpec.describe UserPolicy do
   end
 
   describe 'scope' do
-    RSpec.shared_examples :global_user_scope do
+    RSpec.shared_examples :global_user_user_scope do
       subject(:result) { UserPolicy::Scope.new(current_user, User).resolve }
       let(:org1) { create :organization }
       let(:org2) { create :organization }
@@ -228,7 +228,7 @@ RSpec.describe UserPolicy do
       end
     end
 
-    RSpec.shared_examples :local_user_scope do
+    RSpec.shared_examples :local_user_user_scope do
       subject(:result) { UserPolicy::Scope.new(current_user, User).resolve }
       let(:org2) { create :organization }
       let(:teachers_in_org) { create_list :teacher_in, 3, organization: org }
@@ -254,46 +254,46 @@ RSpec.describe UserPolicy do
 
     context 'As a Super Administrator' do
       let(:current_user) { create :super_admin }
-      it_behaves_like :global_user_scope
+      it_behaves_like :global_user_user_scope
     end
 
     context 'As a Global Administrator' do
       let(:current_user) { create :global_admin }
-      it_behaves_like :global_user_scope
+      it_behaves_like :global_user_user_scope
     end
 
     context 'As a Global Guest' do
       let(:current_user) { create :global_guest }
-      it_behaves_like :global_user_scope
+      it_behaves_like :global_user_user_scope
     end
 
     context 'As a Global Researcher' do
       let(:current_user) { create :global_researcher }
-      it_behaves_like :global_user_scope
+      it_behaves_like :global_user_user_scope
     end
 
     context 'As a Local Administrator' do
       let(:org) { create :organization }
       let(:current_user) { create :admin_of, organization: org }
-      it_behaves_like :local_user_scope
+      it_behaves_like :local_user_user_scope
     end
 
     context 'As a Local Teacher' do
       let(:org) { create :organization }
       let(:current_user) { create :teacher_in, organization: org }
-      it_behaves_like :local_user_scope
+      it_behaves_like :local_user_user_scope
     end
 
     context 'As a Local Guest' do
       let(:org) { create :organization }
       let(:current_user) { create :guest_in, organization: org }
-      it_behaves_like :local_user_scope
+      it_behaves_like :local_user_user_scope
     end
 
     context 'As a Local Researcher' do
       let(:org) { create :organization }
       let(:current_user) { create :researcher_in, organization: org }
-      it_behaves_like :local_user_scope
+      it_behaves_like :local_user_user_scope
     end
 
     context 'As a User with roles in multiple organizations' do
