@@ -46,8 +46,8 @@ class User < ApplicationRecord
     Organization.where(id: roles.pluck(:resource_id))
   end
 
-  def member_of?(organization_id)
-    roles.where(resource_id: organization_id).count.positive?
+  def member_of?(organization)
+    roles.pluck(:resource_id).include?(organization.id)
   end
 
   def read_only?
@@ -58,7 +58,7 @@ class User < ApplicationRecord
 
   def before_add_role(role)
     raise ActiveRecord::Rollback if Role::LOCAL_ROLES[role.symbol].nil? && Role::GLOBAL_ROLES[role.symbol].nil?
-    raise ActiveRecord::Rollback if member_of? role.resource_id
+    raise ActiveRecord::Rollback if roles.pluck(:resource_id).include?(role.resource_id)
   end
 
   def local_role_level_in(organization)
