@@ -3,7 +3,7 @@
 class OrganizationsController < ApplicationController
   def index
     authorize Organization
-    @organizations = Organization.includes(:chapters).all
+    @organizations = policy_scope Organization.includes(:chapters).all
     @organization = Organization.new
   end
 
@@ -21,6 +21,7 @@ class OrganizationsController < ApplicationController
 
   def add_member
     @organization = Organization.find params.require :id
+    authorize @organization
     member_params.tap do |p|
       return redirect_to @organization if @organization.add_user_with_role p.require(:email), p.require(:role).to_sym
       member_conflict_response
