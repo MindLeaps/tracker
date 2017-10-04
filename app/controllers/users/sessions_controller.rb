@@ -3,6 +3,7 @@
 module Users
   class SessionsController < Devise::SessionsController
     skip_before_action :verify_authenticity_token
+    skip_after_action :verify_authorized
 
     def token_signin
       user = authenticate_user_from_token! params[:id_token].presence
