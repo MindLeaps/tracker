@@ -15,7 +15,7 @@ RSpec.describe OrganizationPolicy do
       end
 
       context 'on any existing organization' do
-        let(:org) { Organization.create }
+        let(:org) { create :organization }
         it { is_expected.to permit_action :show }
         it { is_expected.to permit_action :add_member }
       end
@@ -35,7 +35,7 @@ RSpec.describe OrganizationPolicy do
       end
 
       context 'on any existing organization' do
-        let(:org) { Organization.create }
+        let(:org) { create :organization }
         it { is_expected.to permit_action :show }
         it { is_expected.to permit_action :add_member }
       end
@@ -55,7 +55,7 @@ RSpec.describe OrganizationPolicy do
       end
 
       context 'on any existing organization' do
-        let(:org) { Organization.create }
+        let(:org) { create :organization }
         it { is_expected.to permit_action :show }
         it { is_expected.to forbid_action :add_member }
       end
@@ -75,7 +75,7 @@ RSpec.describe OrganizationPolicy do
       end
 
       context 'on any existing organization' do
-        let(:org) { Organization.create }
+        let(:org) { create :organization }
         it { is_expected.to permit_action :show }
         it { is_expected.to forbid_action :add_member }
       end
