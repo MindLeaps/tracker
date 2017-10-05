@@ -2,8 +2,13 @@
   <%= render partial: "shared/main_nav_item", locals: {name: "Students", url: main_app.students_path} %>
   <%= render partial: "shared/main_nav_item", locals: {name: "Groups", url: main_app.groups_path} %>
   <%= render partial: "shared/main_nav_item", locals: {name: "Chapters", url: main_app.chapters_path} %>
-  <%= render partial: "shared/main_nav_item", locals: {name: "Organizations", url: main_app.organizations_path} if current_user.is_super_admin? %>
-  <%= render partial: "shared/main_nav_item", locals: {name: "Users", url: main_app.users_path} if current_user.is_super_admin? %>
+  <%= if current_user.organizations.length > 1
+       render partial: "shared/main_nav_item", locals: {name: "Organizations", url: main_app.organizations_path}
+     else
+       org = current_user.organizations.first
+       render partial: "shared/main_nav_item", locals: {name: org.organization_name, url: main_app.organization_path(org)}
+  end %>
+  <%= render partial: "shared/main_nav_item", locals: {name: "Users", url: main_app.users_path} %>
   <%= render partial: "shared/main_nav_item", locals: {name: "Lessons", url: main_app.lessons_path} %>
   <%= render partial: "shared/main_nav_item", locals: {name: "Subjects", url: main_app.subjects_path} %>
   <%= render partial: "shared/main_nav_item", locals: {name: "Skills", url: main_app.skills_path} %>

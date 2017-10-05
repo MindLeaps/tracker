@@ -8,12 +8,14 @@
   <div class="col">
     <h3>Members</h3>
     <%= render partial: "shared/members_table", locals: {members: @organization.members} %>
-    <%= simple_form_for :member, wrapper: :horizontal_form, url: { action: :add_member } do |f| %>
-        <%= f.input :email %>
-        <%= f.input :role do %>
-            <%= f.select :role, Role::LOCAL_ROLES.map { |key, name| [name, key] } %>
-        <% end %>
-        <%= f.button :submit, 'Add Member', class: 'btn-outline-success' %>
+    <% if policy(@organization).add_member? %>
+      <%= simple_form_for :member, wrapper: :horizontal_form, url: { action: :add_member } do |f| %>
+          <%= f.input :email %>
+          <%= f.input :role do %>
+              <%= f.select :role, Role::LOCAL_ROLES.map { |key, name| [name, key] } %>
+          <% end %>
+          <%= f.button :submit, 'Add Member', class: 'btn-outline-success' %>
+      <% end %>
     <% end %>
   </div>
 </div>

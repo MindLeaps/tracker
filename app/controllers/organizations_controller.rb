@@ -15,8 +15,8 @@ class OrganizationsController < ApplicationController
   end
 
   def show
-    authorize Organization
     @organization = Organization.includes(chapters: { groups: [:students] }).find params[:id]
+    authorize @organization
   end
 
   def add_member

@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   before_action :better_errors_hack, if: -> { Rails.env.development? } # Hack to make better errors work with Puma
   before_action :authenticate_user!
-  after_action :verify_authorized
+  after_action :verify_authorized, unless: :devise_controller?
   after_action :verify_policy_scoped, only: :index
 
   def session_path(*args)
