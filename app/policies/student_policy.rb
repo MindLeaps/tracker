@@ -5,6 +5,10 @@ class StudentPolicy < ApplicationPolicy
     true
   end
 
+  def create?
+    user.administrator?(record.organization) || user.is_teacher_of?(record.organization)
+  end
+
   def undelete?
     destroy?
   end

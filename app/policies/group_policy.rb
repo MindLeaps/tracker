@@ -5,6 +5,10 @@ class GroupPolicy < ApplicationPolicy
     true
   end
 
+  def create?
+    user.administrator? record.chapter.organization
+  end
+
   def undelete?
     destroy?
   end

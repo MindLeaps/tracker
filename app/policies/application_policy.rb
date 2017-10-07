@@ -17,7 +17,7 @@ class ApplicationPolicy
   end
 
   def create?
-    new? && (user.global_administrator? || user_in_record_organization?)
+    new? && user.administrator?(record.organization)
   end
 
   def new?
