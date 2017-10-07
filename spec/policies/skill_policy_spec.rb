@@ -109,6 +109,13 @@ RSpec.describe SkillPolicy do
         let(:skill) { build :skill, organization: create(:organization) }
         it { is_expected.to forbid_action :create }
       end
+
+      context 'on a skill belonging to a different organization, but used in the subject from own organization' do
+        let(:subject1) { create :subject, organization: org }
+        let(:skill) { create :skill_in_subject, organization: create(:organization), subject: subject1 }
+
+        it { is_expected.to permit_action :show }
+      end
     end
 
     context 'as a Local Teacher' do
@@ -138,6 +145,13 @@ RSpec.describe SkillPolicy do
       context 'on a new skill outside of own organization' do
         let(:skill) { build :skill, organization: create(:organization) }
         it { is_expected.to forbid_action :create }
+      end
+
+      context 'on a skill belonging to a different organization, but used in the subject from own organization' do
+        let(:subject1) { create :subject, organization: org }
+        let(:skill) { create :skill_in_subject, organization: create(:organization), subject: subject1 }
+
+        it { is_expected.to permit_action :show }
       end
     end
 
@@ -169,6 +183,13 @@ RSpec.describe SkillPolicy do
         let(:skill) { build :skill, organization: create(:organization) }
         it { is_expected.to forbid_action :create }
       end
+
+      context 'on a skill belonging to a different organization, but used in the subject from own organization' do
+        let(:subject1) { create :subject, organization: org }
+        let(:skill) { create :skill_in_subject, organization: create(:organization), subject: subject1 }
+
+        it { is_expected.to permit_action :show }
+      end
     end
 
     context 'as a Local Researcher' do
@@ -199,6 +220,13 @@ RSpec.describe SkillPolicy do
         let(:skill) { build :skill, organization: create(:organization) }
         it { is_expected.to forbid_action :create }
       end
+
+      context 'on a skill belonging to a different organization, but used in the subject from own organization' do
+        let(:subject1) { create :subject, organization: org }
+        let(:skill) { create :skill_in_subject, organization: create(:organization), subject: subject1 }
+
+        it { is_expected.to permit_action :show }
+      end
     end
   end
 
@@ -221,9 +249,11 @@ RSpec.describe SkillPolicy do
 
     RSpec.shared_examples :local_user_skill_scope do
       subject(:result) { SkillPolicy::Scope.new(current_user, Skill).resolve }
-      let(:org2) { create :organization }
-      let(:skills_in_org) { create_list :skill, 3, organization: org }
-      let(:skills_in_org2) { create_list :skill, 3, organization: org2 }
+      let!(:org2) { create :organization }
+      let!(:skill_subject) { create :subject, organization: org }
+      let!(:skills_in_org) { create_list :skill, 3, organization: org }
+      let!(:skills_in_org2) { create_list :skill, 3, organization: org2 }
+      let!(:skills_in_org2_used_in_subject) { create_list :skill_in_subject, 3, organization: org2, subject: skill_subject }
 
       it 'includes all skills from the first organization' do
         expect(result).to include(*skills_in_org)
@@ -231,6 +261,10 @@ RSpec.describe SkillPolicy do
 
       it 'does not include skills from the second organization' do
         expect(result).not_to include(*skills_in_org2)
+      end
+
+      it 'includes skills from the second organization that are used in the subject from first organization' do
+        expect(result).to include(*skills_in_org2_used_in_subject)
       end
     end
 

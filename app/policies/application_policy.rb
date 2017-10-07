@@ -56,6 +56,10 @@ class ApplicationPolicy
   protected
 
   def user_in_record_organization?
-    user.membership_organizations.pluck(:id).include?(record.organization_id)
+    user_org_ids.include?(record.organization_id)
+  end
+
+  def user_org_ids
+    user.roles.pluck(:resource_id)
   end
 end
