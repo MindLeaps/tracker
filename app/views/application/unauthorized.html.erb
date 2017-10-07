@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tracker</title>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => false %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => false %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+<div class="container">
+  <%= image_tag 'mindleaps_logo_transparent.png', class: 'home-mindleaps-logo' %>
+  <h2>Unauthorized</h2>
+  <p class="notice"><%= notice %></p>
+  <p class="alert"><%= alert %></p>
+  <%= link_to 'Log back in', omniauth_authorize_path(User, :google_oauth2), class: 'google-login btn', role: 'button' %>
+</div>
+</body>
+</html>

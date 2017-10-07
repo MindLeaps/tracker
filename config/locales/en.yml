@@ -54,6 +54,7 @@ en:
   update_global_role_button: Update Global User Role
   revoke_global_role_button: Revoke Global User Role
   revoke_local_role_button: Revoke Role in %{org}
+  unauthorized_logout: You have been loged out for performing unauthorized activity
 
   errors:
     messages:

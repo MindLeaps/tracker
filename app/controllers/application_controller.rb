@@ -10,6 +10,8 @@ class ApplicationController < ActionController::Base
   after_action :verify_authorized, unless: :devise_controller?
   after_action :verify_policy_scoped, only: :index
 
+  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+
   def session_path(*args)
     new_user_session_path(*args)
   end
@@ -29,6 +31,12 @@ class ApplicationController < ActionController::Base
     link = view_context.link_to link_text, link_path, class: 'notice-link alert-link btn-link'
     flash[:link_notice] = notice + " #{link}"
     redirect_to redirect_url
+  end
+
+  def user_not_authorized
+    flash[:alert] = I18n.t :unauthorized_logout
+    sign_out current_user
+    render :unauthorized, status: :unauthorized, layout: false
   end
 
   add_flash_types :undo_notice, :link_notice
