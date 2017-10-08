@@ -55,6 +55,6 @@ class StudentLessonsController < ApplicationController
   end
 
   def lesson_from_param
-    Lesson.includes(subject: [skills: [:grade_descriptors]]).find params[:lesson_id]
+    Lesson.includes(subject: [{ skills: [:grade_descriptors] }]).find params[:lesson_id]
   end
 end

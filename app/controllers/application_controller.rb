@@ -45,7 +45,9 @@ class ApplicationController < ActionController::Base
 
   private
 
-  # https://github.com/charliesome/better_errors/issues/341
+  # On Puma 3.x, better errors tries to serialize all of Puma's variables, which includes a massive > 2MB :app variable
+  # which is completely useless for debugging and causes long loading times; therefore, we remove it.
+  # More info: https://github.com/charliesome/better_errors/issues/341
   def better_errors_hack
     request.env['puma.config'].options.user_options.delete(:app) if request.env.key?('puma.config')
   end
