@@ -11,7 +11,7 @@ class Organization < ApplicationRecord
     return false unless Role::LOCAL_ROLES.keys.include? role
 
     user = User.find_or_create_by!(email: email)
-    return false if user.invalid? || user.member_of?(self)
+    return false if user.member_of?(self)
 
     RoleService.update_local_role user, role, self
   end
