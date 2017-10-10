@@ -14,7 +14,7 @@ class Grade < ApplicationRecord
 
   scope :exclude_deleted_students, -> { joins(:student).where students: { deleted_at: nil } }
 
-  attr_accessor :skill
+  attr_writer :skill
 
   def skill
     grade_descriptor.try(:skill) || @skill

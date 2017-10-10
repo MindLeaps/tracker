@@ -16,7 +16,7 @@ RSpec.shared_examples :it_cannot_manipulate_any_roles do
 end
 
 RSpec.shared_examples :it_cannot_manipulate_any_global_roles do
-  Role::GLOBAL_ROLES.keys.each do |r|
+  Role::GLOBAL_ROLES.each_key do |r|
     it_behaves_like :it_cannot_manipulate_global_role { let(:role) { r } }
   end
 end
@@ -27,7 +27,7 @@ RSpec.shared_examples :it_can_manipulate_all_local_roles_in do
 end
 
 RSpec.shared_examples :it_cannot_manipulate_any_local_roles_in do
-  Role::LOCAL_ROLES.keys.each do |r|
+  Role::LOCAL_ROLES.each_key do |r|
     it_behaves_like :it_cannot_manipulate_local_role { let(:role) { r } }
   end
 end

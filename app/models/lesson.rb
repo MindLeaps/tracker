@@ -3,8 +3,8 @@
 class Lesson < ApplicationRecord
   belongs_to :group
   belongs_to :subject
-  has_many :absences
-  has_many :grades
+  has_many :absences, dependent: :restrict_with_error
+  has_many :grades, dependent: :restrict_with_error
 
   validates :group, :date, :subject, presence: true
   scope :by_group, ->(group_id) { where group_id: group_id }

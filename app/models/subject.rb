@@ -2,9 +2,9 @@
 
 class Subject < ApplicationRecord
   belongs_to :organization
-  has_many :lessons
+  has_many :lessons, dependent: :restrict_with_error
   has_many :assignments, -> { exclude_deleted }, inverse_of: :subject, dependent: :destroy
-  has_many :skills, through: :assignments
+  has_many :skills, through: :assignments, dependent: :destroy
 
   validates :subject_name, :organization, presence: true
 
