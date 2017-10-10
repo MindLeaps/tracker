@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'User interacts with skills', js: true do
   context 'As a global administrator' do
-    include_context 'login_with_admin'
+    include_context 'login_with_global_admin'
 
     it 'list all skills' do
       create :skill, skill_name: 'Skill Feature Skill I'

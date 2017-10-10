@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Api::GradeDescriptorsController, type: :controller do
-  let(:admin) { create :admin }
+  let(:admin) { create :global_admin }
 
   before :each do
     sign_in admin

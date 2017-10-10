@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe Api::GradesController, type: :controller do
   let(:grade) { json['grade'] }
   let(:grades) { json['grades'] }
-  let(:admin) { create :admin }
+  let(:admin) { create :global_admin }
 
   before :each do
     sign_in admin

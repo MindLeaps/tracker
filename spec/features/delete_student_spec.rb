@@ -8,7 +8,7 @@ RSpec.describe 'Create student' do
 
     @student = create :student, first_name: 'Deleto', last_name: 'Mea', organization: @org
   end
-  include_context 'login_with_admin'
+  include_context 'login_with_global_admin'
 
   it 'deletes student Deleto Mea', js: true do
     visit '/students'

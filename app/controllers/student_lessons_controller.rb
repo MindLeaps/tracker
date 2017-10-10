@@ -2,21 +2,27 @@
 
 class StudentLessonsController < ApplicationController
   def show
+    @lesson = lesson_from_param
     @student = Student.find params[:id]
-    @lesson = Lesson.includes(subject: [skills: [:grade_descriptors]]).find params[:lesson_id]
+    authorize @lesson, :show?
     @grades = @student.current_grades_for_lesson_including_ungraded_skills params[:lesson_id]
     @absence = @lesson.absences.map(&:student_id).include? @student.id
   end
 
   def update
-    student = Student.find params[:id]
-    student.grade_lesson params[:lesson_id], generate_grades_from_params(student)
-
-    mark_student_absence student
+    authorize Lesson.find(params[:lesson_id]), :create?
+    perform_grading
     notice_and_redirect I18n.t(:student_graded), lesson_student_path
   end
 
   private
+
+  def perform_grading
+    student = Student.find params.require(:id)
+    student.grade_lesson params.require(:lesson_id), generate_grades_from_params(student)
+
+    mark_student_absence student
+  end
 
   def student_absent?
     absence_param = params.require(:student).permit(:absences)[:absences]
@@ -46,5 +52,9 @@ class StudentLessonsController < ApplicationController
 
   def grades_attributes
     params.require(:student).permit(grades_attributes: %i[id skill grade_descriptor_id])[:grades_attributes].values
+  end
+
+  def lesson_from_param
+    Lesson.includes(subject: [{ skills: [:grade_descriptors] }]).find params[:lesson_id]
   end
 end

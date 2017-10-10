@@ -30,6 +30,10 @@ module ApplicationHelper
     user.name || 'Inactive User'
   end
 
+  def name_or_email(user)
+    user.name || user.email
+  end
+
   def lesson_student_average_grade(lesson, student)
     return t(:student_absent) if lesson.student_absent? student
 
@@ -40,5 +44,13 @@ module ApplicationHelper
     return student.profile_image.image.mini_thumb.url if student.profile_image
 
     'unknown_user.svg'
+  end
+
+  def user_role_in(user, organization)
+    user.role_in(organization).try(:symbol)
+  end
+
+  def user_global_role(user)
+    user.global_role.try(:symbol)
   end
 end

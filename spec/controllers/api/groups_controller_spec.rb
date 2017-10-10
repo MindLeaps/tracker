@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe Api::GroupsController, type: :controller do
   let(:group) { JSON.parse(response.body)['group'] }
   let(:groups) { JSON.parse(response.body)['groups'] }
-  let(:admin) { create :admin }
+  let(:admin) { create :global_admin }
 
   before :each do
     sign_in admin

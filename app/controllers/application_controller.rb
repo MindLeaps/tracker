@@ -5,7 +5,12 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
+  before_action :better_errors_hack, if: -> { Rails.env.development? } # Hack to make better errors work with Puma
   before_action :authenticate_user!
+  after_action :verify_authorized, unless: :devise_controller?
+  after_action :verify_policy_scoped, only: :index
+
+  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   def session_path(*args)
     new_user_session_path(*args)
@@ -28,7 +33,22 @@ class ApplicationController < ActionController::Base
     redirect_to redirect_url
   end
 
+  def user_not_authorized
+    flash[:alert] = I18n.t :unauthorized_logout
+    sign_out current_user
+    render :unauthorized, status: :unauthorized, layout: false
+  end
+
   add_flash_types :undo_notice, :link_notice
 
   helper_method :session_path
+
+  private
+
+  # On Puma 3.x, better errors tries to serialize all of Puma's variables, which includes a massive > 2MB :app variable
+  # which is completely useless for debugging and causes long loading times; therefore, we remove it.
+  # More info: https://github.com/charliesome/better_errors/issues/341
+  def better_errors_hack
+    request.env['puma.config'].options.user_options.delete(:app) if request.env.key?('puma.config')
+  end
 end

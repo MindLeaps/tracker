@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe SkillsController, type: :controller do
   context 'as a global administrator' do
-    let(:user) { create :admin }
+    let(:user) { create :global_admin }
 
     before :each do
       sign_in user

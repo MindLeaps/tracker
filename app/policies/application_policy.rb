@@ -9,23 +9,23 @@ class ApplicationPolicy
   end
 
   def index?
-    user.is_super_admin? || user.is_admin?
+    user.global_role?
   end
 
   def show?
-    scope.where(id: record.id).exists?
+    user.global_role? || user_in_record_organization?
   end
 
   def create?
-    user.is_super_admin? || user.is_admin?
+    new? && user.administrator?(record.organization)
   end
 
   def new?
-    create?
+    !user.read_only?
   end
 
   def update?
-    user.is_super_admin? || user.is_admin?
+    create?
   end
 
   def edit?
@@ -33,7 +33,7 @@ class ApplicationPolicy
   end
 
   def destroy?
-    user.is_super_admin? || user.is_admin?
+    create?
   end
 
   def scope
@@ -51,5 +51,15 @@ class ApplicationPolicy
     def resolve
       scope
     end
+  end
+
+  protected
+
+  def user_in_record_organization?
+    user_org_ids.include?(record.organization_id)
+  end
+
+  def user_org_ids
+    user.roles.pluck(:resource_id)
   end
 end

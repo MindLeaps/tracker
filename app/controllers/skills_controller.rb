@@ -2,21 +2,25 @@
 
 class SkillsController < ApplicationController
   def index
-    @skills = Skill.includes(:organization).all
+    authorize Skill
+    @skills = policy_scope Skill.includes(:organization)
   end
 
   def create
     @skill = Skill.new skill_parameters
+    authorize @skill
     return notice_and_redirect t(:skill_created, skill: @skill.skill_name), @skill if @skill.save
     render :new
   end
 
   def show
     @skill = Skill.includes(:organization).find params[:id]
+    authorize @skill
   end
 
   def new
     @skill = Skill.new
+    authorize @skill
   end
 
   private

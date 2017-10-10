@@ -17,7 +17,7 @@ module Users
     def authenticate_user_from_token!(token)
       return nil unless token
       user = User.from_id_token(token.to_s)
-      return sign_in user, store: false if user
+      sign_in user, store: false if user
     end
   end
 end

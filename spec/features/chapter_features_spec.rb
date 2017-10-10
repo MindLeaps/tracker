@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'User interacts with Chapters' do
-  include_context 'login_with_admin'
+  include_context 'login_with_global_admin'
 
   describe 'Chapter creation' do
     before :each do
