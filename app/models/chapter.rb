@@ -11,8 +11,8 @@ class Chapter < ApplicationRecord
   }
 
   belongs_to :organization
-  has_many :groups
-  has_many :students
+  has_many :groups, dependent: :restrict_with_error
+  has_many :students, dependent: :restrict_with_error
 
   delegate :organization_name, to: :organization, allow_nil: true
 
