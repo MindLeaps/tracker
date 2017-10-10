@@ -17,7 +17,7 @@ end
 
 RSpec.shared_examples :it_cannot_manipulate_any_global_roles do
   Role::GLOBAL_ROLES.each_key do |r|
-    it_behaves_like :it_cannot_manipulate_global_role { let(:role) { r } }
+    it_behaves_like(:it_cannot_manipulate_global_role) { let(:role) { r } }
   end
 end
 
@@ -28,28 +28,28 @@ end
 
 RSpec.shared_examples :it_cannot_manipulate_any_local_roles_in do
   Role::LOCAL_ROLES.each_key do |r|
-    it_behaves_like :it_cannot_manipulate_local_role { let(:role) { r } }
+    it_behaves_like(:it_cannot_manipulate_local_role) { let(:role) { r } }
   end
 end
 
 RSpec.shared_examples :it_can_manipulate_admin_roles_in do
-  it_behaves_like :it_can_manipulate_local_role { let(:role) { :admin } }
+  it_behaves_like(:it_can_manipulate_local_role) { let(:role) { :admin } }
 end
 
 RSpec.shared_examples :it_cannot_manipulate_admin_roles_in do
-  it_behaves_like :it_cannot_manipulate_local_role { let(:role) { :admin } }
+  it_behaves_like(:it_cannot_manipulate_local_role) { let(:role) { :admin } }
 end
 
 RSpec.shared_examples :it_can_manipulate_non_admin_roles_in do
-  it_behaves_like :it_can_manipulate_local_role { let(:role) { :guest } }
-  it_behaves_like :it_can_manipulate_local_role { let(:role) { :researcher } }
-  it_behaves_like :it_can_manipulate_local_role { let(:role) { :teacher } }
+  it_behaves_like(:it_can_manipulate_local_role) { let(:role) { :guest } }
+  it_behaves_like(:it_can_manipulate_local_role) { let(:role) { :researcher } }
+  it_behaves_like(:it_can_manipulate_local_role) { let(:role) { :teacher } }
 end
 
 RSpec.shared_examples :it_cannot_manipulate_non_admin_roles_in do
-  it_behaves_like :it_cannot_manipulate_local_role { let(:role) { :guest } }
-  it_behaves_like :it_cannot_manipulate_local_role { let(:role) { :researcher } }
-  it_behaves_like :it_cannot_manipulate_local_role { let(:role) { :teacher } }
+  it_behaves_like(:it_cannot_manipulate_local_role) { let(:role) { :guest } }
+  it_behaves_like(:it_cannot_manipulate_local_role) { let(:role) { :researcher } }
+  it_behaves_like(:it_cannot_manipulate_local_role) { let(:role) { :teacher } }
 end
 
 RSpec.shared_examples :it_can_manipulate_local_role do

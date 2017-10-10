@@ -8,22 +8,22 @@ RSpec.describe MembershipPolicy do
       let(:user) { create :super_admin }
 
       it_behaves_like :it_can_manipulate_all_local_roles
-      it_behaves_like :it_can_manipulate_global_role { let(:role) { :global_admin } }
-      it_behaves_like :it_can_manipulate_global_role { let(:role) { :global_guest } }
-      it_behaves_like :it_can_manipulate_global_role { let(:role) { :global_researcher } }
-      it_behaves_like :it_can_add_global_role { let(:role) { :super_admin } }
-      it_behaves_like :it_cannot_revoke_global_role { let(:role) { :super_admin } }
+      it_behaves_like(:it_can_manipulate_global_role) { let(:role) { :global_admin } }
+      it_behaves_like(:it_can_manipulate_global_role) { let(:role) { :global_guest } }
+      it_behaves_like(:it_can_manipulate_global_role) { let(:role) { :global_researcher } }
+      it_behaves_like(:it_can_add_global_role) { let(:role) { :super_admin } }
+      it_behaves_like(:it_cannot_revoke_global_role) { let(:role) { :super_admin } }
     end
 
     context 'global administrator' do
       let(:user) { create :global_admin }
 
       it_behaves_like :it_can_manipulate_all_local_roles
-      it_behaves_like :it_can_manipulate_global_role { let(:role) { :global_guest } }
-      it_behaves_like :it_can_manipulate_global_role { let(:role) { :global_researcher } }
-      it_behaves_like :it_can_add_global_role { let(:role) { :global_admin } }
-      it_behaves_like :it_cannot_revoke_global_role { let(:role) { :global_admin } }
-      it_behaves_like :it_cannot_manipulate_global_role { let(:role) { :super_admin } }
+      it_behaves_like(:it_can_manipulate_global_role) { let(:role) { :global_guest } }
+      it_behaves_like(:it_can_manipulate_global_role) { let(:role) { :global_researcher } }
+      it_behaves_like(:it_can_add_global_role) { let(:role) { :global_admin } }
+      it_behaves_like(:it_cannot_revoke_global_role) { let(:role) { :global_admin } }
+      it_behaves_like(:it_cannot_manipulate_global_role) { let(:role) { :super_admin } }
       it_behaves_like :it_cannot_change_global_role do
         let(:role) { :super_admin }
         let(:new_role) { :global_admin }
@@ -47,11 +47,11 @@ RSpec.describe MembershipPolicy do
       let(:user) { create :admin_of, organization: org }
 
       it_behaves_like :it_cannot_manipulate_any_global_roles
-      it_behaves_like :it_can_manipulate_local_role { let(:role) { :guest } }
-      it_behaves_like :it_can_manipulate_local_role { let(:role) { :researcher } }
-      it_behaves_like :it_can_manipulate_local_role { let(:role) { :teacher } }
-      it_behaves_like :it_can_add_local_role { let(:role) { :admin } }
-      it_behaves_like :it_cannot_revoke_local_role { let(:role) { :admin } }
+      it_behaves_like(:it_can_manipulate_local_role) { let(:role) { :guest } }
+      it_behaves_like(:it_can_manipulate_local_role) { let(:role) { :researcher } }
+      it_behaves_like(:it_can_manipulate_local_role) { let(:role) { :teacher } }
+      it_behaves_like(:it_can_add_local_role) { let(:role) { :admin } }
+      it_behaves_like(:it_cannot_revoke_local_role) { let(:role) { :admin } }
     end
 
     context 'local teacher' do
