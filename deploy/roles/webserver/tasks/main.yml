@@ -199,7 +199,7 @@
 - name: Install the ruby version needed by mindleaps
   sudo: true
   sudo_user: mindleaps
-  shell: ~/.rvm/bin/rvm install .
+  shell: ~/.rvm/bin/rvm install `cat ~/tracker/.ruby-version`
   args:
     chdir: /home/mindleaps/tracker
 
