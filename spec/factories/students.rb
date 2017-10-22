@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :student do
     sequence(:mlid) { |n| " #{Faker::Lorem.characters(1)}#{n}" }
     first_name { Faker::Name.first_name }
