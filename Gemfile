@@ -52,7 +52,7 @@ group :development, :test do
   gem 'chromedriver-helper'
   gem 'coveralls', require: false
   gem 'database_cleaner'
-  gem 'factory_girl_rails'
+  gem 'factory_bot_rails'
   gem 'faker'
   gem 'poltergeist'
   gem 'pundit-matchers'
