@@ -7,7 +7,7 @@ class Student < ApplicationRecord
   }
   validate :profile_image_belongs_to_student, if: proc { |student| !student.profile_image.nil? }
 
-  enum gender: { M: 0, F: 1 }
+  enum gender: { M: 'male', F: 'female' }
 
   belongs_to :group, optional: true
   belongs_to :organization
