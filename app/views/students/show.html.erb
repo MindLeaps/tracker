@@ -7,7 +7,7 @@
 <% end %>
 <ul>
 <li>Date of Birth: <%= @student.estimated_dob ? "EST" : "" %> <%= @student.dob %></li>
-<li>Gender: <%= @student.gender %></li>
+<li>Gender: <%= @student.gender_i18n %></li>
 <li>Group: <%= student_group_name @student %></li>
 <li>Quartier: <%= @student.quartier %></li>
 <li>Guardian Name: <%= @student.guardian_name %>

@@ -20,9 +20,13 @@ RSpec.describe Student, type: :model do
 
     describe 'student is valid' do
       it 'with first and last name, dob, and gender' do
-        student = Student.new mlid: '1S', first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 0, organization: org
-        expect(student).to be_valid
-        expect(student.save).to eq true
+        male_student = Student.new mlid: '1S', first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 'male', organization: org
+        expect(male_student).to be_valid
+        expect(male_student.save).to eq true
+
+        female_student = Student.new mlid: '2S', first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 'female', organization: org
+        expect(female_student).to be_valid
+        expect(female_student.save).to eq true
       end
     end
 

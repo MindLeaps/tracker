@@ -59,3 +59,9 @@ en:
   errors:
     messages:
       extension_whitelist_error: File is not an image
+
+  enums:
+    student:
+      gender:
+        M: Male
+        F: Female
