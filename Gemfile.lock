@@ -50,7 +50,7 @@ GEM
       io-like (~> 0.3.0)
     arel (8.0.0)
     ast (2.3.0)
-    autoprefixer-rails (7.1.6)
+    autoprefixer-rails (7.2.0)
       execjs
     bcrypt (3.1.11)
     better_errors (2.4.0)
@@ -65,7 +65,7 @@ GEM
       popper_js (>= 1.12.3, < 2)
       sass (>= 3.5.2)
     builder (3.2.3)
-    bullet (5.6.1)
+    bullet (5.7.0)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.10.0)
     byebug (9.1.0)
