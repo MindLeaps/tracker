@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Rails/Output
-
 require 'smarter_csv'
 
 class CSVDataSeeder
@@ -68,14 +66,18 @@ class CSVDataSeeder
 
   def create_lesson(group, date)
     d = parse_date(date)
+    # rubocop:disable Rails/Output
     @lessons[:"#{group.id}-#{date}"] ||=
       puts("Lesson: #{d} - Chapter: #{group.chapter.chapter_name} - Group: #{group.group_name}") || Lesson.create(group: group, date: d, subject: @subject)
+    # rubocop:enable Rails/Output
   end
 
   def parse_date(date_string)
+    # rubocop:disable Style/FormatStringToken
     return Date.strptime date_string, '%m/%d/%y' if date_string.split('/')[2].length == 2
 
     Date.strptime date_string, '%m/%d/%Y'
+    # rubocop:enable Style/FormatStringToken
   end
 
   def get_row_grades(row)

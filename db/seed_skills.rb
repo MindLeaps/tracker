@@ -70,3 +70,6 @@ def seed_mindleaps_skills(organization)
     ]) }
   ])
 end
+# rubocop:enable Layout/IndentArray
+# rubocop:enable Metrics/LineLength
+# rubocop:enable Metrics/MethodLength
