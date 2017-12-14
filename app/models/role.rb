@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
-# rubocop:disable Rails/HasAndBelongsToMany
 class Role < ApplicationRecord
+  # rubocop:disable Rails/HasAndBelongsToMany
   has_and_belongs_to_many :users, join_table: :users_roles
+  # rubocop:enable Rails/HasAndBelongsToMany
 
   belongs_to :resource,
              polymorphic: true,
+             inverse_of: :roles,
              optional: true
 
   validates :resource_type,

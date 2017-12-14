@@ -7,7 +7,7 @@ class Skill < ApplicationRecord
   belongs_to :organization
   has_many :grade_descriptors, dependent: :destroy, inverse_of: :skill
   has_many :assignments, dependent: :destroy
-  has_many :subjects, through: :assignments, dependent: :restrict_with_error
+  has_many :subjects, through: :assignments, dependent: :restrict_with_error, inverse_of: :skills
 
   scope :by_organization, ->(organization_id) { where organization_id: organization_id }
 

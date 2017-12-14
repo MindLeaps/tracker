@@ -8,7 +8,9 @@ class ApplicationController < ActionController::Base
   before_action :better_errors_hack, if: -> { Rails.env.development? } # Hack to make better errors work with Puma
   before_action :authenticate_user!
   after_action :verify_authorized, unless: :devise_controller?
+  # rubocop:disable Rails/LexicallyScopedActionFilter
   after_action :verify_policy_scoped, only: :index
+  # rubocop:enable Rails/LexicallyScopedActionFilter
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
