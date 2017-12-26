@@ -2,6 +2,7 @@ services:
   - postgres:9.5
 
 before_script:
+  - rvm install $(cat .ruby-version) && rvm use
   - gem update --system
   - ruby -v
   - which ruby
