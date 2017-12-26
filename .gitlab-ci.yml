@@ -1,0 +1,14 @@
+services:
+  - postgres:9.5
+
+before_script:
+  - gem update --system
+  - ruby -v
+  - which ruby
+  - gem install bundler --no-ri --no-rdoc
+  - bundle install --jobs $(nproc)  "${FLAGS[@]}"
+  - psql -c 'create database tracker_test;' -U postgres
+
+test:
+  script:
+    - bundle exec rake test
