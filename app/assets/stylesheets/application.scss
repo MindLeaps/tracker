@@ -12,13 +12,13 @@
  *
  */
 
+@import 'material.min';
 @import 'bootstrap';
-
 @import 'common';
 @import 'header';
+@import 'drawer';
 @import 'groups';
 @import 'home';
-@import 'menu';
 @import 'students';
 @import 'chapters';
 @import 'users';
@@ -28,7 +28,6 @@
     cursor: pointer;
   }
   .form-check label {
-    @extend .form-control-lg;
     cursor: pointer;
     input {
       cursor: pointer;
@@ -36,14 +35,6 @@
       display: inline;
     }
   }
-}
-
-.main-container {
-  margin-top: 60px;
-}
-
-.main-content {
-  margin-top: 20px;
 }
 
 .simple_form {
@@ -68,6 +59,18 @@
       display: inline
     }
   }
+}
+
+.content-card {
+  @extend .mdl-cell;
+  @extend .mdl-shadow--2dp;
+  @extend .mdl-color--white;
+  padding: 8px;
+}
+
+.content-card-full {
+  @extend .content-card;
+  @extend .mdl-cell--12-col;
 }
 
 @keyframes hideBehindHeader{

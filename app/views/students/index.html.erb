@@ -1,3 +1,5 @@
-<h1>Students</h1>
-<%= link_to 'New Student', new_student_path, class: 'btn btn-outline-success', role: 'button' %>
-<%= render partial: "shared/students_table", locals: {students: @students} %>
+<% content_for :page_title do %>Students<% end %>
+<div class="content-card-full">
+  <%= link_to 'New Student', new_student_path, class: 'btn btn-outline-success', role: 'button' %>
+  <%= render partial: "shared/students_table", locals: {students: @students} %>
+</div>

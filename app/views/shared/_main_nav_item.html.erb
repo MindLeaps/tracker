@@ -1,4 +1,5 @@
-<li class="nav-item">
-  <a <%= "href=#{url}" unless current_page?(url) %>
-    class="nav-link <%= 'disabled' if current_page?(url) %> <%= 'active' if current_page?(url) %>"><%= name %></a>
-</li>
+<a
+  class="mdl-navigation__link nav-link<%= current_page?(url) ? ' mdl-navigation__link--current' : ' mdl-js-button mdl-js-ripple-effect' %>"
+  <%= 'disabled' if current_page?(url) %> <%= "href=#{url}" unless current_page?(url) %>>
+  <i class="material-icons"><%= icon %></i><%= name %>
+</a>

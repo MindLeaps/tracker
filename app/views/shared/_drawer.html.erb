@@ -1,0 +1,18 @@
+<div class="mdl-layout__drawer mdl-color--primary mdl-color-text--white">
+  <header class="drawer-header">
+    <%= link_to image_tag(current_user_image, class: 'user-image'), main_app.user_path(current_user) %>
+    <p><%= current_user.email %></p>
+  </header>
+  <nav class="mdl-navigation mdl-color--white main-nav">
+    <%= render partial: "shared/main_nav_item", locals: {name: "Students", icon: 'person', url: main_app.students_path} %>
+    <%= render partial: "shared/main_nav_item", locals: {name: "Groups", icon: 'group', url: main_app.groups_path} %>
+    <%= render partial: "shared/main_nav_item", locals: {name: "Chapters", icon: 'dvr', url: main_app.chapters_path} %>
+    <%= render partial: "shared/main_nav_item", locals: {name: "Organizations", icon: 'public', url: main_app.organizations_path} %>
+    <%= render partial: "shared/main_nav_item", locals: {name: "Users", icon:'contacts', url: main_app.users_path} %>
+    <%= render partial: "shared/main_nav_item", locals: {name: "Lessons", icon: 'assignment', url: main_app.lessons_path} %>
+    <%= render partial: "shared/main_nav_item", locals: {name: "Subjects", icon: 'local_library', url: main_app.subjects_path} %>
+    <%= render partial: "shared/main_nav_item", locals: {name: "Skills", icon: 'lightbulb_outline', url: main_app.skills_path} %>
+    <div class="mdl-layout-spacer"></div>
+    <%= render partial: "shared/main_nav_item", locals: {name: "Logout", icon: 'exit_to_app', url: '/sign_out'} %>
+  </nav>
+</div>

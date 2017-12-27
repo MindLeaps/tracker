@@ -11,6 +11,7 @@
 // about supported directives.
 //
 //= require_tree .
+//= require material.min
 //= require jquery2
 //= require jquery_ujs
 //= require cocoon
