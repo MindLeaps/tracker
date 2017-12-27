@@ -1,4 +1,7 @@
-<h1>New Student</h1>
-<div class="container">
+<% content_for :header_content do %>
+  <%= render partial: '/shared/header_content', locals: { back_button_url: students_path, back_tooltip: 'Back to Students', title: 'New Student' } %>
+<% end %>
+
+<div class="content-card--full">
     <%= render partial: 'shared/student_form', locals: {student: @student, action: 'create'} %>
 </div>

@@ -1,9 +1,7 @@
 <% content_for :header_content do %>
-  <a href="<%= students_path %>" class="mdl-button mdl-js-button mdl-button--icon unset-color">
-    <i class="material-icons">arrow_back</i>
-  </a>
-  <span class="mdl-layout-title"><%= @student.last_name %>, <%= @student.first_name %></span>
-  <%= render partial: '/shared/header_button', locals: {href: edit_student_path(@student), title: 'Edit Student'} %>
+  <%= render layout: '/shared/header_content', locals: { back_button_url: students_path, back_tooltip: 'Back to Students', title: @student.proper_name } do %>
+    <%= render partial: '/shared/header_button', locals: {href: edit_student_path(@student), title: 'Edit Student'} %>
+  <% end %>
 <% end %>
 
 <div class="content-card--full">
@@ -33,7 +31,7 @@
   </ul>
 
   <div class="action-buttons">
-    <%= link_to 'Images', student_student_images_path(@student), class: 'btn btn-secondary' %>
-    <%= button_to 'Delete', { action: :destroy, id: @student.id }, class: 'btn btn-danger', method: :delete %>
+    <%= link_to 'Images', student_student_images_path(@student), class: 'mdl-button mdl-js-button mdl-button--raised mdl-button--primary mdl-js-ripple-effect' %>
+    <%= button_to 'Delete', { action: :destroy, id: @student.id }, class: 'mdl-button mdl-js-button delete-button mdl-js-ripple-effect', method: :delete %>
   </div>
 </div>

@@ -49,3 +49,8 @@ table.resource-table {
   }
   color: unset;
 }
+
+.delete-button {
+  @extend .mdl-button;
+  @extend .mdl-color-text--red;
+}
