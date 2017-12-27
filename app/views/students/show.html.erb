@@ -1,4 +1,11 @@
-<% content_for :page_title do %><%= @student.last_name %>, <%= @student.first_name %><% end %>
+<% content_for :header_content do %>
+  <a href="<%= students_path %>" class="mdl-button mdl-js-button mdl-button--icon unset-color">
+    <i class="material-icons">arrow_back</i>
+  </a>
+  <span class="mdl-layout-title"><%= @student.last_name %>, <%= @student.first_name %></span>
+  <%= render partial: '/shared/header_button', locals: {href: edit_student_path(@student), title: 'Edit Student'} %>
+<% end %>
+
 <div class="content-card--full">
   <% if @student.profile_image %>
     <%= image_tag @student.profile_image.image.medium.url, class: 'student-profile-image' %>
@@ -6,28 +13,26 @@
   <% if @student.deleted_at %>
     <p class="text-danger">Student deleted at: <%= @student.deleted_at %></p>
   <% end %>
-  <ul>
-  <li>Date of Birth: <%= @student.estimated_dob ? "EST" : "" %> <%= @student.dob %></li>
-  <li>Gender: <%= @student.gender_i18n %></li>
-  <li>Group: <%= student_group_name @student %></li>
-  <li>Quartier: <%= @student.quartier %></li>
-  <li>Guardian Name: <%= @student.guardian_name %>
-  <li>Guardian Occupation: <%= @student.guardian_occupation %>
-  <li>Guardian Contact: <%= @student.guardian_contact %>
-  <li>Family Members: <%= @student.family_members %>
-  <li>Name of School: <%= @student.name_of_school %></li>
-  <li>School Level Completed: <%= @student.school_level_completed %></li>
-  <li>Year of Dropout: <%= @student.year_of_dropout %></li>
-  <li>Reason for Leaving: <%= @student.reason_for_leaving %></li>
-  <li>Health Insurance Information: <%= @student.health_insurance %></li>
-  <li>Health Issues: <%= @student.health_issues %></li>
-  <li>HIV Tested: <%= @student.hiv_tested %></li>
-  <li>Notes: <%= @student.notes %></li>
+  <ul class="mdl-list">
+  <li class="mdl-list__item">Date of Birth: <%= @student.estimated_dob ? "EST" : "" %> <%= @student.dob %></li>
+  <li class="mdl-list__item">Gender: <%= @student.gender_i18n %></li>
+  <li class="mdl-list__item">Group: <%= student_group_name @student %></li>
+  <li class="mdl-list__item">Quartier: <%= @student.quartier %></li>
+  <li class="mdl-list__item">Guardian Name: <%= @student.guardian_name %>
+  <li class="mdl-list__item">Guardian Occupation: <%= @student.guardian_occupation %>
+  <li class="mdl-list__item">Guardian Contact: <%= @student.guardian_contact %>
+  <li class="mdl-list__item">Family Members: <%= @student.family_members %>
+  <li class="mdl-list__item">Name of School: <%= @student.name_of_school %></li>
+  <li class="mdl-list__item">School Level Completed: <%= @student.school_level_completed %></li>
+  <li class="mdl-list__item">Year of Dropout: <%= @student.year_of_dropout %></li>
+  <li class="mdl-list__item">Reason for Leaving: <%= @student.reason_for_leaving %></li>
+  <li class="mdl-list__item">Health Insurance Information: <%= @student.health_insurance %></li>
+  <li class="mdl-list__item">Health Issues: <%= @student.health_issues %></li>
+  <li class="mdl-list__item">HIV Tested: <%= @student.hiv_tested %></li>
+  <li class="mdl-list__item">Notes: <%= @student.notes %></li>
   </ul>
 
   <div class="action-buttons">
-    <%= link_to 'Back to All Students', students_path %>
-    <%= link_to 'Edit', { action: :edit }, class: 'btn btn-secondary' %>
     <%= link_to 'Images', student_student_images_path(@student), class: 'btn btn-secondary' %>
     <%= button_to 'Delete', { action: :destroy, id: @student.id }, class: 'btn btn-danger', method: :delete %>
   </div>

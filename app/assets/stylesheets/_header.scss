@@ -10,3 +10,10 @@ header {
     margin-left: 15px;
   }
 }
+
+.main-header {
+  @media(min-width: 1025px) {
+    margin-left: 240px;
+    width: calc(100% - 240px);
+  }
+}

@@ -42,3 +42,10 @@ table.resource-table {
     }
   }
 }
+
+.unset-color {
+  &:visited, &:hover {
+    color:unset;
+  }
+  color: unset;
+}

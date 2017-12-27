@@ -77,6 +77,14 @@
   @extend .mdl-cell--12-col;
 }
 
+.single-content-card {
+  @extend .content-card;
+  padding: 0 !important;
+  max-width: 100%;
+  overflow: auto;
+  margin: 0 auto;
+}
+
 @keyframes hideBehindHeader{
   0% {transform: translateY(0px);}
   100% {transform: translateY(-60px);}
