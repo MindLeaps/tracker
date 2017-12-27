@@ -1,5 +1,8 @@
-<% content_for :page_title do %>Students<% end %>
-<div class="content-card-full">
-  <%= link_to 'New Student', new_student_path, class: 'btn btn-outline-success', role: 'button' %>
+<% content_for :header_content do %>
+  <span class="mdl-layout-title">Students</span>
+  <%= render partial: '/shared/header_button', locals: {href: new_student_path, title: 'Add Student'} %>
+<% end %>
+
+<div class="students-table-wrapper">
   <%= render partial: "shared/students_table", locals: {students: @students} %>
 </div>

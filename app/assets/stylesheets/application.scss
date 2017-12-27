@@ -62,14 +62,18 @@
 }
 
 .content-card {
-  @extend .mdl-cell;
   @extend .mdl-shadow--2dp;
   @extend .mdl-color--white;
   padding: 8px;
 }
 
-.content-card-full {
+.content-card--cell {
   @extend .content-card;
+  @extend .mdl-cell;
+}
+
+.content-card--full {
+  @extend .content-card--cell;
   @extend .mdl-cell--12-col;
 }
 

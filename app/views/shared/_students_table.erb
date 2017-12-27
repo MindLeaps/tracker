@@ -1,16 +1,26 @@
-<table class="table table-striped table-hover resource-table students-table">
+<table class="mdl-data-table mdl-js-data-table resource-table">
   <thead>
     <tr>
-      <th class="text-xs-center">MLID</th>
-      <th class="text-xs-center">Image</th>
+      <th class="mdl-data-table__cell--non-numeric">MLID</th>
+      <th class="mdl-data-table__cell--non-numeric">Image</th>
       <th>Last Name</th>
       <th>First Name</th>
-      <th class="text-xs-center">Gender</th>
+      <th class="mdl-data-table__cell--non-numeric">Gender</th>
       <th>Date of Birth</th>
-      <th class="text-xs-center">Group</th>
+      <th class="mdl-data-table__cell--non-numeric">Group</th>
     </tr>
   </thead>
   <% students.each do |student| %>
-    <%= render partial: "shared/student_row", locals: {student: student} %>
-  <% end %>
+    <a href="<%= url_for student_path(student) %>">
+      <tr class="resource-row student-row">
+        <td class="mdl-data-table__cell--non-numeric"><%= link_to student.mlid, student_path(student) %></td>
+        <td class="mdl-data-table__cell--non-numeric"><%= link_to image_tag(student_mini_thumbnail(student), alt: 'profile image', class: 'mini-thumb-profile-image'), student_path(student) %></td>
+        <td><%= link_to student.last_name, student_path(student) %></td>
+        <td><%= link_to student.first_name, student_path(student) %></td>
+        <td class="mdl-data-table__cell--non-numeric"><%= link_to student.gender_i18n, student_path(student) %></td>
+        <td><%= link_to "#{student.dob} #{student.estimated_dob ? 'EST' : ''}", student_path(student) %></td>
+        <td class="mdl-data-table__cell--non-numeric"><%= link_to student_group_name(student), student_path(student) %></td>
+      </tr>
+    </a>
+<% end %>
 </table>

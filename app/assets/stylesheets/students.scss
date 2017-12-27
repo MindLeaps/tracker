@@ -1,6 +1,10 @@
-// Place all the styles related to the students controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+.students-table-wrapper {
+  @extend .content-card;
+  padding: 0 !important;
+  max-width: 100%;
+  overflow: auto;
+  margin: 0 auto;
+}
 
 .student-profile-image {
   max-width: 250px
