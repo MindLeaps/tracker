@@ -12,6 +12,7 @@ RSpec.describe 'User interacts with Groups' do
 
     it 'creates a new group', js: true do
       visit '/groups'
+      click_link 'Add Group'
       fill_in 'Group name', with: 'Feature Test Group'
       select 'Chapter One', from: 'group_chapter_id'
       click_button 'Create'

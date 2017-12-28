@@ -12,11 +12,16 @@ class GroupsController < ApplicationController
     @group = Group.new
   end
 
+  def new
+    authorize Group
+    @group = Group.new
+  end
+
   def create
     @group = Group.new group_params
     authorize @group
-    return notice_and_redirect t(:group_created, group: @group.group_name), groups_url if @group.save
-    render :index
+    return notice_and_redirect t(:group_created, group: @group.group_name), group_path(@group) if @group.save
+    render :new
   end
 
   def show

@@ -11,7 +11,6 @@
     </tr>
   </thead>
   <% students.each do |student| %>
-    <a href="<%= url_for student_path(student) %>">
       <tr class="resource-row student-row">
         <td class="mdl-data-table__cell--non-numeric"><%= link_to student.mlid, student_path(student) %></td>
         <td class="mdl-data-table__cell--non-numeric"><%= link_to image_tag(student_mini_thumbnail(student), alt: 'profile image', class: 'mini-thumb-profile-image'), student_path(student) %></td>
@@ -21,6 +20,5 @@
         <td class="mdl-data-table__cell--non-numeric"><%= link_to "#{student.dob} #{student.estimated_dob ? 'EST' : ''}", student_path(student) %></td>
         <td class="mdl-data-table__cell--non-numeric"><%= link_to student_group_name(student), student_path(student) %></td>
       </tr>
-    </a>
 <% end %>
 </table>

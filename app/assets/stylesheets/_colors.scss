@@ -1,0 +1,16 @@
+$primary-color: #9C27B0;
+$dark-primary-color: #7B1FA2;
+$light-primary-color: #E1BEE7;
+$accent-color: #4CAF50;
+$divider-color: #BDBDBD;
+$text-color: #FFFFFF;
+
+.mdl-button--accent {
+  color: $accent-color !important;
+
+  &.mdl-button--raised {
+    background-color: $accent-color !important;
+    color: $text-color !important;
+  }
+}
+

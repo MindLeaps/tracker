@@ -32,7 +32,7 @@ Rails.application.routes.draw do
     member { post :add_member }
   end
   resources :chapters, only: %i[index create show edit update]
-  resources :groups, only: %i[index create show edit update destroy] do
+  resources :groups, only: %i[index new create show edit update destroy] do
     member { post :undelete }
   end
   resources :students, only: %i[index new create show edit update destroy] do
