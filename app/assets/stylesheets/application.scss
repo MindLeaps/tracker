@@ -13,6 +13,7 @@
  */
 
 @import 'material.min';
+@import 'mdl-selectfield.min';
 @import 'common';
 @import 'header';
 @import 'drawer';
@@ -21,26 +22,7 @@
 @import 'students';
 @import 'chapters';
 @import 'users';
-
-.boolean {
-  label {
-    cursor: pointer;
-  }
-  .form-check label {
-    cursor: pointer;
-    input {
-      cursor: pointer;
-      width: 15px;
-      display: inline;
-    }
-  }
-}
-
-.simple_form {
-  .btn {
-    margin: 10px;
-  }
-}
+@import 'form';
 
 .notices {
   position: absolute;
@@ -69,6 +51,11 @@
 .content-card--cell {
   @extend .content-card;
   @extend .mdl-cell;
+}
+
+.content-card--half {
+  @extend .content-card--cell;
+  @extend .mdl-cell--8-col;
 }
 
 .content-card--full {
@@ -116,8 +103,7 @@
   float: left;
 }
 
-form .btn {
-  margin: 10px;
-  cursor: pointer;
+.center {
+  margin: 0 auto;
 }
 

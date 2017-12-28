@@ -1,0 +1,10 @@
+= content_for :header_content do
+  = render layout: '/shared/header_content', locals: { title: 'Groups' } do
+    / = render partial: '/shared/header_button', locals: {href: new_student_path, title: 'Add Student'}
+= simple_form_for @group, url: {action: 'create'} do |f|
+  = render partial: 'shared/errors', locals: {subject: @group}
+  = f.input :group_name
+  = f.association :chapter, label_method: :chapter_name, include_blank: 'None'
+  = f.button :submit, class: 'btn-outline-success'
+
+= render partial: "shared/groups_table", locals: {groups: @groups}

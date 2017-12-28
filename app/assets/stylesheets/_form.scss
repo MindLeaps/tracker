@@ -1,0 +1,19 @@
+.material-field-wrapper {
+  width: 300px;
+  margin: 10px 5px;
+  display: inline-block;
+  vertical-align: middle;
+
+  select.date {
+    display: inline;
+    width: 30%;
+  }
+}
+
+.mdl-checkbox {
+  width: auto;
+}
+
+.mdl-radio {
+  margin-right: 5px;
+}
