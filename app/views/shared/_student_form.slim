@@ -7,7 +7,7 @@
   = f.input :dob, label: 'Date of Birth', start_year: 1990, end_year: Date.today.year, default: { day: 1, month: 1}
   = f.input :estimated_dob, label: 'DOB estimated'
   hr
-  = f.association :group, label_method: :group_chapter_name
+  = f.association :group, collection: policy_scope(Group.includes(:chapter)), label_method: :group_chapter_name
   = f.association :organization, collection: current_user.organizations, label_method: :organization_name, include_blank: false
   = f.input :quartier
   hr
@@ -26,8 +26,5 @@
   = f.input :hiv_tested
   hr
   = f.input :notes, input_html: {rows: 5}
-  hr
-  = f.simple_fields_for :student_images do |i|
-    = i.input :image, as: :file
   hr
   = f.button :submit, class: 'mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-js-ripple-effect'
