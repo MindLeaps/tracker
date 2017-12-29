@@ -1,5 +1,0 @@
-<% content_for :page_title do %>Edit Student<% end %>
-<div class="content-card--full">
-  <%= render partial: 'shared/student_form', locals: {student: @student, action: 'update'} %>
-<p><a href="<%= url_for action: 'show' %>">Cancel</a></p>
-</div>
