@@ -39,6 +39,11 @@
 
 .content-card--half {
   @extend .content-card--cell;
+  @extend .mdl-cell--6-col;
+}
+
+.content-card--most {
+  @extend .content-card--cell;
   @extend .mdl-cell--8-col;
 }
 
@@ -91,3 +96,6 @@
   margin: 0 auto;
 }
 
+.right {
+  margin-left: auto;
+}

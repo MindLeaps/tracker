@@ -1,5 +1,5 @@
 - content_for :header_content do
   = render partial: '/shared/header_content', locals: { back_button_url: students_path, back_tooltip: 'Back to Students', title: 'New Student' }
 
-.content-card--half.center
+.content-card--most.center
   = render partial: 'shared/student_form', locals: {student: @student, action: 'create'}

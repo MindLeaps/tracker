@@ -1,5 +1,5 @@
 - content_for :header_content do
   = render partial: '/shared/header_content', locals: { back_button_url: groups_path, back_tooltip: 'Back to Groups', title: 'New Group' }
 
-.content-card--half.center
+.content-card--most.center
   = render partial: 'shared/group_form', locals: {group: @group, action: 'create'}
