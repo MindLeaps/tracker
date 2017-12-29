@@ -8,6 +8,7 @@ RSpec.describe 'Interaction with Organizations' do
   describe 'Organization creation' do
     it 'creates a new organization', js: true do
       visit '/organizations'
+      click_link 'Add Organization'
       fill_in 'Organization name', with: 'New Organization For Organization Feture Test'
       click_button 'Create'
 

@@ -1,14 +1,6 @@
 = content_for :header_content do
   = render layout: '/shared/header_content', locals: {title: 'Organizations'} do
-    / = render partial: '/shared/main_header_button', locals: {href: new_group_path, title: 'Add Group'}
-
-/ <fieldset>
-/   <%= simple_form_for @organization, wrapper: :horizontal_form, url: {action: 'create'} do |f| %>
-/     <%= render partial: 'shared/errors', locals: {subject: @organization} %>
-/     <%= f.input :organization_name %>
-/     <%= f.button :submit, class: 'btn-outline-success' %>
-/   <%- end %>
-/ </fieldset>
+    = render partial: '/shared/main_header_button', locals: {href: new_organization_path, title: 'Add Organization'}
 
 .single-content-card
   = render partial: "shared/organizations_table", locals: {organizations: @organizations}

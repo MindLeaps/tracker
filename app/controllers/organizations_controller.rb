@@ -4,6 +4,10 @@ class OrganizationsController < ApplicationController
   def index
     authorize Organization
     @organizations = policy_scope Organization.includes(:chapters).all
+  end
+
+  def new
+    authorize Organization
     @organization = Organization.new
   end
 

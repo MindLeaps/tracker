@@ -22,6 +22,18 @@ RSpec.describe OrganizationsController, type: :controller do
     end
   end
 
+  describe '#new' do
+    before :each do
+      get :new
+    end
+
+    it { should respond_with 200 }
+    it { should render_template 'new' }
+    it 'assigns the new empty organization' do
+      expect(assigns(:organization)).to be_kind_of(Organization)
+    end
+  end
+
   describe '#create' do
     it 'creates a new organization when supplied a valid name' do
       post :create, params: { organization: { organization_name: 'New Test Organization' } }

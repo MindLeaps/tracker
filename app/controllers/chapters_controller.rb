@@ -4,7 +4,6 @@ class ChaptersController < ApplicationController
   def index
     authorize Chapter
     @chapters = policy_scope Chapter.includes(:organization, groups: [:students])
-    @chapter = Chapter.new
   end
 
   def new
