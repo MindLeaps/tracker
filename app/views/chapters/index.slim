@@ -1,0 +1,12 @@
+- content_for :header_content do
+  = render layout: '/shared/header_content', locals: { title: 'Chapters' } do
+    = render partial: '/shared/main_header_button', locals: {href: new_student_path, title: 'Add Chapter'}
+
+/ = simple_form_for @chapter, url: {action: 'create'} do |f|
+/   = render partial: 'shared/errors', locals: {subject: @chapter}
+/   = f.input :chapter_name
+/   = f.association :organization, label_method: :organization_name, include_blank: 'None'
+/   = f.button :submit, class: 'btn-outline-success'
+
+.single-content-card
+  = render partial: 'shared/chapters_table', locals: {chapters: @chapters}
