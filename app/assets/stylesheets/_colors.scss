@@ -23,3 +23,12 @@ $snackbar-action-color: #ff4081;
 .button--danger {
   background-color: red !important;
 }
+
+.mdl-selectfield__label {
+  &:after {
+    background-color: $primary-color;
+  }
+  .mdl-selectfield--floating-label.is-dirty &, .mdl-selectfield--floating-label.is-focused & {
+    color: $primary-color;
+  }
+}
