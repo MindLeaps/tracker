@@ -24,24 +24,7 @@
 @import 'chapters';
 @import 'users';
 @import 'form';
-
-.notices {
-  position: absolute;
-  width: 100%;
-  text-align: center;
-  margin-top: 1rem;
-
-  .notice {
-    display: inline-block;
-    border: 1px solid transparent;
-    padding: 0.5rem 1rem;
-    border-radius: 0.25rem;
-
-    form {
-      display: inline
-    }
-  }
-}
+@import 'notice';
 
 .content-card {
   @extend .mdl-shadow--2dp;
