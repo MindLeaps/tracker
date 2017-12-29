@@ -73,11 +73,9 @@ class CSVDataSeeder
   end
 
   def parse_date(date_string)
-    # rubocop:disable Style/FormatStringToken
     return Date.strptime date_string, '%m/%d/%y' if date_string.split('/')[2].length == 2
 
     Date.strptime date_string, '%m/%d/%Y'
-    # rubocop:enable Style/FormatStringToken
   end
 
   def get_row_grades(row)

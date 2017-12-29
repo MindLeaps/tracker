@@ -14,7 +14,7 @@ class Student < ApplicationRecord
   has_many :grades, dependent: :restrict_with_error
   has_many :absences, dependent: :restrict_with_error
   has_many :student_images, dependent: :restrict_with_error
-  belongs_to :profile_image, class_name: 'StudentImage', optional: true
+  belongs_to :profile_image, class_name: 'StudentImage', optional: true, inverse_of: :student
   accepts_nested_attributes_for :grades
   accepts_nested_attributes_for :student_images
 
