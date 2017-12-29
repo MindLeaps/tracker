@@ -14,3 +14,10 @@ $text-color: #FFFFFF;
   }
 }
 
+.button--neutral {
+  background-color: $divider-color !important;
+}
+
+.button--danger {
+  background-color: red !important;
+}
