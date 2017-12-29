@@ -12,6 +12,7 @@ RSpec.describe 'User interacts with Chapters' do
 
     it 'creates a new Chapter', js: true do
       visit '/chapters'
+      click_link 'Add Chapter'
       fill_in 'Chapter name', with: 'Chapter One'
       select 'New Org', from: 'chapter_organization_id'
       click_button 'Create'

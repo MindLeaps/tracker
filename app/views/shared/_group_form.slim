@@ -1,4 +1,4 @@
-= simple_form_for @group, url: {action: 'create'} do |f|
+= simple_form_for @group, url: {action: action} do |f|
   = render partial: 'shared/errors', locals: {subject: @group}
   = f.input :group_name
   = f.association :chapter, label_method: :chapter_name, required: false

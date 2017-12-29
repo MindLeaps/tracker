@@ -2,4 +2,4 @@
   = render partial: '/shared/header_content', locals: { back_button_url: group_path(@group), back_tooltip: "Back to #{@group.group_name}", title: "Edit #{@group.group_name}" }
 
 .content-card--half.center
-  = render partial: 'shared/group_form', locals: {group: @group, action: 'create'}
+  = render partial: 'shared/group_form', locals: {group: @group, action: 'update'}

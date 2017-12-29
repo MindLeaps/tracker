@@ -1,0 +1,5 @@
+- content_for :header_content do
+  = render partial: '/shared/header_content', locals: { back_button_url: chapters_path, back_tooltip: 'Back to Chapters', title: 'New Chapter' }
+
+.content-card--half.center
+  = render partial: 'shared/chapter_form', locals: {group: @group, action: 'create'}

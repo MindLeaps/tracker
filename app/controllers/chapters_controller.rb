@@ -7,16 +7,21 @@ class ChaptersController < ApplicationController
     @chapter = Chapter.new
   end
 
+  def new
+    authorize Chapter
+    @chapter = Chapter.new
+  end
+
   def create
     @chapter = Chapter.new chapter_params
     authorize @chapter
     return notice_and_redirect t(:chapter_created, chapter: @chapter.chapter_name), chapters_url if @chapter.save
     @chapters = Chapter.includes(:organization, groups: [:students]).all
-    render :index
+    render :new
   end
 
   def show
-    @chapter = Chapter.includes(:organization).find params.require :id
+    @chapter = Chapter.find params.require :id
     authorize @chapter
   end
 

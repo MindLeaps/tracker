@@ -1,0 +1,5 @@
+= simple_form_for @chapter, url: {action: action} do |f|
+  = render partial: 'shared/errors', locals: {subject: @chapter}
+  = f.input :chapter_name
+  = f.association :organization, collection: policy_scope(Organization), label_method: :organization_name, include_blank: false
+  = f.button :submit, class: 'mdl-button--raised mdl-button--accent mdl-js-ripple-effect'
