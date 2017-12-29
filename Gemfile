@@ -30,8 +30,8 @@ gem 'jquery-rails'
 gem 'mini_magick'
 gem 'puma'
 gem 'simple_form'
-gem 'slim'
 gem 'skylight'
+gem 'slim'
 
 gem 'mindleaps_analytics', path: ENV['MINDLEAPS_ANALYTICS_PATH'] if ENV['MINDLEAPS_ANALYTICS_PATH']
 

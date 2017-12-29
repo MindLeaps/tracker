@@ -53,7 +53,8 @@ SimpleForm.setup do |config|
     # b.use :full_error, wrap_with: { tag: :span, class: :error }
   end
 
-  config.wrappers :material, tag: 'div', class: 'material-field-wrapper mdl-textfield mdl-js-textfield mdl-textfield--floating-label', error_class: 'is-invalid' do |b|
+  config.wrappers :material, tag: 'div', class: 'material-field-wrapper mdl-textfield mdl-js-textfield mdl-textfield--floating-label',
+                             error_class: 'is-invalid' do |b|
     b.use :html5
     b.use :input, class: 'mdl-textfield__input'
     b.use :label, class: 'mdl-textfield__label'
@@ -74,11 +75,6 @@ SimpleForm.setup do |config|
   config.wrappers :material_select, tag: 'div', class: 'material-field-wrapper mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label' do |b|
     b.use :html5
     b.use :input, class: 'mdl-selectfield__select'
-    b.wrapper tag: 'div', class: 'mdl-selectfield__icon' do |d|
-      d.wrapper tag: 'i', class: 'material-icons' do |i|
-
-      end
-    end
     b.use :label, class: 'mdl-selectfield__label'
   end
 
