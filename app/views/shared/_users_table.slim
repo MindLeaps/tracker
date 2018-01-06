@@ -1,0 +1,17 @@
+table class='mdl-data-table mdl-js-data-table resource-table'
+  thead
+    tr
+      th class='mdl-data-table__cell--non-numeric'
+        | Name
+      th class='mdl-data-table__cell--non-numeric'
+        | E-mail
+      th class='mdl-data-table__cell--non-numeric'
+        | Global Role
+  - users.each do |user|
+    tr class='resource-row'
+      td class='mdl-data-table__cell--non-numeric'
+        = link_to user_name(user), user_path(user)
+      td class='mdl-data-table__cell--non-numeric'
+        = link_to user.email, user_path(user)
+      td class='mdl-data-table__cell--non-numeric'
+        = link_to user.global_role? ? user.global_role.label : 'None', user_path(user)
