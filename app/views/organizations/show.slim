@@ -5,8 +5,6 @@
   = render partial: 'shared/chapters_table', locals: {chapters: @organization.chapters}
 
 .content-card
-  h3
-    | Members
   = render partial: 'shared/members_table', locals: {members: @organization.members}
   - if policy(@organization).add_member?
     = simple_form_for :member, url: { action: :add_member } do |f|
