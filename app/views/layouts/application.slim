@@ -8,11 +8,11 @@ html
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
     = javascript_include_tag 'application', 'data-turbolinks-track' => true
     = csrf_meta_tags
-body
-  .mdl-layout.mdl-js-layout.mdl-layout--fixed-drawer.mdl-layout--fixed-header
-    = render 'shared/header'
-    = render 'shared/drawer'
-    main.mdl-layout__content.mdl-color--grey-100
-      .mdl-grid.page-content
-        = render 'shared/snackbar'
-        = yield
+  body
+    .mdl-layout.mdl-js-layout.mdl-layout--fixed-drawer.mdl-layout--fixed-header
+      = render 'shared/header'
+      = render 'shared/drawer'
+      main.mdl-layout__content.mdl-color--grey-100
+        .mdl-grid.page-content
+          = render 'shared/snackbar'
+          = yield
