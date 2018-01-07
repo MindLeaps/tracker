@@ -22,7 +22,7 @@ Rails.application.routes.draw do
     resources :assignments, only: %i[index show]
   end
 
-  resources :users, only: %i[index create show] do
+  resources :users, only: %i[index new create show] do
     resources :memberships, only: %i[update destroy] do
       put :update_global_role, on: :collection
       delete :revoke_global_role, on: :collection

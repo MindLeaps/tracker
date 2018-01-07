@@ -1,13 +1,6 @@
 = content_for :header_content do
   = render layout: '/shared/header_content', locals: {title: 'Users'} do
-    / = render partial: '/shared/main_header_button', locals: {href: new_organization_path, title: 'Add Organization'}
+    = render partial: '/shared/main_header_button', locals: {href: new_user_path, title: 'Add User'}
 
 .single-content-card
   = render partial: 'shared/users_table', locals: { users: @users }
-
-  / <%= simple_form_for @user, wrapper: :horizontal_form, url: {action: 'create'} do |f| %>
-  /   <%= render partial: 'shared/errors', locals: {subject: @user} %>
-  /   <%= f.input :email %>
-  /   <%= f.button :submit, class: 'btn-outline-success' %>
-
-/ <%= render partial: "shared/users_table", locals: {users: @users} %>

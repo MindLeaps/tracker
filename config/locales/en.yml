@@ -20,6 +20,11 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
+  helpers:
+    submit:
+      user:
+        create: Add User
+
   student_created: Student "%{name}" created.
   create_another: Create another
   student_delete_confirmation: Are you sure you want to delete student "%{name}"?
@@ -55,6 +60,7 @@ en:
   revoke_global_role_button: Revoke Global User Role
   revoke_local_role_button: Revoke Role in %{org}
   unauthorized_logout: You have been loged out for performing unauthorized activity
+  user_added: User with email %{email} added.
 
   errors:
     messages:
