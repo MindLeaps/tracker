@@ -38,14 +38,14 @@ RSpec.describe 'User interacts with other users', js: true do
 
       it 'changes user\'s role, in the organization, from teacher to administrator and add an admin role in other organization' do
         click_link user_name(@other_user)
-        form_for(@org2).choose('Teacher')
-        form_for(@org2).click_button 'Update User Role'
+        form_for(@org2).find('label', text: 'Teacher').click
+        form_for(@org2).click_button 'Update Role'
 
-        form_for(@org).choose('Administrator')
-        form_for(@org).click_button 'Update User Role'
+        form_for(@org).find('label', text: 'Administrator').click
+        form_for(@org).click_button 'Update Role'
 
-        expect(form_for(@org).find_field('Administrator')).to be_checked
-        expect(form_for(@org2).find_field('Teacher')).to be_checked
+        form_for(@org).find('label.is-checked', text: 'Administrator')
+        form_for(@org2).find('label.is-checked', text: 'Teacher')
 
         expect(@other_user.has_role?(:admin, @org)).to be true
         expect(@other_user.has_role?(:teacher, @org2)).to be true
@@ -65,15 +65,15 @@ RSpec.describe 'User interacts with other users', js: true do
         Bullet.enable = false
         click_link user_name(@global_guest)
         expect(page).to have_content Role::GLOBAL_ROLES[:global_guest]
-        global_form.choose('Global Administrator')
-        global_form.click_button 'Update Global User Role'
+        global_form.find('label', text: 'Global Administrator').click
+        global_form.click_button 'Update Global Role'
 
         expect(page).to have_content Role::GLOBAL_ROLES[:global_admin]
-        expect(global_form.find_field('Global Administrator')).to be_checked
+        global_form.find('label.is-checked', text: 'Global Administrator')
         expect(@global_guest.has_role?(:global_admin)).to be true
         expect(@global_guest.has_role?(:global_guest)).to be false
 
-        click_button 'Revoke Global User Role'
+        click_button 'Revoke Global Role'
         expect(@global_guest.has_role?(:global_guest)).to be false
         expect(@global_guest.has_role?(:global_admin)).to be false
       end

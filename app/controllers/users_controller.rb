@@ -23,6 +23,7 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find params[:id]
+    @membership = Membership.new user: @user
     authorize @user
   end
 end

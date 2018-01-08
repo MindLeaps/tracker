@@ -60,6 +60,12 @@
   margin: 0 auto;
 }
 
+.mdl-card__title.primary {
+  background: $dark-primary-color;
+  color: $text-color;
+  display: block;
+}
+
 @keyframes hideBehindHeader{
   0% {transform: translateY(0px);}
   100% {transform: translateY(-60px);}

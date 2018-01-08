@@ -168,6 +168,7 @@ SimpleForm.setup do |config|
     boolean: :material_checkbox,
     date: :material_date,
     enum_radio_buttons: :material_radio,
+    radio_buttons: :material_radio,
     select: :material_select
   }
 

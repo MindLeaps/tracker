@@ -21,7 +21,11 @@ $snackbar-action-color: #ff4081;
 }
 
 .button--danger {
-  background-color: red !important;
+  color: red !important;
+  &.mdl-button--raised {
+    background-color: red !important;
+    color: $text-color !important;
+  }
 }
 
 .mdl-selectfield__label {
