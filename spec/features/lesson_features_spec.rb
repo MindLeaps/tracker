@@ -12,6 +12,7 @@ RSpec.describe 'User interacts with lessons' do
 
       visit '/'
       click_link 'Lessons'
+      click_link 'Add Lesson'
 
       select 'Lesson Group', from: 'lesson_group_id'
       select 'Feature Testing I', from: 'lesson_subject_id'

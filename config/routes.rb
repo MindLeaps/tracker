@@ -41,7 +41,7 @@ Rails.application.routes.draw do
       post :undelete
     end
   end
-  resources :lessons, only: %i[index create show] do
+  resources :lessons, only: %i[index new create show] do
     resources :students, controller: :student_lessons, only: %i[show update]
   end
   resources :subjects, only: %i[index create show edit update]

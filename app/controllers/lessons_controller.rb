@@ -16,6 +16,11 @@ class LessonsController < ApplicationController
     @students = @lesson.group.students.exclude_deleted
   end
 
+  def new
+    authorize Lesson
+    @lesson = Lesson.new
+  end
+
   def create
     @lesson = Lesson.new params.require(:lesson).permit :group_id, :date, :subject_id
     authorize @lesson

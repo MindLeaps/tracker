@@ -46,6 +46,18 @@ RSpec.describe LessonsController, type: :controller do
       end
     end
 
+    describe '#new' do
+      before :each do
+        get :new
+      end
+
+      it { should respond_with 200 }
+      it { should render_template 'new' }
+      it 'exposes a new empty lesson' do
+        expect(assigns(:lesson)).to be_instance_of Lesson
+      end
+    end
+
     describe '#create' do
       context 'Creates the lesson successfully' do
         before :each do
