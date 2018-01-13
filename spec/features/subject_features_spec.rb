@@ -15,6 +15,7 @@ RSpec.describe 'User interacts with subjects', js: true do
 
       visit '/'
       click_link 'Subjects'
+      click_link 'Add Subject'
 
       fill_in 'Subject name', with: 'Classical Dance'
       select 'Subject Org', from: 'Organization'
@@ -23,7 +24,7 @@ RSpec.describe 'User interacts with subjects', js: true do
       click_button 'Create'
 
       expect(page).to have_content 'Subject "Classical Dance" created'
-      expect(page).to have_css '.subject-row', count: 1
+      expect(page).to have_css '.resource-row', count: 1
     end
 
     it 'lists all existing subjects' do
@@ -51,7 +52,7 @@ RSpec.describe 'User interacts with subjects', js: true do
       expect(page).to have_content skill_names[1]
       expect(page).to have_content skill_names[2]
 
-      click_link 'Back to All Subjects'
+      click_link 'arrow_back'
 
       expect(page).to have_current_path subjects_path
     end
@@ -63,7 +64,7 @@ RSpec.describe 'User interacts with subjects', js: true do
       visit '/'
       click_link 'Subjects'
       click_link 'Test Subject'
-      click_link 'Edit'
+      click_link 'edit'
 
       expect(page).to have_current_path edit_subject_path(subject)
       fill_in 'Subject name', with: 'Edited Name'

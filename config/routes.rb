@@ -44,7 +44,7 @@ Rails.application.routes.draw do
   resources :lessons, only: %i[index new create show] do
     resources :students, controller: :student_lessons, only: %i[show update]
   end
-  resources :subjects, only: %i[index create show edit update]
+  resources :subjects, only: %i[index new create show edit update]
   resources :skills, only: %i[index create show new]
 
   root to: 'home#index'

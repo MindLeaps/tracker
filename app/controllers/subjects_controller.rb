@@ -3,8 +3,12 @@
 class SubjectsController < ApplicationController
   def index
     authorize Subject
-    @subject = Subject.new
     @subjects = policy_scope Subject.includes(:assignments, :skills, :organization)
+  end
+
+  def new
+    authorize Subject
+    @subject = Subject.new
   end
 
   def create

@@ -10,9 +10,10 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require_tree .
 //= require material.min
 //= require mdl-selectfield.min
 //= require jquery2
 //= require jquery_ujs
 //= require cocoon
+//= require_tree .
+

@@ -1,16 +1,6 @@
 - content_for :header_content do
   = render layout: '/shared/header_content', locals: {title: 'Subjects'} do
-    / = render partial: '/shared/main_header_button', locals: {href: new_student_path, title: 'Add Student'}
-
-  / <%= simple_form_for @subject, wrapper: :horizontal_form, url: {action: 'create'} do |f| %>
-  /   <%= render partial: 'shared/errors', locals: {subject: @subject} %>
-  /   <%= f.input :subject_name %>
-  /   <%= f.association :organization, label_method: :organization_name, include_blank: false %>
-  /   <h5>Skills</h5>
-  /   <div class='clearfix'>
-  /     <%= link_to_add_association 'Add Skill', f, :assignments, class: 'btn btn-outline-primary btn-sm' %>
-  /   </div>
-  /   <%= f.button :submit, class: 'btn-outline-success' %>
+    = render partial: '/shared/main_header_button', locals: {href: new_subject_path, title: 'Add Subject'}
 
 .single-content-card
   = render partial: "subjects/subjects_table", locals: {subjects: @subjects}

@@ -1,0 +1,5 @@
+- content_for :header_content do
+  = render partial: '/shared/header_content', locals: { back_button_url: subjects_path, back_tooltip: 'Back to Subjects', title: 'New Subject' }
+
+.content-card--most.center
+  = render partial: 'shared/subject_form', locals: {subject: @subject, action: 'create'}

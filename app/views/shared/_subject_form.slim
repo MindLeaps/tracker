@@ -1,0 +1,12 @@
+= simple_form_for @subject, url: {action: action} do |f|
+    = render partial: 'shared/errors', locals: {subject: @subject}
+    = f.input :subject_name
+    = f.association :organization, label_method: :organization_name, include_blank: false
+    h5 Skills
+    = f.simple_fields_for :assignments do |assignment|
+      = render 'assignment_fields', f: assignment
+    div.new-skill-container
+      = link_to_add_association f, :assignments do
+        button class='mdl-button mdl-button--primary mdl-js-button mdl-js-ripple-effect'
+          | Add Skill
+    = f.button :submit, class: 'mdl-button--raised mdl-button--accent mdl-js-ripple-effect subject-submit'

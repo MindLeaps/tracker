@@ -78,6 +78,11 @@ SimpleForm.setup do |config|
     b.use :label, class: 'mdl-selectfield__label'
   end
 
+  config.wrappers :material_select_no_label, tag: 'div', class: 'material-field-wrapper mdl-selectfield mdl-js-selectfield' do |b|
+    b.use :html5
+    b.use :input, class: 'mdl-selectfield__select'
+  end
+
   config.wrappers :material_radio, tag: 'div', class: 'material-field-wrapper', error_class: 'is-invalid' do |b|
     b.use :html5
     b.use :label, wrap_with: { tag: 'div', class: 'label-wrapper' }
