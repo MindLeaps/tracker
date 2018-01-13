@@ -174,7 +174,8 @@ SimpleForm.setup do |config|
     date: :material_date,
     enum_radio_buttons: :material_radio,
     radio_buttons: :material_radio,
-    select: :material_select
+    select: :material_select,
+    file: :default
   }
 
   # Namespaces where SimpleForm should look for custom input classes that
