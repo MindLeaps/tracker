@@ -11,6 +11,7 @@ class StudentsController < ApplicationController
   def new
     authorize Student
     @student = Student.new
+    @student.gender = 'M' # default for new students
   end
 
   def create

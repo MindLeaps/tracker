@@ -31,7 +31,6 @@ RSpec.describe 'User interacts with other users', js: true do
     end
 
     describe 'Edit User' do
-
       after :each do
         Bullet.enable = true
       end

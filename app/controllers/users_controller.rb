@@ -11,7 +11,7 @@ class UsersController < ApplicationController
 
   def new
     authorize User
-    @user= User.new
+    @user = User.new
   end
 
   def create
