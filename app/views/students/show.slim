@@ -1,0 +1,54 @@
+- content_for :header_content do
+  = render layout: '/shared/header_content', locals: { back_button_url: students_path, back_tooltip: 'Back to Students', title: @student.proper_name } do
+    = render partial: '/shared/main_header_button', locals: {href: student_student_images_path(@student), title: 'Student Images'}
+
+- content_for :header_actions do
+  a href=edit_student_path(@student) id='edit-button' class='mdl-button mdl-js-button mdl-button--icon'
+    i class='material-icons' edit
+  .mdl-tooltip data-mdl-for='edit-button'
+    | Edit Student
+  = button_to @student, method: :delete, class: 'mdl-button mdl-js-button mdl-button--icon' do
+    i.material-icons id='delete-button'
+      | delete
+  .mdl-tooltip data-mdl-for='delete-button'
+    | Delete Student
+
+div class="content-card--full"
+  - if @student.profile_image
+    = image_tag @student.profile_image.image.medium.url, class: 'student-profile-image'
+  - if @student.deleted_at
+    p class="text-danger"
+      | Student deleted at: #{@student.deleted_at}
+  ul class="mdl-list"
+    li class="mdl-list__item"
+      | Date of Birth: #{@student.estimated_dob ? "EST" : ""} #{@student.dob}
+    li class="mdl-list__item"
+      | Gender: #{@student.gender_i18n}
+    li class="mdl-list__item"
+      | Group: #{student_group_name(@student)}
+    li class="mdl-list__item"
+      | Quartier: #{@student.quartier}
+    li class="mdl-list__item"
+      | Guardian Name: #{@student.guardian_name}
+    li class="mdl-list__item"
+      | Guardian Occupation: #{@student.guardian_occupation}
+    li class="mdl-list__item"
+      | Guardian Contact: #{@student.guardian_contact}
+    li class="mdl-list__item"
+      | Family Members: #{@student.family_members}
+    li class="mdl-list__item"
+      | Name of School: #{@student.name_of_school}
+    li class="mdl-list__item"
+      | School Level Completed: #{@student.school_level_completed}
+    li class="mdl-list__item"
+      | Year of Dropout: #{@student.year_of_dropout}
+    li class="mdl-list__item"
+      | Reason for Leaving: #{@student.reason_for_leaving}
+    li class="mdl-list__item"
+      | Health Insurance Information: #{@student.health_insurance}
+    li class="mdl-list__item"
+      | Health Issues: #{@student.health_issues}
+    li class="mdl-list__item"
+      | HIV Tested: #{@student.hiv_tested}
+    li class="mdl-list__item"
+      | Notes: #{@student.notes}

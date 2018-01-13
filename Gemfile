@@ -19,7 +19,6 @@ gem 'rolify'
 gem 'tiddle'
 
 gem 'active_model_serializers', '~> 0.10.0'
-gem 'bootstrap', '~> 4.0.0.beta'
 gem 'carrierwave', '~> 1.0'
 gem 'carrierwave-bombshelter'
 gem 'carrierwave-imageoptimizer'
@@ -32,6 +31,7 @@ gem 'mini_magick'
 gem 'puma'
 gem 'simple_form'
 gem 'skylight'
+gem 'slim'
 
 gem 'mindleaps_analytics', path: ENV['MINDLEAPS_ANALYTICS_PATH'] if ENV['MINDLEAPS_ANALYTICS_PATH']
 

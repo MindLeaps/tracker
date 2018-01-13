@@ -1,0 +1,21 @@
+table class='mdl-data-table mdl-js-data-table resource-table'
+  thead
+    tr
+      th class="mdl-data-table__cell--non-numeric"
+        | Chapter Name
+      th class="mdl-data-table__cell--non-numeric"
+        | Organization
+      th
+        | Groups in Chapter
+      th
+        | Students in Chapter
+  - chapters.each do |chapter|
+    tr class='resource-row'
+      td class="mdl-data-table__cell--non-numeric"
+        = link_to chapter.chapter_name, chapter_path(chapter)
+      td class="mdl-data-table__cell--non-numeric"
+        = link_to chapter_organization_name(chapter), chapter_path(chapter)
+      td
+        = link_to chapter.groups.length, chapter_path(chapter)
+      td
+        = link_to chapter_students_number(chapter), chapter_path(chapter)

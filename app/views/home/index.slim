@@ -1,0 +1,21 @@
+doctype html
+html
+  head
+    title
+    = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true
+    = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"
+    = csrf_meta_tags
+  body.home.mdl-grid
+    .mdl-cell.mdl-cell--6-col.mdl-cell--6-col-tablet.main-cell
+      .login-surface.mdl-card.mdl-shadow--8dp
+        .mdl-card__title
+          h2.mdl-card__title-text MindLeaps Tracker
+        .logo-container
+          = image_tag 'mindleaps_logo_transparent.png', class: 'home-mindleaps-logo'
+        .mdl-card__supporting-text
+          | Welcome to MindLeaps Tracker. Please sign in with your Google Account.
+        .mdl-card__actions.mdl-card--border
+          a.mdl-button.mdl-js-button.mdl-button--raised.mdl-js-ripple-effect.google-button href=omniauth_authorize_path(User, :google_oauth2)
+            = image_tag 'google_logo.svg'
+            span Sign in with Google

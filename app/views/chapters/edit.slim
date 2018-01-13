@@ -1,0 +1,5 @@
+- content_for :header_content do
+  = render partial: '/shared/header_content', locals: {back_button_url: chapter_path(@chapter), back_tooltip: "Back to #{@chapter.chapter_name}", title: "Edit #{@chapter.chapter_name}"}
+
+.content-card--most.center
+  = render partial: 'shared/chapter_form', locals: {chapter: @chapter, action: 'update'}

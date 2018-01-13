@@ -1,0 +1,8 @@
+- content_for :header_content do
+  = render partial: '/shared/header_content', locals: {back_button_url: users_path, back_tooltip: 'Back to Users', title: 'New User'}
+
+.content-card--most.center
+  = simple_form_for @user, url: {action: 'create'} do |f|
+    = render partial: 'shared/errors', locals: {subject: @user}
+    = f.input :email
+    = f.button :submit, class: 'mdl-button--raised mdl-button--accent mdl-js-ripple-effect'

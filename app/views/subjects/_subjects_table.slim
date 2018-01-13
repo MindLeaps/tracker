@@ -1,0 +1,14 @@
+table class='mdl-data-table mdl-js-data-table resource-table'
+  thead
+    tr
+      th class='mdl-data-table__cell--non-numeric' Subject Name
+      th class='mdl-data-table__cell--non-numeric' Organization
+      th class='mdl-data-table__cell--non-numeric' Skills
+  - subjects.each do |subject|
+    tr class='resource-row'
+      td class='mdl-data-table__cell--non-numeric'
+        = link_to subject.subject_name, subject_path(subject)
+      td class='mdl-data-table__cell--non-numeric'
+        = link_to subject.organization.organization_name, subject_path(subject)
+      td class='mdl-data-table__cell--non-numeric'
+        = link_to subject.skills.length, subject_path(subject)

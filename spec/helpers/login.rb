@@ -8,6 +8,6 @@ module Helpers
       info: { name: user.name, email: user.email }
     )
     visit '/'
-    click_link 'Google Login'
+    click_link 'Sign in with Google'
   end
 end

@@ -1,0 +1,10 @@
+- content_for :header_content do
+  = render partial: '/shared/header_content', locals: {back_button_url: lessons_path, back_tooltip: 'Back to Lessons', title: 'New Lesson'}
+
+.content-card--most.center
+  = simple_form_for @lesson, url: {action: 'create'} do |f|
+    = render partial: 'shared/errors', locals: {subject: @lesson}
+    = f.association :group, label_method: :group_name, include_blank: false
+    = f.association :subject, label_method: :subject_name, include_blank: false
+    = f.input :date
+    = f.button :submit, class: 'mdl-button--raised mdl-button--accent mdl-js-ripple-effect'

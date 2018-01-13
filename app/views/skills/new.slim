@@ -1,0 +1,5 @@
+- content_for :header_content do
+  = render partial: '/shared/header_content', locals: { back_button_url: skills_path, back_tooltip: 'Back to Skills', title: 'New Skill' }
+
+.content-card--most.center
+  = render partial: 'shared/skill_form', locals: {skill: @skill, action: 'create'}

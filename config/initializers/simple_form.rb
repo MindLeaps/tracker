@@ -53,8 +53,44 @@ SimpleForm.setup do |config|
     # b.use :full_error, wrap_with: { tag: :span, class: :error }
   end
 
+  config.wrappers :material, tag: 'div', class: 'material-field-wrapper mdl-textfield mdl-js-textfield mdl-textfield--floating-label',
+                             error_class: 'is-invalid' do |b|
+    b.use :html5
+    b.use :input, class: 'mdl-textfield__input'
+    b.use :label, class: 'mdl-textfield__label'
+    b.use :error, wrap_with: { tag: 'span', class: 'mdl-textfield__error' }
+  end
+
+  config.wrappers :material_checkbox, tag: 'label', class: 'material-field-wrapper mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect' do |b|
+    b.use :html5
+    b.use :input, type: 'checkbox', class: 'mdl-checkbox__input'
+    b.use :label_text, wrap_with: { tag: 'span', class: 'mdl-checkbox__label' }
+  end
+
+  config.wrappers :material_date, tag: 'div', class: 'material-field-wrapper mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label' do |b|
+    b.use :html5
+    b.use :input, class: 'mdl-selectfield__select'
+  end
+
+  config.wrappers :material_select, tag: 'div', class: 'material-field-wrapper mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label' do |b|
+    b.use :html5
+    b.use :input, class: 'mdl-selectfield__select'
+    b.use :label, class: 'mdl-selectfield__label'
+  end
+
+  config.wrappers :material_select_no_label, tag: 'div', class: 'material-field-wrapper mdl-selectfield mdl-js-selectfield' do |b|
+    b.use :html5
+    b.use :input, class: 'mdl-selectfield__select'
+  end
+
+  config.wrappers :material_radio, tag: 'div', class: 'material-field-wrapper', error_class: 'is-invalid' do |b|
+    b.use :html5
+    b.use :label, wrap_with: { tag: 'div', class: 'label-wrapper' }
+    b.use :input, class: 'mdl-radio__button'
+  end
+
   # The default wrapper to be used by the FormBuilder.
-  config.default_wrapper = :default
+  config.default_wrapper = :material
 
   # Define the way to render check boxes / radio buttons with labels.
   # Defaults to :nested for bootstrap config.
@@ -63,7 +99,7 @@ SimpleForm.setup do |config|
   config.boolean_style = :nested
 
   # Default class for buttons
-  config.button_class = 'btn'
+  config.button_class = 'mdl-button mdl-js-button'
 
   # Method used to tidy up errors. Specify any Rails Array method.
   # :first lists the first message for each field.
@@ -119,7 +155,7 @@ SimpleForm.setup do |config|
   # in this configuration, which is recommended due to some quirks from different browsers.
   # To stop SimpleForm from generating the novalidate option, enabling the HTML5 validations,
   # change this configuration to true.
-  config.browser_validations = false
+  config.browser_validations = true
 
   # Collection of methods to detect if a file type was given.
   # config.file_methods = [ :mounted_as, :file?, :public_filename ]
@@ -131,7 +167,16 @@ SimpleForm.setup do |config|
 
   # Custom wrappers for input types. This should be a hash containing an input
   # type as key and the wrapper that will be used for all inputs with specified type.
-  # config.wrapper_mappings = { string: :prepend }
+  config.wrapper_mappings = {
+    string: :material,
+    check_boxes: :material_checkbox,
+    boolean: :material_checkbox,
+    date: :material_date,
+    enum_radio_buttons: :material_radio,
+    radio_buttons: :material_radio,
+    select: :material_select,
+    file: :default
+  }
 
   # Namespaces where SimpleForm should look for custom input classes that
   # override default inputs.

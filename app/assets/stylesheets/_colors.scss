@@ -1,0 +1,38 @@
+$primary-color: #9C27B0;
+$dark-primary-color: #7B1FA2;
+$light-primary-color: #E1BEE7;
+$accent-color: #4CAF50;
+$divider-color: #BDBDBD;
+$text-color: #FFFFFF;
+$snackbar-color: #323232;
+$snackbar-action-color: #ff4081;
+
+.mdl-button--accent {
+  color: $accent-color !important;
+
+  &.mdl-button--raised {
+    background-color: $accent-color !important;
+    color: $text-color !important;
+  }
+}
+
+.button--neutral {
+  background-color: $divider-color !important;
+}
+
+.button--danger {
+  color: red !important;
+  &.mdl-button--raised {
+    background-color: red !important;
+    color: $text-color !important;
+  }
+}
+
+.mdl-selectfield__label {
+  &:after {
+    background-color: $primary-color;
+  }
+  .mdl-selectfield--floating-label.is-dirty &, .mdl-selectfield--floating-label.is-focused & {
+    color: $primary-color;
+  }
+}

@@ -1,0 +1,21 @@
+- content_for :header_content do
+  = render layout: '/shared/header_content', locals: { back_button_url: lesson_path(@lesson), back_tooltip: 'Back to Lesson', title: "Grades for #{@student.proper_name}" } do
+
+.mdl-cell.mdl-cell--4-col
+.mdl-cell.mdl-cell--4-col
+  .mdl-card.mdl-shadow--2dp.full-width.student-lesson-card
+    .mdl-card__supporting-text
+      = simple_form_for @student, url: {action: 'update'} do |f|
+        = render partial: 'shared/errors', locals: {subject: @lesson}
+        = f.simple_fields_for :grades, @grades do |grade|
+          br
+          = grade.hidden_field :skill, value: grade.object.skill
+          = grade.association :grade_descriptor,
+                  collection: grade.object.skill.grade_descriptors,
+                  label_method: -> (o) {"#{o.mark} - #{o.grade_description}"},
+                  label: grade.object.skill.skill_name,
+                  required: false
+        br
+        = f.input :absences, as: :boolean, label: 'Student absent', input_html: { checked: @absence }
+        = f.button :submit, I18n.t(:create_grade_button), class: 'mdl-button--raised mdl-button--accent mdl-js-ripple-effect'
+.mdl-cell.mdl-cell--4-col

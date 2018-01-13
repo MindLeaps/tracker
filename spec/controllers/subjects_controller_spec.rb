@@ -76,6 +76,18 @@ RSpec.describe SubjectsController, type: :controller do
       end
     end
 
+    describe '#new' do
+      before :each do
+        get :new
+      end
+
+      it { should respond_with 200 }
+      it { should render_template :new }
+      it 'assigns a new empty subject' do
+        expect(assigns(:subject)).to be_kind_of(Subject)
+      end
+    end
+
     describe '#create' do
       context 'Creates the subject successfully' do
         before :each do

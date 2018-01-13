@@ -1,0 +1,13 @@
+table class='mdl-data-table mdl-js-data-table resource-table'
+  thead
+    tr
+      th class='mdl-data-table__cell--non-numeric'
+        | Organization Name
+      th
+        | Number of Chapters
+  - organizations.each do |organization|
+    tr class='resource-row'
+      td class='mdl-data-table__cell--non-numeric'
+        = link_to organization.organization_name, organization_path(organization)
+      td
+        = link_to organization.chapters.length, organization_path(organization)

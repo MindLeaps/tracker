@@ -17,50 +17,65 @@ RSpec.describe 'User interacts with other users', js: true do
       click_link 'Users'
     end
 
-    after :each do
-      Bullet.enable = true
+    describe 'Add User' do
+      it 'creates a new user' do
+        visit '/users'
+        click_link 'Add User'
+        fill_in 'Email', with: 'silly@example.com'
+        click_button 'Add User'
+
+        expect(page).to have_content 'silly@example.com'
+        expect(User.last.email).to eq 'silly@example.com'
+        expect(page).to have_content 'User with email silly@example.com added.'
+      end
     end
 
-    it 'changes user\'s role, in the organization, from teacher to administrator and add an admin role in other organization' do
-      click_link user_name(@other_user)
-      form_for(@org2).choose('Teacher')
-      form_for(@org2).click_button 'Update User Role'
+    describe 'Edit User' do
+      after :each do
+        Bullet.enable = true
+      end
 
-      form_for(@org).choose('Administrator')
-      form_for(@org).click_button 'Update User Role'
+      it 'changes user\'s role, in the organization, from teacher to administrator and add an admin role in other organization' do
+        click_link user_name(@other_user)
+        form_for(@org2).find('label', text: 'Teacher').click
+        form_for(@org2).click_button 'Update Role'
 
-      expect(form_for(@org).find_field('Administrator')).to be_checked
-      expect(form_for(@org2).find_field('Teacher')).to be_checked
+        form_for(@org).find('label', text: 'Administrator').click
+        form_for(@org).click_button 'Update Role'
 
-      expect(@other_user.has_role?(:admin, @org)).to be true
-      expect(@other_user.has_role?(:teacher, @org2)).to be true
-      expect(@other_user.has_role?(:teacher, @org)).to be false
-    end
+        form_for(@org).find('label.is-checked', text: 'Administrator')
+        form_for(@org2).find('label.is-checked', text: 'Teacher')
 
-    it 'revokes the user\'s role in the organization' do
-      click_link user_name(@other_user)
+        expect(@other_user.has_role?(:admin, @org)).to be true
+        expect(@other_user.has_role?(:teacher, @org2)).to be true
+        expect(@other_user.has_role?(:teacher, @org)).to be false
+      end
 
-      expect(page).to have_content "#{@org.organization_name}: Teacher"
-      click_button "Revoke Role in #{@org.organization_name}"
-      expect(@other_user.has_role?(:teacher, @org)).to be false
-      expect(page).not_to have_content "#{@org.organization_name}: Teacher"
-    end
+      it 'revokes the user\'s role in the organization' do
+        click_link user_name(@other_user)
 
-    it 'changes the user\'s global role from global guest to global admin, then removes global role' do
-      Bullet.enable = false
-      click_link user_name(@global_guest)
-      expect(page).to have_content Role::GLOBAL_ROLES[:global_guest]
-      global_form.choose('Global Administrator')
-      global_form.click_button 'Update Global User Role'
+        expect(page).to have_content "#{@org.organization_name}: Teacher"
+        click_button "Revoke Role in #{@org.organization_name}"
+        expect(@other_user.has_role?(:teacher, @org)).to be false
+        expect(page).not_to have_content "#{@org.organization_name}: Teacher"
+      end
 
-      expect(page).to have_content Role::GLOBAL_ROLES[:global_admin]
-      expect(global_form.find_field('Global Administrator')).to be_checked
-      expect(@global_guest.has_role?(:global_admin)).to be true
-      expect(@global_guest.has_role?(:global_guest)).to be false
+      it 'changes the user\'s global role from global guest to global admin, then removes global role' do
+        Bullet.enable = false
+        click_link user_name(@global_guest)
+        expect(page).to have_content Role::GLOBAL_ROLES[:global_guest]
+        global_form.find('label', text: 'Global Administrator').click
+        global_form.click_button 'Update Global Role'
 
-      click_button 'Revoke Global User Role'
-      expect(@global_guest.has_role?(:global_guest)).to be false
-      expect(@global_guest.has_role?(:global_admin)).to be false
+        expect(page).to have_content Role::GLOBAL_ROLES[:global_admin]
+        global_form.find('label.is-checked', text: 'Global Administrator')
+        expect(@global_guest.has_role?(:global_admin)).to be true
+        expect(@global_guest.has_role?(:global_guest)).to be false
+
+        click_button 'Revoke Global Role'
+        expect(@global_guest.has_role?(:global_guest)).to be false
+        expect(@global_guest.has_role?(:global_admin)).to be false
+      end
     end
   end
 end

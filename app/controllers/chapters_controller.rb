@@ -4,6 +4,10 @@ class ChaptersController < ApplicationController
   def index
     authorize Chapter
     @chapters = policy_scope Chapter.includes(:organization, groups: [:students])
+  end
+
+  def new
+    authorize Chapter
     @chapter = Chapter.new
   end
 
@@ -12,11 +16,11 @@ class ChaptersController < ApplicationController
     authorize @chapter
     return notice_and_redirect t(:chapter_created, chapter: @chapter.chapter_name), chapters_url if @chapter.save
     @chapters = Chapter.includes(:organization, groups: [:students]).all
-    render :index
+    render :new
   end
 
   def show
-    @chapter = Chapter.includes(:organization).find params.require :id
+    @chapter = Chapter.find params.require :id
     authorize @chapter
   end
 

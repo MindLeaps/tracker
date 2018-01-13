@@ -12,6 +12,7 @@ RSpec.describe 'User interacts with Chapters' do
 
     it 'creates a new Chapter', js: true do
       visit '/chapters'
+      click_link 'Add Chapter'
       fill_in 'Chapter name', with: 'Chapter One'
       select 'New Org', from: 'chapter_organization_id'
       click_button 'Create'
@@ -32,14 +33,15 @@ RSpec.describe 'User interacts with Chapters' do
     it 'changes the name and organization of chapter' do
       visit '/chapters'
       click_link 'Test Chapter'
-      click_link 'Edit'
+      click_link 'edit'
       fill_in 'Chapter name', with: 'Edited Chapter'
       select 'New Organization', from: 'chapter_organization_id'
       click_button 'Update'
 
       expect(page).to have_content 'Chapter "Edited Chapter" updated.'
       expect(page).to have_content 'Edited Chapter'
-      expect(page).to have_content 'New Organization'
+
+      expect(@chapter.reload.organization.id).to be @org2.id
     end
   end
 end

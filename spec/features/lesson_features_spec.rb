@@ -12,6 +12,7 @@ RSpec.describe 'User interacts with lessons' do
 
       visit '/'
       click_link 'Lessons'
+      click_link 'Add Lesson'
 
       select 'Lesson Group', from: 'lesson_group_id'
       select 'Feature Testing I', from: 'lesson_subject_id'
@@ -27,7 +28,7 @@ RSpec.describe 'User interacts with lessons' do
 
       visit '/'
       click_link 'Lessons'
-      expect(page).to have_css '.lesson-row', count: 2
+      expect(page).to have_css '.resource-row', count: 2
       expect(page).to have_content 'Feature Testing II'
     end
 
@@ -41,7 +42,7 @@ RSpec.describe 'User interacts with lessons' do
 
       visit '/'
       click_link 'Lessons'
-      first('.lesson-row-link').click
+      first('.resource-row a').click
 
       expect(page).to have_content 'Lesson Feature Test Group'
       expect(page).to have_content 'Students'
@@ -74,7 +75,6 @@ RSpec.describe 'User interacts with lessons' do
         expect(page).to have_content 'Graden'
         expect(page).to have_content 'Featuring'
         expect(page).to have_content 'Testing'
-        expect(page).to have_content 'No Grade'
       end
 
       it 'grades a student' do
@@ -104,7 +104,7 @@ RSpec.describe 'User interacts with lessons' do
         expect(page).to have_content 'Student graded.'
         expect(page).to have_checked_field 'student_absences'
 
-        click_link 'Back to Lesson'
+        click_link 'arrow_back'
 
         expect(page).to have_content 'Absent'
       end

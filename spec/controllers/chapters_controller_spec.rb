@@ -23,6 +23,18 @@ RSpec.describe ChaptersController, type: :controller do
     end
   end
 
+  describe '#new' do
+    before :each do
+      get :new
+    end
+
+    it { should respond_with 200 }
+    it { should render_template 'new' }
+    it 'assigns the new empty chapter' do
+      expect(assigns(:chapter)).to be_kind_of(Chapter)
+    end
+  end
+
   describe '#create' do
     context 'supplied valid params' do
       it 'creates a chapter' do
@@ -42,7 +54,7 @@ RSpec.describe ChaptersController, type: :controller do
         post :create, params: { chapter: { organization_id: test_organization.id } }
       end
 
-      it { should render_template :index }
+      it { should render_template :new }
       it 'Assigns the chapters for index rendering' do
         expect(assigns[:chapters]).to include @existing_chapter
       end

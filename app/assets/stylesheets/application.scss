@@ -12,62 +12,64 @@
  *
  */
 
-@import 'bootstrap';
-
+@import 'material.min';
+@import 'mdl-selectfield.min';
+@import 'colors';
 @import 'common';
 @import 'header';
+@import 'drawer';
 @import 'groups';
+@import 'subjects';
 @import 'home';
-@import 'menu';
 @import 'students';
 @import 'chapters';
+@import 'lessons';
 @import 'users';
+@import 'form';
+@import 'snackbar';
+//
+//* {
+//  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+//}
 
-.boolean {
-  label {
-    cursor: pointer;
-  }
-  .form-check label {
-    @extend .form-control-lg;
-    cursor: pointer;
-    input {
-      cursor: pointer;
-      width: 15px;
-      display: inline;
-    }
-  }
+.content-card {
+  @extend .mdl-shadow--2dp;
+  @extend .mdl-color--white;
+  padding: 8px;
 }
 
-.main-container {
-  margin-top: 60px;
+.content-card--cell {
+  @extend .content-card;
+  @extend .mdl-cell;
 }
 
-.main-content {
-  margin-top: 20px;
+.content-card--half {
+  @extend .content-card--cell;
+  @extend .mdl-cell--6-col;
 }
 
-.simple_form {
-  .btn {
-    margin: 10px;
-  }
+.content-card--most {
+  @extend .content-card--cell;
+  @extend .mdl-cell--8-col;
 }
 
-.notices {
-  position: absolute;
-  width: 100%;
-  text-align: center;
-  margin-top: 1rem;
+.content-card--full {
+  @extend .content-card--cell;
+  @extend .mdl-cell--12-col;
+}
 
-  .notice {
-    display: inline-block;
-    border: 1px solid transparent;
-    padding: 0.5rem 1rem;
-    border-radius: 0.25rem;
+.single-content-card {
+  @extend .content-card;
+  padding: 0 !important;
+  max-width: 100%;
+  overflow: auto;
+  margin: 0 auto;
+}
 
-    form {
-      display: inline
-    }
-  }
+.mdl-card__title.primary {
+  background: $dark-primary-color;
+  color: $text-color;
+  display: block;
 }
 
 @keyframes hideBehindHeader{
@@ -102,8 +104,10 @@
   float: left;
 }
 
-form .btn {
-  margin: 10px;
-  cursor: pointer;
+.center {
+  margin: 0 auto;
 }
 
+.right {
+  margin-left: auto;
+}

@@ -1,0 +1,20 @@
+- content_for :header_content do
+  = render layout: '/shared/header_content', locals: { back_button_url: lessons_path, back_tooltip: 'Back to Lessons', title: "#{ @lesson.group.group_chapter_name } - #{ @lesson.subject.subject_name } on #{ @lesson.date }" } do
+
+
+.single-content-card
+  table class='mdl-data-table mdl-js-data-table resource-table'
+    thead
+      tr
+        th class='mdl-data-table__cell--non-numeric' Last Name
+        th class='mdl-data-table__cell--non-numeric' First Name
+        th Average Grade
+
+    - @students.each do |student|
+      tr class='resource-row'
+        td class='mdl-data-table__cell--non-numeric'
+          = link_to student.last_name, lesson_student_path(@lesson.id, student.id)
+        td class='mdl-data-table__cell--non-numeric'
+          = link_to student.first_name, lesson_student_path(@lesson.id, student.id)
+        td
+          = link_to lesson_student_average_grade(@lesson, student), lesson_student_path(@lesson.id, student.id)

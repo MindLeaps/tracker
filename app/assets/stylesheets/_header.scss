@@ -1,0 +1,19 @@
+header {
+  padding: 20px 20px 0 20px;
+
+  .user-image {
+    border-radius: 50px;
+    margin: 0 10px;
+  }
+
+  .header-button {
+    margin-left: 15px;
+  }
+}
+
+.main-header {
+  @media(min-width: 1025px) {
+    margin-left: 240px;
+    width: calc(100% - 240px);
+  }
+}

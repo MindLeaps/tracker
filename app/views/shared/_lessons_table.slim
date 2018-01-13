@@ -1,0 +1,15 @@
+table class='mdl-data-table mdl-js-data-table resource-table'
+  thead
+    tr
+      th class='mdl-data-table__cell--non-numeric' Group Name
+      th class='mdl-data-table__cell--non-numeric' Date
+      th class='mdl-data-table__cell--non-numeric' Subject
+
+  - lessons.each do |lesson|
+    tr class='resource-row'
+      td class='mdl-data-table__cell--non-numeric'
+        = link_to lesson.group.group_name, lesson_path(lesson)
+      td class='mdl-data-table__cell--non-numeric'
+        = link_to lesson.date, lesson_path(lesson)
+      td class='mdl-data-table__cell--non-numeric'
+        = link_to lesson.subject.subject_name, lesson_path(lesson)

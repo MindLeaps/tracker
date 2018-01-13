@@ -11,14 +11,40 @@ RSpec.describe GroupsController, type: :controller do
   end
 
   describe '#new' do
-    it 'create a group when supplied valid params' do
-      post :create, params: { group: { group_name: 'New Test Group',
-                                       chapter_id: kigali_chapter.id } }
-      expect(response).to redirect_to controller: :groups, action: :index
+    before :each do
+      get :new
+    end
 
-      group = Group.last
-      expect(group.group_name).to eql 'New Test Group'
-      expect(group.chapter.chapter_name).to eql 'Newly Created Test Chapter'
+    it { should respond_with 200 }
+    it { should render_template 'new' }
+    it 'assigns the new empty group' do
+      expect(assigns(:group)).to be_kind_of(Group)
+    end
+  end
+
+  describe '#create' do
+    context 'valid group data' do
+      before :each do
+        post :create, params: { group: { group_name: 'New Test Group',
+                                         chapter_id: kigali_chapter.id } }
+      end
+
+      it 'creates a new group' do
+        group = Group.last
+        expect(group.group_name).to eql 'New Test Group'
+        expect(group.chapter.chapter_name).to eql 'Newly Created Test Chapter'
+      end
+
+      it { should respond_with 302 }
+      it { should redirect_to group_path(assigns[:group]) }
+    end
+
+    context 'invalid group data' do
+      before :each do
+        post :create, params: { group: { chapter_id: kigali_chapter.id } }
+      end
+
+      it { should render_template :new }
     end
   end
 

@@ -1,0 +1,30 @@
+= simple_form_for student, url: { action: action }, html: { multipart: true } do |f|
+  = render partial: 'shared/errors', locals: {subject: student}
+  = f.input :mlid, label: 'MLID'
+  = f.input :first_name
+  = f.input :last_name
+  = f.input :gender, as: :radio_buttons, item_wrapper_tag: 'label', item_wrapper_class: 'mdl-radio mdl-js-radio mdl-js-ripple-effect'
+  = f.input :dob, label: 'Date of Birth', start_year: 1990, end_year: Date.today.year, default: { day: 1, month: 1}
+  = f.input :estimated_dob, label: 'DOB estimated'
+  hr
+  = f.association :group, collection: policy_scope(Group.includes(:chapter)), label_method: :group_chapter_name
+  = f.association :organization, collection: current_user.organizations, label_method: :organization_name, include_blank: false
+  = f.input :quartier
+  hr
+  = f.input :guardian_name
+  = f.input :guardian_occupation
+  = f.input :guardian_contact
+  = f.input :family_members
+  hr
+  = f.input :name_of_school
+  = f.input :school_level_completed
+  = f.input :year_of_dropout, input_html: { min: 1980, max: 2030 }
+  = f.input :reason_for_leaving
+  hr
+  = f.input :health_insurance
+  = f.input :health_issues
+  = f.input :hiv_tested
+  hr
+  = f.input :notes, input_html: {rows: 5}
+  hr
+  = f.button :submit, class: 'mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-js-ripple-effect'

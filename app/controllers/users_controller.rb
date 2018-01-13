@@ -7,18 +7,23 @@ class UsersController < ApplicationController
 
   def index
     authorize User
+  end
+
+  def new
+    authorize User
     @user = User.new
   end
 
   def create
     @user = User.new params.require(:user).permit(:email)
     authorize @user
-    return redirect_to users_url if @user.save
+    return notice_and_redirect(t(:user_added, email: params[:user][:email]), users_url) if @user.save
     render :index
   end
 
   def show
     @user = User.find params[:id]
+    @membership = Membership.new user: @user
     authorize @user
   end
 end

@@ -1,19 +1,27 @@
+.user-profile-card {
+  width: 100%;
+}
+
 .profile-image {
-  width: 300px;
+  width:100%;
+  max-width: 300px;
   border-radius: 150px;
+  margin: 0 auto 10px auto;
+  display: block;
 }
 
-.edit_user {
-  .user_roles {
-    label {
-      margin: 5px 20px 5px 0;
-      cursor: pointer;
-    }
+.role-administration-card {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.global-role-radio {
+  display: block;
+  cursor: pointer;
+}
+
+.role-actions {
+  form {
+    display: inline;
   }
-}
-
-.form-container {
-  margin: 1rem 0;
-  padding: 1rem;
-  border: grey 1px solid
 }

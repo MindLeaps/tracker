@@ -1,0 +1,12 @@
+- content_for :header_content do
+  = render partial: '/shared/header_content', locals: {back_button_url: chapters_path, back_tooltip: 'Back to Chapters', title: @chapter.chapter_name}
+
+- content_for :header_actions do
+  - if policy(@chapter).edit?
+    a href=edit_chapter_path(@chapter) id='edit-button' class='mdl-button mdl-js-button mdl-button--icon'
+      i class='material-icons' edit
+    .mdl-tooltip data-mdl-for='edit-button'
+      | Edit Chapter
+
+.single-content-card
+  = render partial: 'shared/groups_table', locals: {groups: @chapter.groups}

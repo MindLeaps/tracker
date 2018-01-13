@@ -1,0 +1,13 @@
+- content_for :header_content do
+  = render partial: '/shared/header_content', locals: { back_button_url: organizations_path, back_tooltip: 'Back to Organizations', title: @organization.organization_name }
+
+.content-card
+  = render partial: 'shared/chapters_table', locals: {chapters: @organization.chapters}
+
+.content-card
+  = render partial: 'shared/members_table', locals: {members: @organization.members}
+  - if policy(@organization).add_member?
+    = simple_form_for :member, url: { action: :add_member } do |f|
+      = f.input :email
+      = f.input :role, as: :select, collection: Role::LOCAL_ROLES.map { |key, name| [name, key] }, include_blank: false
+      = f.button :submit, 'Add Member', class: 'btn-outline-success'

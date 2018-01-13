@@ -1,35 +1,49 @@
+$startColor: $dark-primary-color;
+$middleColor: whitesmoke;
+$endColor: $accent-color;
+
 .home {
+  margin: 0;
+  padding: 0;
+
   background: whitesmoke;
+}
 
-  .home-mindleaps-logo {
-    animation: fadein 1s;
-  }
+.main-cell {
+  margin: 0 auto;
+}
 
-  h1 {
-    position: relative;
-    color: #682678;
-    font-size: 20rem;
-    animation: fadein-delay 2s;
-  }
+.login-surface {
+  background: white;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  max-height: 800px;
 
-  .google-login {
-    background: #579f3d;
-    padding: 10px 16px;
-    font-size: 16px;
-    color: white;
-    animation: fadein-delay 2.5s;
-    position: relative;
-    left: 60%;
+  .mdl-card__title {
+    background: $primary-color;
+    color: $text-color;
   }
 }
 
-@keyframes fadein {
-  0% {opacity: 0}
-  100% {opacity: 1}
+.logo-container {
+  text-align: center;
+  padding: 25px 0;
 }
 
-@keyframes fadein-delay {
-  0% {opacity: 0}
-  50% {opacity: 0}
-  100% {opacity: 1}
+.home-mindleaps-logo {
+  width: 80%;
+  max-width: 600px;
+}
+
+.google-button {
+  background: white;
+
+  img {
+    padding-right: 10px;
+  }
+  span {
+    vertical-align: middle;
+  }
 }

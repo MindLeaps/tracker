@@ -22,17 +22,17 @@ Rails.application.routes.draw do
     resources :assignments, only: %i[index show]
   end
 
-  resources :users, only: %i[index create show] do
+  resources :users, only: %i[index new create show] do
     resources :memberships, only: %i[update destroy] do
       put :update_global_role, on: :collection
       delete :revoke_global_role, on: :collection
     end
   end
-  resources :organizations, only: %i[index create show] do
+  resources :organizations, only: %i[index new create show] do
     member { post :add_member }
   end
-  resources :chapters, only: %i[index create show edit update]
-  resources :groups, only: %i[index create show edit update destroy] do
+  resources :chapters, only: %i[index new create show edit update]
+  resources :groups, only: %i[index new create show edit update destroy] do
     member { post :undelete }
   end
   resources :students, only: %i[index new create show edit update destroy] do
@@ -41,10 +41,10 @@ Rails.application.routes.draw do
       post :undelete
     end
   end
-  resources :lessons, only: %i[index create show] do
+  resources :lessons, only: %i[index new create show] do
     resources :students, controller: :student_lessons, only: %i[show update]
   end
-  resources :subjects, only: %i[index create show edit update]
+  resources :subjects, only: %i[index new create show edit update]
   resources :skills, only: %i[index create show new]
 
   root to: 'home#index'

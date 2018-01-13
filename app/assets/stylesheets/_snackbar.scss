@@ -1,0 +1,43 @@
+$snackbar-transition-duration: 0.2s;
+$snackbar-transition-easing: ease-in-out;
+
+.snackbar-wrapper {
+  position: fixed;
+  z-index: 10;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  will-change: transform;
+  animation: snackbar-out $snackbar-transition-duration $snackbar-transition-easing 5s 1 normal forwards;
+}
+
+.snackbar {
+  display: inline-block;
+  background: $snackbar-color;
+  text-align: center;
+  margin-top: 1rem;
+  color: white;
+  padding: 2px 15px;
+  line-height: 40px;
+  transform: translate3d(0, 0, 0);
+  transition: transform $snackbar-transition-duration $snackbar-transition-easing;
+
+  &:hover {
+    transform: translate3d(0, -70%, 0);
+  }
+
+  form {
+    display: inline;
+  }
+}
+
+.snackbar-action-button {
+  @extend .mdl-button;
+  color: $snackbar-action-color;
+}
+
+@keyframes snackbar-out {
+  from {transform: translate3d(0, 0%, 0)}
+  to {transform: translate3d(0, 60%, 0)}
+}

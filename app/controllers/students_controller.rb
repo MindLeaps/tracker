@@ -11,6 +11,7 @@ class StudentsController < ApplicationController
   def new
     authorize Student
     @student = Student.new
+    @student.gender = 'M' # default for new students
   end
 
   def create
@@ -26,7 +27,7 @@ class StudentsController < ApplicationController
   end
 
   def edit
-    @student = Student.includes(:student_images).find params[:id]
+    @student = Student.find params[:id]
     authorize @student
     @student.student_images.build
   end

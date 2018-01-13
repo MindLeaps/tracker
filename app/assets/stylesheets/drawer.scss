@@ -1,0 +1,13 @@
+.main-drawer {
+  position: fixed;
+}
+
+.main-nav {
+  flex-grow: 1;
+  .nav-link {
+    &.mdl-js-ripple-effect { position: relative; }
+    i {
+      padding-right: 24px;
+    }
+  }
+}

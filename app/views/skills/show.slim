@@ -1,0 +1,9 @@
+- content_for :header_content do
+  = render partial: '/shared/header_content', locals: {back_button_url: skills_path, back_tooltip: 'Back to Skills', title: "#{@skill.skill_name} skill in #{@skill.organization.organization_name}"}
+
+.single-content-card
+  p = @skill.skill_description
+  h3 Grade Descriptors
+  - @skill.grade_descriptors.each do |g|
+    li
+      = "#{g.mark} - #{g.grade_description}"
