@@ -13,7 +13,7 @@ RSpec.describe 'User interacts with skills', js: true do
       visit '/'
       click_link 'Skills'
 
-      expect(page).to have_css '.skill-row', count: 2
+      expect(page).to have_css '.resource-row', count: 2
       expect(page).to have_content 'Skill Feature Skill I'
       expect(page).to have_content 'Skill Feature Skill II'
     end
@@ -23,7 +23,7 @@ RSpec.describe 'User interacts with skills', js: true do
 
       visit '/'
       click_link 'Skills'
-      click_link 'New Skill'
+      click_link 'Add Skill'
 
       fill_in 'Skill name', with: 'Feature Test Skill'
       fill_in 'Skill description', with: 'This skill is usefull only for testing.'

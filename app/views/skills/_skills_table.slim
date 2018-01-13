@@ -1,0 +1,11 @@
+table class='mdl-data-table mdl-js-data-table resource-table'
+  thead
+    tr
+      th class='mdl-data-table__cell--non-numeric' Skill Name
+      th class='mdl-data-table__cell--non-numeric' Organization
+  - skills.each do |skill|
+    tr class='resource-row'
+      td class='mdl-data-table__cell--non-numeric'
+        = link_to skill.skill_name, skill_path(skill)
+      td class='mdl-data-table__cell--non-numeric'
+        = link_to skill.organization.organization_name, skill_path(skill)
