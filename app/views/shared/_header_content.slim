@@ -1,0 +1,9 @@
+- if defined? back_button_url
+  a id="back-button" href=back_button_url class="mdl-button mdl-js-button mdl-button--icon unset-color"
+    = inline_svg 'arrow_back.svg'
+  - if defined? back_tooltip
+    .mdl-tooltip data-mdl-for="back-button" = back_tooltip
+
+span.mdl-layout-title = title
+
+= yield

@@ -13,7 +13,7 @@ RSpec.describe 'Edit student' do
     visit '/students'
 
     click_link 'Editovsky'
-    click_link 'edit'
+    click_link 'edit-button'
     fill_in 'First name', with: 'Editoredsky'
     click_button 'Update'
 

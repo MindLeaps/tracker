@@ -4,13 +4,12 @@
 - content_for :header_actions do
   - if policy(@group).edit?
     a href=edit_group_path(@group) id='edit-button' class='mdl-button mdl-js-button mdl-button--icon'
-      i class='material-icons' edit
+      = inline_svg 'edit.svg'
     .mdl-tooltip data-mdl-for='edit-button'
       | Edit Group
   - if policy(@group).destroy?
-    = button_to @group, method: :delete, class: 'mdl-button mdl-js-button mdl-button--icon' do
-      i.material-icons id='delete-button'
-        | delete
+    = button_to @group, method: :delete, id: 'delete-button', class: 'mdl-button mdl-js-button mdl-button--icon' do
+      = inline_svg 'delete.svg'
     .mdl-tooltip data-mdl-for='delete-button'
       | Delete Group
 

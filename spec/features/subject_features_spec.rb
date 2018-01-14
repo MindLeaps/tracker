@@ -52,7 +52,7 @@ RSpec.describe 'User interacts with subjects', js: true do
       expect(page).to have_content skill_names[1]
       expect(page).to have_content skill_names[2]
 
-      click_link 'arrow_back'
+      click_link 'back-button'
 
       expect(page).to have_current_path subjects_path
     end
@@ -64,7 +64,7 @@ RSpec.describe 'User interacts with subjects', js: true do
       visit '/'
       click_link 'Subjects'
       click_link 'Test Subject'
-      click_link 'edit'
+      click_link 'edit-button'
 
       expect(page).to have_current_path edit_subject_path(subject)
       fill_in 'Subject name', with: 'Edited Name'

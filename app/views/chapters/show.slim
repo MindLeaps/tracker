@@ -4,7 +4,7 @@
 - content_for :header_actions do
   - if policy(@chapter).edit?
     a href=edit_chapter_path(@chapter) id='edit-button' class='mdl-button mdl-js-button mdl-button--icon'
-      i class='material-icons' edit
+      = inline_svg 'edit.svg'
     .mdl-tooltip data-mdl-for='edit-button'
       | Edit Chapter
 

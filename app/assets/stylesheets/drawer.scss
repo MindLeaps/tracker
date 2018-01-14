@@ -6,8 +6,15 @@
   flex-grow: 1;
   .nav-link {
     &.mdl-js-ripple-effect { position: relative; }
-    i {
-      padding-right: 24px;
-    }
+  }
+}
+
+.nav-icon {
+  padding-right: 24px;
+  height: 24px;
+  width: 24px;
+  fill: $nav-color;
+  .mdl-navigation__link--current & {
+    fill: $active-nav-color;
   }
 }
