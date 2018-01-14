@@ -12,5 +12,6 @@ div class="mdl-layout__drawer mdl-color--primary mdl-color-text--white main-draw
     = render partial: 'shared/main_nav_item', locals: {name: "Lessons", svg_icon: 'assignment.svg', url: main_app.lessons_path}
     = render partial: 'shared/main_nav_item', locals: {name: "Subjects", svg_icon: 'local_library.svg', url: main_app.subjects_path}
     = render partial: 'shared/main_nav_item', locals: {name: "Skills", svg_icon: 'lightbulb_outline.svg', url: main_app.skills_path}
+    = render partial: 'shared/main_nav_item', locals: {name: "Analytics", svg_icon: 'insert_chart.svg', url: '/analytics'} if defined? MindleapsAnalytics
     .mdl-layout-spacer
     = render partial: 'shared/main_nav_item', locals: {name: "Logout", svg_icon: 'exit_to_app.svg', url: '/sign_out'}
