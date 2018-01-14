@@ -12,8 +12,7 @@
 //
 //= require material.min
 //= require mdl-selectfield.min
-//= require jquery2
-//= require jquery_ujs
+//= require jquery-3.2.1.slim.min
 //= require cocoon
 //= require_tree .
 
