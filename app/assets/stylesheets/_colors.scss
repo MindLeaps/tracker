@@ -6,6 +6,8 @@ $divider-color: #BDBDBD;
 $text-color: #FFFFFF;
 $snackbar-color: #323232;
 $snackbar-action-color: #ff4081;
+$nav-color: #757575;
+$active-nav-color: #424242;
 
 .mdl-button--accent {
   color: $accent-color !important;
@@ -25,6 +27,12 @@ $snackbar-action-color: #ff4081;
   &.mdl-button--raised {
     background-color: red !important;
     color: $text-color !important;
+  }
+}
+
+.mdl-button--colored {
+  svg {
+    fill: $primary-color;
   }
 }
 

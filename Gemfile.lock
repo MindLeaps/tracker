@@ -156,6 +156,9 @@ GEM
     i18n (0.9.1)
       concurrent-ruby (~> 1.0)
     image_optimizer (1.7.1)
+    inline_svg (1.3.1)
+      activesupport (>= 3.0)
+      nokogiri (>= 1.6)
     io-like (0.3.0)
     ipaddress (0.8.3)
     json (1.8.6)
@@ -383,6 +386,7 @@ DEPENDENCIES
   faker
   fog-aws
   has_scope
+  inline_svg
   mini_magick
   newrelic_rpm
   omniauth-google-oauth2

@@ -16,4 +16,14 @@ header {
     margin-left: 240px;
     width: calc(100% - 240px);
   }
+
+  form .mdl-button--icon {
+    line-height: 0;
+  }
+
+  svg {
+    fill: $text-color;
+    width: 24px;
+    height: 24px;
+  }
 }
