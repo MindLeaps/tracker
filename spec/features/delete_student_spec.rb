@@ -13,7 +13,7 @@ RSpec.describe 'Create student' do
   it 'deletes student Deleto Mea', js: true do
     visit '/students'
     click_link 'Mea'
-    click_button 'delete'
+    click_button 'delete-button'
 
     expect(page).to have_content 'Student "Mea, Deleto" deleted.'
   end

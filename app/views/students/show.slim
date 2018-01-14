@@ -7,8 +7,8 @@
     = inline_svg 'edit.svg'
   .mdl-tooltip data-mdl-for='edit-button'
     | Edit Student
-  = button_to @student, method: :delete, class: 'mdl-button mdl-js-button mdl-button--icon' do
-    = inline_svg 'delete.svg', id: 'delete-button'
+  = button_to @student, method: :delete, id: 'delete-button', class: 'mdl-button mdl-js-button mdl-button--icon' do
+    = inline_svg 'delete.svg'
   .mdl-tooltip data-mdl-for='delete-button'
     | Delete Student
 

@@ -33,7 +33,7 @@ RSpec.describe 'User interacts with Chapters' do
     it 'changes the name and organization of chapter' do
       visit '/chapters'
       click_link 'Test Chapter'
-      click_link 'edit'
+      click_link 'edit-button'
       fill_in 'Chapter name', with: 'Edited Chapter'
       select 'New Organization', from: 'chapter_organization_id'
       click_button 'Update'

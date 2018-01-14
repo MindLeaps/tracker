@@ -33,7 +33,7 @@ RSpec.describe 'User interacts with Groups' do
     it 'edits the name and chapter of an existing group' do
       visit '/groups'
       click_link 'Test Group'
-      click_link 'edit'
+      click_link 'edit-button'
       fill_in 'Group name', with: 'Edited Group'
       select 'New Chapter', from: 'group_chapter_id'
       click_button 'Update'
@@ -53,7 +53,7 @@ RSpec.describe 'User interacts with Groups' do
     it 'marks the group as deleted' do
       visit '/groups'
       click_link 'About to be Deleted'
-      click_button 'delete'
+      click_button 'delete-button'
 
       expect(page).to have_content 'Group "About to be Deleted" deleted.'
       expect(@group.reload.deleted_at).to be_within(1.second).of Time.zone.now
