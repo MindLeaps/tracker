@@ -15,6 +15,7 @@ http {
     include /etc/nginx/mime.types;
     default_type application/octet-stream;
     root /home/mindleaps/tracker/public;
+    gzip on;
 
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
 
