@@ -9,6 +9,10 @@ Rails.application.routes.draw do
     get 'sign_out', to: 'devise/sessions#destroy', as: :destroy_user_session
   end
 
+  authenticate :user, -> (user) { user.is_super_admin? } do
+    mount PgHero::Engine, at: 'pghero'
+  end
+
   scope module: :api, as: :api, constraints: ->(req) { req.format == :json } do
     resources :organizations, only: %i[index show]
     resources :chapters, only: %i[index show]
