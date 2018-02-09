@@ -9,7 +9,7 @@ Rails.application.routes.draw do
     get 'sign_out', to: 'devise/sessions#destroy', as: :destroy_user_session
   end
 
-  authenticate :user, -> (user) { user.is_super_admin? } do
+  authenticate :user, ->(user) { user.is_super_admin? } do
     mount PgHero::Engine, at: 'pghero'
   end
 

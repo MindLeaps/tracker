@@ -1,9 +1,3 @@
-PATH
-  remote: ../Tracker-Analytics
-  specs:
-    mindleaps_analytics (0.1.0)
-      rails (>= 5.1.1)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -399,7 +393,6 @@ DEPENDENCIES
   has_scope
   inline_svg
   marginalia
-  mindleaps_analytics!
   mini_magick
   newrelic_rpm
   omniauth-google-oauth2
