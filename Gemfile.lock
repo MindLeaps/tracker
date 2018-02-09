@@ -169,6 +169,9 @@ GEM
       nokogiri (>= 1.5.9)
     mail (2.7.0)
       mini_mime (>= 0.1.1)
+    marginalia (1.5.0)
+      actionpack (>= 2.3)
+      activerecord (>= 2.3)
     method_source (0.9.0)
     mime-types (3.1)
       mime-types-data (~> 3.2015)
@@ -205,6 +208,9 @@ GEM
     parser (2.4.0.2)
       ast (~> 2.3)
     pg (0.21.0)
+    pg_query (1.0.1)
+    pghero (2.1.0)
+      activerecord
     poltergeist (1.17.0)
       capybara (~> 2.1)
       cliver (~> 0.3.1)
@@ -386,10 +392,13 @@ DEPENDENCIES
   fog-aws
   has_scope
   inline_svg
+  marginalia
   mini_magick
   newrelic_rpm
   omniauth-google-oauth2
   pg (= 0.21.0)
+  pg_query (>= 0.9.0)
+  pghero
   poltergeist
   pry
   puma
