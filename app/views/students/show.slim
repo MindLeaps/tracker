@@ -22,6 +22,8 @@ div class="content-card--full"
     li class="mdl-list__item"
       | Date of Birth: #{@student.estimated_dob ? "EST" : ""} #{@student.dob}
     li class="mdl-list__item"
+      | MLID: #{@student.mlid}
+    li class="mdl-list__item"
       | Gender: #{@student.gender_i18n}
     li class="mdl-list__item"
       | Group: #{student_group_name(@student)}
