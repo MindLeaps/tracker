@@ -72,14 +72,14 @@ RSpec.describe 'Organization API', type: :request do
       expect(organizations.map { |o| o['id'] }).to include @org1.id, @org2.id
     end
 
-    it 'responds with all organizations, regardless of the time they were crated or updated, or of the after_timestamp value' do
+    it 'responds only with organizations created or updated after a certain time' do
       create :organization, created_at: 2.months.ago, updated_at: 2.days.ago
       create :organization, created_at: 2.months.ago, updated_at: 5.days.ago
       create :organization, created_at: 5.days.ago, updated_at: 6.hours.ago
 
       get_with_token organizations_path, params: { after_timestamp: 1.day.ago }, as: :json
 
-      expect(organizations.length).to eq 6
+      expect(organizations.length).to eq 4
     end
   end
 end
