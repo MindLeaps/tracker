@@ -1,3 +1,6 @@
+## Unreleased
+- Update Simple Form from 3.5.0 to 3.5.1
+
 ## 0.3.0
 - Revert Policy scoping on Organizations API (The Mobile is not ready)
 - Revert removing `after_timestamp` parameter from Organizations API
