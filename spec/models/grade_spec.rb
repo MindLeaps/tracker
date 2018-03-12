@@ -45,7 +45,7 @@ RSpec.describe Grade, type: :model do
       # rubocop:enable Metrics/LineLength
 
       it 'is valid if a student was already graded for a skill in that lesson but a previous grade was deleted' do
-        @existing_grade.update_attributes deleted_at: Time.zone.now
+        @existing_grade.update deleted_at: Time.zone.now
         grade = Grade.new student: @student, lesson: @lesson, grade_descriptor: create(:grade_descriptor, skill: @grade_descriptor.skill)
         expect(grade).to be_valid
       end

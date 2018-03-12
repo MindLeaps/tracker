@@ -8,6 +8,6 @@ class Assignment < ApplicationRecord
   validates :subject, presence: true
 
   def destroy
-    update_attributes deleted_at: Time.zone.now
+    update deleted_at: Time.zone.now
   end
 end

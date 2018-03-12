@@ -32,7 +32,7 @@ class ChaptersController < ApplicationController
   def update
     @chapter = Chapter.includes(:organization).find params.require :id
     authorize @chapter
-    return notice_and_redirect t(:chapter_updated, chapter: @chapter.chapter_name), chapter_url if @chapter.update_attributes chapter_params
+    return notice_and_redirect t(:chapter_updated, chapter: @chapter.chapter_name), chapter_url if @chapter.update chapter_params
     render :edit, status: 422
   end
 

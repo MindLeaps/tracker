@@ -34,11 +34,11 @@ class CSVDataSeeder
     SmarterCSV.process @csv_file_path
   end
 
-  def seed_row(r, chapter)
-    group = create_group(r[:group], chapter)
-    student = create_student(r[:id], group, chapter, (r[:gender] || 1) - 1, r[:age] || 13)
-    lesson = create_lesson(group, r[:date])
-    grade_student student, lesson, get_row_grades(r)
+  def seed_row(row, chapter)
+    group = create_group(row[:group], chapter)
+    student = create_student(row[:id], group, chapter, (row[:gender] || 1) - 1, row[:age] || 13)
+    lesson = create_lesson(group, row[:date])
+    grade_student student, lesson, get_row_grades(row)
   end
 
   def create_group(group_id, chapter)

@@ -31,7 +31,7 @@ class SubjectsController < ApplicationController
   def update
     subject = Subject.includes(:organization).find params.require(:id)
     authorize subject
-    notice_and_redirect(t(:subject_updated), subject) if subject.update_attributes subject_params
+    notice_and_redirect(t(:subject_updated), subject) if subject.update subject_params
   end
 
   private

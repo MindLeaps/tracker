@@ -59,7 +59,7 @@ GEM
     binding_of_caller (0.8.0)
       debug_inspector (>= 0.0.1)
     builder (3.2.3)
-    bullet (5.7.3)
+    bullet (5.7.5)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11.0)
     byebug (10.0.0)
@@ -83,7 +83,7 @@ GEM
       image_optimizer (~> 1.6)
     case_transform (0.2)
       activesupport
-    childprocess (0.8.0)
+    childprocess (0.9.0)
       ffi (~> 1.0, >= 1.0.11)
     chromedriver-helper (1.2.0)
       archive-zip (~> 0.10)
@@ -117,7 +117,7 @@ GEM
       railties (>= 3.2, < 5.2)
     enum_help (0.0.17)
       activesupport (>= 3.0.0)
-    erubi (1.7.0)
+    erubi (1.7.1)
     excon (0.60.0)
     factory_bot (4.8.2)
       activesupport (>= 3.0.0)
@@ -205,7 +205,7 @@ GEM
       omniauth (~> 1.2)
     orm_adapter (0.5.0)
     parallel (1.12.1)
-    parser (2.5.0.2)
+    parser (2.5.0.3)
       ast (~> 2.4.0)
     pg (0.21.0)
     pg_query (1.0.1)
@@ -220,7 +220,7 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
     public_suffix (3.0.2)
-    puma (3.11.2)
+    puma (3.11.3)
     pundit (1.1.0)
       activesupport (>= 3.0.0)
     pundit-matchers (1.4.1)
@@ -258,7 +258,7 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rainbow (3.0.0)
     rake (12.3.0)
-    rb-fsevent (0.10.2)
+    rb-fsevent (0.10.3)
     rb-inotify (0.9.10)
       ffi (>= 0.5.0, < 2)
     rdoc (4.3.0)
@@ -283,9 +283,9 @@ GEM
       rspec-mocks (~> 3.7.0)
       rspec-support (~> 3.7.0)
     rspec-support (3.7.1)
-    rubocop (0.52.1)
+    rubocop (0.53.0)
       parallel (~> 1.10)
-      parser (>= 2.4.0.2, < 3.0)
+      parser (>= 2.5)
       powerpack (~> 0.1)
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.7)
@@ -307,7 +307,7 @@ GEM
     sdoc (0.4.2)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
-    selenium-webdriver (3.9.0)
+    selenium-webdriver (3.11.0)
       childprocess (~> 0.5)
       rubyzip (~> 1.2)
     shoulda-matchers (3.1.2)
@@ -421,7 +421,6 @@ DEPENDENCIES
   tiddle
   web-console
   webmock
-
 
 BUNDLED WITH
    1.16.1
