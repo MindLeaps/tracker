@@ -35,7 +35,7 @@ class StudentsController < ApplicationController
   def update
     @student = Student.includes(:organization).find params[:id]
     authorize @student
-    return redirect_to @student if @student.update_attributes student_params
+    return redirect_to @student if @student.update student_params
 
     render :edit
   end

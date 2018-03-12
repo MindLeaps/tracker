@@ -1,8 +1,10 @@
 ## Unreleased
-- Updated Rails from 5.1.4 to 5.1.5
-- Updated Simple Form from 3.5.0 to 3.5.1
-- Updated: [bullet](http://github.com/flyerhzm/bullet), [5.7.2...5.7.3](https://github.com/flyerhzm/bullet/compare/5.7.2...5.7.3) ([CHANGELOG](https://github.com/flyerhzm/bullet/blob/master/CHANGELOG.md))
-- Updated: [parser](https://github.com/whitequark/parser), [2.4.0.2...2.5.0.0](https://github.com/whitequark/parser/compare/v2.4.0.2...v2.5.0.0) ([CHANGELOG](https://github.com/whitequark/parser/blob/master/CHANGELOG.md))
+- Upgraded Rails from 5.1.4 to 5.1.5
+- Upgraded Puma from 3.11.2 to 3.11.3 
+- Upgraded Simple Form from 3.5.0 to 3.5.1
+- Upgraded Bullet from 5.7.2 to 5.7.5
+- Upgraded Selenium-webdriver from 3.9.0 to 3.11.0
+- Upgraded Rubocop from 0.52.1 to 0.53.0
 
 ## 0.3.0
 - Revert Policy scoping on Organizations API (The Mobile is not ready)
