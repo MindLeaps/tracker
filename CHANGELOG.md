@@ -7,6 +7,7 @@
 - Upgraded Rubocop from 0.52.1 to 0.53.0
 - Upgraded Devise from 4.3.0 to 4.4.3
 - Upgraded Tiddle from 1.0.2 to 1.1.0
+- Integrated with Datadog (base, nginx, and Postgres) 
 
 ## 0.3.0
 - Revert Policy scoping on Organizations API (The Mobile is not ready)

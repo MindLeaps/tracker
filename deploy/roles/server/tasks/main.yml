@@ -1,0 +1,39 @@
+---
+- name: Update apt repository cache
+  sudo: true
+  apt:
+    update_cache: yes
+
+- name: Install Datadog Dependencies
+  sudo: true
+  apt: pkg={{ item }} state=installed
+  with_items:
+    - apt-transport-https
+
+- name: Set up the Datadog deb repo
+  sudo: true
+  shell: "echo 'deb https://apt.datadoghq.com/ stable 6' > /etc/apt/sources.list.d/datadog.list"
+
+- name: Import Datadog key
+  sudo: true
+  shell: "apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 382E94DE"
+
+- name: Update apt repository cache (again for Datadog)
+  sudo: true
+  apt:
+    update_cache: yes
+
+- name: Install Datadog Agent
+  sudo: true
+  apt: pkg={{ item }} state=installed
+  with_items:
+    - datadog-agent
+
+- name: Setup Datadog Config
+  sudo: true
+  shell: "sed 's/api_key:.*/api_key: {{ datadog_key }}/' /etc/datadog-agent/datadog.yaml.example > /etc/datadog-agent/datadog.yaml"
+
+- name: Run Datadog Service
+  systemd:
+    name: datadog-agent.service
+    state: restarted

@@ -20,6 +20,7 @@
   sudo: true
   apt: pkg={{ item }} state=installed
   with_items:
+    - apt-transport-https
     - build-essential
     - curl
     - git
@@ -253,3 +254,12 @@
 - name: Start tracker
   sudo: true
   service: name=tracker state=started
+
+- name: Install Datadog nginx config
+  sudo: true
+  template: src=datadog.nginx.yaml.j2 dest=/etc/datadog-agent/conf.d/nginx.yaml
+
+- name: Restart Datadog Service
+  systemd:
+    state: restarted
+    name: datadog-agent.service

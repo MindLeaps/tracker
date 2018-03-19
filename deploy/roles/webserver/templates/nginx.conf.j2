@@ -27,6 +27,10 @@ http {
       break;
     }
 
+    location /{{ nginx_status_page }} {
+        stub_status;
+    }
+
     location / {
       proxy_pass http://tracker;
       proxy_set_header  Host $host;
