@@ -5,7 +5,7 @@
 - Upgraded Bullet from 5.7.2 to 5.7.5
 - Upgraded Selenium-webdriver from 3.9.0 to 3.11.0
 - Upgraded Rubocop from 0.52.1 to 0.53.0
-- Upgraded Devise from 4.3.0 to 4.4.2
+- Upgraded Devise from 4.3.0 to 4.4.3
 - Upgraded Tiddle from 1.0.2 to 1.1.0
 
 ## 0.3.0
