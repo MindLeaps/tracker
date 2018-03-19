@@ -5,3 +5,5 @@ instances:
     # a list of tags.
 
     -   nginx_status_url: https://{{ deploy_domain }}/{{ nginx_status_page }}
+        tags:
+            - {{ datadog_env_tag }}
