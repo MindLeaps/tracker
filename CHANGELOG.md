@@ -1,4 +1,4 @@
-## Unreleased
+## 0.4.0
 - Upgraded Rails from 5.1.4 to 5.1.5
 - Upgraded Puma from 3.11.2 to 3.11.3 
 - Upgraded Simple Form from 3.5.0 to 3.5.1
