@@ -76,3 +76,4 @@ group :development do
   gem 'pry'
   gem 'spring'
 end
+gem 'loofah', '>= 2.2.1'
