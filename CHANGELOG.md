@@ -1,3 +1,6 @@
+## Unreleased
+- Upgraded Tiddle from 1.1.0 to 1.2.0
+
 ## 0.4.1
 - Fixed Datadog DB connect address
 
