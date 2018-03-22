@@ -1,7 +1,10 @@
 init_config:
 
 instances:
-   -   host: localhost
+   -   host: {{database_address}}
        port: 5432
        username: datadog
        password: {{ datadog_postgres_user_password }}
+
+       tags:
+           - {{ datadog_env_tag }}

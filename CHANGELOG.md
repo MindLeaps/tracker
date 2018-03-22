@@ -1,3 +1,6 @@
+## 0.4.1
+- Fixed Datadog DB connect address
+
 ## 0.4.0
 - Upgraded Rails from 5.1.4 to 5.1.5
 - Upgraded Puma from 3.11.2 to 3.11.3 
