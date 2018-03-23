@@ -76,3 +76,4 @@ group :development do
   gem 'pry'
   gem 'spring'
 end
+gem 'rails-html-sanitizer', '>= 1.0.4'
