@@ -33,7 +33,7 @@ class ChaptersController < ApplicationController
     @chapter = Chapter.includes(:organization).find params.require :id
     authorize @chapter
     return notice_and_redirect t(:chapter_updated, chapter: @chapter.chapter_name), chapter_url if @chapter.update chapter_params
-    render :edit, status: 422
+    render :edit, status: :unprocessable_entity
   end
 
   private

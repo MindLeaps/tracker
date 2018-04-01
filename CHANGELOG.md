@@ -1,5 +1,8 @@
 ## Unreleased
 - Upgraded Tiddle from 1.1.0 to 1.2.0
+- Upgraded Rails from 5.1.5 to 5.1.6
+- Upgraded New Relic agent from 4.8 to 5.0
+- Upgraded Skylight from 1.5.1 to 1.6.0
 
 ## 0.4.1
 - Fixed Datadog DB connect address
