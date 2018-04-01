@@ -39,7 +39,7 @@ class GroupsController < ApplicationController
     @group = Group.find params.require :id
     authorize @group
     return notice_and_redirect t(:group_updated, group: @group.group_name), group_url if @group.update group_params
-    render :edit, status: 422
+    render :edit, status: :unprocessable_entity
   end
 
   def destroy
