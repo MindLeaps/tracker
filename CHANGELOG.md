@@ -1,4 +1,4 @@
-## Unreleased
+## 0.4.2
 - Upgraded Tiddle from 1.1.0 to 1.2.0
 - Upgraded Rails from 5.1.5 to 5.1.6
 - Upgraded New Relic agent from 4.8 to 5.0
