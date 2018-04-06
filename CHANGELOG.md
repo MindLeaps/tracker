@@ -1,5 +1,6 @@
 ## Unreleased
 - Upgraded pg from 0.21.0 to 1.0.0
+- Upgraded Ruby from 2.4.3 to 2.5.1
 
 ## 0.4.2
 - Upgraded Tiddle from 1.1.0 to 1.2.0
