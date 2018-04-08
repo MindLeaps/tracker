@@ -50,6 +50,7 @@ GEM
       io-like (~> 0.3.0)
     arel (8.0.0)
     ast (2.4.0)
+    awesome_print (1.8.0)
     bcrypt (3.1.11)
     better_errors (2.4.0)
       coderay (>= 1.0.0)
@@ -250,6 +251,9 @@ GEM
       nokogiri (>= 1.6)
     rails-html-sanitizer (1.0.4)
       loofah (~> 2.2, >= 2.2.2)
+    rails_semantic_logger (4.2.1)
+      rails (>= 3.2)
+      semantic_logger (~> 4.1)
     railties (5.1.6)
       actionpack (= 5.1.6)
       activesupport (= 5.1.6)
@@ -310,6 +314,8 @@ GEM
     selenium-webdriver (3.11.0)
       childprocess (~> 0.5)
       rubyzip (~> 1.2)
+    semantic_logger (4.2.1)
+      concurrent-ruby (~> 1.0)
     shoulda-matchers (3.1.2)
       activesupport (>= 4.0.0)
     simple_form (3.5.1)
@@ -372,12 +378,13 @@ PLATFORMS
 DEPENDENCIES
   SyslogLogger
   active_model_serializers (~> 0.10.0)
+  awesome_print
   better_errors
   binding_of_caller
   bullet
   byebug
   capybara (> 2.1)
-  carrierwave (~> 1.0)
+  carrierwave
   carrierwave-bombshelter
   carrierwave-imageoptimizer
   chromedriver-helper
@@ -406,6 +413,7 @@ DEPENDENCIES
   pundit-matchers
   rails
   rails-controller-testing
+  rails_semantic_logger
   rolify
   rspec-rails
   rubocop
