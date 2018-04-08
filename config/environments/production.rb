@@ -72,7 +72,8 @@ Rails.application.configure do
   # Send deprecation notices to registered listeners.
   config.active_support.deprecation = :notify
 
-  config.rails_semantic_logger.format = :json
+  STDOUT.sync = true
+  config.rails_semantic_logger.add_file_appender = false
   config.semantic_logger.add_appender(io: STDOUT, level: config.log_level, formatter: :json)
 
   # Do not dump schema after migrations.

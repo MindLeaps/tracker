@@ -66,4 +66,5 @@ Rails.application.configure do
 
   # Enabling Skylight.io in development - must have auth token in environment to work properly
   config.skylight.environments += %w[development]
+  config.rails_semantic_logger.format = :json
 end

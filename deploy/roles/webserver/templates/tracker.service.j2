@@ -7,6 +7,10 @@ Type=simple
 User=mindleaps
 WorkingDirectory=/home/mindleaps/tracker
 
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=mindleaps-tracker
+
 Environment=SECRET_KEY_BASE={{ secret_key_base }}
 Environment=DEVISE_SECRET_KEY={{ devise_secret_key }}
 Environment=GOOGLE_CLIENT_ID={{ google_client_id }}

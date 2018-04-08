@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
-class ApplicationController < ActionController::Base
-  include Pundit
+class ApplicationController < BaseController
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
   before_action :better_errors_hack, if: -> { Rails.env.development? } # Hack to make better errors work with Puma
-  before_action :authenticate_user!
   after_action :verify_authorized, unless: :devise_controller?
   # rubocop:disable Rails/LexicallyScopedActionFilter
   after_action :verify_policy_scoped, only: :index

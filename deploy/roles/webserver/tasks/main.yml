@@ -246,6 +246,14 @@
   args:
     chdir: /home/mindleaps/tracker
 
+- name: Install rsyslog config
+  sudo: true
+  template: src=tracker.rsyslog.conf.j2 dest=/etc/rsyslog.d/mindleaps-tracker.conf
+
+- name: Restart rsyslog
+  sudo: true
+  service: name=rsyslog state=restarted
+
 - name: Install the systemd script for tracker
   sudo: true
   template: src=tracker.service.j2 dest=/etc/systemd/system/tracker.service
