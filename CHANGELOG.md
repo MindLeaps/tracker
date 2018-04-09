@@ -1,4 +1,6 @@
 ## Unreleased
+- Setup log format to JSON
+- Sending logs to Datadog
 - Upgraded pg from 0.21.0 to 1.0.0
 - Upgraded Ruby from 2.4.3 to 2.5.1
 
