@@ -267,6 +267,13 @@
   sudo: true
   template: src=datadog.nginx.yaml.j2 dest=/etc/datadog-agent/conf.d/nginx.yaml
 
+- name: Ensures datadog conf.d/ruby.d dir exists
+  file: path=/etc/datadog-agent/conf.d/ruby.d state=directory
+
+- name: Install Datadog ruby config
+  sudo: true
+  template: src=datadog.ruby.yaml.j2 dest=/etc/datadog-agent/conf.d/ruby.d/conf.yaml
+
 - name: Restart Datadog Service
   systemd:
     state: restarted

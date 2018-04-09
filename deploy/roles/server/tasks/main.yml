@@ -33,6 +33,13 @@
   sudo: true
   shell: "sed 's/api_key:.*/api_key: {{ datadog_key }}/' /etc/datadog-agent/datadog.yaml.example > /etc/datadog-agent/datadog.yaml"
 
+- name: Enable logging in Datadog Config
+  sudo: true
+  lineinfile:
+    path: /etc/datadog-agent/datadog.yaml
+    regexp: 'logs_enabled'
+    line: 'logs_enabled: true'
+
 - name: Run Datadog Service
   systemd:
     name: datadog-agent.service
