@@ -1,11 +1,8 @@
 # frozen_string_literal: true
 
 module Api
-  class ApiController < ActionController::Base
-    before_action :authenticate_user!
+  class ApiController < BaseController
     before_action :skip_session_cookie
-
-    include Pundit
     protect_from_forgery with: :null_session
     respond_to :json
 

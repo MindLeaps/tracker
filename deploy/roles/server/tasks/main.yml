@@ -1,14 +1,33 @@
 ---
+- name: Install the Beats repo Public Signing Key
+  sudo: true
+  shell: "wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -"
+
+- name: Save Repository Definition
+  sudo: true
+  shell: 'echo "deb https://artifacts.elastic.co/packages/6.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-6.x.list'
+
 - name: Update apt repository cache
   sudo: true
   apt:
     update_cache: yes
 
-- name: Install Datadog Dependencies
+- name: Install Datadog and Filebeat Dependencies
   sudo: true
   apt: pkg={{ item }} state=installed
   with_items:
     - apt-transport-https
+    - filebeat
+
+- name: Ensures /etc/pki/tls/certs for Logz.io certificate
+  sudo: true
+  file: path=/etc/pki/tls/certs state=directory
+
+- name: Install Filebeat Logz.io certificate
+  sudo: true
+  get_url:
+    url: https://raw.githubusercontent.com/logzio/public-certificates/master/COMODORSADomainValidationSecureServerCA.crt
+    dest: /etc/pki/tls/certs/COMODORSADomainValidationSecureServerCA.crt
 
 - name: Set up the Datadog deb repo
   sudo: true
@@ -32,6 +51,13 @@
 - name: Setup Datadog Config
   sudo: true
   shell: "sed 's/api_key:.*/api_key: {{ datadog_key }}/' /etc/datadog-agent/datadog.yaml.example > /etc/datadog-agent/datadog.yaml"
+
+- name: Enable logging in Datadog Config
+  sudo: true
+  lineinfile:
+    path: /etc/datadog-agent/datadog.yaml
+    regexp: 'logs_enabled'
+    line: 'logs_enabled: true'
 
 - name: Run Datadog Service
   systemd:

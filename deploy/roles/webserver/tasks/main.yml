@@ -246,6 +246,14 @@
   args:
     chdir: /home/mindleaps/tracker
 
+- name: Install rsyslog config
+  sudo: true
+  template: src=tracker.rsyslog.conf.j2 dest=/etc/rsyslog.d/mindleaps-tracker.conf
+
+- name: Restart rsyslog
+  sudo: true
+  service: name=rsyslog state=restarted
+
 - name: Install the systemd script for tracker
   sudo: true
   template: src=tracker.service.j2 dest=/etc/systemd/system/tracker.service
@@ -259,7 +267,23 @@
   sudo: true
   template: src=datadog.nginx.yaml.j2 dest=/etc/datadog-agent/conf.d/nginx.yaml
 
+- name: Ensures datadog conf.d/ruby.d dir exists
+  file: path=/etc/datadog-agent/conf.d/ruby.d state=directory
+
+- name: Install Datadog ruby config
+  sudo: true
+  template: src=datadog.ruby.yaml.j2 dest=/etc/datadog-agent/conf.d/ruby.d/conf.yaml
+
 - name: Restart Datadog Service
   systemd:
     state: restarted
     name: datadog-agent.service
+
+- name: Install Filebeat config
+  sudo: true
+  template: src=filebeat.yml.j2 dest=/etc/filebeat/filebeat.yml
+
+- name: Restart Filebeat Service
+  systemd:
+    state: restarted
+    name: filebeat.service
