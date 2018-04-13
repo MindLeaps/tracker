@@ -57,7 +57,7 @@ RSpec.describe GroupsController, type: :controller do
     end
 
     it 'gets a list of groups' do
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(assigns(:groups).length).to eq 3
       expect(assigns(:groups)).to include(*@groups)
     end

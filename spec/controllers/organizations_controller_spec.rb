@@ -15,7 +15,7 @@ RSpec.describe OrganizationsController, type: :controller do
       organization2 = create :organization
 
       get :index
-      expect(response).to be_success
+      expect(response).to be_successful
 
       expect(assigns(:organizations)).to include organization1
       expect(assigns(:organizations)).to include organization2

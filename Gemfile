@@ -21,6 +21,7 @@ gem 'awesome_print'
 gem 'rails_semantic_logger'
 
 gem 'active_model_serializers', '~> 0.10.0'
+gem 'bootsnap'
 gem 'carrierwave'
 gem 'carrierwave-bombshelter'
 gem 'carrierwave-imageoptimizer'

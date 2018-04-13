@@ -18,7 +18,7 @@ RSpec.describe UsersController, type: :controller do
 
     it 'lists all existing users' do
       get :index
-      expect(response).to be_success
+      expect(response).to be_successful
 
       expect(assigns(:users)).to include(*@users)
     end
