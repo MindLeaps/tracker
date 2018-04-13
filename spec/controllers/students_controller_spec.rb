@@ -215,7 +215,7 @@ RSpec.describe StudentsController, type: :controller do
         student3 = create :student, organization: organization2
 
         get :index
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(assigns(:students).length).to eq 2
         expect(assigns(:students)).to include student1
         expect(assigns(:students)).to include student2

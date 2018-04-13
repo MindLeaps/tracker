@@ -16,7 +16,7 @@ RSpec.describe ChaptersController, type: :controller do
       chapter2 = create :chapter
 
       get :index
-      expect(response).to be_success
+      expect(response).to be_successful
 
       expect(assigns(:chapters)).to include chapter1
       expect(assigns(:chapters)).to include chapter2

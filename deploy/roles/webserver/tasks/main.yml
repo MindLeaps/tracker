@@ -228,21 +228,21 @@
 - name: Migrate the Database
   sudo: true
   sudo_user: mindleaps
-  shell: DEVISE_SECRET_KEY={{ devise_secret_key }} RAILS_ENV=production ~/.rvm/bin/rvm . do rake db:migrate
+  shell: SECRET_KEY_BASE={{ secret_key_base }} DEVISE_SECRET_KEY={{ devise_secret_key }} RAILS_ENV=production ~/.rvm/bin/rvm . do rake db:migrate
   args:
     chdir: /home/mindleaps/tracker
 
 - name: Reset Postgres sequences of table primary key ids
   sudo: true
   sudo_user: mindleaps
-  shell: DEVISE_SECRET_KEY={{ devise_secret_key }} RAILS_ENV=production ~/.rvm/bin/rvm . do rake db:correct_sequence_ids
+  shell: SECRET_KEY_BASE={{ secret_key_base }} DEVISE_SECRET_KEY={{ devise_secret_key }} RAILS_ENV=production ~/.rvm/bin/rvm . do rake db:correct_sequence_ids
   args:
     chdir: /home/mindleaps/tracker
 
 - name: Precompile the assets
   sudo: true
   sudo_user: mindleaps
-  shell: MINDLEAPS_ANALYTICS_PATH=../Tracker-Analytics DEVISE_SECRET_KEY={{ devise_secret_key }} RAILS_ENV=production ~/.rvm/bin/rvm . do rake assets:precompile
+  shell: MINDLEAPS_ANALYTICS_PATH=../Tracker-Analytics SECRET_KEY_BASE={{ secret_key_base }} DEVISE_SECRET_KEY={{ devise_secret_key }} RAILS_ENV=production ~/.rvm/bin/rvm . do rake assets:precompile
   args:
     chdir: /home/mindleaps/tracker
 
