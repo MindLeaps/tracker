@@ -1,4 +1,4 @@
-## Unreleased
+## 0.5.0
 - Setup log format to JSON
 - Sending logs to Datadog
 - Upgraded pg from 0.21.0 to 1.0.0
