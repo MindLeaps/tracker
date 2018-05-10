@@ -1,3 +1,8 @@
+## Unreleased
+- Upgraded Skylight from 1.6.1 to 2.0.1
+- Upgraded Fog Core from 1.45.0 to 2.1.0
+- Upgraded Fog AWS from 2.0.1 to 3.0.0
+
 ## 0.5.0
 - Setup log format to JSON
 - Sending logs to Datadog
