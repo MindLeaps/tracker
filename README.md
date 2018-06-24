@@ -1,7 +1,6 @@
 # Mindleaps Tracker
 [![Build Status](https://travis-ci.org/MindLeaps/tracker.svg?branch=master)](https://travis-ci.org/MindLeaps/tracker) [![security](https://hakiri.io/github/MindLeaps/tracker/master.svg)](https://hakiri.io/github/MindLeaps/tracker/master)
 [![Coverage Status](https://coveralls.io/repos/github/MindLeaps/tracker/badge.svg?branch=master)](https://coveralls.io/github/MindLeaps/tracker?branch=master)
-[![Dependency Status](https://gemnasium.com/badges/github.com/MindLeaps/tracker.svg)](https://gemnasium.com/github.com/MindLeaps/tracker) [![Code Climate](https://codeclimate.com/github/MindLeaps/tracker/badges/gpa.svg)](https://codeclimate.com/github/MindLeaps/tracker) [![Join the chat at https://gitter.im/MindLeaps/tracker](https://badges.gitter.im/MindLeaps/tracker.svg)](https://gitter.im/MindLeaps/tracker?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 This software is responsible for keeping track of Students and Groups and for facilitating grading.
 
