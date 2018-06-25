@@ -1,8 +1,4 @@
 AllCops:
-  Include:
-    - Gemfile
-    - Rakefile
-    - config.ru
   Exclude:
     - db/schema.rb
     - bin/spring

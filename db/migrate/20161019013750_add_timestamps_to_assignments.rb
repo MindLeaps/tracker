@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Rails/BulkChangeTable
 class AddTimestampsToAssignments < ActiveRecord::Migration[5.0]
   def change
     add_column :assignments, :created_at, :datetime
@@ -9,3 +10,4 @@ class AddTimestampsToAssignments < ActiveRecord::Migration[5.0]
     change_column :assignments, :updated_at, :datetime, null: false
   end
 end
+# rubocop:enable Rails/BulkChangeTable
