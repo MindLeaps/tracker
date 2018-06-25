@@ -73,10 +73,10 @@ class Role < ApplicationRecord
   end
 
   def invalid_global_role
-    GLOBAL_ROLES.keys.include?(symbol) && resource_id.present?
+    GLOBAL_ROLES.key?(symbol) && resource_id.present?
   end
 
   def invalid_local_role
-    LOCAL_ROLES.keys.include?(symbol) && resource_id.blank?
+    LOCAL_ROLES.key?(symbol) && resource_id.blank?
   end
 end

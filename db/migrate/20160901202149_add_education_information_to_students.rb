@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Rails/BulkChangeTable
 class AddEducationInformationToStudents < ActiveRecord::Migration[5.0]
   def change
     add_column :students, :name_of_school, :string
@@ -8,3 +9,4 @@ class AddEducationInformationToStudents < ActiveRecord::Migration[5.0]
     add_column :students, :reason_for_leaving, :string
   end
 end
+# rubocop:enable Rails/BulkChangeTable
