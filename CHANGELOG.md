@@ -1,3 +1,7 @@
+## Unreleased
+- POSTing to /grades to create a new grade will update the existing grade and return 200 instead of returning 409 conflict
+
+
 ## 0.6.0
 - Upgraded Skylight from 1.6.1 to 2.0.1
 - Upgraded Fog Core from 1.45.0 to 2.1.0

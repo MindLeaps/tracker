@@ -21,11 +21,12 @@ module Api
     end
 
     def create
-      grade = Grade.new grade_params
+      grade = Grade.new grade_all_params
 
-      respond_with_existing_grade(grade) unless grade.save
-
+      grade = save_or_update_if_exists(grade)
       respond_with :api, grade, meta: { timestamp: Time.zone.now }, include: included_params unless performed?
+    rescue ActionController::ParameterMissing
+      head :bad_request
     end
 
     def update
@@ -48,10 +49,18 @@ module Api
       params.permit :student_id, :grade_descriptor_id, :lesson_id
     end
 
-    def respond_with_existing_grade(grade)
-      existing_grade = grade.find_duplicate
+    def grade_all_params
+      params.require %i[student_id grade_descriptor_id lesson_id]
+      grade_params
+    end
 
-      respond_with :api, existing_grade, status: :conflict, meta: { timestamp: Time.zone.now }, include: {} if existing_grade
+    def save_or_update_if_exists(grade)
+      Grade.transaction do
+        return grade if grade.save
+        existing_grade = grade.find_duplicate
+        existing_grade.update grade_descriptor_id: grade.grade_descriptor_id
+        respond_with :api, existing_grade, status: :ok, meta: { timestamp: Time.zone.now }, include: {}
+      end
     end
   end
 end

@@ -49,14 +49,35 @@ RSpec.describe Api::GradesController, type: :controller do
       it { should respond_with 201 }
     end
 
-    context 'unsuccessful because of an already existing grade' do
+    context 'rejects invalid parameters' do
+      before :each do
+        post :create, format: :json, params: { lesson_id: @lesson.id, student_id: @student.id }
+      end
+
+      it { should respond_with 400 }
+    end
+
+    context 'successfully overwrites an already existing grade' do
       before :each do
         @existing_grade = create :grade, student: @student, lesson: @lesson, grade_descriptor: @gd1
 
         post :create, format: :json, params: { grade_descriptor_id: @gd2.id, lesson_id: @lesson.id, student_id: @student.id }
       end
 
-      it { should respond_with 409 }
+      it { should respond_with 200 }
+      it 'updates the existing grade' do
+        expect(@existing_grade.reload.grade_descriptor_id).to eq @gd2.id
+      end
+    end
+
+    context 'does not update the existing grade if new grade params are not valid' do
+      before :each do
+        @existing_grade = create :grade, student: @student, lesson: @lesson, grade_descriptor: @gd1
+
+        post :create, format: :json, params: { lesson_id: @lesson.id, student_id: @student.id }
+      end
+
+      it { should respond_with 400 }
     end
   end
 

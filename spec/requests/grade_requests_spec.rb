@@ -162,9 +162,9 @@ RSpec.describe 'Grade API', type: :request do
         post_with_token api_grades_path, as: :json, params: { grade_descriptor_id: @gd2.id, lesson_id: @lesson.id, student_id: @student.id }
       end
 
-      it 'responds with an already existing grade' do
+      it 'overwrites an already existing grade' do
         expect(grade['id']).to eq @existing_grade.id
-        expect(grade['grade_descriptor_id']).to eq @existing_grade.grade_descriptor.id
+        expect(grade['grade_descriptor_id']).to eq @gd2.id
         expect(grade['student_id']).to eq @student.id
         expect(grade['lesson_id']).to eq @lesson.id
       end
