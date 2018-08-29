@@ -1,6 +1,9 @@
 ## Unreleased
 - POSTing to /grades to create a new grade will update the existing grade and return 200 instead of returning 409 conflict
-
+- Upgraded Rails from 5.2.0 to 5.2.1
+- Upgraded pg from 1.0.0 to 1.1.1
+- Upgraded slim from 3.0.9 to 4.0.0
+- Upgraded Pundit from 1.1.0 to 2.0.0
 
 ## 0.6.0
 - Upgraded Skylight from 1.6.1 to 2.0.1
