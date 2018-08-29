@@ -234,7 +234,7 @@ GEM
       method_source (~> 0.9.0)
     public_suffix (3.0.2)
     puma (3.12.0)
-    pundit (1.1.0)
+    pundit (2.0.0)
       activesupport (>= 3.0.0)
     pundit-matchers (1.6.0)
       rspec-rails (>= 3.0.0)
