@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 class LessonsController < ApplicationController
+  include Pagy::Backend
   before_action do
-    @lessons = policy_scope Lesson.includes(:subject, :group).all
+    @pagy, @lessons = pagy policy_scope Lesson.includes(:subject, :group).all
   end
 
   def index

@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
 class StudentsController < ApplicationController
+  include Pagy::Backend
   has_scope :exclude_deleted, type: :boolean, default: true
 
   def index
     authorize Student
-    @students = apply_scopes policy_scope(Student.includes(:group, :profile_image))
+    @pagy, @students = pagy apply_scopes(policy_scope(Student.includes(:group, :profile_image)))
   end
 
   def new
