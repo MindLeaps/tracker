@@ -339,7 +339,7 @@ GEM
       skylight-core (= 2.0.2)
     skylight-core (2.0.2)
       activesupport (>= 4.2.0)
-    slim (4.0.0)
+    slim (4.0.1)
       temple (>= 0.7.6, < 0.9)
       tilt (>= 2.0.6, < 2.1)
     smarter_csv (1.2.4)
