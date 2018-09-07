@@ -222,7 +222,7 @@ GEM
       ast (~> 2.4.0)
     pg (1.1.2)
     pg_query (1.0.2)
-    pghero (2.1.1)
+    pghero (2.2.0)
       activerecord
     poltergeist (1.18.1)
       capybara (>= 2.1, < 4)
