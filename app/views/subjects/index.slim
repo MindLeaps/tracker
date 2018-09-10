@@ -3,4 +3,4 @@
     = render partial: '/shared/main_header_button', locals: {href: new_subject_path, title: 'Add Subject'}
 
 .single-content-card
-  = render partial: "subjects/subjects_table", locals: {subjects: @subjects}
+  = render partial: "subjects/subjects_table", locals: {subjects: @subjects, pagy: @pagy}

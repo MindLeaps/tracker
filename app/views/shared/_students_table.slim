@@ -1,9 +1,6 @@
 table class='mdl-data-table mdl-js-data-table resource-table'
   thead
-    tr class="table-meta-header"
-      th colspan='8'
-        span.page-info Displaying #{pagy.from} - #{pagy.to} students of #{pagy.count} in total
-        == render partial: 'shared/pagy_nav', locals: { pagy: pagy }
+    == render partial: 'shared/pagy_nav', locals: { pagy: pagy, resource: 'students', span: 8 }
     tr
       th
         | #

@@ -1,5 +1,8 @@
-nav.pagy_nav.pagination role="navigation" aria-label="pager"
-  a.mdl-button.mdl-js-button.mdl-button--icon disabled=('true' unless pagy.prev) href=(pagy_url_for(pagy.prev, pagy) if pagy.prev)
-    = inline_svg('chevron_left.svg')
-  a.mdl-button.mdl-js-button.mdl-button--icon disabled=('true' unless pagy.next) href=(pagy_url_for(pagy.next, pagy) if pagy.next)
-    = inline_svg('chevron_right.svg')
+tr class="table-meta-header"
+  th colspan=(span)
+    span.page-info Displaying #{pagy.from} - #{pagy.to} #{resource} of #{pagy.count} in total
+    nav.pagy_nav.pagination role="navigation" aria-label="pager"
+      a.mdl-button.mdl-js-button.mdl-button--icon disabled=('true' unless pagy.prev) href=(pagy_url_for(pagy.prev, pagy) if pagy.prev)
+        = inline_svg('chevron_left.svg')
+      a.mdl-button.mdl-js-button.mdl-button--icon disabled=('true' unless pagy.next) href=(pagy_url_for(pagy.next, pagy) if pagy.next)
+        = inline_svg('chevron_right.svg')

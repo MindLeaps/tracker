@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 class SubjectsController < ApplicationController
+  include Pagy::Backend
+
   def index
     authorize Subject
-    @subjects = policy_scope Subject.includes(:assignments, :skills, :organization)
+    @pagy, @subjects = pagy policy_scope(Subject.includes(:assignments, :skills, :organization))
   end
 
   def new

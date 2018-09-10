@@ -1,12 +1,17 @@
 table class='mdl-data-table mdl-js-data-table resource-table'
   thead
+    == render partial: 'shared/pagy_nav', locals: { pagy: pagy, resource: 'organizations', span: 3 }
     tr
+      th
+        | #
       th class='mdl-data-table__cell--non-numeric'
         | Organization Name
       th
         | Number of Chapters
-  - organizations.each do |organization|
+  - organizations.each_with_index do |organization, i|
     tr class='resource-row'
+      td
+        = link_to pagy.from + i, organization_path(organization)
       td class='mdl-data-table__cell--non-numeric'
         = link_to organization.organization_name, organization_path(organization)
       td

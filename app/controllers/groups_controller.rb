@@ -5,7 +5,7 @@ class GroupsController < ApplicationController
   has_scope :exclude_deleted, type: :boolean, default: true
 
   before_action do
-    @groups = policy_scope apply_scopes(Group.includes(:chapter, :students))
+    @pagy, @groups = pagy policy_scope(apply_scopes(Group.includes(:chapter, :students)))
   end
 
   def index

@@ -3,7 +3,7 @@
 class LessonsController < ApplicationController
   include Pagy::Backend
   before_action do
-    @pagy, @lessons = pagy policy_scope Lesson.includes(:subject, :group).all
+    @pagy, @lessons = pagy policy_scope(Lesson.includes(:subject, :group))
   end
 
   def index
@@ -14,7 +14,7 @@ class LessonsController < ApplicationController
   def show
     @lesson = Lesson.includes(:absences, :group, :subject).find(params[:id])
     authorize @lesson
-    @students = @lesson.group.students.exclude_deleted
+    @pagy, @students = pagy @lesson.group.students.exclude_deleted
   end
 
   def new

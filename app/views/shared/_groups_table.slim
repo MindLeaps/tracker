@@ -1,14 +1,19 @@
 table class="mdl-data-table mdl-js-data-table resource-table"
   thead
+    == render partial: 'shared/pagy_nav', locals: { pagy: pagy, resource: 'groups', span: 4 }
     tr
+      th
+        | #
       th class="mdl-data-table__cell--non-numeric"
         | Group Name
       th class="mdl-data-table__cell--non-numeric"
         | Chapter
       th
         | Number of Students
-  - groups.each do |group|
+  - groups.each_with_index do |group, i|
     tr class="resource-row group-row"
+      td
+        = link_to pagy.from + i, group_path(group)
       td.mdl-data-table__cell--non-numeric
         = link_to group.group_name, group
       td.mdl-data-table__cell--non-numeric
