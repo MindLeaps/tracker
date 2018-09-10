@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 class UsersController < ApplicationController
+  include Pagy::Backend
   before_action do
-    @users = policy_scope User.all
+    @pagy, @users = pagy policy_scope(User.all)
   end
 
   def index

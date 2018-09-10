@@ -1,17 +1,20 @@
 - content_for :header_content do
   = render layout: '/shared/header_content', locals: { back_button_url: lessons_path, back_tooltip: 'Back to Lessons', title: "#{ @lesson.group.group_chapter_name } - #{ @lesson.subject.subject_name } on #{ @lesson.date }" } do
 
-
 .single-content-card
   table class='mdl-data-table mdl-js-data-table resource-table'
     thead
+      == render partial: 'shared/pagy_nav', locals: { pagy: @pagy, resource: 'students', span: 4 }
       tr
+        th #
         th class='mdl-data-table__cell--non-numeric' Last Name
         th class='mdl-data-table__cell--non-numeric' First Name
         th Average Grade
 
-    - @students.each do |student|
+    - @students.each_with_index do |student, i|
       tr class='resource-row'
+        td
+          = link_to @pagy.from + i, lesson_student_path(@lesson.id, student.id)
         td class='mdl-data-table__cell--non-numeric'
           = link_to student.last_name, lesson_student_path(@lesson.id, student.id)
         td class='mdl-data-table__cell--non-numeric'

@@ -1,10 +1,14 @@
 table class='mdl-data-table mdl-js-data-table resource-table'
   thead
+    == render partial: 'shared/pagy_nav', locals: { pagy: pagy, resource: 'skills', span: 3 }
     tr
+      th #
       th class='mdl-data-table__cell--non-numeric' Skill Name
       th class='mdl-data-table__cell--non-numeric' Organization
-  - skills.each do |skill|
+  - skills.each_with_index do |skill, i|
     tr class='resource-row'
+      td
+        = link_to pagy.from + i, skill_path(skill)
       td class='mdl-data-table__cell--non-numeric'
         = link_to skill.skill_name, skill_path(skill)
       td class='mdl-data-table__cell--non-numeric'

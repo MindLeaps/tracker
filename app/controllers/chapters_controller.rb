@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 class ChaptersController < ApplicationController
+  include Pagy::Backend
   def index
     authorize Chapter
-    @chapters = policy_scope Chapter.includes(:organization, groups: [:students])
+    @pagy, @chapters = pagy policy_scope(Chapter.includes(:organization, groups: [:students]))
   end
 
   def new
@@ -22,6 +23,7 @@ class ChaptersController < ApplicationController
   def show
     @chapter = Chapter.find params.require :id
     authorize @chapter
+    @pagy, @groups = pagy @chapter.groups
   end
 
   def edit

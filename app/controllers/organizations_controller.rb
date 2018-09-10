@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 class OrganizationsController < ApplicationController
+  include Pagy::Backend
   def index
     authorize Organization
-    @organizations = policy_scope Organization.includes(:chapters).all
+    @pagy, @organizations = pagy policy_scope(Organization.includes(:chapters))
   end
 
   def new
@@ -20,6 +21,7 @@ class OrganizationsController < ApplicationController
 
   def show
     @organization = Organization.includes(chapters: { groups: [:students] }).find params[:id]
+    @pagy, @chapters = pagy @organization.chapters
     authorize @organization
   end
 

@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 class SkillsController < ApplicationController
+  include Pagy::Backend
   def index
     authorize Skill
-    @skills = policy_scope Skill.includes(:organization)
+    @pagy, @skills = pagy policy_scope(Skill.includes(:organization))
   end
 
   def create

@@ -1,6 +1,9 @@
 table class='mdl-data-table mdl-js-data-table resource-table'
   thead
+    == render partial: 'shared/pagy_nav', locals: { pagy: pagy, resource: 'students', span: 8 }
     tr
+      th
+        | #
       th class="mdl-data-table__cell--non-numeric"
         | MLID
       th class="mdl-data-table__cell--non-numeric"
@@ -15,8 +18,11 @@ table class='mdl-data-table mdl-js-data-table resource-table'
         | Date of Birth
       th class="mdl-data-table__cell--non-numeric"
         | Group
-  - students.each do |student|
+  tbody
+  - students.each_with_index do |student, i|
     tr class='resource-row'
+      td
+        = link_to pagy.from + i, student_path(student)
       td class="mdl-data-table__cell--non-numeric"
         = link_to student.mlid, student_path(student)
       td class="mdl-data-table__cell--non-numeric"

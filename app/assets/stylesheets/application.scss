@@ -62,6 +62,7 @@
   @extend .content-card;
   padding: 0 !important;
   max-width: 100%;
+  min-width: 65%;
   overflow: auto;
   margin: 0 auto;
 }

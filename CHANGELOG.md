@@ -1,3 +1,6 @@
+## Unreleased
+- Paging in resource tables
+
 ## 0.7.0
 - POSTing to /grades to create a new grade will update the existing grade and return 200 instead of returning 409 conflict
 - Upgraded Rails from 5.2.0 to 5.2.1
