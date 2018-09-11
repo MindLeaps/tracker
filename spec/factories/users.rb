@@ -5,11 +5,11 @@ FactoryBot.define do
     name { Faker::Name.name }
     email { Faker::Internet.safe_email }
     sequence(:uid) { |n| n }
-    provider 'google_oauth2'
+    provider { 'google_oauth2' }
     transient do
-      role nil
-      organization nil
-      token nil
+      role { nil }
+      organization { nil }
+      token { nil }
     end
 
     factory :global_guest do
