@@ -16,6 +16,7 @@ class ChaptersController < ApplicationController
     @chapter = Chapter.new chapter_params
     authorize @chapter
     return notice_and_redirect t(:chapter_created, chapter: @chapter.chapter_name), chapters_url if @chapter.save
+
     @chapters = Chapter.includes(:organization, groups: [:students]).all
     render :new
   end
@@ -35,6 +36,7 @@ class ChaptersController < ApplicationController
     @chapter = Chapter.includes(:organization).find params.require :id
     authorize @chapter
     return notice_and_redirect t(:chapter_updated, chapter: @chapter.chapter_name), chapter_url if @chapter.update chapter_params
+
     render :edit, status: :unprocessable_entity
   end
 

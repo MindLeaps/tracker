@@ -30,6 +30,7 @@ class OrganizationsController < ApplicationController
     authorize @organization
     member_params.tap do |p|
       return redirect_to @organization if @organization.add_user_with_role p.require(:email), p.require(:role).to_sym
+
       member_conflict_response
     end
   rescue ActionController::ParameterMissing

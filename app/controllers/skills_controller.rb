@@ -11,6 +11,7 @@ class SkillsController < ApplicationController
     @skill = Skill.new skill_parameters
     authorize @skill
     return notice_and_redirect t(:skill_created, skill: @skill.skill_name), @skill if @skill.save
+
     render :new
   end
 

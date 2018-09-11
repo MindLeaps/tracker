@@ -22,6 +22,7 @@ class GroupsController < ApplicationController
     @group = Group.new group_params
     authorize @group
     return notice_and_redirect t(:group_created, group: @group.group_name), group_path(@group) if @group.save
+
     render :new
   end
 
@@ -40,6 +41,7 @@ class GroupsController < ApplicationController
     @group = Group.find params.require :id
     authorize @group
     return notice_and_redirect t(:group_updated, group: @group.group_name), group_url if @group.update group_params
+
     render :edit, status: :unprocessable_entity
   end
 

@@ -19,6 +19,7 @@ class UsersController < ApplicationController
     @user = User.new params.require(:user).permit(:email)
     authorize @user
     return notice_and_redirect(t(:user_added, email: params[:user][:email]), users_url) if @user.save
+
     render :index
   end
 

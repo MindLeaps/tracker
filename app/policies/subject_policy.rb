@@ -12,6 +12,7 @@ class SubjectPolicy < ApplicationPolicy
   class Scope < ApplicationPolicy::Scope
     def resolve
       return scope.all if user.global_role?
+
       scope.where(organization_id: user.roles.pluck(:resource_id))
     end
   end

@@ -8,6 +8,7 @@ class MembershipsController < ApplicationController
     authorize Membership.new(user: @user, role: role, org: org)
 
     return redirect_to @user if RoleService.update_local_role @user, role, org
+
     render 'users/show', status: :bad_request
   end
 
@@ -25,6 +26,7 @@ class MembershipsController < ApplicationController
     authorize Membership.new(user: @user, role: role)
 
     return redirect_to @user if RoleService.update_global_role @user, role
+
     render 'users/show', status: :bad_request
   end
 

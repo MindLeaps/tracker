@@ -21,6 +21,7 @@ module ApplicationHelper
 
   def user_image(user, size = 40)
     return "#{user.image}?sz=#{size}" if user.image
+
     image_url 'unknown_user.svg'
   end
 

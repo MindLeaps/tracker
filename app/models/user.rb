@@ -65,6 +65,7 @@ class User < ApplicationRecord
     # Role level in explicit organization, excluding global roles
     role = role_in organization
     return Role::MINIMAL_ROLE_LEVEL if role.nil?
+
     role.level
   end
 
@@ -73,6 +74,7 @@ class User < ApplicationRecord
       user = get_user_from_auth auth
       return update_user_from_omniauth user, auth if user
       return create_first_user auth if first_user?
+
       empty_user
     end
 

@@ -57,6 +57,7 @@ module Api
     def save_or_update_if_exists(grade)
       Grade.transaction do
         return grade if grade.save
+
         existing_grade = grade.find_duplicate
         existing_grade.update grade_descriptor_id: grade.grade_descriptor_id
         respond_with :api, existing_grade, status: :ok, meta: { timestamp: Time.zone.now }, include: {}

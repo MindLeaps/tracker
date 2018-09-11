@@ -51,6 +51,7 @@ class RoleService
     def revoke_role_in(user, org)
       role = user.role_in org
       return if role.nil?
+
       user.revoke role.symbol, org
     end
   end

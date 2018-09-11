@@ -61,6 +61,7 @@ class Student < ApplicationRecord
 
   def update_grade(grade, existing_grade)
     return existing_grade.update_grade_descriptor grade.grade_descriptor if existing_grade
+
     grade.tap(&:save)
   end
 

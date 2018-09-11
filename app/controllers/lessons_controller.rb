@@ -26,6 +26,7 @@ class LessonsController < ApplicationController
     @lesson = Lesson.new params.require(:lesson).permit :group_id, :date, :subject_id
     authorize @lesson
     return notice_and_redirect(t(:lesson_created), lessons_url) if @lesson.save
+
     render :index
   end
 end

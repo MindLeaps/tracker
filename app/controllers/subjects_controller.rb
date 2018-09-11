@@ -17,6 +17,7 @@ class SubjectsController < ApplicationController
     @subject = Subject.new subject_params
     authorize @subject
     return notice_and_redirect(t(:subject_created, subject: @subject.subject_name), subjects_url) if @subject.save
+
     render :index
   end
 
