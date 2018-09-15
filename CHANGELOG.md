@@ -1,4 +1,4 @@
-## Unreleased
+## 0.7.1
 - Paging in resource tables
 
 ## 0.7.0
