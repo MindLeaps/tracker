@@ -4,20 +4,23 @@
 .single-content-card
   table class='mdl-data-table mdl-js-data-table resource-table'
     thead
-      == render partial: 'shared/pagy_nav', locals: { pagy: @pagy, resource: 'students', span: 4 }
+      == render partial: 'shared/pagy_nav', locals: { pagy: @pagy, resource: 'students', span: 5 }
       tr
         th #
         th class='mdl-data-table__cell--non-numeric' Last Name
         th class='mdl-data-table__cell--non-numeric' First Name
+        th Graded / Skills
         th Average Grade
 
-    - @students.each_with_index do |student, i|
+    - @student_lesson_summaries.each_with_index do |summary, i|
       tr class='resource-row'
         td
-          = link_to @pagy.from + i, lesson_student_path(@lesson.id, student.id)
+          = link_to @pagy.from + i, lesson_student_path(@lesson.id, summary.student_id)
         td class='mdl-data-table__cell--non-numeric'
-          = link_to student.last_name, lesson_student_path(@lesson.id, student.id)
+          = link_to summary.last_name, lesson_student_path(@lesson.id, summary.student_id)
         td class='mdl-data-table__cell--non-numeric'
-          = link_to student.first_name, lesson_student_path(@lesson.id, student.id)
+          = link_to summary.first_name, lesson_student_path(@lesson.id, summary.student_id)
         td
-          = link_to lesson_student_average_grade(@lesson, student), lesson_student_path(@lesson.id, student.id)
+          = link_to "#{summary.grade_count} / #{@lesson.subject.skills.count}", lesson_student_path(@lesson.id, summary.student_id)
+        td
+          = link_to(if summary.absent then 'Absent' else summary.average_mark end || '', lesson_student_path(@lesson.id, summary.student_id))

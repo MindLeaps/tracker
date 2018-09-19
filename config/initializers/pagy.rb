@@ -10,7 +10,7 @@
 
 # Array: Paginate arrays efficiently, avoiding expensive array-wrapping and without overriding
 # See https://ddnexus.github.io/pagy/extras/array
-# require 'pagy/extras/array'
+require 'pagy/extras/array'
 
 # Searchkick: Paginate `Searchkick::Results` objects efficiently, avoiding expensive oject-wrapping and without overriding.
 # See https://ddnexus.github.io/pagy/extras/searchkick
