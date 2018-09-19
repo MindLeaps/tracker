@@ -34,6 +34,15 @@ RSpec.describe LessonsController, type: :controller do
         @deleted_student = create :student, group: @group, deleted_at: Time.zone.now
 
         lesson = create :lesson, group: @group
+        gd1 = create :grade_descriptor, skill: lesson.subject.skills[0], mark: 1
+        gd2 = create :grade_descriptor, skill: lesson.subject.skills[1], mark: 2
+        gd3 = create :grade_descriptor, skill: lesson.subject.skills[2], mark: 3
+        create :grade, lesson: lesson, student: @active_student1, grade_descriptor: gd1
+        create :grade, lesson: lesson, student: @active_student1, grade_descriptor: gd2
+
+        create :grade, lesson: lesson, student: @active_student2, grade_descriptor: gd1
+        create :grade, lesson: lesson, student: @active_student2, grade_descriptor: gd2
+        create :grade, lesson: lesson, student: @active_student2, grade_descriptor: gd3
         get :show, params: { id: lesson.id }
       end
 
@@ -41,8 +50,12 @@ RSpec.describe LessonsController, type: :controller do
       it { should render_template 'show' }
 
       it 'exposes non-deleted students from the lesson\'s group' do
-        expect(assigns(:students)).to include @active_student1, @active_student2
-        expect(assigns(:students)).not_to include @deleted_student
+        expect(assigns(:student_lesson_summaries).map(&:first_name)).to include @active_student1.first_name, @active_student2.first_name
+        expect(assigns(:student_lesson_summaries).map(&:first_name)).not_to include @deleted_student.first_name
+      end
+
+      it 'calculates the correct average marks' do
+        expect(assigns(:student_lesson_summaries).map(&:average_mark)).to include 1.5, 2.0
       end
     end
 

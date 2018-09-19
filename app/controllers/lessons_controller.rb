@@ -2,19 +2,17 @@
 
 class LessonsController < ApplicationController
   include Pagy::Backend
-  before_action do
-    @pagy, @lessons = pagy policy_scope(Lesson.includes(:subject, :group))
-  end
 
   def index
     authorize Lesson
+    @pagy, @lessons = pagy policy_scope(Lesson.includes(:subject, :group))
     @lesson = Lesson.new
   end
 
   def show
-    @lesson = Lesson.includes(:absences, :group, :subject).find(params[:id])
+    @lesson = Lesson.includes(:group, :subject).find(params[:id])
     authorize @lesson
-    @pagy, @students = pagy @lesson.group.students.exclude_deleted
+    @pagy, @student_lesson_summaries = pagy StudentLessonSummary.where(lesson_id: @lesson.id, deleted_at: nil)
   end
 
   def new

@@ -1,3 +1,6 @@
+## Unreleased
+- Improved Lesson View with average mark and graded skills
+
 ## 0.7.1
 - Paging in resource tables
 
