@@ -3,10 +3,11 @@
 class LessonsController < ApplicationController
   include Pagy::Backend
   has_scope :exclude_deleted, type: :boolean, default: true
+  has_scope :order, type: :hash
 
   def index
     authorize Lesson
-    @pagy, @lessons = pagy policy_scope(Lesson.includes(:subject, :group))
+    @pagy, @lessons = pagy apply_scopes(policy_scope(Lesson.includes(:subject, :group)))
     @lesson = Lesson.new
   end
 

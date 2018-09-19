@@ -5,7 +5,7 @@ table class='mdl-data-table mdl-js-data-table resource-table'
       th
         | #
       th class='mdl-data-table__cell--non-numeric' Group Name
-      th class='mdl-data-table__cell--non-numeric' Date
+      == render partial: 'shared/ordered_column', locals: { order_key: :date, column_name: 'Date' }
       th class='mdl-data-table__cell--non-numeric' Subject
 
   - lessons.each_with_index do |lesson, i|

@@ -2,8 +2,10 @@
 
 class UsersController < ApplicationController
   include Pagy::Backend
+  has_scope :order, type: :hash
+
   before_action do
-    @pagy, @users = pagy policy_scope(User.all)
+    @pagy, @users = pagy apply_scopes(policy_scope(User.all))
   end
 
   def index

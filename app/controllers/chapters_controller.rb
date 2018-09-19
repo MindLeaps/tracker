@@ -2,9 +2,11 @@
 
 class ChaptersController < ApplicationController
   include Pagy::Backend
+  has_scope :order, type: :hash
+
   def index
     authorize Chapter
-    @pagy, @chapters = pagy policy_scope(Chapter.includes(:organization, groups: [:students]))
+    @pagy, @chapters = pagy apply_scopes(policy_scope(Chapter.includes(:organization, groups: [:students])))
   end
 
   def new
@@ -24,7 +26,7 @@ class ChaptersController < ApplicationController
   def show
     @chapter = Chapter.find params.require :id
     authorize @chapter
-    @pagy, @groups = pagy @chapter.groups
+    @pagy, @groups = pagy apply_scopes(@chapter.groups)
   end
 
   def edit

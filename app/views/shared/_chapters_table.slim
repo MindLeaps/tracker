@@ -4,8 +4,7 @@ table class='mdl-data-table mdl-js-data-table resource-table'
     tr
       th
         | #
-      th class="mdl-data-table__cell--non-numeric"
-        | Chapter Name
+      == render partial: 'shared/ordered_column', locals: { order_key: :chapter_name, column_name: 'Chapter Name' }
       th class="mdl-data-table__cell--non-numeric"
         | Organization
       th

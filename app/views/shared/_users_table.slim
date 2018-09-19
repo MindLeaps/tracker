@@ -4,10 +4,8 @@ table class='mdl-data-table mdl-js-data-table resource-table'
     tr
       th
         | #
-      th class='mdl-data-table__cell--non-numeric'
-        | Name
-      th class='mdl-data-table__cell--non-numeric'
-        | E-mail
+      == render partial: 'shared/ordered_column', locals: { order_key: :name, column_name: 'Name' }
+      == render partial: 'shared/ordered_column', locals: { order_key: :email, column_name: 'E-mail' }
       th class='mdl-data-table__cell--non-numeric'
         | Global Role
   - users.each_with_index do |user, i|
