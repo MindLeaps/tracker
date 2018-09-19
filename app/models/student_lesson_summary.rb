@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-# rubocop:disable Rails/ApplicationRecord
-class StudentLessonSummary < ActiveRecord::Base
+class StudentLessonSummary < ApplicationRecord
   def readonly?
     true
   end
 end
-# rubocop:enable Rails/ApplicationRecord

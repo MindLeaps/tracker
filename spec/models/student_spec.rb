@@ -163,12 +163,12 @@ RSpec.describe Student, type: :model do
       @group1 = create :group
       @group2 = create :group
 
-      @student1 = create :student, group: @group1, organization: @org1
-      @student2 = create :student, group: @group1, organization: @org1
-      @student3 = create :student, group: @group2, organization: @org1
+      @student1 = create :student, first_name: 'Emberto', group: @group1, organization: @org1
+      @student2 = create :student, first_name: 'Amberto', group: @group1, organization: @org1
+      @student3 = create :student, first_name: 'Omberto', group: @group2, organization: @org1
 
-      create :student, organization: @org2
-      create :student, organization: @org2
+      create :student, first_name: 'Ambuba', organization: @org2
+      create :student, first_name: 'Ombuba', organization: @org2
     end
 
     describe 'by_group' do
@@ -184,5 +184,13 @@ RSpec.describe Student, type: :model do
         expect(Student.by_organization(@org1.id)).to include @student1, @student2, @student3
       end
     end
+
+    # describe 'order' do
+    #   it 'returns students sorted in particular order' do
+    #     expect(Student.order(:first_name).map(&:first_name)).to eq %w[Amberto Ambuba Emberto Umberto Ombuba]
+    #     expect(Student.order(:first_name, sort: 'ascending').map(&:first_name)).to eq %w[Amberto Ambuba Emberto Umberto Ombuba]
+    #     expect(Student.order(:first_name, sort: 'descending').map(&:first_name)).to eq %w[Ombuba Umberto Emberto Ambuba Amberto]
+    #   end
+    # end
   end
 end
