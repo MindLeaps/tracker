@@ -45,6 +45,14 @@
 table.resource-table {
   min-width: 100%;
   table-layout: fixed;
+  th a {
+    color: inherit;
+    font-weight: inherit;
+    text-decoration: none;
+    svg {
+      fill: $nav-color;
+    }
+  }
   tbody{
     td {
       padding: 0 !important;

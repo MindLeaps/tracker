@@ -5,6 +5,26 @@ require 'rails_helper'
 RSpec.describe 'User interacts with Students' do
   include_context 'login_with_global_admin'
 
+  describe 'List Students' do
+    before :each do
+      @org = create :organization
+      create :student, first_name: 'Umberto', last_name: 'Eco', mlid: 'ECO-123', organization: @org
+      create :student, first_name: 'Amberto', last_name: 'Oce', mlid: 'OCE-123', organization: @org
+    end
+
+    it 'sorts students by first name alphabetically' do
+      visit '/students'
+      click_link 'First Name'
+      rows = page.all('.resource-row')
+      expect(rows[0]).to have_content 'Amberto'
+      expect(rows[1]).to have_content 'Umberto'
+      click_link 'First Name'
+      rows = page.all('.resource-row')
+      expect(rows[0]).to have_content 'Umberto'
+      expect(rows[1]).to have_content 'Amberto'
+    end
+  end
+
   describe 'Show student' do
     before :each do
       @org = create :organization

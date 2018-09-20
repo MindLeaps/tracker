@@ -3,6 +3,7 @@
 class StudentsController < ApplicationController
   include Pagy::Backend
   has_scope :exclude_deleted, type: :boolean, default: true
+  has_scope :order, type: :hash
 
   def index
     authorize Student

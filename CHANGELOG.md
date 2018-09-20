@@ -1,5 +1,6 @@
 ## Unreleased
 - Improved Lesson View with average mark and graded skills
+- Sorting/Ordering by column values in most resource tables
 
 ## 0.7.1
 - Paging in resource tables

@@ -1,0 +1,4 @@
+th class=('mdl-data-table__cell--non-numeric' unless local_assigns.fetch(:numeric, false))
+  = link_to order_parameters(order_key) do
+    = column_name
+    = inline_svg order_icon(order_key)

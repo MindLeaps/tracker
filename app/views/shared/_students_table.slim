@@ -4,18 +4,13 @@ table class='mdl-data-table mdl-js-data-table resource-table'
     tr
       th
         | #
-      th class="mdl-data-table__cell--non-numeric"
-        | MLID
+      == render partial: 'shared/ordered_column', locals: { order_key: :mlid, column_name: 'MLID' }
       th class="mdl-data-table__cell--non-numeric"
         | Image
-      th class="mdl-data-table__cell--non-numeric"
-        | Last Name
-      th class="mdl-data-table__cell--non-numeric"
-        | First Name
-      th class="mdl-data-table__cell--non-numeric"
-        | Gender
-      th class="mdl-data-table__cell--non-numeric"
-        | Date of Birth
+      == render partial: 'shared/ordered_column', locals: { order_key: :last_name, column_name: 'Last Name' }
+      == render partial: 'shared/ordered_column', locals: { order_key: :first_name, column_name: 'First Name' }
+      == render partial: 'shared/ordered_column', locals: { order_key: :gender, column_name: 'Gender' }
+      == render partial: 'shared/ordered_column', locals: { order_key: :dob, column_name: 'Date of Birth' }
       th class="mdl-data-table__cell--non-numeric"
         | Group
   tbody

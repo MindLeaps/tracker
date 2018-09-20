@@ -4,8 +4,7 @@ table class="mdl-data-table mdl-js-data-table resource-table"
     tr
       th
         | #
-      th class="mdl-data-table__cell--non-numeric"
-        | Group Name
+      == render partial: 'shared/ordered_column', locals: { order_key: :group_name, column_name: 'Group Name' }
       th class="mdl-data-table__cell--non-numeric"
         | Chapter
       th

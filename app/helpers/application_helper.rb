@@ -11,6 +11,21 @@ module ApplicationHelper
     group.chapter_name || 'None'
   end
 
+  def order_for(order_key)
+    current_scopes.dig :order, order_key
+  end
+
+  def order_parameters(order_key)
+    { order: { order_key => order_for(order_key) == 'asc' ? :desc : :asc } }
+  end
+
+  def order_icon(order_key)
+    order = order_for order_key
+    return 'sortable.svg' unless order
+
+    order == 'desc' ? 'arrow_down.svg' : 'arrow_up.svg'
+  end
+
   def chapter_organization_name(chapter)
     chapter.organization_name || 'None'
   end
