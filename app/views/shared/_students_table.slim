@@ -15,6 +15,7 @@ table class='mdl-data-table mdl-js-data-table resource-table'
         | Group
   tbody
   - students.each_with_index do |student, i|
+
     tr class='resource-row'
       td
         = link_to pagy.from + i, student_path(student)

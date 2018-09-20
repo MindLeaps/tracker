@@ -2,7 +2,13 @@ tr class="table-meta-header"
   th colspan=(span)
     span.page-info Displaying #{pagy.from} - #{pagy.to} #{resource} of #{pagy.count} in total
     nav.pagy_nav.pagination role="navigation" aria-label="pager"
-      a.mdl-button.mdl-js-button.mdl-button--icon disabled=('true' unless pagy.prev) href=(pagy_url_for(pagy.prev, pagy) if pagy.prev)
+      a.mdl-button.mdl-js-button.mdl-button--icon disabled=('true' unless pagy.prev) id='prev-page-button' href=(pagy_url_for(pagy.prev, pagy) if pagy.prev)
         = inline_svg('chevron_left.svg')
-      a.mdl-button.mdl-js-button.mdl-button--icon disabled=('true' unless pagy.next) href=(pagy_url_for(pagy.next, pagy) if pagy.next)
+      - if pagy.prev
+        .mdl-tooltip data-mdl-for='prev-page-button'
+          = t :prev_page
+      a.mdl-button.mdl-js-button.mdl-button--icon disabled=('true' unless pagy.next) id='next-page-button' href=(pagy_url_for(pagy.next, pagy) if pagy.next)
         = inline_svg('chevron_right.svg')
+      - if pagy.next
+        .mdl-tooltip data-mdl-for='next-page-button'
+          = t :next_page
