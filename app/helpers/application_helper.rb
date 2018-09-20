@@ -19,6 +19,10 @@ module ApplicationHelper
     { order: { order_key => order_for(order_key) == 'asc' ? :desc : :asc } }
   end
 
+  def custom_order_parameter(order_key)
+    { order_key => current_scopes.dig(order_key) == 'asc' ? :desc : :asc }
+  end
+
   def order_icon(order_key)
     order = order_for order_key
     return 'sortable.svg' unless order

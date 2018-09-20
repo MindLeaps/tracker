@@ -160,21 +160,21 @@ RSpec.describe Student, type: :model do
       @org1 = create :organization
       @org2 = create :organization
 
-      @group1 = create :group
-      @group2 = create :group
+      @group1 = create :group, group_name: 'A Group'
+      @group2 = create :group, group_name: 'B Group'
 
       @student1 = create :student, first_name: 'Emberto', group: @group1, organization: @org1
       @student2 = create :student, first_name: 'Amberto', group: @group1, organization: @org1
-      @student3 = create :student, first_name: 'Omberto', group: @group2, organization: @org1
+      @student3 = create :student, first_name: 'Omberto', group: @group1, organization: @org1
 
-      create :student, first_name: 'Ambuba', organization: @org2
-      create :student, first_name: 'Ombuba', organization: @org2
+      create :student, first_name: 'Ambuba', group: @group2, organization: @org2
+      create :student, first_name: 'Ombuba', group: @group2, organization: @org2
     end
 
     describe 'by_group' do
       it 'returns students scoped by group' do
-        expect(Student.by_group(@group1.id).length).to eq 2
-        expect(Student.by_group(@group1.id)).to include @student1, @student2
+        expect(Student.by_group(@group1.id).length).to eq 3
+        expect(Student.by_group(@group1.id)).to include @student1, @student2, @student3
       end
     end
 
@@ -185,12 +185,11 @@ RSpec.describe Student, type: :model do
       end
     end
 
-    # describe 'order' do
-    #   it 'returns students sorted in particular order' do
-    #     expect(Student.order(:first_name).map(&:first_name)).to eq %w[Amberto Ambuba Emberto Umberto Ombuba]
-    #     expect(Student.order(:first_name, sort: 'ascending').map(&:first_name)).to eq %w[Amberto Ambuba Emberto Umberto Ombuba]
-    #     expect(Student.order(:first_name, sort: 'descending').map(&:first_name)).to eq %w[Ombuba Umberto Emberto Ambuba Amberto]
-    #   end
-    # end
+    describe 'order_by_group_name' do
+      it 'returns students sorted by Group Name' do
+        expect(Student.order_by_group_name('asc').map(&:first_name)).to eq %w[Emberto Amberto Omberto Ambuba Ombuba]
+        expect(Student.order_by_group_name('desc').map(&:first_name)).to eq %w[Ambuba Ombuba Emberto Amberto Omberto]
+      end
+    end
   end
 end
