@@ -1,6 +1,7 @@
 ## Unreleased
 - Improved Lesson View with average mark and graded skills
 - Sorting/Ordering by column values in most resource tables
+- Counting only undeleted students in group and chapter student count
 
 ## 0.7.1
 - Paging in resource tables

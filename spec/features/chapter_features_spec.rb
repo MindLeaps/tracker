@@ -5,6 +5,31 @@ require 'rails_helper'
 RSpec.describe 'User interacts with Chapters' do
   include_context 'login_with_global_admin'
 
+  describe 'Chapter Index' do
+    chapters = []
+    before :each do
+      chapters = create_list :chapter, 3
+      group1 = create :group, chapter: chapters[0]
+      create_list :student, 3, group: group1
+      create_list :student, 2, deleted_at: Time.zone.now, group: group1
+      group2 = create :group, chapter: chapters[0]
+      create_list :student, 2, group: group2
+
+      group3 = create :group, chapter: chapters[1]
+      create_list :student, 2, group: group3
+      create_list :student, 2, group: group3, deleted_at: Time.zone.now
+    end
+
+    it 'Displays chapters with number of undeleted students' do
+      visit '/chapters'
+      expect(page).to have_content chapters[0].chapter_name
+      expect(page).to have_content chapters[1].chapter_name
+      expect(page).to have_content chapters[2].chapter_name
+
+      expect(page.all('.resource-row td:last-child').map(&:text)).to include '5', '2', '0'
+    end
+  end
+
   describe 'Chapter creation' do
     before :each do
       @org = create :organization, organization_name: 'New Org'

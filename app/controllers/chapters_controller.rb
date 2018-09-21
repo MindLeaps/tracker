@@ -6,7 +6,7 @@ class ChaptersController < ApplicationController
 
   def index
     authorize Chapter
-    @pagy, @chapters = pagy apply_scopes(policy_scope(Chapter.includes(:organization, groups: [:students])))
+    @pagy, @chapters = pagy apply_scopes(policy_scope(Chapter.includes(:organization, :groups)))
   end
 
   def new

@@ -5,13 +5,10 @@ class GroupsController < ApplicationController
   has_scope :exclude_deleted, type: :boolean, default: true
   has_scope :order, type: :hash
 
-  before_action do
-    @pagy, @groups = pagy policy_scope(apply_scopes(Group.includes(:chapter, :students)))
-  end
-
   def index
     authorize Group
     @group = Group.new
+    @pagy, @groups = pagy policy_scope(apply_scopes(Group.includes(:chapter)))
   end
 
   def new

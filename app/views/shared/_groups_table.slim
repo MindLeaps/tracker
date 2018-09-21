@@ -18,4 +18,4 @@ table class="mdl-data-table mdl-js-data-table resource-table"
       td.mdl-data-table__cell--non-numeric
         = link_to group_chapter_name(group), group
       td
-        = link_to group.students.length, group
+        = link_to group.students.exclude_deleted.length, group
