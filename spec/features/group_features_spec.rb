@@ -5,6 +5,26 @@ require 'rails_helper'
 RSpec.describe 'User interacts with Groups' do
   include_context 'login_with_global_admin'
 
+  describe 'Group Index' do
+    groups = []
+    before :each do
+      groups = create_list :group, 3
+      create_list :student, 3, group: groups[0]
+      students_with_deleted = create_list :student, 3, group: groups[1]
+      students_with_deleted[2].deleted_at = Time.zone.now
+      students_with_deleted[2].save
+    end
+
+    it 'displays a list of groups with counts of undeleted students' do
+      visit 'groups'
+      expect(page).to have_content groups[0].group_name
+      expect(page).to have_content groups[1].group_name
+      expect(page).to have_content groups[2].group_name
+
+      expect(page.all('.resource-row td:last-child').map(&:text).sort).to eq %w[3 2 0].sort
+    end
+  end
+
   describe 'Group creation' do
     before :each do
       create :chapter, chapter_name: 'Chapter One'

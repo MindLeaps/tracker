@@ -59,18 +59,18 @@ RSpec.describe GroupsController, type: :controller do
     it 'gets a list of groups' do
       expect(response).to be_successful
       expect(assigns(:groups).length).to eq 3
-      expect(assigns(:groups)).to include(*@groups)
+      expect(assigns(:groups).map(&:id)).to include(*@groups.map(&:id))
     end
 
     it 'does not include deleted groups' do
-      expect(assigns(:groups)).not_to include @deleted_group
+      expect(assigns(:groups).map(&:id)).not_to include @deleted_group.id
     end
 
     it 'includes deleted groups' do
       get :index, params: { exclude_deleted: false }
 
       expect(assigns(:groups).length).to eq 4
-      expect(assigns(:groups)).to include @deleted_group
+      expect(assigns(:groups).map(&:id)).to include @deleted_group.id
     end
   end
 

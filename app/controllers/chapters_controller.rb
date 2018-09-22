@@ -6,7 +6,7 @@ class ChaptersController < ApplicationController
 
   def index
     authorize Chapter
-    @pagy, @chapters = pagy apply_scopes(policy_scope(Chapter.includes(:organization, groups: [:students])))
+    @pagy, @chapters = pagy apply_scopes(policy_scope(ChapterSummary, policy_scope_class: ChapterPolicy::Scope))
   end
 
   def new
@@ -26,7 +26,7 @@ class ChaptersController < ApplicationController
   def show
     @chapter = Chapter.find params.require :id
     authorize @chapter
-    @pagy, @groups = pagy apply_scopes(@chapter.groups)
+    @pagy, @groups = pagy apply_scopes(GroupSummary.where(chapter_id: @chapter.id))
   end
 
   def edit

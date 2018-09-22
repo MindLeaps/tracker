@@ -1,0 +1,63 @@
+@mixin row-link {
+  &:before {
+    content: "";
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+  }
+  display: inline-block;
+  vertical-align: middle;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.table-meta-header {
+  .page-info {
+    vertical-align: middle;
+  }
+  nav {
+    vertical-align: middle;
+    display: inline-block;
+    a{
+      opacity: 0.54;
+      &[disabled] {
+        opacity: 0.2;
+      }
+    }
+  }
+}
+
+table.resource-table {
+  min-width: 100%;
+  table-layout: fixed;
+  th a {
+    color: inherit;
+    font-weight: inherit;
+    text-decoration: none;
+    svg {
+      fill: $nav-color;
+    }
+  }
+  tbody{
+    td {
+      padding: 0;
+    }
+    .resource-row-link-small-padding {
+      @include row-link;
+      padding: 4px;
+    }
+
+    a {
+      color: unset;
+      @include row-link;
+      padding: 12px 18px;
+      box-sizing: border-box;
+      text-decoration: none;
+    }
+  }
+
+  .mdl-tooltip {
+    max-width: 100%;
+  }
+}

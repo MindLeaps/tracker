@@ -61,6 +61,8 @@ en:
   revoke_local_role_button: Revoke Role in %{org}
   unauthorized_logout: You have been loged out for performing unauthorized activity
   user_added: User with email %{email} added.
+  prev_page: Previous Page
+  next_page: Next Page
 
   errors:
     messages:

@@ -11,10 +11,10 @@ table class='mdl-data-table mdl-js-data-table resource-table'
       == render partial: 'shared/ordered_column', locals: { order_key: :first_name, column_name: 'First Name' }
       == render partial: 'shared/ordered_column', locals: { order_key: :gender, column_name: 'Gender' }
       == render partial: 'shared/ordered_column', locals: { order_key: :dob, column_name: 'Date of Birth' }
-      th class="mdl-data-table__cell--non-numeric"
-        | Group
+      == render partial: 'shared/ordered_column', locals: { order_key: :order_by_group_name, column_name: 'Group', custom_order?: true }
   tbody
   - students.each_with_index do |student, i|
+
     tr class='resource-row'
       td
         = link_to pagy.from + i, student_path(student)

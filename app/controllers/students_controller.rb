@@ -4,6 +4,7 @@ class StudentsController < ApplicationController
   include Pagy::Backend
   has_scope :exclude_deleted, type: :boolean, default: true
   has_scope :order, type: :hash
+  has_scope :order_by_group_name
 
   def index
     authorize Student
@@ -13,7 +14,6 @@ class StudentsController < ApplicationController
   def new
     authorize Student
     @student = Student.new
-    @student.gender = 'M' # default for new students
   end
 
   def create

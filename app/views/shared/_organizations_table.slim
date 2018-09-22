@@ -4,15 +4,14 @@ table class='mdl-data-table mdl-js-data-table resource-table'
     tr
       th
         | #
-      th class='mdl-data-table__cell--non-numeric'
-        | Organization Name
-      th
-        | Number of Chapters
-  - organizations.each_with_index do |organization, i|
+      == render partial: 'shared/ordered_column', locals: { order_key: :organization_name, column_name: 'Organization Name' }
+      == render partial: 'shared/ordered_column', locals: { order_key: :chapter_count, column_name: 'Number of Chapters', numeric: true }
+  - organizations.each_with_index do |organization_summary, i|
+    - path = organization_path organization_summary.id
     tr class='resource-row'
       td
-        = link_to pagy.from + i, organization_path(organization)
+        = link_to pagy.from + i, path
       td class='mdl-data-table__cell--non-numeric'
-        = link_to organization.organization_name, organization_path(organization)
+        = link_to organization_summary.organization_name, path
       td
-        = link_to organization.chapters.length, organization_path(organization)
+        = link_to organization_summary.chapter_count, path

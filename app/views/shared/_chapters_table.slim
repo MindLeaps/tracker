@@ -5,21 +5,19 @@ table class='mdl-data-table mdl-js-data-table resource-table'
       th
         | #
       == render partial: 'shared/ordered_column', locals: { order_key: :chapter_name, column_name: 'Chapter Name' }
-      th class="mdl-data-table__cell--non-numeric"
-        | Organization
-      th
-        | Groups in Chapter
-      th
-        | Students in Chapter
-  - chapters.each_with_index do |chapter, i|
+      == render partial: 'shared/ordered_column', locals: { order_key: :organization_name, column_name: 'Organization Name' }
+      == render partial: 'shared/ordered_column', locals: { order_key: :group_count, column_name: 'Groups in Chapter', numeric: true }
+      == render partial: 'shared/ordered_column', locals: { order_key: :student_count, column_name: 'Students in Chapter', numeric: true }
+  - chapters.each_with_index do |chapter_summary, i|
+    - path = chapter_path(chapter_summary.id)
     tr class='resource-row'
       td
-        = link_to pagy.from + i, chapter_path(chapter)
+        = link_to pagy.from + i, path
       td class="mdl-data-table__cell--non-numeric"
-        = link_to chapter.chapter_name, chapter_path(chapter)
+        = link_to chapter_summary.chapter_name, path
       td class="mdl-data-table__cell--non-numeric"
-        = link_to chapter_organization_name(chapter), chapter_path(chapter)
+        = link_to chapter_summary.organization_name, path
       td
-        = link_to chapter.groups.length, chapter_path(chapter)
+        = link_to chapter_summary.group_count, path
       td
-        = link_to chapter_students_number(chapter), chapter_path(chapter)
+        = link_to chapter_summary.student_count, path

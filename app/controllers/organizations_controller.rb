@@ -2,9 +2,11 @@
 
 class OrganizationsController < ApplicationController
   include Pagy::Backend
+  has_scope :order, type: :hash
+
   def index
     authorize Organization
-    @pagy, @organizations = pagy policy_scope(Organization.includes(:chapters))
+    @pagy, @organizations = pagy apply_scopes(policy_scope(OrganizationSummary, policy_scope_class: OrganizationPolicy::Scope))
   end
 
   def new
@@ -20,9 +22,9 @@ class OrganizationsController < ApplicationController
   end
 
   def show
-    @organization = Organization.includes(chapters: { groups: [:students] }).find params[:id]
-    @pagy, @chapters = pagy @organization.chapters
+    @organization = Organization.find params[:id]
     authorize @organization
+    @pagy, @chapters = pagy ChapterSummary.where organization_id: params[:id]
   end
 
   def add_member

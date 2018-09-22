@@ -24,6 +24,8 @@ class Student < ApplicationRecord
 
   scope :by_organization, ->(organization_id) { where organization_id: organization_id }
 
+  scope :order_by_group_name, ->(sorting) { joins(:group).order("groups.group_name #{sorting == 'desc' ? 'DESC' : 'ASC'}") }
+
   def proper_name
     "#{last_name}, #{first_name}"
   end

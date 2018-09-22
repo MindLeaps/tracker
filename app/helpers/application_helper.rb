@@ -11,12 +11,20 @@ module ApplicationHelper
     group.chapter_name || 'None'
   end
 
+  def group_summary_chapter_organization_name(group)
+    "#{group.chapter_name} - #{group.organization_name}"
+  end
+
   def order_for(order_key)
     current_scopes.dig :order, order_key
   end
 
   def order_parameters(order_key)
     { order: { order_key => order_for(order_key) == 'asc' ? :desc : :asc } }
+  end
+
+  def custom_order_parameter(order_key)
+    { order_key => current_scopes.dig(order_key) == 'asc' ? :desc : :asc }
   end
 
   def order_icon(order_key)
@@ -31,7 +39,7 @@ module ApplicationHelper
   end
 
   def chapter_students_number(chapter)
-    chapter.groups.reduce(0) { |acc, elem| acc + elem.students.length }
+    chapter.groups.reduce(0) { |acc, elem| acc + elem.students.exclude_deleted.length }
   end
 
   def user_image(user, size = 40)
