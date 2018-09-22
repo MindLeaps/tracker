@@ -9,6 +9,13 @@ RSpec.describe GroupSummary, type: :model do
     end
   end
 
+  describe 'finding by id' do
+    it 'finds the group summary by group id' do
+      group = create :group
+      expect(GroupSummary.find(group.id).group_name).to eq group.group_name
+    end
+  end
+
   describe 'fetching all group summaries' do
     before :each do
       groups = create_list :group, 3

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class GroupSummary < ApplicationRecord
+class OrganizationSummary < ApplicationRecord
   self.primary_key = :id
 
   def readonly?

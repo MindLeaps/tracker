@@ -348,6 +348,19 @@ ALTER SEQUENCE public.lessons_id_seq OWNED BY public.lessons.id;
 
 
 --
+-- Name: organization_summaries; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.organization_summaries AS
+SELECT
+    NULL::integer AS id,
+    NULL::character varying AS organization_name,
+    NULL::bigint AS chapter_count,
+    NULL::timestamp without time zone AS updated_at,
+    NULL::timestamp without time zone AS created_at;
+
+
+--
 -- Name: organizations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1161,6 +1174,25 @@ CREATE OR REPLACE VIEW public.group_summaries AS
 
 
 --
+-- Name: organization_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.organization_summaries AS
+ SELECT o.id,
+    o.organization_name,
+    sum(
+        CASE
+            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN 1
+            ELSE 0
+        END) AS chapter_count,
+    o.updated_at,
+    o.created_at
+   FROM (public.organizations o
+     LEFT JOIN public.chapters c ON ((c.organization_id = o.id)))
+  GROUP BY o.id;
+
+
+--
 -- Name: assignments assignments_skill_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1397,6 +1429,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171117013830'),
 ('20180918024043'),
 ('20180921222814'),
-('20180922163840');
+('20180922163840'),
+('20180922202158');
 
 

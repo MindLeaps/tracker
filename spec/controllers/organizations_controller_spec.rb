@@ -17,8 +17,8 @@ RSpec.describe OrganizationsController, type: :controller do
       get :index
       expect(response).to be_successful
 
-      expect(assigns(:organizations)).to include organization1
-      expect(assigns(:organizations)).to include organization2
+      expect(assigns(:organizations).map(&:organization_name))
+        .to include organization1.organization_name, organization2.organization_name
     end
   end
 

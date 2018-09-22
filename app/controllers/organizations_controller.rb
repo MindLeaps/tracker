@@ -2,9 +2,11 @@
 
 class OrganizationsController < ApplicationController
   include Pagy::Backend
+  has_scope :order, type: :hash
+
   def index
     authorize Organization
-    @pagy, @organizations = pagy policy_scope(Organization.includes(:chapters))
+    @pagy, @organizations = pagy apply_scopes(policy_scope(OrganizationSummary, policy_scope_class: OrganizationPolicy::Scope))
   end
 
   def new
