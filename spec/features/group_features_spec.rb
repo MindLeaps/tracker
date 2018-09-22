@@ -21,7 +21,7 @@ RSpec.describe 'User interacts with Groups' do
       expect(page).to have_content groups[1].group_name
       expect(page).to have_content groups[2].group_name
 
-      expect(page.all('.resource-row td:last-child').map(&:text)).to include '3', '2', '0'
+      expect(page.all('.resource-row td:last-child').map(&:text).sort).to eq %w[3 2 0].sort
     end
   end
 

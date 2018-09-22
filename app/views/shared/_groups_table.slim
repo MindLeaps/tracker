@@ -5,17 +5,16 @@ table class="mdl-data-table mdl-js-data-table resource-table"
       th
         | #
       == render partial: 'shared/ordered_column', locals: { order_key: :group_name, column_name: 'Group Name' }
-      th class="mdl-data-table__cell--non-numeric"
-        | Chapter
-      th
-        | Number of Students
-  - groups.each_with_index do |group, i|
+      == render partial: 'shared/ordered_column', locals: { order_key: :chapter_name, column_name: 'Chapter - Organization' }
+      == render partial: 'shared/ordered_column', locals: { order_key: :student_count, column_name: 'Number of Students', numeric: true }
+  - groups.each_with_index do |group_summary, i|
+    - path = group_path group_summary.id
     tr class="resource-row group-row"
       td
-        = link_to pagy.from + i, group_path(group)
+        = link_to pagy.from + i, path
       td.mdl-data-table__cell--non-numeric
-        = link_to group.group_name, group
+        = link_to group_summary.group_name, path
       td.mdl-data-table__cell--non-numeric
-        = link_to group_chapter_name(group), group
+        = link_to group_summary_chapter_organization_name(group_summary), path
       td
-        = link_to group.students.exclude_deleted.length, group
+        = link_to group_summary.student_count, path

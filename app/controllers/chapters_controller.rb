@@ -26,7 +26,7 @@ class ChaptersController < ApplicationController
   def show
     @chapter = Chapter.find params.require :id
     authorize @chapter
-    @pagy, @groups = pagy apply_scopes(@chapter.groups)
+    @pagy, @groups = pagy apply_scopes(GroupSummary.where(chapter_id: @chapter.id))
   end
 
   def edit

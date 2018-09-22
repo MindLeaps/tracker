@@ -265,6 +265,22 @@ ALTER SEQUENCE public.grades_id_seq OWNED BY public.grades.id;
 
 
 --
+-- Name: group_summaries; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.group_summaries AS
+SELECT
+    NULL::integer AS id,
+    NULL::character varying AS group_name,
+    NULL::timestamp without time zone AS deleted_at,
+    NULL::integer AS chapter_id,
+    NULL::character varying AS chapter_name,
+    NULL::integer AS organization_id,
+    NULL::character varying AS organization_name,
+    NULL::bigint AS student_count;
+
+
+--
 -- Name: groups; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1097,7 +1113,7 @@ CREATE OR REPLACE VIEW public.chapter_summaries AS
             g.chapter_id,
             sum(
                 CASE
-                    WHEN (s.deleted_at IS NULL) THEN 1
+                    WHEN ((s.id IS NOT NULL) AND (s.deleted_at IS NULL)) THEN 1
                     ELSE 0
                 END) AS student_count
            FROM (public.groups g
@@ -1118,6 +1134,30 @@ CREATE OR REPLACE VIEW public.chapter_summaries AS
      LEFT JOIN group_student_count ON ((group_student_count.chapter_id = c.id)))
      LEFT JOIN public.organizations o ON ((c.organization_id = o.id)))
   GROUP BY c.id, o.id;
+
+
+--
+-- Name: group_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.group_summaries AS
+ SELECT g.id,
+    g.group_name,
+    g.deleted_at,
+    g.chapter_id,
+    c.chapter_name,
+    o.id AS organization_id,
+    o.organization_name,
+    sum(
+        CASE
+            WHEN ((s.id IS NOT NULL) AND (s.deleted_at IS NULL)) THEN 1
+            ELSE 0
+        END) AS student_count
+   FROM (((public.groups g
+     LEFT JOIN public.students s ON ((g.id = s.group_id)))
+     LEFT JOIN public.chapters c ON ((g.chapter_id = c.id)))
+     LEFT JOIN public.organizations o ON ((c.organization_id = o.id)))
+  GROUP BY g.id, c.id, o.id;
 
 
 --
@@ -1356,6 +1396,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20171115044314'),
 ('20171117013830'),
 ('20180918024043'),
-('20180921222814');
+('20180921222814'),
+('20180922163840');
 
 

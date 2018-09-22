@@ -11,6 +11,10 @@ module ApplicationHelper
     group.chapter_name || 'None'
   end
 
+  def group_summary_chapter_organization_name(group)
+    "#{group.chapter_name} - #{group.organization_name}"
+  end
+
   def order_for(order_key)
     current_scopes.dig :order, order_key
   end

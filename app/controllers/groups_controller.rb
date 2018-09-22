@@ -8,7 +8,7 @@ class GroupsController < ApplicationController
   def index
     authorize Group
     @group = Group.new
-    @pagy, @groups = pagy policy_scope(apply_scopes(Group.includes(:chapter)))
+    @pagy, @groups = pagy policy_scope(apply_scopes(GroupSummary), policy_scope_class: GroupPolicy::Scope)
   end
 
   def new

@@ -41,7 +41,7 @@ table.resource-table {
   }
   tbody{
     td {
-      padding: 0 !important;
+      padding: 0;
     }
     .resource-row-link-small-padding {
       @include row-link;
