@@ -147,6 +147,23 @@ ALTER SEQUENCE public.authentication_tokens_id_seq OWNED BY public.authenticatio
 
 
 --
+-- Name: chapter_summaries; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.chapter_summaries AS
+SELECT
+    NULL::integer AS id,
+    NULL::character varying AS chapter_name,
+    NULL::integer AS organization_id,
+    NULL::character varying AS organization_name,
+    NULL::timestamp without time zone AS deleted_at,
+    NULL::bigint AS group_count,
+    NULL::integer AS student_count,
+    NULL::timestamp without time zone AS created_at,
+    NULL::timestamp without time zone AS updated_at;
+
+
+--
 -- Name: chapters; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1069,6 +1086,41 @@ CREATE OR REPLACE VIEW public.student_lesson_summaries AS
 
 
 --
+-- Name: chapter_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.chapter_summaries AS
+ WITH group_student_count AS (
+         SELECT g.id AS group_id,
+            g.group_name,
+            g.deleted_at,
+            g.chapter_id,
+            sum(
+                CASE
+                    WHEN (s.deleted_at IS NULL) THEN 1
+                    ELSE 0
+                END) AS student_count
+           FROM (public.groups g
+             LEFT JOIN public.students s ON ((g.id = s.group_id)))
+          WHERE (g.deleted_at IS NULL)
+          GROUP BY g.id
+        )
+ SELECT c.id,
+    c.chapter_name,
+    c.organization_id,
+    o.organization_name,
+    c.deleted_at,
+    count(group_student_count.group_id) AS group_count,
+    (COALESCE(sum(group_student_count.student_count), (0)::numeric))::integer AS student_count,
+    c.created_at,
+    c.updated_at
+   FROM ((public.chapters c
+     LEFT JOIN group_student_count ON ((group_student_count.chapter_id = c.id)))
+     LEFT JOIN public.organizations o ON ((c.organization_id = o.id)))
+  GROUP BY c.id, o.id;
+
+
+--
 -- Name: assignments assignments_skill_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1303,6 +1355,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170904171041'),
 ('20171115044314'),
 ('20171117013830'),
-('20180918024043');
+('20180918024043'),
+('20180921222814');
 
 

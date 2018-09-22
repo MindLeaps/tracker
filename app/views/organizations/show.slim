@@ -2,7 +2,7 @@
   = render partial: '/shared/header_content', locals: { back_button_url: organizations_path, back_tooltip: 'Back to Organizations', title: @organization.organization_name }
 
 .content-card
-  = render partial: 'shared/chapters_table', locals: {chapters: @organization.chapters, pagy: @pagy}
+  = render partial: 'shared/chapters_table', locals: {chapters: @chapters, pagy: @pagy}
 
 .content-card
   = render partial: 'shared/members_table', locals: {members: @organization.members}

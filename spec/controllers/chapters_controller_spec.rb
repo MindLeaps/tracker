@@ -18,8 +18,7 @@ RSpec.describe ChaptersController, type: :controller do
       get :index
       expect(response).to be_successful
 
-      expect(assigns(:chapters)).to include chapter1
-      expect(assigns(:chapters)).to include chapter2
+      expect(assigns(:chapters).map(&:chapter_name)).to include chapter1.chapter_name, chapter2.chapter_name
     end
   end
 

@@ -20,9 +20,9 @@ class OrganizationsController < ApplicationController
   end
 
   def show
-    @organization = Organization.includes(chapters: { groups: [:students] }).find params[:id]
-    @pagy, @chapters = pagy @organization.chapters
+    @organization = Organization.find params[:id]
     authorize @organization
+    @pagy, @chapters = pagy ChapterSummary.where organization_id: params[:id]
   end
 
   def add_member

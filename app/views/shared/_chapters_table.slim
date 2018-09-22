@@ -11,15 +11,16 @@ table class='mdl-data-table mdl-js-data-table resource-table'
         | Groups in Chapter
       th
         | Students in Chapter
-  - chapters.each_with_index do |chapter, i|
+  - chapters.each_with_index do |chapter_summary, i|
+    - path = chapter_path(chapter_summary.id)
     tr class='resource-row'
       td
-        = link_to pagy.from + i, chapter_path(chapter)
+        = link_to pagy.from + i, path
       td class="mdl-data-table__cell--non-numeric"
-        = link_to chapter.chapter_name, chapter_path(chapter)
+        = link_to chapter_summary.chapter_name, path
       td class="mdl-data-table__cell--non-numeric"
-        = link_to chapter_organization_name(chapter), chapter_path(chapter)
+        = link_to chapter_summary.organization_name, path
       td
-        = link_to chapter.groups.length, chapter_path(chapter)
+        = link_to chapter_summary.group_count, path
       td
-        = link_to chapter_students_number(chapter), chapter_path(chapter)
+        = link_to chapter_summary.student_count, path
