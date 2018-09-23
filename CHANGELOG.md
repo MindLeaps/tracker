@@ -1,4 +1,4 @@
-## Unreleased
+## 0.8.0
 - Caching drawer navigation based on request path
 - Using "Unknown" instead of "Unactive User"
 - Improved Lesson View with average mark and graded skills
