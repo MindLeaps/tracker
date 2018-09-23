@@ -1,4 +1,5 @@
 ## Unreleased
+- Using "Unknown" instead of "Unactive User"
 - Improved Lesson View with average mark and graded skills
 - Sorting/Ordering by column values in resource tables
 - Counting only undeleted students in group and chapter student count
