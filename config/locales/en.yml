@@ -63,6 +63,7 @@ en:
   user_added: User with email %{email} added.
   prev_page: Previous Page
   next_page: Next Page
+  name_unknown: Unknown
 
   errors:
     messages:

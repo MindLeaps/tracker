@@ -53,7 +53,7 @@ module ApplicationHelper
   end
 
   def user_name(user)
-    user.name || 'Inactive User'
+    user.name || t(:name_unknown)
   end
 
   def name_or_email(user)
