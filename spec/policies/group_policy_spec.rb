@@ -219,37 +219,43 @@ RSpec.describe GroupPolicy do
 
   describe 'scope' do
     subject(:result) { GroupPolicy::Scope.new(current_user, Group).resolve }
+    subject(:summary_result) { GroupPolicy::Scope.new(current_user, GroupSummary).resolve }
     let(:groups) { create_list :group, 5 }
+    let(:summaries) { GroupSummary.all }
 
     context 'As a Super Administrator' do
       let(:current_user) { create :super_admin }
 
       it 'returns all groups' do
         expect(result).to include(*groups)
+        expect(summary_result).to include(*summaries)
       end
     end
 
     context 'As a Global Administrator' do
-      let(:current_user) { create :super_admin }
+      let(:current_user) { create :global_admin }
 
       it 'returns all groups' do
         expect(result).to include(*groups)
+        expect(summary_result).to include(*summaries)
       end
     end
 
     context 'As a Global Guest' do
-      let(:current_user) { create :super_admin }
+      let(:current_user) { create :global_guest }
 
       it 'returns all groups' do
         expect(result).to include(*groups)
+        expect(summary_result).to include(*summaries)
       end
     end
 
     context 'As a Global Researcher' do
-      let(:current_user) { create :super_admin }
+      let(:current_user) { create :global_researcher }
 
       it 'returns all groups' do
         expect(result).to include(*groups)
+        expect(summary_result).to include(*summaries)
       end
     end
 
@@ -260,6 +266,7 @@ RSpec.describe GroupPolicy do
       it 'returns only groups from own organization' do
         expect(result).to include groups[0], another_group
         expect(result.length).to eq 2
+        expect(summary_result.length).to eq 2
       end
     end
 
@@ -270,6 +277,7 @@ RSpec.describe GroupPolicy do
       it 'returns only groups from own organization' do
         expect(result).to include groups[1], another_group
         expect(result.length).to eq 2
+        expect(summary_result.length).to eq 2
       end
     end
 
@@ -280,6 +288,7 @@ RSpec.describe GroupPolicy do
       it 'returns only groups from own organization' do
         expect(result).to include groups[2], another_group
         expect(result.length).to eq 2
+        expect(summary_result.length).to eq 2
       end
     end
 
@@ -290,6 +299,7 @@ RSpec.describe GroupPolicy do
       it 'returns only groups from own organization' do
         expect(result).to include groups[3], another_group
         expect(result.length).to eq 2
+        expect(summary_result.length).to eq 2
       end
     end
 
@@ -300,6 +310,7 @@ RSpec.describe GroupPolicy do
         current_user.add_role :researcher, groups[1].chapter.organization
         expect(result).to include groups[0], groups[1]
         expect(result.length).to eq 2
+        expect(summary_result.length).to eq 2
       end
     end
   end

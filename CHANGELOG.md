@@ -1,3 +1,6 @@
+## 0.8.1
+- Fix Scoping for GroupSummary
+
 ## 0.8.0
 - Caching drawer navigation based on request path
 - Using "Unknown" instead of "Unactive User"
