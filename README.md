@@ -45,10 +45,36 @@ This software is responsible for keeping track of Students and Groups and for fa
     rake db:seed
     ```
 
-8. Start the rails server with Google client ID and secret in the environment for OAuth.
+8. Uncomment the following in BaseController to skip auth in development
+
+    ```
+    /app/controllers/base_controller.rb
+    
+      # Uncomment this to skip authentication in development
+      # def authenticate_user!
+      #   return true if Rails.env.development?
+      #
+      #   raise SecurityError
+      # end
+      #
+      # def current_user
+      #   raise SecurityError unless Rails.env.development?
+      #
+      #   user = User.find_or_create_by!(email: 'test@example.com')
+      #   user.add_role :super_admin
+      #   user
+      # end
+    ```
+    
+9. Start the app with
+    ```sh
+        > rails s
+    ```
+    
+10. Alternatively, if you have google authentication set up, you don't have to skip authentication and Start the rails server with Google client ID and secret in the environment for OAuth.
     ```sh
     GOOGLE_CLIENT_ID={your_google_client_id} GOOGLE_CLIENT_SECRET={your_google_client_secret} rails s
-    ```
+    ``` 
     
 Finally, point your browser to http://localhost:3000
 
