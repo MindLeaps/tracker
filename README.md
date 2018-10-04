@@ -44,13 +44,27 @@ This software is responsible for keeping track of Students in the field and thei
     brew install phantomjs
     ```
 
-8. Create and seed the database
+8. Create and migrate the database
     ```sh
     rake db:create
+    rake db:migrate
+    ```
+    
+9. Seed the database
+
+    IF you have the dump file, use pg_restore
+    
+    ```sh
+    pg_restore -d tracker_development <PATH TO DUMP FILE>
+    ```
+    
+    OR seed some random data
+    
+    ```sh
     rake db:seed
     ```
 
-9. Uncomment the following in BaseController to skip auth in development
+10. Uncomment the following in BaseController to skip auth in development
 
     ```
     /app/controllers/base_controller.rb
@@ -71,12 +85,12 @@ This software is responsible for keeping track of Students in the field and thei
       # end
     ```
     
-10. Start the app with
+11. Start the app with
     ```sh
         > rails s
     ```
     
-11. Alternatively, if you have google authentication set up, you don't have to skip authentication and Start the rails server with Google client ID and secret in the environment for OAuth.
+12. Alternatively, if you have google authentication set up, you don't have to skip authentication and Start the rails server with Google client ID and secret in the environment for OAuth.
     ```sh
     GOOGLE_CLIENT_ID={your_google_client_id} GOOGLE_CLIENT_SECRET={your_google_client_secret} rails s
     ``` 
