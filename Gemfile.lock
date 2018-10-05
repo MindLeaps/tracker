@@ -222,7 +222,7 @@ GEM
     parser (2.5.1.2)
       ast (~> 2.4.0)
     pg (1.1.3)
-    pg_query (1.0.2)
+    pg_query (1.1.0)
     pghero (2.2.0)
       activerecord
     poltergeist (1.18.1)
