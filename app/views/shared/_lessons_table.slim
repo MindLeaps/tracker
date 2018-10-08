@@ -7,6 +7,8 @@ table class='mdl-data-table mdl-js-data-table resource-table'
       th class='mdl-data-table__cell--non-numeric' Group Name
       == render partial: 'shared/ordered_column', locals: { order_key: :date, column_name: 'Date' }
       th class='mdl-data-table__cell--non-numeric' Subject
+      th class='mdl-data-table__cell--non-numeric' Total Students
+      th class='mdl-data-table__cell--non-numeric' Graded Students
 
   - lessons.each_with_index do |lesson, i|
     tr class='resource-row'
@@ -18,3 +20,7 @@ table class='mdl-data-table mdl-js-data-table resource-table'
         = link_to lesson.date, lesson_path(lesson)
       td class='mdl-data-table__cell--non-numeric'
         = link_to lesson.subject.subject_name, lesson_path(lesson)
+      td class='mdl-data-table__cell--numeric'
+        = link_to lesson.group.students.count, group_path(lesson.group)
+      td class='mdl-data-table__cell--numeric'
+        = link_to lesson.group.students.select {|s| s.grades.count > 0 }.count, group_path(lesson.group)
