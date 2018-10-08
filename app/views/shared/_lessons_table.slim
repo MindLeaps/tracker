@@ -7,6 +7,7 @@ table class='mdl-data-table mdl-js-data-table resource-table'
       th class='mdl-data-table__cell--non-numeric' Group Name
       == render partial: 'shared/ordered_column', locals: { order_key: :date, column_name: 'Date' }
       th class='mdl-data-table__cell--non-numeric' Subject
+      th class='mdl-data-table__cell--non-numeric' Average Mark
 
   - lessons.each_with_index do |lesson, i|
     tr class='resource-row'
@@ -18,3 +19,5 @@ table class='mdl-data-table mdl-js-data-table resource-table'
         = link_to lesson.date, lesson_path(lesson)
       td class='mdl-data-table__cell--non-numeric'
         = link_to lesson.subject.subject_name, lesson_path(lesson)
+      td class='mdl-data-table__cell--numeric'
+        = link_to lesson.average_mark, lesson_path(lesson)

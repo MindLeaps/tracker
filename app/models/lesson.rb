@@ -31,4 +31,9 @@ class Lesson < ApplicationRecord
   def student_absent?(student)
     absences.any? { |absence| absence.student_id == student.id }
   end
+
+  def average_mark
+    marks = group.students.map(&:average_mark)
+    (marks.sum.to_f / marks.size).round(2)
+  end
 end

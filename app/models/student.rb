@@ -55,6 +55,11 @@ class Student < ApplicationRecord
     end
   end
 
+  def average_mark
+    marks = grades.map(&:grade_descriptor).map(&:mark).flatten
+    (marks.sum.to_f / marks.size).round(2)
+  end
+
   private
 
   def current_grades_for_lesson(lesson_id)
