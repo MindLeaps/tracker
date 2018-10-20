@@ -14,6 +14,12 @@ FactoryBot.define do
         subject = evaluator.subject || create(:subject)
         create :assignment, skill: skill, subject: subject
       end
+
+      factory :skill_with_descriptors do
+        after(:create) do |skill|
+          (1..7).each { |mark| create :grade_descriptor, mark: mark, skill: skill }
+        end
+      end
     end
   end
 end
