@@ -25,18 +25,46 @@ RSpec.describe 'User interacts with Students' do
     end
   end
 
-  describe 'Show student' do
+  describe 'Clicking on a student shows their performance and details' do
     before :each do
-      @org = create :organization
-      create :student, first_name: 'Umberto', last_name: 'Eco', mlid: 'ECO-123', organization: @org
+      create :graded_student, first_name: 'Umberto', last_name: 'Eco', mlid: 'ECO-123', grades: {
+        'Memorization' => [1, 5, 7],
+        'Grit' => [2, 3, 3]
+      }
     end
 
-    it 'shows Umbeto Eco\'s details' do
+    it 'shows Umbeto Eco\'s performance and details' do
       visit '/students'
       click_link 'Umberto'
       expect(page).to have_content 'Umberto'
       expect(page).to have_content 'Eco'
-      expect(page).to have_content 'ECO-123'
+      expect(page).to have_content 'Performance'
+      expect(page).to have_content '1.5'
+      expect(page).to have_content '4.0'
+      expect(page).to have_content '5.0'
+
+      click_link 'Details'
+      expect(page).to have_content 'Date of Birth'
+      expect(page).to have_content 'MLID'
+      expect(page).to have_content 'Gender'
+
+      click_link 'Performance'
+      expect(page).to have_content '1.5'
+      expect(page).to have_content '4.0'
+      expect(page).to have_content '5.0'
+    end
+  end
+
+  describe 'Clicking on the details tab shows student details' do
+    before :each do
+      create :student, first_name: 'Umberto', last_name: 'Eco'
+    end
+
+    it 'shows Umberto Eco\'s details' do
+      visit '/students'
+      click_link 'Umberto'
+      click_link 'Details'
+      expect(page).to have_content 'Eco, Umberto - Details'
     end
   end
 
@@ -55,6 +83,7 @@ RSpec.describe 'User interacts with Students' do
 
       expect(page).to have_content 'Rick'
       expect(page).to have_content 'Sanchez'
+      expect(page).to have_content 'Details'
       expect(page).to have_content 'Student "Sanchez, Rick" created.'
       expect(page).to have_link 'Create another', href: new_student_path
     end

@@ -1,5 +1,5 @@
 - content_for :header_content do
-  = render layout: '/shared/header_content', locals: { back_button_url: students_path, back_tooltip: 'Back to Students', title: @student.proper_name } do
+  = render layout: '/shared/header_content', locals: { back_button_url: students_path, back_tooltip: 'Back to Students', title: "#{@student.proper_name} - Details" } do
     = render partial: '/shared/main_header_button', locals: {href: student_student_images_path(@student), title: 'Student Images'}
 
 - content_for :header_actions do
@@ -12,33 +12,12 @@
   .mdl-tooltip data-mdl-for='delete-button'
     | Delete Student
 
-- @student_lessons_details_by_subject.each do |subject_id, lessons_details|
-  - subject = @subjects.find(subject_id)
-  .mdl-card.mdl-shadow--2dp.content-card--full
-    .mdl-card__title.primary
-      = "#{subject.subject_name} - #{subject.organization.organization_name}"
-    table class='mdl-data-table mdl-js-data-table resource-table'
-      thead
-        tr
-          th #
-          th class='mdl-data-table__cell--non-numeric' Date
-          th Average Mark
-          - subject.skills.each do |skill|
-            th
-              = skill.skill_name
-
-      tbody.no-links
-        - lessons_details.each_with_index do |lesson_detail, i|
-          tr
-            td
-              = i + 1
-            td class='mdl-data-table__cell--non-numeric'
-              = lesson_detail.date
-            td
-              = lesson_detail.average_mark
-            - subject.skills.each do |skill|
-              td
-                = lesson_detail.skill_marks["#{skill.id}"].try :[], 'mark'
+.mdl-tabs.mdl-js-tabs.mdl-js-ripple-effect
+  .mdl-tabs__tab-bar
+    a href=performance_student_path(@student) class='mdl-tabs__tab'
+      | Performance
+    a class='mdl-tabs__tab is-active disabled'
+      | Details
 
 div class="content-card--full"
   - if @student.profile_image

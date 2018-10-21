@@ -21,7 +21,7 @@ FactoryBot.define do
       group { create :group, chapter: create(:chapter, organization: organization) }
       after :create do |student, evaluator|
         unless evaluator.grades.empty?
-          create(
+          subject = create(
             :subject_with_skills,
             skill_names: evaluator.grades.keys,
             organization: student.organization
@@ -29,6 +29,7 @@ FactoryBot.define do
           (0..evaluator.grades.values.map(&:length).max - 1).each do |i|
             create(
               :lesson_with_grades,
+              subject: subject,
               group: student.group,
               date: 1.year.ago + i.days,
               student_grades: { student.id => evaluator.grades.transform_values { |v| v[i] } }
