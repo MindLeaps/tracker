@@ -36,7 +36,7 @@ RSpec.describe 'User interacts with student images' do
 
       first('.student-image-card').click_button 'Set as Profile'
 
-      expect(page.current_path).to eq student_path @student
+      expect(page.current_path).to eq details_student_path @student
       expect(page).to have_selector 'img.student-profile-image'
 
       visit students_path

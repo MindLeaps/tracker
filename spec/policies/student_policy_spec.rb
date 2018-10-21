@@ -21,7 +21,8 @@ RSpec.describe StudentPolicy do
       context 'on any existing student' do
         let(:resource) { create :student }
 
-        it { is_expected.to permit_action :show }
+        it { is_expected.to permit_action :performance }
+        it { is_expected.to permit_action :details }
         it { is_expected.to permit_action :update }
         it { is_expected.to permit_action :destroy }
         it { is_expected.to permit_action :undelete }
@@ -47,7 +48,8 @@ RSpec.describe StudentPolicy do
       context 'on a student in user\'s own organization' do
         let(:resource) { create :student, organization: org }
 
-        it { is_expected.to permit_action :show }
+        it { is_expected.to permit_action :performance }
+        it { is_expected.to permit_action :details }
         it { is_expected.to permit_action :update }
         it { is_expected.to permit_action :destroy }
         it { is_expected.to permit_action :undelete }
@@ -56,7 +58,8 @@ RSpec.describe StudentPolicy do
       context 'on a student outside of users\'s own organization' do
         let(:resource) { create :student, organization: org2 }
 
-        it { is_expected.not_to permit_action :show }
+        it { is_expected.not_to permit_action :performance }
+        it { is_expected.not_to permit_action :details }
         it { is_expected.not_to permit_action :update }
         it { is_expected.not_to permit_action :destroy }
         it { is_expected.not_to permit_action :undelete }
@@ -88,7 +91,8 @@ RSpec.describe StudentPolicy do
       context 'on a student in user\'s own organization' do
         let(:resource) { create :student, organization: org }
 
-        it { is_expected.to permit_action :show }
+        it { is_expected.to permit_action :performance }
+        it { is_expected.to permit_action :details }
         it { is_expected.not_to permit_action :update }
         it { is_expected.not_to permit_action :destroy }
         it { is_expected.not_to permit_action :undelete }
@@ -97,7 +101,8 @@ RSpec.describe StudentPolicy do
       context 'on a student outside of users\'s own organization' do
         let(:resource) { create :student, organization: org2 }
 
-        it { is_expected.not_to permit_action :show }
+        it { is_expected.not_to permit_action :performance }
+        it { is_expected.not_to permit_action :details }
         it { is_expected.not_to permit_action :update }
         it { is_expected.not_to permit_action :destroy }
         it { is_expected.not_to permit_action :undelete }

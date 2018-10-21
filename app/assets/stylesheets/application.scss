@@ -116,3 +116,7 @@
 .overflow-container {
   overflow: auto;
 }
+
+.mdl-tabs__tab.is-active {
+  pointer-events: none;
+}

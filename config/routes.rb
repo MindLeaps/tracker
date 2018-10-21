@@ -39,12 +39,17 @@ Rails.application.routes.draw do
   resources :groups, only: %i[index new create show edit update destroy] do
     member { post :undelete }
   end
-  resources :students, only: %i[index new create show edit update destroy] do
-    resources :student_images, only: %i[index create]
+
+  resources :students, only: %i[index new create edit update destroy] do
     member do
+      get 'performance'
+      get 'details'
       post :undelete
     end
+    resources :student_images, only: %i[index create]
   end
+  get '/students/:id', to: redirect('/students/%{id}/performance')
+
   resources :lessons, only: %i[index new create show] do
     resources :students, controller: :student_lessons, only: %i[show update]
   end

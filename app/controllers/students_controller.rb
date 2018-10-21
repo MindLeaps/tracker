@@ -19,13 +19,20 @@ class StudentsController < ApplicationController
   def create
     @student = Student.new student_params
     authorize @student
-    return link_notice_and_redirect t(:student_created, name: @student.proper_name), new_student_path, I18n.t(:create_another), @student if @student.save
+    # rubocop:disable Metrics/LineLength
+    return link_notice_and_redirect t(:student_created, name: @student.proper_name), new_student_path, I18n.t(:create_another), details_student_path(@student) if @student.save
 
+    # rubocop:enable Metrics/LineLength
     render :new
   end
 
-  def show
-    @student = Student.includes(:profile_image, :group).find params[:id]
+  def details
+    @student = Student.includes(:profile_image, :group).find params.require(:id)
+    authorize @student
+  end
+
+  def performance
+    @student = Student.find params.require(:id)
     authorize @student
     @student_lessons_details_by_subject = StudentLessonDetail.where(student_id: params[:id]).order(:date).all.group_by(&:subject_id)
     @subjects = Subject.includes(:skills, :organization).where(id: @student_lessons_details_by_subject.keys)
@@ -40,7 +47,7 @@ class StudentsController < ApplicationController
   def update
     @student = Student.includes(:organization).find params[:id]
     authorize @student
-    return redirect_to @student if @student.update student_params
+    return redirect_to details_student_path(@student) if @student.update student_params
 
     render :edit
   end
