@@ -1,3 +1,6 @@
+## Unreleased
+- Displaying student performance on student page
+
 ## 0.8.1
 - Fix Scoping for GroupSummary
 

@@ -27,6 +27,8 @@ class StudentsController < ApplicationController
   def show
     @student = Student.includes(:profile_image, :group).find params[:id]
     authorize @student
+    @student_lessons_details_by_subject = StudentLessonDetail.where(student_id: params[:id]).order(:date).all.group_by(&:subject_id)
+    @subjects = Subject.includes(:skills, :organization).where(id: @student_lessons_details_by_subject.keys)
   end
 
   def edit
