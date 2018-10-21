@@ -17,28 +17,29 @@
   .mdl-card.mdl-shadow--2dp.content-card--full
     .mdl-card__title.primary
       = "#{subject.subject_name} - #{subject.organization.organization_name}"
-    table class='mdl-data-table mdl-js-data-table resource-table'
-      thead
-        tr
-          th #
-          th class='mdl-data-table__cell--non-numeric' Date
-          th Average Mark
-          - subject.skills.each do |skill|
-            th
-              = skill.skill_name
-
-      tbody.no-links
-        - lessons_details.each_with_index do |lesson_detail, i|
+    .overflow-container
+      table class='mdl-data-table mdl-js-data-table resource-table'
+        thead
           tr
-            td
-              = i + 1
-            td class='mdl-data-table__cell--non-numeric'
-              = lesson_detail.date
-            td
-              = lesson_detail.average_mark
+            th #
+            th class='mdl-data-table__cell--non-numeric' Date
+            th Average Mark
             - subject.skills.each do |skill|
+              th
+                = skill.skill_name
+
+        tbody.no-links
+          - lessons_details.each_with_index do |lesson_detail, i|
+            tr
               td
-                = lesson_detail.skill_marks["#{skill.id}"].try :[], 'mark'
+                = i + 1
+              td class='mdl-data-table__cell--non-numeric'
+                = lesson_detail.date
+              td
+                = lesson_detail.average_mark
+              - subject.skills.each do |skill|
+                td
+                  = lesson_detail.skill_marks["#{skill.id}"].try :[], 'mark'
 
 div class="content-card--full"
   - if @student.profile_image
