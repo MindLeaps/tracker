@@ -1,4 +1,5 @@
 ## Unreleased
+- Separated student performance and details into separate tabs
 - Displaying student performance on student page
 
 ## 0.8.1
