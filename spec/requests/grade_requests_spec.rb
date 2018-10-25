@@ -68,6 +68,8 @@ RSpec.describe 'Grade API', type: :request do
       @grade5 = create :grade, lesson: @lesson2, deleted_at: Time.zone.now
       @grade6 = create :grade, student: @deleted_student, lesson: @lesson1
       @grade7 = create :grade, student: @deleted_student, lesson: @lesson2
+
+      create_list :grade, 3, created_at: 5.months.ago, updated_at: 5.months.ago # we should ignore grades older than 4 months
     end
 
     it 'responds with a list of grades excluding the grades of deleted students' do

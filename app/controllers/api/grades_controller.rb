@@ -11,7 +11,7 @@ module Api
     end
 
     def index
-      @grades = apply_scopes(Grade).all
+      @grades = apply_scopes(Grade).where('grades.updated_at > :datetime', datetime: 4.months.ago).all
       respond_with :api, @grades, meta: { timestamp: Time.zone.now }, include: included_params
     end
 
