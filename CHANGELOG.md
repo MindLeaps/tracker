@@ -1,4 +1,5 @@
 ## Unreleased
+- GET /grades API returns only grades that were updated within the last 4 months 
 - Separated student performance and details into separate tabs
 - Displaying student performance on student page
 
