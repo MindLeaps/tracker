@@ -10,10 +10,10 @@ unless File.basename($PROGRAM_NAME) == 'rake' # we don't want to setup this stuf
     else
       config.fog_provider = 'fog/aws'
       config.fog_credentials = {
-        provider:              'AWS',
+        provider: 'AWS',
         aws_access_key_id: Rails.application.secrets.aws_access_key_id,
         aws_secret_access_key: Rails.application.secrets.aws_secret_access_key,
-        region:                Rails.application.secrets.aws_region
+        region: Rails.application.secrets.aws_region
       }
       config.fog_directory = Rails.application.secrets.aws_bucket_name
       config.fog_public = true
