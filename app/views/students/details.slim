@@ -1,6 +1,5 @@
 - content_for :header_content do
   = render layout: '/shared/header_content', locals: { back_button_url: students_path, back_tooltip: 'Back to Students', title: "#{@student.proper_name} - Details" } do
-    = render partial: '/shared/main_header_button', locals: {href: student_student_images_path(@student), title: 'Student Images'}
 
 - content_for :header_actions do
   a href=edit_student_path(@student) id='edit-button' class='mdl-button mdl-js-button mdl-button--icon'
@@ -18,6 +17,8 @@
       | Performance
     a class='mdl-tabs__tab is-active disabled'
       | Details
+    a href=student_student_images_path(@student) class='mdl-tabs__tab'
+      | Images
 
 div class="content-card--full"
   - if @student.profile_image

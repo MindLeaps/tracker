@@ -1,16 +1,22 @@
 - content_for :header_content do
-  = render partial: '/shared/header_content', locals: { back_button_url: student_path(@student), back_tooltip: "Back to #{@student.proper_name}", title: "#{@student.proper_name} Images" }
+  = render layout: '/shared/header_content', locals: { back_button_url: students_path, back_tooltip: 'Back to Students', title: "#{@student.proper_name} - Images" } do
 
-= t :student_has_no_images if @student.student_images.length == 0
+.mdl-tabs.mdl-js-tabs.mdl-js-ripple-effect
+  .mdl-tabs__tab-bar
+    a href=performance_student_path(@student) class='mdl-tabs__tab'
+      | Performance
+    a href=details_student_path(@student) class='mdl-tabs__tab'
+      | Details
+    a class='mdl-tabs__tab is-active disabled'
+      | Images
 
-
-.content-card--most
+.content-card--full
   - @student.student_images.each do |student_image|
-      .card.student-image-card
-        = image_tag student_image.image.medium.url, class: 'student-image card-img-top'
-        .card-block
-          = button_to 'Set as Profile', @student,method: :patch, params: { student: { profile_image_id: student_image.id } },
-                        class: 'btn btn-primary', disabled: @student.profile_image_id == student_image.id, form_class: 'center-text'
+    .card.student-image-card
+      = image_tag student_image.image.medium.url, class: 'student-image card-img-top'
+      .card-block
+        = button_to 'Set as Profile', @student,method: :patch, params: { student: { profile_image_id: student_image.id } },
+                      class: 'btn btn-primary', disabled: @student.profile_image_id == student_image.id, form_class: 'center-text'
 
   .image-upload
     = simple_form_for @new_image, url: {action: :create}, html: {multipart: true} do |f|

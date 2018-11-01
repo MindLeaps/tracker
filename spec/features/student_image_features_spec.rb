@@ -14,14 +14,14 @@ RSpec.describe 'User interacts with student images' do
 
     it 'displays all images belonging to a specific student' do
       visit student_path @student
-      click_link 'Student Images'
+      click_link 'Images'
 
       expect(page).to have_selector 'img.student-image', count: 2
     end
 
     it 'uploads and displays two new student images' do
       visit student_path @student
-      click_link 'Student Images'
+      click_link 'Images'
 
       attach_file 'student_image[image][]', [test_image_path, test_image_path]
       click_button 'Upload'
@@ -32,7 +32,7 @@ RSpec.describe 'User interacts with student images' do
 
     it 'displays the profile image in the student\'s profile and its thumbnail in the student list' do
       visit student_path @student
-      click_link 'Student Images'
+      click_link 'Images'
 
       first('.student-image-card').click_button 'Set as Profile'
 
