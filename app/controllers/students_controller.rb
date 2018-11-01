@@ -2,9 +2,10 @@
 
 class StudentsController < ApplicationController
   include Pagy::Backend
-  has_scope :exclude_deleted, type: :boolean, default: true
-  has_scope :order, type: :hash
-  has_scope :order_by_group_name
+  has_scope :exclude_deleted, only: :index, type: :boolean, default: true
+  has_scope :exclude_empty, only: :performance, type: :boolean, default: true
+  has_scope :order, only: :index, type: :hash
+  has_scope :order_by_group_name, only: :index
 
   def index
     authorize Student
@@ -34,7 +35,7 @@ class StudentsController < ApplicationController
   def performance
     @student = Student.find params.require(:id)
     authorize @student
-    @student_lessons_details_by_subject = StudentLessonDetail.where(student_id: params[:id]).order(:date).all.group_by(&:subject_id)
+    @student_lessons_details_by_subject = apply_scopes(StudentLessonDetail).where(student_id: params[:id]).order(:date).all.group_by(&:subject_id)
     @subjects = Subject.includes(:skills, :organization).where(id: @student_lessons_details_by_subject.keys)
   end
 
