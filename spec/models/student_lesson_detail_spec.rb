@@ -42,4 +42,15 @@ RSpec.describe StudentLessonDetail, type: :model do
       end
     end
   end
+
+  describe 'scopes' do
+    describe '#exclude_empty' do
+      before :each do
+        create :graded_student, grades: { 'Memorization' => [3, nil, nil, 1], 'Grit' => [2] }
+      end
+      it 'returns only records that have at least a single grade' do
+        expect(StudentLessonDetail.exclude_empty.all.length).to eq 2
+      end
+    end
+  end
 end

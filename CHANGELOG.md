@@ -1,3 +1,6 @@
+## Unreleased
+- Exclude empty student lessons, by default, in Student performance view
+
 ## 0.9.0
 - GET /grades API returns only grades that were updated within the last 4 months 
 - Separated student performance and details into separate tabs
