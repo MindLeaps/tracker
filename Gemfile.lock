@@ -218,7 +218,7 @@ GEM
       oauth2 (~> 1.1)
       omniauth (~> 1.2)
     orm_adapter (0.5.0)
-    pagy (1.1.0)
+    pagy (1.2.0)
     parallel (1.12.1)
     parser (2.5.3.0)
       ast (~> 2.4.0)
