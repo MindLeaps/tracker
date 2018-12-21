@@ -33,7 +33,7 @@ RSpec.describe 'User interacts with Students' do
       }
     end
 
-    it 'shows Umbeto Eco\'s performance and details' do
+    it 'shows Umberto Eco\'s performance and details' do
       visit '/students'
       click_link 'Umberto'
       expect(page).to have_content 'Umberto'
@@ -81,30 +81,34 @@ RSpec.describe 'User interacts with Students' do
       fill_in 'Last name', with: 'Sanchez'
       click_button 'Create'
 
-      expect(page).to have_content 'Rick'
-      expect(page).to have_content 'Sanchez'
-      expect(page).to have_content 'Details'
       expect(page).to have_content 'Student "Sanchez, Rick" created.'
       expect(page).to have_link 'Create another', href: new_student_path
+
+      created_student = Student.find_by! first_name: 'Rick', last_name: 'Sanchez'
+
+      expect(created_student.gender).to eq('M')
     end
   end
 
   describe 'Edit student' do
-    before :each do
-      create :organization
-      create :student, first_name: 'Editovsky', last_name: 'Editus'
-    end
+    let(:test_student) { create :student, first_name: 'Editovska', last_name: 'Editus', gender: 'F' }
 
-    it 'renames Editovsky', js: true do
+    it 'renames Editovska', js: true do
+      test_student
+
       visit '/students'
 
-      click_link 'Editovsky'
+      click_link 'Editovska'
       click_link 'edit-button'
-      fill_in 'First name', with: 'Editoredsky'
+      fill_in 'First name', with: 'Editoredska'
       click_button 'Update'
 
-      expect(page).to have_content 'Editoredsky'
+      expect(page).to have_content 'Editoredska'
       expect(page).to have_content 'Editus'
+      test_student.reload
+      expect(test_student.first_name).to eq('Editoredska')
+      expect(test_student.last_name).to eq('Editus')
+      expect(test_student.gender).to eq('F')
     end
   end
 
