@@ -29,7 +29,7 @@ class UsersController < ApplicationController
     @user = User.find params.require(:id)
     authorize @user
     @user.authentication_tokens.destroy_all
-    @token = Tiddle.create_and_return_token @user, request
+    @token = Tiddle.create_and_return_token @user, request, expires_in: 1.hour
     render :show, status: :created
   end
 

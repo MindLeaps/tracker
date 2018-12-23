@@ -57,11 +57,12 @@ RSpec.describe UsersController, type: :controller do
       sign_in @user
     end
 
-    it 'creates an authentication token for user' do
+    it 'creates an authentication token for the user with TTL of one hour' do
       post :create_api_token, params: {
         id: @user.id
       }
       expect(@user.reload.authentication_tokens.length).to eq(1)
+      expect(@user.reload.authentication_tokens[0].expires_in).to eq(3600)
     end
 
     it 'deletes the existing authentication tokens' do

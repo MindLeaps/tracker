@@ -137,7 +137,8 @@ CREATE TABLE public.authentication_tokens (
     ip_address character varying,
     user_agent character varying,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    expires_in integer
 );
 
 
@@ -1514,6 +1515,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180921222814'),
 ('20180922163840'),
 ('20180922202158'),
-('20181008005049');
+('20181008005049'),
+('20181223165012');
 
 
