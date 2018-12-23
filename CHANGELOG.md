@@ -1,4 +1,4 @@
-## Unreleased
+## 0.10.0
 - Enable users to generate a short lived API token on their profile page
 - Preserving Student gender when editing student details
 - Exclude empty student lessons, by default, in Student performance view
