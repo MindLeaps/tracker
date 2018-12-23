@@ -13,6 +13,10 @@ class UserPolicy < ApplicationPolicy
     user.global_administrator?
   end
 
+  def create_api_token?
+    user.id == record.id
+  end
+
   class Scope
     attr_reader :user, :scope
 

@@ -64,6 +64,7 @@ en:
   prev_page: Previous Page
   next_page: Next Page
   name_unknown: Unknown
+  create_api_token: Create API Token
 
   errors:
     messages:

@@ -27,6 +27,9 @@ Rails.application.routes.draw do
   end
 
   resources :users, only: %i[index new create show] do
+    member do
+      post :create_api_token
+    end
     resources :memberships, only: %i[update destroy] do
       put :update_global_role, on: :collection
       delete :revoke_global_role, on: :collection

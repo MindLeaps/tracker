@@ -50,4 +50,42 @@ RSpec.describe UsersController, type: :controller do
       expect(User.last.email).to eq 'new_user@example.com'
     end
   end
+
+  describe '#create_token' do
+    before :each do
+      @user = create :user
+      sign_in @user
+    end
+
+    it 'creates an authentication token for user' do
+      post :create_api_token, params: {
+        id: @user.id
+      }
+      expect(@user.reload.authentication_tokens.length).to eq(1)
+    end
+
+    it 'deletes the existing authentication tokens' do
+      create_list :authentication_token, 3, user: @user
+
+      post :create_api_token, params: {
+        id: @user.id
+      }
+
+      expect(@user.reload.authentication_tokens.length).to eq(1)
+    end
+
+    context 'response' do
+      before :each do
+        post :create_api_token, params: {
+          id: @user.id
+        }
+      end
+
+      it { should respond_with 201 }
+      it { should render_template :show }
+      it 'assigns the token for template to render' do
+        expect(assigns(:token)).to be_truthy
+      end
+    end
+  end
 end
