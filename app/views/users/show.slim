@@ -9,6 +9,9 @@
     .mdl-card__supporting-text
       ul
         li Email: #{@user.email}
+        - if policy(@user).create_api_token?
+          li API Token: #{@token} #{button_to(t(:create_api_token), create_api_token_user_path(@user), class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect button--danger')}
+
       h4 Global role:
       - if @user.global_role?
         p #{@user.roles.global.first.label}

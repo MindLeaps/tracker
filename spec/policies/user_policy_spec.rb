@@ -14,13 +14,19 @@ RSpec.describe UserPolicy do
       end
 
       context 'on any existing user' do
-        let(:user) { User }
+        let(:user) { create :user }
         it { is_expected.to permit_action :show }
+        it { is_expected.to forbid_action :create_api_token }
       end
 
       context 'on a new user' do
         let(:user) { build :user }
         it { is_expected.to permit_action :create }
+      end
+
+      context 'on themselves' do
+        let(:user) { current_user }
+        it { is_expected.to permit_action :create_api_token }
       end
     end
 
@@ -198,6 +204,15 @@ RSpec.describe UserPolicy do
       context 'on a new user' do
         let(:user) { build :user }
         it { is_expected.to forbid_action :create }
+      end
+    end
+
+    context 'as any User' do
+      let(:current_user) { create :user }
+
+      context 'on themselves' do
+        let(:user) { current_user }
+        it { is_expected.to permit_action :create_api_token }
       end
     end
   end

@@ -25,6 +25,14 @@ class UsersController < ApplicationController
     render :index
   end
 
+  def create_api_token
+    @user = User.find params.require(:id)
+    authorize @user
+    @user.authentication_tokens.destroy_all
+    @token = Tiddle.create_and_return_token @user, request, expires_in: 1.hour
+    render :show, status: :created
+  end
+
   def show
     @user = User.find params[:id]
     @membership = Membership.new user: @user
