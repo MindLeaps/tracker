@@ -1,4 +1,4 @@
-## Unreleased
+## 0.11.0
 - Adds Edit Student button to each row in the student table
 - Back button now returns back to the referrer page (like browser back)
 - Submitting grades for student now redirects back to the lesson page
