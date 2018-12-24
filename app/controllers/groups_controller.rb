@@ -27,7 +27,7 @@ class GroupsController < ApplicationController
   def show
     @group = Group.includes(:chapter).find params[:id]
     authorize @group
-    @pagy, @students = pagy apply_scopes(@group.students.exclude_deleted.includes(:profile_image))
+    @pagy, @students = pagy apply_scopes(@group.students.exclude_deleted.includes(:organization, :profile_image))
   end
 
   def edit

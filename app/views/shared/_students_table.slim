@@ -1,6 +1,6 @@
 table class='mdl-data-table mdl-js-data-table resource-table'
   thead
-    == render partial: 'shared/pagy_nav', locals: { pagy: pagy, resource: 'students', span: 8 }
+    == render partial: 'shared/pagy_nav', locals: { pagy: pagy, resource: 'students', span: 9 }
     tr
       th
         | #
@@ -12,6 +12,8 @@ table class='mdl-data-table mdl-js-data-table resource-table'
       == render partial: 'shared/ordered_column', locals: { order_key: :gender, column_name: 'Gender' }
       == render partial: 'shared/ordered_column', locals: { order_key: :dob, column_name: 'Date of Birth' }
       == render partial: 'shared/ordered_column', locals: { order_key: :order_by_group_name, column_name: 'Group', custom_order?: true }
+      th class="mdl-data-table__cell--non-numeric"
+        | Actions
   tbody
   - students.each_with_index do |student, i|
 
@@ -32,3 +34,10 @@ table class='mdl-data-table mdl-js-data-table resource-table'
         = link_to "#{student.dob} #{student.estimated_dob ? 'EST' : ''}", student_path(student)
       td class="mdl-data-table__cell--non-numeric"
         = link_to student_group_name(student), student_path(student)
+      td class="mdl-data-table__cell--non-numeric"
+        .cell-wrapper
+          - if policy(student).update?
+            a href=edit_student_path(student) id="edit-button-#{i}" class='mdl-button mdl-js-button mdl-button--icon table-action-icon'
+              = image_tag 'edit.svg'
+            .mdl-tooltip data-mdl-for="edit-button-#{i}"
+              | Edit Student

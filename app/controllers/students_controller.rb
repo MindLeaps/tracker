@@ -9,7 +9,7 @@ class StudentsController < ApplicationController
 
   def index
     authorize Student
-    @pagy, @students = pagy apply_scopes(policy_scope(Student.includes(:group, :profile_image)))
+    @pagy, @students = pagy apply_scopes(policy_scope(Student.includes(:group, :organization, :profile_image)))
   end
 
   def new
