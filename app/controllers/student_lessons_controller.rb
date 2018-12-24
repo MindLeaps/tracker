@@ -10,9 +10,10 @@ class StudentLessonsController < ApplicationController
   end
 
   def update
-    authorize Lesson.find(params[:lesson_id]), :create?
+    lesson = Lesson.find(params[:lesson_id])
+    authorize lesson, :create?
     perform_grading
-    notice_and_redirect I18n.t(:student_graded), lesson_student_path
+    notice_and_redirect I18n.t(:student_graded), lesson_path(lesson)
   end
 
   private

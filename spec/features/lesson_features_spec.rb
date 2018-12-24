@@ -87,10 +87,8 @@ RSpec.describe 'User interacts with lessons' do
         click_button 'Save Student Grades'
 
         expect(page).to have_content 'Student graded.'
-        expect(page).to have_content 'Featuring'
-        expect(page).to have_content 'Mark Two For Skill One'
-        expect(page).to have_content 'Testing'
-        expect(page).to have_content 'Mark One For Skill Two'
+        expect(page).to have_content '2 / 2'
+        expect(page).to have_content '1.5'
       end
 
       it 'marks a student as being absent from a lesson' do
@@ -102,10 +100,6 @@ RSpec.describe 'User interacts with lessons' do
 
         click_button 'Save Student Grades'
         expect(page).to have_content 'Student graded.'
-        expect(page).to have_checked_field 'student_absences'
-
-        click_link 'back-button'
-
         expect(page).to have_content 'Absent'
       end
     end
