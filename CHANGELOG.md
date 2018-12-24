@@ -1,3 +1,6 @@
+## Unreleased
+- Adds Edit Student button to each row in the student table
+
 ## 0.10.0
 - Enable users to generate a short lived API token on their profile page
 - Preserving Student gender when editing student details
