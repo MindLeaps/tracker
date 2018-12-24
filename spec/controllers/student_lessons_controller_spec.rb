@@ -41,7 +41,7 @@ RSpec.describe StudentLessonsController, type: :controller do
         end
 
         context 'successfully' do
-          it { should redirect_to action: :show }
+          it { should redirect_to lesson_path(@lesson.id) }
 
           it 'Saves the new grade' do
             expect(@student.grades.length).to eq 1
