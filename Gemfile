@@ -59,6 +59,7 @@ group :development, :test do
   gem 'database_cleaner'
   gem 'factory_bot_rails'
   gem 'faker'
+  gem 'meta_request'
   gem 'poltergeist'
   gem 'pundit-matchers'
   gem 'rspec-rails'
