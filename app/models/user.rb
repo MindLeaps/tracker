@@ -20,7 +20,7 @@ class User < ApplicationRecord
   end
 
   def administrator?(organization = nil)
-    is_admin_of?(organization) || global_administrator?
+    has_cached_role?(:admin, organization) || global_administrator?
   end
 
   def global_role?
@@ -38,7 +38,7 @@ class User < ApplicationRecord
   end
 
   def global_administrator?
-    is_global_admin? || is_super_admin?
+    has_cached_role?(:global_admin) || has_cached_role?(:super_admin)
   end
 
   def membership_organizations

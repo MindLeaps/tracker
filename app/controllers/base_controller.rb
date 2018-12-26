@@ -9,6 +9,12 @@ class BaseController < ActionController::Base
     payload[:user_email] = current_user.try :email
   end
 
+  def current_user
+    # Including roles in Devise's current_user so we can use has_cached_role? and avoid N+1 when checking for roles
+    # https://stackoverflow.com/questions/6902531/how-to-eager-load-associations-with-the-current-user
+    @current_user ||= super && User.includes(:roles).where(id: @current_user.id).first
+  end
+
   # Uncomment this to skip authentication in development
   # def authenticate_user!
   #   return true if Rails.env.development?
