@@ -1,3 +1,8 @@
+## 0.11.1
+- Added request_id key for logging
+- Added meta-request for dev information in Chrome dev tools
+- Fixed N+1 query with loading current_user roles
+
 ## 0.11.0
 - Adds Edit Student button to each row in the student table
 - Back button now returns back to the referrer page (like browser back)
