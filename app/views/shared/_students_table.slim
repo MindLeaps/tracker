@@ -1,6 +1,8 @@
 table class='mdl-data-table mdl-js-data-table resource-table'
   thead
-    == render partial: 'shared/pagy_nav', locals: { pagy: pagy, resource: 'students', span: 9 }
+    == render partial: 'shared/pagy_nav', locals: { pagy: pagy, resource: t(:students), span: 9, options: [ \
+      {name: t(:show_deleted), href: show_deleted_url, checked: !excluding_deleted?, tooltip: excluding_deleted? ? t(:show_deleted_students_tooltip) : t(:hide_deleted_students_tooltip) } \
+    ] }
     tr
       th
         | #
@@ -17,7 +19,7 @@ table class='mdl-data-table mdl-js-data-table resource-table'
   tbody
   - students.each_with_index do |student, i|
 
-    tr class='resource-row'
+    tr class=(['resource-row', student.deleted_at ? 'deleted-row' : nil])
       td
         = link_to pagy.from + i, student_path(student)
       td class="mdl-data-table__cell--non-numeric"

@@ -193,5 +193,15 @@ RSpec.describe Student, type: :model do
         expect(Student.order_by_group_name('desc').map(&:first_name)[2..4]).to include 'Emberto', 'Amberto', 'Omberto'
       end
     end
+
+    describe 'table_order' do
+      it 'returns students sorted by first name' do
+        expect(Student.table_order(key: :first_name, order: 'ASC').map(&:first_name)).to eq %w[Amberto Ambuba Emberto Omberto Ombuba]
+      end
+
+      it 'returns students sorted by group name' do
+        expect(Student.table_order(key: :order_by_group_name, order: 'ASC', custom_scope_order: 'true')).to eq Student.order_by_group_name('asc')
+      end
+    end
   end
 end

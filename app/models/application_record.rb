@@ -11,6 +11,10 @@ class ApplicationRecord < ActiveRecord::Base
 
   scope :exclude_deleted, -> { where deleted_at: nil }
 
+  scope :table_order, lambda { |order_hash|
+    order_hash[:custom_scope_order] == 'true' ? public_send(order_hash[:key], order_hash[:order]) : order(order_hash[:key] => order_hash[:order])
+  }
+
   def log_errors
     Rails.logger.warn "#{self.class.name} #{id || '(new)'} is invalid: #{errors.full_messages.inspect}"
   end

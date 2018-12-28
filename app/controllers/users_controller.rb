@@ -2,7 +2,7 @@
 
 class UsersController < ApplicationController
   include Pagy::Backend
-  has_scope :order, type: :hash
+  has_scope :table_order, type: :hash
 
   before_action do
     @pagy, @users = pagy apply_scopes(policy_scope(User.all))
