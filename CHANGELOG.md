@@ -1,3 +1,6 @@
+## Unreleased
+- Show Deleted functionality for Students and Groups
+
 ## 0.11.1
 - Added request_id key for logging
 - Added meta-request for dev information in Chrome dev tools
