@@ -17,14 +17,26 @@
   .page-info {
     vertical-align: middle;
   }
+  a {
+    label {
+      pointer-events: none;
+    }
+  }
   nav {
     vertical-align: middle;
     display: inline-block;
-    a{
+    a {
       opacity: 0.54;
       &[disabled] {
         opacity: 0.2;
       }
+    }
+  }
+  .table-option {
+    margin: 0 10px;
+    font-size: 12px;
+    .mdl-checkbox__label {
+      font-size: unset;
     }
   }
 }
@@ -55,6 +67,12 @@ table.resource-table {
       @include cell-padding;
       text-decoration: none;
       cursor: pointer;
+    }
+
+    .deleted-row {
+      td > a {
+        text-decoration: line-through;
+      }
     }
   }
 

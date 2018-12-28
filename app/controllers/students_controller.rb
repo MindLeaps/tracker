@@ -4,8 +4,7 @@ class StudentsController < ApplicationController
   include Pagy::Backend
   has_scope :exclude_deleted, only: :index, type: :boolean, default: true
   has_scope :exclude_empty, only: :performance, type: :boolean, default: true
-  has_scope :order, only: :index, type: :hash
-  has_scope :order_by_group_name, only: :index
+  has_scope :table_order, only: :index, type: :hash
 
   def index
     authorize Student

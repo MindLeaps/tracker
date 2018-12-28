@@ -25,6 +25,7 @@ en:
       user:
         create: Add User
 
+  students: students
   student_created: Student "%{name}" created.
   create_another: Create another
   student_delete_confirmation: Are you sure you want to delete student "%{name}"?
@@ -65,6 +66,11 @@ en:
   next_page: Next Page
   name_unknown: Unknown
   create_api_token: Create API Token
+  show_deleted: Show Deleted
+  show_deleted_students_tooltip: Click to show deleted students
+  hide_deleted_students_tooltip: Click to hide deleted students
+  show_deleted_groups_tooltip: Click to show deleted groups
+  hide_deleted_groups_tooltip: Click to hide deleted groups
 
   errors:
     messages:

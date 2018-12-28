@@ -2,7 +2,7 @@
 
 class OrganizationsController < ApplicationController
   include Pagy::Backend
-  has_scope :order, type: :hash
+  has_scope :table_order, type: :hash
 
   def index
     authorize Organization
