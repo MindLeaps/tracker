@@ -74,6 +74,9 @@ en:
   hide_deleted_students_tooltip: Click to hide deleted students
   show_deleted_groups_tooltip: Click to show deleted groups
   hide_deleted_groups_tooltip: Click to hide deleted groups
+  performance: Performance
+  details: Details
+  images: Images
 
   errors:
     messages:

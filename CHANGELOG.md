@@ -1,6 +1,7 @@
 ## Unreleased
 - Show Deleted functionality for Students and Groups
 - Undelete Students and Groups
+- Student header actions now available on the student images view
 
 ## 0.11.1
 - Added request_id key for logging

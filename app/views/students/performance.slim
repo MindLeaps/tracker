@@ -2,16 +2,9 @@
   = render layout: '/shared/header_content', locals: { back_button_url: students_path, back_tooltip: 'Back to Students', title: "#{@student.proper_name} - Performance"} do
 
 - content_for :header_actions do
-  = render partial: 'student_header_actions', locals: { student: @student }
+  = render partial: '/shared/student_header_actions', locals: { student: @student }
 
-.mdl-tabs.mdl-js-tabs.mdl-js-ripple-effect
-  .mdl-tabs__tab-bar
-    a class='mdl-tabs__tab is-active'
-      | Performance
-    a href=details_student_path(@student) class='mdl-tabs__tab'
-      | Details
-    a href=student_student_images_path(@student) class='mdl-tabs__tab'
-      | Images
+= render partial: '/shared/student_nav_tabs', locals: { student: @student, active: 'performance' }
 
 - @student_lessons_details_by_subject.each do |subject_id, lessons_details|
   - subject = @subjects.find(subject_id)
