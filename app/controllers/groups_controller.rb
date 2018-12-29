@@ -47,7 +47,7 @@ class GroupsController < ApplicationController
     group = Group.find params.require :id
     authorize group
     group.deleted_at = Time.zone.now
-    undo_notice_and_redirect t(:group_deleted, group: group.group_name), undelete_group_path, groups_path if group.save
+    undo_notice_and_redirect t(:group_deleted, group: group.group_name), undelete_group_path, request.referer || groups_path if group.save
   end
 
   def undelete

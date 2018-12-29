@@ -149,13 +149,14 @@ RSpec.describe GroupsController, type: :controller do
   describe '#destroy' do
     before :each do
       @group = create :group
+      request.env['HTTP_REFERER'] = 'http://example.com/groups?param=1'
 
       @students = create_list :student, 2, group: @group
 
       post :destroy, params: { id: @group.id }
     end
 
-    it { should redirect_to groups_path }
+    it { should redirect_to 'http://example.com/groups?param=1' }
 
     it { should set_flash[:undo_notice] }
 

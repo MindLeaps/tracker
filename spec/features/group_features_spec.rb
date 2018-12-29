@@ -67,6 +67,7 @@ RSpec.describe 'User interacts with Groups' do
   describe 'Group deleting and undeleting' do
     before :each do
       @group = create :group, group_name: 'About to be Deleted'
+      @deleted_group = create :group, deleted_at: Time.zone.now, group_name: 'Already Deleted'
       @students = create_list :student, 3, group: @group
     end
 
@@ -82,6 +83,14 @@ RSpec.describe 'User interacts with Groups' do
 
       expect(page).to have_content 'Group "About to be Deleted" restored.'
       expect(@group.reload.deleted_at).to be_nil
+    end
+
+    it 'restores an already deleted group' do
+      visit "/groups/#{@deleted_group.id}"
+      click_button 'undelete-button'
+      visit '/groups'
+      expect(page).to have_content 'Already Deleted'
+      expect(@deleted_group.reload.deleted_at).to be_nil
     end
   end
 end
