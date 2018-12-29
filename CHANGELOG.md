@@ -1,4 +1,4 @@
-## Unreleased
+## 0.12.0
 - Show Deleted functionality for Students and Groups
 - Undelete Students and Groups
 - Student header actions now available on the student images view
