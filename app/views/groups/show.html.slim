@@ -5,13 +5,16 @@
   - if policy(@group).edit?
     a href=edit_group_path(@group) id='edit-button' class='mdl-button mdl-js-button mdl-button--icon'
       = inline_svg 'edit.svg'
-    .mdl-tooltip data-mdl-for='edit-button'
-      | Edit Group
+    .mdl-tooltip data-mdl-for='edit-button' #{t(:edit_group)}
   - if policy(@group).destroy?
-    = button_to @group, method: :delete, id: 'delete-button', class: 'mdl-button mdl-js-button mdl-button--icon' do
-      = inline_svg 'delete.svg'
-    .mdl-tooltip data-mdl-for='delete-button'
-      | Delete Group
+    - if @group.deleted_at
+      = button_to undelete_group_path(@group), id: 'undelete-button', class: 'mdl-button mdl-js-button mdl-button--icon' do
+        = inline_svg 'restore.svg'
+      .mdl-tooltip data-mdl-for='undelete-button' #{t(:restore_group)}
+    - else
+      = button_to @group, method: :delete, id: 'delete-button', class: 'mdl-button mdl-js-button mdl-button--icon' do
+        = inline_svg 'delete.svg'
+      .mdl-tooltip data-mdl-for='delete-button' #{t(:delete_group)}
 
 .single-content-card
   = render partial: "shared/students_table", locals: {students: @students, pagy: @pagy}

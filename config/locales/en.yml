@@ -38,6 +38,9 @@ en:
   group_updated: Group "%{group}" updated.
   group_deleted: Group "%{group}" deleted.
   group_restored: Group "%{group}" restored.
+  delete_group: Delete Group
+  restore_group: Restore Deleted Group
+  edit_group: Edit Group
   chapter_created: Chapter "%{chapter}" created.
   chapter_updated: Chapter "%{chapter}" updated.
   duplicate_lesson: Lesson already exists for group "%{group}" in "%{subject}" on selected date.
