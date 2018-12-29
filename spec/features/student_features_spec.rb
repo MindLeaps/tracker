@@ -70,7 +70,7 @@ RSpec.describe 'User interacts with Students' do
 
   describe 'Create student' do
     before :each do
-      create :organization
+      @group = create :group
     end
 
     it 'creates Rick', js: true do
@@ -79,6 +79,7 @@ RSpec.describe 'User interacts with Students' do
       fill_in 'MLID', with: '1A'
       fill_in 'First name', with: 'Rick'
       fill_in 'Last name', with: 'Sanchez'
+      select(@group.group_chapter_name, from: 'Group')
       click_button 'Create'
 
       expect(page).to have_content 'Student "Sanchez, Rick" created.'

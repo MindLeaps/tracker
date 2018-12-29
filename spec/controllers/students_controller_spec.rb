@@ -42,6 +42,7 @@ RSpec.describe StudentsController, type: :controller do
           last_name: 'Ayola',
           'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
           gender: 'F',
+          group_id: group_a.id,
           organization_id: organization.id,
           estimated_dob: true
         } }
@@ -58,6 +59,7 @@ RSpec.describe StudentsController, type: :controller do
           last_name: 'Guard',
           'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
           gender: 'F',
+          group_id: group_a.id,
           organization_id: organization.id,
           guardian_name: 'Guardian Omonzu',
           guardian_occupation: 'Moto driver',
@@ -80,6 +82,7 @@ RSpec.describe StudentsController, type: :controller do
           last_name: 'Health',
           'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
           gender: 'F',
+          group_id: group_a.id,
           organization_id: organization.id,
           estimated_dob: true,
           health_insurance: 'HEALTH123',
@@ -101,6 +104,7 @@ RSpec.describe StudentsController, type: :controller do
           last_name: 'Dropout',
           'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
           gender: 'F',
+          group_id: group_a.id,
           organization_id: organization.id,
           name_of_school: 'Super School',
           school_level_completed: 'B2-1',
@@ -123,6 +127,7 @@ RSpec.describe StudentsController, type: :controller do
           last_name: 'Noted',
           'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
           gender: 'F',
+          group_id: group_a.id,
           organization_id: organization.id,
           notes: 'Prime is showing great promise despite the initial learning difficulties.'
         } }

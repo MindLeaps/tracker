@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Student < ApplicationRecord
-  validates :mlid, :first_name, :last_name, :dob, :gender, :organization, presence: true
+  validates :mlid, :first_name, :last_name, :dob, :gender, :group, :organization, presence: true
   validates :mlid, uniqueness: {
     scope: :organization_id
   }
@@ -9,7 +9,7 @@ class Student < ApplicationRecord
 
   enum gender: { M: 'male', F: 'female' }
 
-  belongs_to :group, optional: true
+  belongs_to :group
   belongs_to :organization
   has_many :grades, dependent: :restrict_with_error
   has_many :absences, dependent: :restrict_with_error

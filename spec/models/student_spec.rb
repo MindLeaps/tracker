@@ -4,6 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Student, type: :model do
   let(:org) { create :organization }
+  let(:gro) { create :group }
 
   describe 'relationships' do
     it { should belong_to :profile_image }
@@ -20,11 +21,11 @@ RSpec.describe Student, type: :model do
 
     describe 'student is valid' do
       it 'with first and last name, dob, and gender' do
-        male_student = Student.new mlid: '1S', first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 'male', organization: org
+        male_student = Student.new mlid: '1S', first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 'male', group: gro, organization: org
         expect(male_student).to be_valid
         expect(male_student.save).to eq true
 
-        female_student = Student.new mlid: '2S', first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 'female', organization: org
+        female_student = Student.new mlid: '2S', first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 'female', group: gro, organization: org
         expect(female_student).to be_valid
         expect(female_student.save).to eq true
       end
@@ -51,6 +52,7 @@ RSpec.describe Student, type: :model do
     end
 
     it { should validate_presence_of :mlid }
+    it { should validate_presence_of :group }
     it { should validate_presence_of :first_name }
     it { should validate_presence_of :last_name }
     it { should validate_presence_of :dob }

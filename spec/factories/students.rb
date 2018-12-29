@@ -9,12 +9,9 @@ FactoryBot.define do
     estimated_dob { Faker::Boolean.boolean 0.2 }
     gender { %w[male female].sample }
     organization
+    group { create :group, chapter: create(:chapter, organization: organization) }
     transient do
       grades { {} }
-    end
-
-    factory :student_in_group do
-      group { create :group, chapter: create(:chapter, organization: organization) }
     end
 
     factory :graded_student do
