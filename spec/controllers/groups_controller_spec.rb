@@ -167,11 +167,12 @@ RSpec.describe GroupsController, type: :controller do
   describe '#undelete' do
     before :each do
       @group = create :group, deleted_at: Time.zone.now
+      request.env['HTTP_REFERER'] = 'http://example.com/groups?param=1'
 
       post :undelete, params: { id: @group.id }
     end
 
-    it { should redirect_to groups_path }
+    it { should redirect_to 'http://example.com/groups?param=1' }
 
     it { should set_flash[:notice].to "Group \"#{@group.group_name}\" restored." }
 

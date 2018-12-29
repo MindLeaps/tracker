@@ -229,11 +229,12 @@ RSpec.describe StudentsController, type: :controller do
     describe '#undelete' do
       before :each do
         @student = create :student, deleted_at: Time.zone.now
+        request.env['HTTP_REFERER'] = 'http://example.com/students?param=1'
 
         post :undelete, params: { id: @student.id }
       end
 
-      it { should redirect_to students_path }
+      it { should redirect_to 'http://example.com/students?param=1' }
 
       it { should set_flash[:notice].to "Student \"#{@student.proper_name}\" restored." }
 

@@ -1,0 +1,11 @@
+a href=edit_student_path(student) id='edit-button' class='mdl-button mdl-js-button mdl-button--icon'
+  = inline_svg 'edit.svg'
+  .mdl-tooltip data-mdl-for='edit-button' #{t(:edit_student)}
+- if student.deleted_at
+  = button_to undelete_student_path, id: 'undelete-button', class: 'mdl-button mdl-js-button mdl-button--icon' do
+    = inline_svg 'restore.svg'
+  .mdl-tooltip data-mdl-for='undelete-button' #{t(:restore_student)}
+- else
+  = button_to student, method: :delete, id: 'delete-button', class: 'mdl-button mdl-js-button mdl-button--icon' do
+    = inline_svg 'delete.svg'
+  .mdl-tooltip data-mdl-for='delete-button' #{t(:delete_student)}

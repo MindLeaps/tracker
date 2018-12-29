@@ -1,14 +1,10 @@
 - content_for :header_content do
   = render layout: '/shared/header_content', locals: { back_button_url: students_path, back_tooltip: 'Back to Students', title: "#{@student.proper_name} - Images" } do
 
-.mdl-tabs.mdl-js-tabs.mdl-js-ripple-effect
-  .mdl-tabs__tab-bar
-    a href=performance_student_path(@student) class='mdl-tabs__tab'
-      | Performance
-    a href=details_student_path(@student) class='mdl-tabs__tab'
-      | Details
-    a class='mdl-tabs__tab is-active disabled'
-      | Images
+- content_for :header_actions do
+  = render partial: '/shared/student_header_actions', locals: { student: @student }
+
+= render partial: '/shared/student_nav_tabs', locals: { student: @student, active: 'images' }
 
 .content-card--full
   - @student.student_images.each do |student_image|
@@ -20,5 +16,5 @@
 
   .image-upload
     = simple_form_for @new_image, url: {action: :create}, html: {multipart: true} do |f|
-        = f.input :image, as: :file, input_html: {multiple: true }
-        = f.button :submit, 'Upload', class: 'btn-outline-success'
+      = f.input :image, as: :file, input_html: {multiple: true }
+      = f.button :submit, 'Upload', class: 'btn-outline-success'

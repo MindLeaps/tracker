@@ -1,0 +1,14 @@
+.mdl-tabs.mdl-js-tabs.mdl-js-ripple-effect
+  .mdl-tabs__tab-bar
+    - if active == 'performance'
+      a class='mdl-tabs__tab is-active' #{t(:performance)}
+    - else
+      a href=performance_student_path(student) class='mdl-tabs__tab' #{t(:performance)}
+    - if active == 'details'
+      a class='mdl-tabs__tab is-active' #{t(:details)}
+    - else
+      a href=details_student_path(student) class='mdl-tabs__tab' #{t(:details)}
+    - if active == 'images'
+      a class='mdl-tabs__tab is-active' #{t(:images)}
+    - else
+      a href=student_student_images_path(student) class='mdl-tabs__tab' #{t(:images)}

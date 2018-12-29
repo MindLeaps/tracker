@@ -28,9 +28,12 @@ en:
   students: students
   student_created: Student "%{name}" created.
   create_another: Create another
+  delete_student: Delete Student
+  restore_student: Restore Deleted Student
   student_delete_confirmation: Are you sure you want to delete student "%{name}"?
   student_deleted: Student "%{name}" deleted.
   student_restored: Student "%{name}" restored.
+  edit_student: Edit Student
   group_created: Group "%{group}" created.
   group_updated: Group "%{group}" updated.
   group_deleted: Group "%{group}" deleted.
@@ -71,6 +74,9 @@ en:
   hide_deleted_students_tooltip: Click to hide deleted students
   show_deleted_groups_tooltip: Click to show deleted groups
   hide_deleted_groups_tooltip: Click to hide deleted groups
+  performance: Performance
+  details: Details
+  images: Images
 
   errors:
     messages:
