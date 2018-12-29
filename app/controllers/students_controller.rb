@@ -65,7 +65,7 @@ class StudentsController < ApplicationController
     authorize @student
     @student.deleted_at = nil
 
-    notice_and_redirect t(:student_restored, name: @student.proper_name), students_path if @student.save
+    notice_and_redirect t(:student_restored, name: @student.proper_name), request.referer || student_path(@student) if @student.save
   end
 
   private

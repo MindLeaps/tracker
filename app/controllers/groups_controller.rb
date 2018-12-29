@@ -54,7 +54,7 @@ class GroupsController < ApplicationController
     group = Group.find params.require :id
     authorize group
     group.deleted_at = nil
-    notice_and_redirect t(:group_restored, group: group.group_name), groups_path if group.save
+    notice_and_redirect t(:group_restored, group: group.group_name), request.referer || group_path(group) if group.save
   end
 
   private

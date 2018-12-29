@@ -2,14 +2,7 @@
   = render layout: '/shared/header_content', locals: { back_button_url: students_path, back_tooltip: 'Back to Students', title: "#{@student.proper_name} - Details" } do
 
 - content_for :header_actions do
-  a href=edit_student_path(@student) id='edit-button' class='mdl-button mdl-js-button mdl-button--icon'
-    = inline_svg 'edit.svg'
-  .mdl-tooltip data-mdl-for='edit-button'
-    | Edit Student
-  = button_to @student, method: :delete, id: 'delete-button', class: 'mdl-button mdl-js-button mdl-button--icon' do
-    = inline_svg 'delete.svg'
-  .mdl-tooltip data-mdl-for='delete-button'
-    | Delete Student
+  = render partial: 'student_header_actions', locals: { student: @student }
 
 .mdl-tabs.mdl-js-tabs.mdl-js-ripple-effect
   .mdl-tabs__tab-bar
