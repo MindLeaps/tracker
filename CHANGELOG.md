@@ -1,4 +1,4 @@
-## Unreleased
+## 0.13.0
 - Require students to belong to a group
 - Remove organization association from students
 
