@@ -186,6 +186,16 @@ RSpec.describe StudentsController, type: :controller do
         expect(assigns[:subjects].first.skills.map(&:skill_name)).to include 'Memorization', 'Grit'
         expect(assigns[:subjects].first.skills.length).to eq 2
       end
+
+      context 'student has no grades' do
+        before :each do
+          @student = create :student
+
+          get :performance, params: { id: @student.id }
+        end
+
+        it { should redirect_to action: :details }
+      end
     end
 
     describe '#details' do

@@ -1,5 +1,5 @@
 - content_for :header_content do
-  = render layout: '/shared/header_content', locals: { back_button_url: students_path, back_tooltip: 'Back to Students', title: "#{@student.proper_name} - Details" } do
+  = render layout: '/shared/header_content', locals: { back_button_url: flash[:back_from_student] || students_path, back_tooltip: 'Back to Students', title: "#{@student.proper_name} - Details" } do
 
 - content_for :header_actions do
   = render partial: '/shared/student_header_actions', locals: { student: @student }

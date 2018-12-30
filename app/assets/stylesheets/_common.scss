@@ -12,6 +12,11 @@
   pointer-events: none;
 }
 
+.disabled-tab {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
 .unset-color {
   &:visited, &:hover {
     color:unset;
