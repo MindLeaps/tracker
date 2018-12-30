@@ -1,16 +1,13 @@
 # frozen_string_literal: true
 
 class Student < ApplicationRecord
-  validates :mlid, :first_name, :last_name, :dob, :gender, :group, :organization, presence: true
-  validates :mlid, uniqueness: {
-    scope: :organization_id
-  }
+  validates :mlid, :first_name, :last_name, :dob, :gender, :group, presence: true
+  validates :mlid, uniqueness: true
   validate :profile_image_belongs_to_student, if: proc { |student| !student.profile_image.nil? }
 
   enum gender: { M: 'male', F: 'female' }
 
   belongs_to :group
-  belongs_to :organization
   has_many :grades, dependent: :restrict_with_error
   has_many :absences, dependent: :restrict_with_error
   has_many :student_images, dependent: :restrict_with_error
@@ -22,12 +19,14 @@ class Student < ApplicationRecord
 
   scope :by_group, ->(group_id) { where group_id: group_id }
 
-  scope :by_organization, ->(organization_id) { where organization_id: organization_id }
-
   scope :order_by_group_name, ->(sorting) { joins(:group).order("groups.group_name #{sorting == 'desc' ? 'DESC' : 'ASC'}") }
 
   def proper_name
     "#{last_name}, #{first_name}"
+  end
+
+  def organization
+    Organization.joins(chapters: :groups).find_by('groups.id = ?', group_id)
   end
 
   def self.permitted_params

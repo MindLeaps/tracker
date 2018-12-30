@@ -8,7 +8,7 @@ class StudentsController < ApplicationController
 
   def index
     authorize Student
-    @pagy, @students = pagy apply_scopes(policy_scope(Student.includes(:group, :organization, :profile_image)))
+    @pagy, @students = pagy apply_scopes(policy_scope(Student.includes(:group, :profile_image)))
   end
 
   def new
@@ -45,7 +45,7 @@ class StudentsController < ApplicationController
   end
 
   def update
-    @student = Student.includes(:organization).find params[:id]
+    @student = Student.find params[:id]
     authorize @student
     return redirect_to details_student_path(@student) if @student.update student_params
 
@@ -53,7 +53,7 @@ class StudentsController < ApplicationController
   end
 
   def destroy
-    @student = Student.includes(:organization).find params.require :id
+    @student = Student.find params.require :id
     authorize @student
     @student.deleted_at = Time.zone.now
 

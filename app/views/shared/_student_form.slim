@@ -8,7 +8,6 @@
   = f.input :estimated_dob, label: 'DOB estimated'
   hr
   = f.association :group, collection: policy_scope(Group.includes(:chapter)), label_method: :group_chapter_name
-  = f.association :organization, collection: current_user.organizations, label_method: :organization_name, include_blank: false
   = f.input :quartier
   hr
   = f.input :guardian_name

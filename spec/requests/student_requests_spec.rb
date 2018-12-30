@@ -10,9 +10,8 @@ RSpec.describe 'Student API', type: :request do
 
   describe 'GET /students/:id' do
     before :each do
-      @org = create :organization
       @group = create :group
-      @student = create :student, group: @group, organization: @org, deleted_at: Time.zone.now
+      @student = create :student, group: @group, deleted_at: Time.zone.now
     end
 
     it 'responds with a specific student' do
@@ -30,25 +29,21 @@ RSpec.describe 'Student API', type: :request do
       expect(response_timestamp).to be_within(1.second).of Time.zone.now
     end
 
-    it 'responds with a student including their group and organization' do
-      get_with_token student_path(@student), params: { include: 'group,organization' }, as: :json
+    it 'responds with a student including their group' do
+      get_with_token student_path(@student), params: { include: 'group' }, as: :json
 
       expect(student['group']['group_name']).to eq @group.group_name
-      expect(student['organization']['organization_name']).to eq @org.organization_name
     end
   end
 
   describe 'GET /students' do
     before :each do
-      @org = create :organization
-      @org2 = create :organization
-
       @group1 = create :group
       @group2 = create :group
 
-      @student1 = create :student, first_name: 'Api', group: @group1, organization: @org, deleted_at: Time.zone.now
-      @student2 = create :student, first_name: 'Controller', group: @group1, organization: @org
-      @student3 = create :student, first_name: 'Spector', group: @group2, organization: @org2
+      @student1 = create :student, first_name: 'Api', group: @group1, deleted_at: Time.zone.now
+      @student2 = create :student, first_name: 'Controller', group: @group1
+      @student3 = create :student, first_name: 'Spector', group: @group2
     end
 
     it 'responds with all students' do
@@ -66,18 +61,10 @@ RSpec.describe 'Student API', type: :request do
     end
 
     it 'responds with students including their group and organization' do
-      get_with_token students_path, params: { include: 'group,organization' }, as: :json
+      get_with_token students_path, params: { include: 'group' }, as: :json
 
       expect(students.length).to eq 3
       expect(students.map { |s| s['group']['group_name'] }).to include @group1.group_name, @group2.group_name
-      expect(students.map { |s| s['organization']['organization_name'] }).to include @org.organization_name, @org2.organization_name
-    end
-
-    it 'responds only with students belonging to a specific organization' do
-      get_with_token students_path, params: { organization_id: @org2.id }, as: :json
-
-      expect(students.count).to eq 1
-      expect(students.map { |s| s['first_name'] }).to include 'Spector'
     end
 
     it 'responds only with students created or updated after a certain time' do

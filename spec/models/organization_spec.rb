@@ -8,7 +8,6 @@ RSpec.describe Organization, type: :model do
   end
 
   it { should have_many :chapters }
-  it { should have_many :students }
 
   describe 'is valid' do
     it 'with a valid, unique name' do

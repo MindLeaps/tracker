@@ -7,9 +7,8 @@ RSpec.describe 'User interacts with Students' do
 
   describe 'List Students' do
     before :each do
-      @org = create :organization
-      create :student, first_name: 'Umberto', last_name: 'Eco', mlid: 'ECO-123', organization: @org
-      create :student, first_name: 'Amberto', last_name: 'Oce', mlid: 'OCE-123', organization: @org
+      create :student, first_name: 'Umberto', last_name: 'Eco', mlid: 'ECO-123'
+      create :student, first_name: 'Amberto', last_name: 'Oce', mlid: 'OCE-123'
     end
 
     it 'sorts students by first name alphabetically' do
@@ -115,9 +114,7 @@ RSpec.describe 'User interacts with Students' do
 
   describe 'Delete student' do
     before :each do
-      @org = create :organization
-
-      @student = create :student, first_name: 'Deleto', last_name: 'Mea', organization: @org
+      create :student, first_name: 'Deleto', last_name: 'Mea'
     end
 
     it 'deletes student Deleto Mea', js: true do
