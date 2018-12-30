@@ -35,6 +35,7 @@ class StudentsController < ApplicationController
     @student = Student.find params.require(:id)
     authorize @student
     @student_lessons_details_by_subject = apply_scopes(StudentLessonDetail).where(student_id: params[:id]).order(:date).all.group_by(&:subject_id)
+    redirect_to action: :details if @student_lessons_details_by_subject.empty?
     @subjects = Subject.includes(:skills, :organization).where(id: @student_lessons_details_by_subject.keys)
   end
 

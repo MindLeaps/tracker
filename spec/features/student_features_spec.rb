@@ -54,19 +54,6 @@ RSpec.describe 'User interacts with Students' do
     end
   end
 
-  describe 'Clicking on the details tab shows student details' do
-    before :each do
-      create :student, first_name: 'Umberto', last_name: 'Eco'
-    end
-
-    it 'shows Umberto Eco\'s details' do
-      visit '/students'
-      click_link 'Umberto'
-      click_link 'Details'
-      expect(page).to have_content 'Eco, Umberto - Details'
-    end
-  end
-
   describe 'Create student' do
     before :each do
       @group = create :group
