@@ -7,6 +7,7 @@ class StudentImagesController < ApplicationController
     @student = Student.includes(:student_images).find params.require :student_id
     authorize @student, :show?
     @new_image = StudentImage.new
+    flash[:back_from_student] = flash[:back_from_student] || request.referer
   end
 
   def create

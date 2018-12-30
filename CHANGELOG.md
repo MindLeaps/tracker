@@ -1,5 +1,6 @@
 ## Unreleased
 - Disable Performance tab for students that have no grades
+- Improve UX of back/up button in student pages
 
 ## 0.13.0
 - Require students to belong to a group

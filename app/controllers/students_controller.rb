@@ -29,6 +29,7 @@ class StudentsController < ApplicationController
   def details
     @student = Student.includes(:profile_image, :group).find params.require(:id)
     authorize @student
+    set_back_url_flash
   end
 
   def performance
@@ -37,6 +38,7 @@ class StudentsController < ApplicationController
     @student_lessons_details_by_subject = apply_scopes(StudentLessonDetail).where(student_id: params[:id]).order(:date).all.group_by(&:subject_id)
     redirect_to action: :details if @student_lessons_details_by_subject.empty?
     @subjects = Subject.includes(:skills, :organization).where(id: @student_lessons_details_by_subject.keys)
+    set_back_url_flash
   end
 
   def edit
@@ -73,5 +75,9 @@ class StudentsController < ApplicationController
 
   def student_params
     params.require(:student).permit(*Student.permitted_params)
+  end
+
+  def set_back_url_flash
+    flash[:back_from_student] = flash[:back_from_student] || request.referer
   end
 end
