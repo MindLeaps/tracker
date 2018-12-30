@@ -21,7 +21,6 @@ RSpec.describe StudentsController, type: :controller do
           'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
           group_id: group_a.id,
           gender: 'M',
-          organization_id: organization.id,
           quartier: 'He lives somewhere...',
           estimated_dob: true
         } }
@@ -42,7 +41,7 @@ RSpec.describe StudentsController, type: :controller do
           last_name: 'Ayola',
           'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
           gender: 'F',
-          organization_id: organization.id,
+          group_id: group_a.id,
           estimated_dob: true
         } }
         student = Student.last
@@ -58,7 +57,7 @@ RSpec.describe StudentsController, type: :controller do
           last_name: 'Guard',
           'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
           gender: 'F',
-          organization_id: organization.id,
+          group_id: group_a.id,
           guardian_name: 'Guardian Omonzu',
           guardian_occupation: 'Moto driver',
           guardian_contact: '123-123-123 or email@example.com',
@@ -80,7 +79,7 @@ RSpec.describe StudentsController, type: :controller do
           last_name: 'Health',
           'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
           gender: 'F',
-          organization_id: organization.id,
+          group_id: group_a.id,
           estimated_dob: true,
           health_insurance: 'HEALTH123',
           health_issues: 'In perfect health',
@@ -101,7 +100,7 @@ RSpec.describe StudentsController, type: :controller do
           last_name: 'Dropout',
           'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
           gender: 'F',
-          organization_id: organization.id,
+          group_id: group_a.id,
           name_of_school: 'Super School',
           school_level_completed: 'B2-1',
           year_of_dropout: 1995,
@@ -123,7 +122,7 @@ RSpec.describe StudentsController, type: :controller do
           last_name: 'Noted',
           'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
           gender: 'F',
-          organization_id: organization.id,
+          group_id: group_a.id,
           notes: 'Prime is showing great promise despite the initial learning difficulties.'
         } }
         student = Student.last
@@ -240,31 +239,6 @@ RSpec.describe StudentsController, type: :controller do
 
       it 'Marks the student as not deleted' do
         expect(@student.reload.deleted_at).to be_nil
-      end
-    end
-  end
-
-  context 'logged in as a local administrator' do
-    let(:organization1) { create :organization }
-    let(:organization2) { create :organization }
-    let(:signed_in_user) { create :admin_of, organization: organization1 }
-
-    before :each do
-      sign_in signed_in_user
-    end
-
-    describe '#index' do
-      it 'gets a list of students only belonging to the signed in user\'s organization' do
-        student1 = create :student, organization: organization1
-        student2 = create :student, organization: organization1
-        student3 = create :student, organization: organization2
-
-        get :index
-        expect(response).to be_successful
-        expect(assigns(:students).length).to eq 2
-        expect(assigns(:students)).to include student1
-        expect(assigns(:students)).to include student2
-        expect(assigns(:students)).to_not include student3
       end
     end
   end

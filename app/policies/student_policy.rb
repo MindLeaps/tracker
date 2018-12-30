@@ -33,8 +33,12 @@ class StudentPolicy < ApplicationPolicy
       if user.global_role?
         scope.all
       else
-        scope.where(organization: user.membership_organizations)
+        scope.joins(group: :chapter).where(group: { chapters: { organization_id: user.membership_organizations } })
       end
     end
+  end
+
+  def user_in_record_organization?
+    user_org_ids.include?(record.organization.id)
   end
 end

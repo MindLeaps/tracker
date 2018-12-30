@@ -3,12 +3,11 @@
 require 'rails_helper'
 
 RSpec.describe Student, type: :model do
-  let(:org) { create :organization }
+  let(:gro) { create :group }
 
   describe 'relationships' do
     it { should belong_to :profile_image }
     it { should belong_to :group }
-    it { should belong_to :organization }
     it { should have_many :grades }
     it { should have_many :absences }
     it { should have_many :student_images }
@@ -20,11 +19,11 @@ RSpec.describe Student, type: :model do
 
     describe 'student is valid' do
       it 'with first and last name, dob, and gender' do
-        male_student = Student.new mlid: '1S', first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 'male', organization: org
+        male_student = Student.new mlid: '1S', first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 'male', group: gro
         expect(male_student).to be_valid
         expect(male_student.save).to eq true
 
-        female_student = Student.new mlid: '2S', first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 'female', organization: org
+        female_student = Student.new mlid: '2S', first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 'female', group: gro
         expect(female_student).to be_valid
         expect(female_student.save).to eq true
       end
@@ -51,11 +50,11 @@ RSpec.describe Student, type: :model do
     end
 
     it { should validate_presence_of :mlid }
+    it { should validate_presence_of :group }
     it { should validate_presence_of :first_name }
     it { should validate_presence_of :last_name }
     it { should validate_presence_of :dob }
-    it { should validate_presence_of :organization }
-    it { should validate_uniqueness_of(:mlid).scoped_to :organization_id }
+    it { should validate_uniqueness_of(:mlid) }
   end
 
   describe '#proper_name' do
@@ -163,25 +162,18 @@ RSpec.describe Student, type: :model do
       @group1 = create :group, group_name: 'A Group'
       @group2 = create :group, group_name: 'B Group'
 
-      @student1 = create :student, first_name: 'Emberto', group: @group1, organization: @org1
-      @student2 = create :student, first_name: 'Amberto', group: @group1, organization: @org1
-      @student3 = create :student, first_name: 'Omberto', group: @group1, organization: @org1
+      @student1 = create :student, first_name: 'Emberto', group: @group1
+      @student2 = create :student, first_name: 'Amberto', group: @group1
+      @student3 = create :student, first_name: 'Omberto', group: @group1
 
-      create :student, first_name: 'Ambuba', group: @group2, organization: @org2
-      create :student, first_name: 'Ombuba', group: @group2, organization: @org2
+      create :student, first_name: 'Ambuba', group: @group2
+      create :student, first_name: 'Ombuba', group: @group2
     end
 
     describe 'by_group' do
       it 'returns students scoped by group' do
         expect(Student.by_group(@group1.id).length).to eq 3
         expect(Student.by_group(@group1.id)).to include @student1, @student2, @student3
-      end
-    end
-
-    describe 'by_organization' do
-      it 'returns students scoped by organization' do
-        expect(Student.by_organization(@org1.id).length).to eq 3
-        expect(Student.by_organization(@org1.id)).to include @student1, @student2, @student3
       end
     end
 
@@ -202,6 +194,15 @@ RSpec.describe Student, type: :model do
       it 'returns students sorted by group name' do
         expect(Student.table_order(key: :order_by_group_name, order: 'ASC', custom_scope_order: 'true')).to eq Student.order_by_group_name('asc')
       end
+    end
+  end
+
+  describe '#organization' do
+    let(:org) { create :organization }
+    let(:student) { create :student, group: create(:group, chapter: create(:chapter, organization: org)) }
+
+    it 'returns the organization that the student ultimately belongs to' do
+      expect(student.organization).to eq(org)
     end
   end
 end

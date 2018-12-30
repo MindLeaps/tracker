@@ -15,7 +15,6 @@ RSpec.describe 'Organization API', type: :request do
       @org = create :organization, image: 'http://example.com/1.jpg'
 
       @chapter1, @chapter2 = create_list :chapter, 2, organization: @org
-      @student1, @student2 = create_list :student, 2, organization: @org
     end
 
     it 'responds with a specific organization' do
@@ -37,13 +36,6 @@ RSpec.describe 'Organization API', type: :request do
 
       expect(chapters.map { |c| c['id'] }).to include @chapter1.id, @chapter2.id
       expect(chapters.map { |c| c['chapter_name'] }).to include @chapter1.chapter_name, @chapter2.chapter_name
-    end
-
-    it 'responds with a specific organization including students' do
-      get_with_token organization_path(@org), params: { include: 'students' }, as: :json
-
-      expect(students.map { |s| s['id'] }).to include @student1.id, @student2.id
-      expect(students.map { |s| s['first_name'] }).to include @student1.first_name, @student2.first_name
     end
   end
 

@@ -1,3 +1,7 @@
+## Unreleased
+- Require students to belong to a group
+- Remove organization association from students
+
 ## 0.12.1
 - Show Restore deleted group button on group show
 - Redirect after group deleteion back to referrer

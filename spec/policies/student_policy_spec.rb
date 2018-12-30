@@ -46,7 +46,7 @@ RSpec.describe StudentPolicy do
       end
 
       context 'on a student in user\'s own organization' do
-        let(:resource) { create :student, organization: org }
+        let(:resource) { create :student, group: create(:group, chapter: create(:chapter, organization: org)) }
 
         it { is_expected.to permit_action :performance }
         it { is_expected.to permit_action :details }
@@ -56,7 +56,7 @@ RSpec.describe StudentPolicy do
       end
 
       context 'on a student outside of users\'s own organization' do
-        let(:resource) { create :student, organization: org2 }
+        let(:resource) { create :student, group: create(:group, chapter: create(:chapter, organization: org2)) }
 
         it { is_expected.not_to permit_action :performance }
         it { is_expected.not_to permit_action :details }
@@ -66,13 +66,13 @@ RSpec.describe StudentPolicy do
       end
 
       context 'on a newly created student in user\'s own organization' do
-        let(:resource) { build :student, organization: org }
+        let(:resource) { build :student, group: create(:group, chapter: create(:chapter, organization: org)) }
 
         it { is_expected.to permit_action :create }
       end
 
       context 'on a newly created student in a different organization' do
-        let(:resource) { build :student, organization: org2 }
+        let(:resource) { build :student, group: create(:group, chapter: create(:chapter, organization: org2)) }
 
         it { is_expected.not_to permit_action :create }
       end
@@ -89,7 +89,7 @@ RSpec.describe StudentPolicy do
       end
 
       context 'on a student in user\'s own organization' do
-        let(:resource) { create :student, organization: org }
+        let(:resource) { create :student, group: create(:group, chapter: create(:chapter, organization: org)) }
 
         it { is_expected.to permit_action :performance }
         it { is_expected.to permit_action :details }
@@ -99,7 +99,7 @@ RSpec.describe StudentPolicy do
       end
 
       context 'on a student outside of users\'s own organization' do
-        let(:resource) { create :student, organization: org2 }
+        let(:resource) { create :student, group: create(:group, chapter: create(:chapter, organization: org2)) }
 
         it { is_expected.not_to permit_action :performance }
         it { is_expected.not_to permit_action :details }
@@ -109,7 +109,7 @@ RSpec.describe StudentPolicy do
       end
 
       context 'on a newly created student in user\'s own organization' do
-        let(:resource) { build :student, organization: org }
+        let(:resource) { build :student, group: create(:group, chapter: create(:chapter, organization: org)) }
 
         it { is_expected.not_to permit_action :create }
       end
@@ -120,9 +120,9 @@ RSpec.describe StudentPolicy do
     subject(:result) { StudentPolicy::Scope.new(current_user, Student).resolve }
     let(:org1) { create :organization }
     let(:org2) { create :organization }
-    let(:student1) { create :student, organization: org1 }
-    let(:student2) { create :student, organization: org1 }
-    let(:student3) { create :student, organization: org2 }
+    let(:student1) { create :student, group: create(:group, chapter: create(:chapter, organization: org1)) }
+    let(:student2) { create :student, group: create(:group, chapter: create(:chapter, organization: org1)) }
+    let(:student3) { create :student, group: create(:group, chapter: create(:chapter, organization: org2)) }
 
     context 'logged in as a super administrator' do
       let(:current_user) { create :super_admin }

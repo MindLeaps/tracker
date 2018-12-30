@@ -8,23 +8,18 @@ FactoryBot.define do
     dob { Faker::Time.between 20.years.ago, 10.years.ago }
     estimated_dob { Faker::Boolean.boolean 0.2 }
     gender { %w[male female].sample }
-    organization
+    group { create :group }
     transient do
       grades { {} }
     end
 
-    factory :student_in_group do
-      group { create :group, chapter: create(:chapter, organization: organization) }
-    end
-
     factory :graded_student do
-      group { create :group, chapter: create(:chapter, organization: organization) }
       after :create do |student, evaluator|
         unless evaluator.grades.empty?
           subject = create(
             :subject_with_skills,
             skill_names: evaluator.grades.keys,
-            organization: student.organization
+            organization: student.group.chapter.organization
           )
           (0..evaluator.grades.values.map(&:length).max - 1).each do |i|
             create(
