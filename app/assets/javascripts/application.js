@@ -17,6 +17,14 @@
 //= require cocoon
 //= require_tree .
 
-document.addEventListener("turbolinks:load", function() {
+document.addEventListener('turbolinks:load', function() {
   componentHandler.upgradeDom();
+});
+
+document.addEventListener('turbolinks:request-start', function() {
+  document.getElementById('loading-bar').style.visibility = 'visible';
+});
+
+document.addEventListener('turbolinks:request-end', function() {
+  document.getElementById('loading-bar').style.visibility = 'hidden';
 });

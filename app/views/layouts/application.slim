@@ -15,6 +15,7 @@ html
       = render 'shared/header'
       = render 'shared/drawer'
       main.mdl-layout__content.mdl-color--grey-100
+        .mdl-progress.mdl-js-progress.mdl-progress__indeterminate#loading-bar
         .mdl-grid.page-content
           = render 'shared/snackbar'
           = yield

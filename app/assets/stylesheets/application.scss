@@ -120,3 +120,18 @@
 .mdl-tabs__tab.is-active {
   pointer-events: none;
 }
+
+.turbolinks-progress-bar {
+  visibility: hidden;
+}
+
+#loading-bar {
+  width: 100%;
+  visibility: hidden;
+  .progressbar {
+    background-color: $accent-color;
+  }
+  .bar2, .bar3 {
+    display: none;
+  }
+}
