@@ -37,6 +37,7 @@ gem 'scenic'
 gem 'simple_form'
 gem 'skylight'
 gem 'slim'
+gem 'turbolinks'
 
 gem 'mindleaps_analytics', path: ENV['MINDLEAPS_ANALYTICS_PATH'] if ENV['MINDLEAPS_ANALYTICS_PATH']
 
