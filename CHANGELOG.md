@@ -1,3 +1,7 @@
+## 0.14.1
+- Add Material loading bar for Turbolinks
+- Fix Highcharts instantiating multiple times because of Turbolinks
+
 ## 0.14.0
 - Disable Performance tab for students that have no grades
 - Improve UX of back/up button in student pages
