@@ -1,4 +1,4 @@
-## Unreleased
+## 0.14.0
 - Disable Performance tab for students that have no grades
 - Improve UX of back/up button in student pages
 - Integrated Turbolinks to improve app performance
