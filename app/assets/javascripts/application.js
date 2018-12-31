@@ -13,6 +13,10 @@
 //= require material.min
 //= require mdl-selectfield.min
 //= require jquery-3.2.1.slim.min
+//= require turbolinks
 //= require cocoon
 //= require_tree .
 
+document.addEventListener("turbolinks:load", function() {
+  componentHandler.upgradeDom();
+});
