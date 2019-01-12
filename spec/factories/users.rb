@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :user do
     name { Faker::Name.name }
-    email { Faker::Internet.safe_email }
+    email { Faker::Internet.unique.safe_email }
     sequence(:uid) { |n| n }
     provider { 'google_oauth2' }
     transient do
