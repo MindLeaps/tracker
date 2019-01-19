@@ -409,7 +409,7 @@ DEPENDENCIES
   better_errors
   binding_of_caller
   bootsnap
-  bullet
+  bullet (= 5.7.5)
   byebug
   capybara (> 2.1)
   carrierwave
