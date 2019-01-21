@@ -47,7 +47,7 @@ group :production do
 end
 
 group :development, :test do
-  gem 'bullet', '5.7.5'
+  gem 'bullet', '5.7.6'
   gem 'rails-controller-testing'
   gem 'rubocop'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

@@ -15,6 +15,11 @@ RSpec.describe Student, type: :model do
   end
 
   describe 'validate' do
+    before :each do
+      # Bullet gives false positives for these tests
+      Bullet.enable = false
+    end
+
     subject { create :student, mlid: 'TEST1' }
 
     describe 'student is valid' do
@@ -55,6 +60,10 @@ RSpec.describe Student, type: :model do
     it { should validate_presence_of :last_name }
     it { should validate_presence_of :dob }
     it { should validate_uniqueness_of(:mlid) }
+
+    after :all do
+      Bullet.enable = true
+    end
   end
 
   describe '#proper_name' do
