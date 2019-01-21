@@ -1,4 +1,5 @@
 ## Unreleased
+- Upgraded Ruby runtime to 2.6.0
 - Enable showing deleted students in single group view
 
 ## 0.14.1
