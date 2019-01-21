@@ -1,3 +1,6 @@
+## Unreleased
+- Enable showing deleted students in single group view
+
 ## 0.14.1
 - Add Material loading bar for Turbolinks
 - Fix Highcharts instantiating multiple times because of Turbolinks

@@ -30,10 +30,12 @@ RSpec.describe Grade, type: :model do
       end
 
       it 'is valid if updating the grade with a new grade descriptor' do
+        Bullet.enable = false # Bullet throws false positive here
         new_grade_descriptor = create :grade_descriptor, skill: @grade_descriptor.skill
         @existing_grade.grade_descriptor = new_grade_descriptor
 
         expect(@existing_grade).to be_valid
+        Bullet.enable = true
       end
       # rubocop:disable Metrics/LineLength
       it 'is invalid because student was already graded for a skill in that lesson' do
@@ -117,8 +119,10 @@ RSpec.describe Grade, type: :model do
     end
 
     it 'updates the grade_descriptor' do
+      Bullet.enable = false # Bullet throws false positive here
       @grade.update_grade_descriptor @grade_descriptor2
       expect(@grade.grade_descriptor).to eq @grade_descriptor2
+      Bullet.enable = true
     end
 
     it 'marks the grade as deleted if grade_descriptor is empty' do

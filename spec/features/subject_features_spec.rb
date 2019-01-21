@@ -6,11 +6,8 @@ RSpec.describe 'User interacts with subjects', js: true do
   context 'As a global administrator' do
     include_context 'login_with_global_admin'
 
-    before :each do
-      @organization = create :organization, organization_name: 'Subject Org'
-    end
-
     it 'creates a subject' do
+      create :organization, organization_name: 'Subject Org'
       create :skill, skill_name: 'Feature Test Skill I'
 
       visit '/'
