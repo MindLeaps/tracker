@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class Skill < ApplicationRecord
-  validates :skill_name, :organization, presence: true
+  before_validation :update_uids
+  validates :skill_name, :organization, :organization_uid, presence: true
   validate :grade_descriptors_must_have_unique_marks
 
   belongs_to :organization
@@ -13,7 +14,7 @@ class Skill < ApplicationRecord
 
   scope :by_subject, ->(subject_id) { joins(:assignments).where(assignments: { subject_id: subject_id }) }
 
-  accepts_nested_attributes_for :grade_descriptors
+  accepts_nested_attributes_for :grade_descriptors, update_only: true
 
   def grade_descriptors_must_have_unique_marks
     return if grade_descriptors.empty?
@@ -26,5 +27,9 @@ class Skill < ApplicationRecord
 
   def duplicates?(arr)
     arr.uniq.length != arr.length
+  end
+
+  def update_uids
+    self.organization_uid = organization&.reload&.uid
   end
 end

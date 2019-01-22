@@ -31,3 +31,6 @@ Style/Documentation:
 
 Rails:
    Enabled: true
+
+Rails/BulkChangeTable:
+  Enabled: false

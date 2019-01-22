@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class Grade < ApplicationRecord
-  validates :lesson, :student, :grade_descriptor, presence: true
+  before_validation :update_uids
+  validates :lesson, :lesson_uid, :student, :student_uid, :grade_descriptor, :grade_descriptor_uid, presence: true
   validate :grade_skill_must_be_unique_for_lesson_and_student, if: :all_relations_exist?
 
   belongs_to :lesson
@@ -44,6 +45,8 @@ class Grade < ApplicationRecord
   end
 
   def grade_skill_must_be_unique_for_lesson_and_student
+    return unless deleted_at.nil? # Only do this if the current grade is not deleted, otherwise the validation doesn't matter
+
     existing_grade = find_duplicate
     add_duplicate_grade_error(existing_grade) if existing_grade
   end
@@ -61,5 +64,11 @@ class Grade < ApplicationRecord
     self.deleted_at = Time.zone.now
     save
     self
+  end
+
+  def update_uids
+    self.student_uid = student&.reload&.uid
+    self.lesson_uid = lesson&.reload&.uid
+    self.grade_descriptor_uid = grade_descriptor&.reload&.uid
   end
 end
