@@ -71,7 +71,8 @@ SET default_with_oids = false;
 CREATE TABLE public.absences (
     id integer NOT NULL,
     student_id integer NOT NULL,
-    lesson_id integer NOT NULL
+    lesson_id integer NOT NULL,
+    uid uuid DEFAULT public.uuid_generate_v4() NOT NULL
 );
 
 
@@ -826,6 +827,14 @@ ALTER TABLE ONLY public.subjects ALTER COLUMN id SET DEFAULT nextval('public.sub
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+
+--
+-- Name: absences absence_uuid_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.absences
+    ADD CONSTRAINT absence_uuid_unique UNIQUE (uid);
 
 
 --
@@ -1708,6 +1717,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20181229235739'),
 ('20190121174701'),
 ('20190121175252'),
-('20190121181513');
+('20190121181513'),
+('20190126211036');
 
 
