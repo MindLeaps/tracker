@@ -72,7 +72,7 @@ CREATE TABLE public.absences (
     id integer NOT NULL,
     student_id integer NOT NULL,
     lesson_id integer NOT NULL,
-    uid uuid DEFAULT public.uuid_generate_v4() NOT NULL
+    lesson_uid uuid NOT NULL
 );
 
 
@@ -117,8 +117,7 @@ CREATE TABLE public.assignments (
     subject_id integer NOT NULL,
     deleted_at timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    uid uuid DEFAULT public.uuid_generate_v4() NOT NULL
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -204,9 +203,7 @@ CREATE TABLE public.chapters (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     organization_id integer,
-    deleted_at timestamp without time zone,
-    uid uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    organization_uid uuid NOT NULL
+    deleted_at timestamp without time zone
 );
 
 
@@ -240,9 +237,7 @@ CREATE TABLE public.grade_descriptors (
     skill_id integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    deleted_at timestamp without time zone,
-    uid uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    skill_uid uuid NOT NULL
+    deleted_at timestamp without time zone
 );
 
 
@@ -277,10 +272,7 @@ CREATE TABLE public.grades (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     deleted_at timestamp without time zone,
-    uid uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    student_uid uuid NOT NULL,
-    lesson_uid uuid NOT NULL,
-    grade_descriptor_uid uuid NOT NULL
+    lesson_uid uuid NOT NULL
 );
 
 
@@ -329,9 +321,7 @@ CREATE TABLE public.groups (
     updated_at timestamp without time zone NOT NULL,
     group_name character varying DEFAULT ''::character varying NOT NULL,
     chapter_id integer,
-    deleted_at timestamp without time zone,
-    uid uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    chapter_uid uuid NOT NULL
+    deleted_at timestamp without time zone
 );
 
 
@@ -366,9 +356,7 @@ CREATE TABLE public.lessons (
     updated_at timestamp without time zone NOT NULL,
     subject_id integer NOT NULL,
     deleted_at timestamp without time zone,
-    uid uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    group_uid uuid NOT NULL,
-    subject_uid uuid NOT NULL
+    uid uuid DEFAULT public.uuid_generate_v4() NOT NULL
 );
 
 
@@ -414,8 +402,7 @@ CREATE TABLE public.organizations (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     image character varying DEFAULT 'https://placeholdit.imgix.net/~text?txtsize=23&txt=200%C3%97200&w=200&h=200'::character varying,
-    deleted_at timestamp without time zone,
-    uid uuid DEFAULT public.uuid_generate_v4() NOT NULL
+    deleted_at timestamp without time zone
 );
 
 
@@ -491,9 +478,7 @@ CREATE TABLE public.skills (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     skill_description text,
-    deleted_at timestamp without time zone,
-    uid uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    organization_uid uuid NOT NULL
+    deleted_at timestamp without time zone
 );
 
 
@@ -614,9 +599,7 @@ CREATE TABLE public.students (
     family_members text,
     mlid character varying NOT NULL,
     deleted_at timestamp without time zone,
-    profile_image_id integer,
-    uid uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    group_uid uuid NOT NULL
+    profile_image_id integer
 );
 
 
@@ -649,9 +632,7 @@ CREATE TABLE public.subjects (
     organization_id integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    deleted_at timestamp without time zone,
-    uid uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    organization_uid uuid NOT NULL
+    deleted_at timestamp without time zone
 );
 
 
@@ -830,14 +811,6 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
--- Name: absences absence_uuid_unique; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.absences
-    ADD CONSTRAINT absence_uuid_unique UNIQUE (uid);
-
-
---
 -- Name: absences absences_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -851,14 +824,6 @@ ALTER TABLE ONLY public.absences
 
 ALTER TABLE ONLY public.ar_internal_metadata
     ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
-
-
---
--- Name: assignments assignment_uuid_unique; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.assignments
-    ADD CONSTRAINT assignment_uuid_unique UNIQUE (uid);
 
 
 --
@@ -878,27 +843,11 @@ ALTER TABLE ONLY public.authentication_tokens
 
 
 --
--- Name: chapters chapter_uuid_unique; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.chapters
-    ADD CONSTRAINT chapter_uuid_unique UNIQUE (uid);
-
-
---
 -- Name: chapters chapters_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.chapters
     ADD CONSTRAINT chapters_pkey PRIMARY KEY (id);
-
-
---
--- Name: grade_descriptors grade_descriptor_uuid_unique; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.grade_descriptors
-    ADD CONSTRAINT grade_descriptor_uuid_unique UNIQUE (uid);
 
 
 --
@@ -910,27 +859,11 @@ ALTER TABLE ONLY public.grade_descriptors
 
 
 --
--- Name: grades grade_uuid_unique; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.grades
-    ADD CONSTRAINT grade_uuid_unique UNIQUE (uid);
-
-
---
 -- Name: grades grades_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.grades
     ADD CONSTRAINT grades_pkey PRIMARY KEY (id);
-
-
---
--- Name: groups group_uuid_unique; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.groups
-    ADD CONSTRAINT group_uuid_unique UNIQUE (uid);
 
 
 --
@@ -958,14 +891,6 @@ ALTER TABLE ONLY public.lessons
 
 
 --
--- Name: organizations organization_uuid_unique; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.organizations
-    ADD CONSTRAINT organization_uuid_unique UNIQUE (uid);
-
-
---
 -- Name: organizations organizations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -990,14 +915,6 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
--- Name: skills skill_uuid_unique; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.skills
-    ADD CONSTRAINT skill_uuid_unique UNIQUE (uid);
-
-
---
 -- Name: skills skills_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1014,27 +931,11 @@ ALTER TABLE ONLY public.student_images
 
 
 --
--- Name: students student_uuid_unique; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.students
-    ADD CONSTRAINT student_uuid_unique UNIQUE (uid);
-
-
---
 -- Name: students students_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.students
     ADD CONSTRAINT students_pkey PRIMARY KEY (id);
-
-
---
--- Name: subjects subject_uuid_unique; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.subjects
-    ADD CONSTRAINT subject_uuid_unique UNIQUE (uid);
 
 
 --
@@ -1393,6 +1294,14 @@ CREATE OR REPLACE VIEW public.student_lesson_details AS
 
 
 --
+-- Name: absences absences_lesson_uid_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.absences
+    ADD CONSTRAINT absences_lesson_uid_fk FOREIGN KEY (lesson_uid) REFERENCES public.lessons(uid);
+
+
+--
 -- Name: assignments assignments_skill_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1414,14 +1323,6 @@ ALTER TABLE ONLY public.assignments
 
 ALTER TABLE ONLY public.chapters
     ADD CONSTRAINT chapters_organization_id_fk FOREIGN KEY (organization_id) REFERENCES public.organizations(id);
-
-
---
--- Name: chapters chapters_organization_uid_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.chapters
-    ADD CONSTRAINT chapters_organization_uid_fk FOREIGN KEY (organization_uid) REFERENCES public.organizations(uid);
 
 
 --
@@ -1465,27 +1366,11 @@ ALTER TABLE ONLY public.grade_descriptors
 
 
 --
--- Name: grade_descriptors grade_descriptors_skill_uid_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.grade_descriptors
-    ADD CONSTRAINT grade_descriptors_skill_uid_fk FOREIGN KEY (skill_uid) REFERENCES public.skills(uid);
-
-
---
 -- Name: grades grades_grade_descriptor_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.grades
     ADD CONSTRAINT grades_grade_descriptor_id_fk FOREIGN KEY (grade_descriptor_id) REFERENCES public.grade_descriptors(id);
-
-
---
--- Name: grades grades_grade_descriptor_uid_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.grades
-    ADD CONSTRAINT grades_grade_descriptor_uid_fk FOREIGN KEY (grade_descriptor_uid) REFERENCES public.grade_descriptors(uid);
 
 
 --
@@ -1513,27 +1398,11 @@ ALTER TABLE ONLY public.grades
 
 
 --
--- Name: grades grades_student_uid_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.grades
-    ADD CONSTRAINT grades_student_uid_fk FOREIGN KEY (student_uid) REFERENCES public.students(uid);
-
-
---
 -- Name: groups groups_chapter_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.groups
     ADD CONSTRAINT groups_chapter_id_fk FOREIGN KEY (chapter_id) REFERENCES public.chapters(id);
-
-
---
--- Name: groups groups_chapter_uid_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.groups
-    ADD CONSTRAINT groups_chapter_uid_fk FOREIGN KEY (chapter_uid) REFERENCES public.chapters(uid);
 
 
 --
@@ -1545,14 +1414,6 @@ ALTER TABLE ONLY public.lessons
 
 
 --
--- Name: lessons lessons_group_uid_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.lessons
-    ADD CONSTRAINT lessons_group_uid_fk FOREIGN KEY (group_uid) REFERENCES public.groups(uid);
-
-
---
 -- Name: lessons lessons_subject_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1561,27 +1422,11 @@ ALTER TABLE ONLY public.lessons
 
 
 --
--- Name: lessons lessons_subject_uid_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.lessons
-    ADD CONSTRAINT lessons_subject_uid_fk FOREIGN KEY (subject_uid) REFERENCES public.subjects(uid);
-
-
---
 -- Name: skills skills_organization_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.skills
     ADD CONSTRAINT skills_organization_id_fk FOREIGN KEY (organization_id) REFERENCES public.organizations(id);
-
-
---
--- Name: skills skills_organization_uid_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.skills
-    ADD CONSTRAINT skills_organization_uid_fk FOREIGN KEY (organization_uid) REFERENCES public.organizations(uid);
 
 
 --
@@ -1601,27 +1446,11 @@ ALTER TABLE ONLY public.students
 
 
 --
--- Name: students students_group_uid_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.students
-    ADD CONSTRAINT students_group_uid_fk FOREIGN KEY (group_uid) REFERENCES public.groups(uid);
-
-
---
 -- Name: subjects subjects_organization_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.subjects
     ADD CONSTRAINT subjects_organization_id_fk FOREIGN KEY (organization_id) REFERENCES public.organizations(id);
-
-
---
--- Name: subjects subjects_organization_uid_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.subjects
-    ADD CONSTRAINT subjects_organization_uid_fk FOREIGN KEY (organization_uid) REFERENCES public.organizations(uid);
 
 
 --
@@ -1717,7 +1546,6 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20181229235739'),
 ('20190121174701'),
 ('20190121175252'),
-('20190121181513'),
-('20190126211036');
+('20190127222433');
 
 

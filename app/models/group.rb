@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 class Group < ApplicationRecord
-  before_validation :update_uids
   validates :group_name, presence: true
-  validates :chapter_uid, presence: true
   validates :group_name, uniqueness: {
     scope: :chapter_id,
     message: ->(object, data) { "Group \"#{data[:value]}\" already exists in #{object.chapter_name} chapter" }
@@ -19,9 +17,5 @@ class Group < ApplicationRecord
 
   def group_chapter_name
     "#{group_name} - #{chapter_name}"
-  end
-
-  def update_uids
-    self.chapter_uid = chapter&.reload&.uid
   end
 end

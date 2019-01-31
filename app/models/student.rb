@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Student < ApplicationRecord
-  before_validation :update_uids
-  validates :group_uid, presence: true
   validates :mlid, :first_name, :last_name, :dob, :gender, :group, presence: true
   validates :mlid, uniqueness: true
   validate :profile_image_belongs_to_student, if: proc { |student| !student.profile_image.nil? }
@@ -74,9 +72,5 @@ class Student < ApplicationRecord
 
   def profile_image_belongs_to_student
     errors.add(:profile_image, I18n.t(:wrong_image, student: proper_name, other_student: profile_image.student.proper_name)) if profile_image.student.id != id
-  end
-
-  def update_uids
-    self.group_uid = group&.reload&.uid
   end
 end

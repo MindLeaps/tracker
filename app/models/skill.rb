@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 class Skill < ApplicationRecord
-  before_validation :update_uids
-  validates :skill_name, :organization, :organization_uid, presence: true
+  validates :skill_name, :organization, presence: true
   validate :grade_descriptors_must_have_unique_marks
 
   belongs_to :organization
@@ -27,9 +26,5 @@ class Skill < ApplicationRecord
 
   def duplicates?(arr)
     arr.uniq.length != arr.length
-  end
-
-  def update_uids
-    self.organization_uid = organization&.reload&.uid
   end
 end
