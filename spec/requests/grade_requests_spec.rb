@@ -54,6 +54,17 @@ RSpec.describe 'Grade API', type: :request do
       expect(grade['grade_descriptor']['mark']).to eq @gd.mark
       expect(grade['grade_descriptor']['grade_description']).to eq @gd.grade_description
     end
+
+    describe 'v2' do
+      it 'responds with a specific grade with lesson UUID' do
+        get_v2_with_token api_grade_path(@grade.reload), as: :json
+
+        expect(grade['id']).to eq @grade.id
+        expect(grade['grade_descriptor_id']).to eq @grade.grade_descriptor_id
+        expect(grade['lesson_id']).to eq @grade.lesson_uid
+        expect(grade['student_id']).to eq @grade.student_id
+      end
+    end
   end
 
   describe 'GET /grades' do
@@ -121,6 +132,16 @@ RSpec.describe 'Grade API', type: :request do
       expect(grades.length).to eq 3
       expect(grades.map { |g| g['id'] }).to include @grade3.id, @grade4.id, @grade5.id
     end
+
+    describe 'v2' do
+      it 'responds with a list of grades excluding the grades of deleted students and with lesson_ids as UUIDs' do
+        get_v2_with_token api_grades_path, as: :json
+
+        expect(grades.length).to eq 5
+        expect(grades.map { |g| g['id'] }).to include @grade1.id, @grade2.id, @grade3.id, @grade4.id, @grade5.id
+        expect(grades.map { |g| g['lesson_id'] }).to include @lesson1.reload.uid, @lesson2.reload.uid
+      end
+    end
   end
 
   describe 'POST /grades' do
@@ -138,6 +159,7 @@ RSpec.describe 'Grade API', type: :request do
       @gd4 = create :grade_descriptor, mark: 2, skill: @skill2
 
       @lesson = create :lesson, group: @group, subject: @subject
+      @lesson2 = create :lesson, group: @group, subject: @subject
     end
 
     context 'submitting valid parameters for a new grade' do
@@ -171,6 +193,36 @@ RSpec.describe 'Grade API', type: :request do
         expect(grade['lesson_id']).to eq @lesson.id
       end
     end
+
+    describe 'v2' do
+      context 'submitting valid parameters for a new grade' do
+        before :each do
+          post_v2_with_token api_grades_path, as: :json, params: { grade_descriptor_id: @gd1.id, lesson_id: @lesson.reload.uid, student_id: @student.id }
+        end
+
+        it 'creates a new grade with correct lesson' do
+          g = Grade.last
+          expect(g.grade_descriptor).to eq @gd1
+          expect(g.lesson).to eq @lesson
+          expect(g.student).to eq @student
+        end
+      end
+
+      context 'submitting parameters of an already existing grade' do
+        before :each do
+          @existing_grade = create :grade, student: @student, lesson: @lesson, grade_descriptor: @gd1
+
+          post_v2_with_token api_grades_path, as: :json, params: { grade_descriptor_id: @gd2.id, lesson_id: @lesson.reload.uid, student_id: @student.id }
+        end
+
+        it 'overwrites an already existing grade' do
+          expect(grade['id']).to eq @existing_grade.id
+          expect(grade['grade_descriptor_id']).to eq @gd2.id
+          expect(grade['student_id']).to eq @student.id
+          expect(grade['lesson_id']).to eq @lesson.uid
+        end
+      end
+    end
   end
 
   describe 'PATCH /grades/:id' do
@@ -188,6 +240,32 @@ RSpec.describe 'Grade API', type: :request do
       patch_with_token api_grade_path(@grade), as: :json, params: { id: @grade.id, grade_descriptor_id: @gd2.id }
 
       expect(@grade.reload.grade_descriptor).to eq @gd2
+    end
+
+    it 'responds with the updated grade' do
+      patch_with_token api_grade_path(@grade), as: :json, params: { id: @grade.id, grade_descriptor_id: @gd2.id }
+
+      expect(grade['id']).to eq @grade.id
+      expect(grade['grade_descriptor_id']).to eq @gd2.id
+      expect(grade['student_id']).to eq @grade.student_id
+      expect(grade['lesson_id']).to eq @lesson.id
+    end
+
+    describe 'v2' do
+      it 'updates the grade\'s grade descriptor' do
+        patch_v2_with_token api_grade_path(@grade), as: :json, params: { id: @grade.id, grade_descriptor_id: @gd2.id }
+
+        expect(@grade.reload.grade_descriptor).to eq @gd2
+      end
+
+      it 'responds with the updated grade with lesson UUID' do
+        patch_v2_with_token api_grade_path(@grade), as: :json, params: { id: @grade.id, grade_descriptor_id: @gd2.id }
+
+        expect(grade['id']).to eq @grade.id
+        expect(grade['grade_descriptor_id']).to eq @gd2.id
+        expect(grade['student_id']).to eq @grade.student_id
+        expect(grade['lesson_id']).to eq @lesson.reload.uid
+      end
     end
   end
 

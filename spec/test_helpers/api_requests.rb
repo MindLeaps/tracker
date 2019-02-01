@@ -9,6 +9,10 @@ module Helpers
     post_with_token(*merge_version_header(args))
   end
 
+  def patch_v2_with_token(*args)
+    patch_with_token(*merge_version_header(args))
+  end
+
   def get_with_token(*args)
     get(*merge_auth_headers(args))
   end
