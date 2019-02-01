@@ -111,6 +111,9 @@ GEM
       safe_yaml (~> 1.0.0)
     crass (1.0.4)
     database_cleaner (1.7.0)
+    debase (0.2.2)
+      debase-ruby_core_source (>= 0.10.2)
+    debase-ruby_core_source (0.10.4)
     debug_inspector (0.0.3)
     devise (4.5.0)
       bcrypt (~> 3.0)
@@ -316,6 +319,8 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.4.0)
+    ruby-debug-ide (0.7.0.beta7)
+      rake (>= 0.8.1)
     ruby-progressbar (1.10.0)
     rubyzip (1.2.2)
     safe_yaml (1.0.4)
@@ -419,6 +424,7 @@ DEPENDENCIES
   cocoon
   coveralls
   database_cleaner
+  debase
   devise
   dotenv-rails
   enum_help
@@ -447,6 +453,7 @@ DEPENDENCIES
   rolify
   rspec-rails
   rubocop
+  ruby-debug-ide
   sass-rails (~> 5.0)
   scenic
   selenium-webdriver
@@ -462,4 +469,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   1.17.1
+   1.17.2

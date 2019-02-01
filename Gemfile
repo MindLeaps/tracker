@@ -48,8 +48,10 @@ end
 
 group :development, :test do
   gem 'bullet'
+  gem 'debase'
   gem 'rails-controller-testing'
   gem 'rubocop'
+  gem 'ruby-debug-ide'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
 
