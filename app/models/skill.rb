@@ -13,7 +13,7 @@ class Skill < ApplicationRecord
 
   scope :by_subject, ->(subject_id) { joins(:assignments).where(assignments: { subject_id: subject_id }) }
 
-  accepts_nested_attributes_for :grade_descriptors
+  accepts_nested_attributes_for :grade_descriptors, update_only: true
 
   def grade_descriptors_must_have_unique_marks
     return if grade_descriptors.empty?

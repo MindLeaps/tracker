@@ -19,10 +19,8 @@ class StudentsController < ApplicationController
   def create
     @student = Student.new student_params
     authorize @student
-    # rubocop:disable Metrics/LineLength
     return link_notice_and_redirect t(:student_created, name: @student.proper_name), new_student_path, I18n.t(:create_another), details_student_path(@student) if @student.save
 
-    # rubocop:enable Metrics/LineLength
     render :new
   end
 

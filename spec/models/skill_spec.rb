@@ -32,7 +32,7 @@ RSpec.describe Skill, type: :model do
 
       it 'is not valid because grade descriptor is not valid' do
         desc = GradeDescriptor.new
-        skill = Skill.new skill_name: 'Valid Skill', organization: org, grade_descriptors: [desc]
+        skill = Skill.new skill_name: 'Invalid Skill', organization: org, grade_descriptors: [desc]
         expect(skill).to be_invalid
       end
     end

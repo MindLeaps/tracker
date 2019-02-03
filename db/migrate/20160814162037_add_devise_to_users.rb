@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Rails/BulkChangeTable
 class AddDeviseToUsers < ActiveRecord::Migration[5.0]
   def self.up
     change_table :users do |t|
@@ -22,4 +21,3 @@ class AddDeviseToUsers < ActiveRecord::Migration[5.0]
     raise ActiveRecord::IrreversibleMigration
   end
 end
-# rubocop:enable Rails/BulkChangeTable

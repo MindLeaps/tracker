@@ -37,14 +37,13 @@ RSpec.describe Grade, type: :model do
         expect(@existing_grade).to be_valid
         Bullet.enable = true
       end
-      # rubocop:disable Metrics/LineLength
+
       it 'is invalid because student was already graded for a skill in that lesson' do
         grade = Grade.new student: @student, lesson: @lesson, grade_descriptor: create(:grade_descriptor, skill: @grade_descriptor.skill)
         expect(grade).to be_invalid
         expect(grade.errors.messages[:grade_descriptor])
           .to include "#{@student.proper_name} already scored #{@grade_descriptor.mark} in #{@grade_descriptor.skill.skill_name} on #{@lesson.date} in #{@lesson.subject.subject_name}."
       end
-      # rubocop:enable Metrics/LineLength
 
       it 'is valid if a student was already graded for a skill in that lesson but a previous grade was deleted' do
         @existing_grade.update deleted_at: Time.zone.now

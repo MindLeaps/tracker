@@ -37,6 +37,20 @@ COMMENT ON EXTENSION pg_stat_statements IS 'track execution statistics of all SQ
 
 
 --
+-- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
+
+
+--
 -- Name: gender; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -57,7 +71,8 @@ SET default_with_oids = false;
 CREATE TABLE public.absences (
     id integer NOT NULL,
     student_id integer NOT NULL,
-    lesson_id integer NOT NULL
+    lesson_id integer NOT NULL,
+    lesson_uid uuid NOT NULL
 );
 
 
@@ -256,7 +271,9 @@ CREATE TABLE public.grades (
     grade_descriptor_id integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    deleted_at timestamp without time zone
+    deleted_at timestamp without time zone,
+    lesson_uid uuid NOT NULL,
+    uid uuid DEFAULT public.uuid_generate_v4() NOT NULL
 );
 
 
@@ -339,7 +356,8 @@ CREATE TABLE public.lessons (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     subject_id integer NOT NULL,
-    deleted_at timestamp without time zone
+    deleted_at timestamp without time zone,
+    uid uuid DEFAULT public.uuid_generate_v4() NOT NULL
 );
 
 
@@ -842,6 +860,14 @@ ALTER TABLE ONLY public.grade_descriptors
 
 
 --
+-- Name: grades grade_uuid_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.grades
+    ADD CONSTRAINT grade_uuid_unique UNIQUE (uid);
+
+
+--
 -- Name: grades grades_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -855,6 +881,14 @@ ALTER TABLE ONLY public.grades
 
 ALTER TABLE ONLY public.groups
     ADD CONSTRAINT groups_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: lessons lesson_uuid_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.lessons
+    ADD CONSTRAINT lesson_uuid_unique UNIQUE (uid);
 
 
 --
@@ -1176,6 +1210,50 @@ CREATE OR REPLACE VIEW public.organization_summaries AS
 
 
 --
+-- Name: student_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.student_lesson_summaries AS
+ WITH descriptive_grades AS (
+         SELECT grades.id,
+            grades.student_id,
+            grades.lesson_id,
+            grades.grade_descriptor_id,
+            grades.created_at,
+            grades.updated_at,
+            grades.deleted_at,
+            grade_descriptors.id,
+            grade_descriptors.mark,
+            grade_descriptors.grade_description,
+            grade_descriptors.skill_id,
+            grade_descriptors.created_at,
+            grade_descriptors.updated_at,
+            grade_descriptors.deleted_at
+           FROM (public.grades
+             JOIN public.grade_descriptors ON ((grades.grade_descriptor_id = grade_descriptors.id)))
+          WHERE (grades.deleted_at IS NULL)
+        )
+ SELECT s.id AS student_id,
+    s.first_name,
+    s.last_name,
+    s.deleted_at,
+    l.id AS lesson_id,
+    round(avg(descriptive_grades.mark), 2) AS average_mark,
+    count(descriptive_grades.mark) AS grade_count,
+        CASE
+            WHEN (a.id IS NULL) THEN false
+            ELSE true
+        END AS absent
+   FROM ((((public.students s
+     JOIN public.groups g ON ((g.id = s.group_id)))
+     JOIN public.lessons l ON ((g.id = l.group_id)))
+     LEFT JOIN descriptive_grades descriptive_grades(id, student_id, lesson_id, grade_descriptor_id, created_at, updated_at, deleted_at, id_1, mark, grade_description, skill_id, created_at_1, updated_at_1, deleted_at_1) ON (((descriptive_grades.student_id = s.id) AND (descriptive_grades.lesson_id = l.id))))
+     LEFT JOIN public.absences a ON (((a.student_id = s.id) AND (a.lesson_id = l.id))))
+  GROUP BY s.id, l.id, a.id
+  ORDER BY s.last_name;
+
+
+--
 -- Name: student_lesson_details _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
@@ -1225,47 +1303,11 @@ CREATE OR REPLACE VIEW public.student_lesson_details AS
 
 
 --
--- Name: student_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+-- Name: absences absences_lesson_uid_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-CREATE OR REPLACE VIEW public.student_lesson_summaries AS
- WITH descriptive_grades AS (
-         SELECT grades.id,
-            grades.student_id,
-            grades.lesson_id,
-            grades.grade_descriptor_id,
-            grades.created_at,
-            grades.updated_at,
-            grades.deleted_at,
-            grade_descriptors.id,
-            grade_descriptors.mark,
-            grade_descriptors.grade_description,
-            grade_descriptors.skill_id,
-            grade_descriptors.created_at,
-            grade_descriptors.updated_at,
-            grade_descriptors.deleted_at
-           FROM (public.grades
-             JOIN public.grade_descriptors ON ((grades.grade_descriptor_id = grade_descriptors.id)))
-          WHERE (grades.deleted_at IS NULL)
-        )
- SELECT s.id AS student_id,
-    s.first_name,
-    s.last_name,
-    s.deleted_at,
-    l.id AS lesson_id,
-    round(avg(descriptive_grades.mark), 2) AS average_mark,
-    count(descriptive_grades.mark) AS grade_count,
-        CASE
-            WHEN (a.id IS NULL) THEN false
-            ELSE true
-        END AS absent
-   FROM ((((public.students s
-     JOIN public.groups g ON ((g.id = s.group_id)))
-     JOIN public.lessons l ON ((g.id = l.group_id)))
-     LEFT JOIN descriptive_grades descriptive_grades(id, student_id, lesson_id, grade_descriptor_id, created_at, updated_at, deleted_at, id_1, mark, grade_description, skill_id, created_at_1, updated_at_1, deleted_at_1) ON (((descriptive_grades.student_id = s.id) AND (descriptive_grades.lesson_id = l.id))))
-     LEFT JOIN public.absences a ON (((a.student_id = s.id) AND (a.lesson_id = l.id))))
-  GROUP BY s.id, l.id, a.id
-  ORDER BY s.last_name;
+ALTER TABLE ONLY public.absences
+    ADD CONSTRAINT absences_lesson_uid_fk FOREIGN KEY (lesson_uid) REFERENCES public.lessons(uid);
 
 
 --
@@ -1346,6 +1388,14 @@ ALTER TABLE ONLY public.grades
 
 ALTER TABLE ONLY public.grades
     ADD CONSTRAINT grades_lesson_id_fk FOREIGN KEY (lesson_id) REFERENCES public.lessons(id);
+
+
+--
+-- Name: grades grades_lesson_uid_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.grades
+    ADD CONSTRAINT grades_lesson_uid_fk FOREIGN KEY (lesson_uid) REFERENCES public.lessons(uid);
 
 
 --
@@ -1502,6 +1552,10 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20181008005049'),
 ('20181223165012'),
 ('20181229230953'),
-('20181229235739');
+('20181229235739'),
+('20190121174701'),
+('20190121175252'),
+('20190127222433'),
+('20190203003437');
 
 
