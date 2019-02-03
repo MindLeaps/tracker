@@ -56,10 +56,10 @@ RSpec.describe 'Grade API', type: :request do
     end
 
     describe 'v2' do
-      it 'responds with a specific grade with lesson UUID' do
-        get_v2_with_token api_grade_path(@grade.reload), as: :json
+      it 'responds with a specific grade with lesson UUID and UUID as ID' do
+        get_v2_with_token api_grade_path(id: @grade.reload.uid), as: :json
 
-        expect(grade['id']).to eq @grade.id
+        expect(grade['id']).to eq @grade.uid
         expect(grade['grade_descriptor_id']).to eq @grade.grade_descriptor_id
         expect(grade['lesson_id']).to eq @grade.lesson_uid
         expect(grade['student_id']).to eq @grade.student_id
@@ -138,7 +138,7 @@ RSpec.describe 'Grade API', type: :request do
         get_v2_with_token api_grades_path, as: :json
 
         expect(grades.length).to eq 5
-        expect(grades.map { |g| g['id'] }).to include @grade1.id, @grade2.id, @grade3.id, @grade4.id, @grade5.id
+        expect(grades.map { |g| g['id'] }).to include @grade1.reload.uid, @grade2.reload.uid, @grade3.reload.uid, @grade4.reload.uid, @grade5.reload.uid
         expect(grades.map { |g| g['lesson_id'] }).to include @lesson1.reload.uid, @lesson2.reload.uid
       end
     end
@@ -208,6 +208,23 @@ RSpec.describe 'Grade API', type: :request do
         end
       end
 
+      context 'submitting valid parameters for a new grade including an ID' do
+        before :each do
+          @uuid = SecureRandom.uuid
+          post_v2_with_token api_grades_path, as: :json, params: { id: @uuid, grade_descriptor_id: @gd1.id, lesson_id: @lesson.reload.uid, student_id: @student.id }
+        end
+
+        it 'creates the new grade preserving the ID' do
+          g = Grade.last
+          expect(g.uid).to eq @uuid
+          expect(g.grade_descriptor).to eq @gd1
+          expect(g.lesson).to eq @lesson
+          expect(g.student).to eq @student
+
+          expect(grade['id']).to eq @uuid
+        end
+      end
+
       context 'submitting parameters of an already existing grade' do
         before :each do
           @existing_grade = create :grade, student: @student, lesson: @lesson, grade_descriptor: @gd1
@@ -216,7 +233,7 @@ RSpec.describe 'Grade API', type: :request do
         end
 
         it 'overwrites an already existing grade' do
-          expect(grade['id']).to eq @existing_grade.id
+          expect(grade['id']).to eq @existing_grade.reload.uid
           expect(grade['grade_descriptor_id']).to eq @gd2.id
           expect(grade['student_id']).to eq @student.id
           expect(grade['lesson_id']).to eq @lesson.uid
@@ -253,15 +270,15 @@ RSpec.describe 'Grade API', type: :request do
 
     describe 'v2' do
       it 'updates the grade\'s grade descriptor' do
-        patch_v2_with_token api_grade_path(@grade), as: :json, params: { id: @grade.id, grade_descriptor_id: @gd2.id }
+        patch_v2_with_token api_grade_path(id: @grade.reload.uid), as: :json, params: { id: @grade.uid, grade_descriptor_id: @gd2.id }
 
         expect(@grade.reload.grade_descriptor).to eq @gd2
       end
 
       it 'responds with the updated grade with lesson UUID' do
-        patch_v2_with_token api_grade_path(@grade), as: :json, params: { id: @grade.id, grade_descriptor_id: @gd2.id }
+        patch_v2_with_token api_grade_path(id: @grade.reload.uid), as: :json, params: { id: @grade.uid, grade_descriptor_id: @gd2.id }
 
-        expect(grade['id']).to eq @grade.id
+        expect(grade['id']).to eq @grade.uid
         expect(grade['grade_descriptor_id']).to eq @gd2.id
         expect(grade['student_id']).to eq @grade.student_id
         expect(grade['lesson_id']).to eq @lesson.reload.uid
@@ -279,6 +296,17 @@ RSpec.describe 'Grade API', type: :request do
 
       expect(@grade.reload.deleted_at.nil?).to be false
       expect(@grade.reload.deleted_at).to be_within(1.second).of Time.zone.now
+    end
+
+    describe 'v2' do
+      it 'marks the grade as deleted' do
+        delete_v2_with_token api_grade_path(id: @grade.reload.uid), as: :json, params: { id: @grade.uid }
+
+        expect(@grade.reload.deleted_at.nil?).to be false
+        expect(@grade.reload.deleted_at).to be_within(1.second).of Time.zone.now
+
+        expect(grade['id']).to eq @grade.uid
+      end
     end
   end
 end

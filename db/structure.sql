@@ -272,7 +272,8 @@ CREATE TABLE public.grades (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     deleted_at timestamp without time zone,
-    lesson_uid uuid NOT NULL
+    lesson_uid uuid NOT NULL,
+    uid uuid DEFAULT public.uuid_generate_v4() NOT NULL
 );
 
 
@@ -856,6 +857,14 @@ ALTER TABLE ONLY public.chapters
 
 ALTER TABLE ONLY public.grade_descriptors
     ADD CONSTRAINT grade_descriptors_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: grades grade_uuid_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.grades
+    ADD CONSTRAINT grade_uuid_unique UNIQUE (uid);
 
 
 --
@@ -1546,6 +1555,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20181229235739'),
 ('20190121174701'),
 ('20190121175252'),
-('20190127222433');
+('20190127222433'),
+('20190203003437');
 
 

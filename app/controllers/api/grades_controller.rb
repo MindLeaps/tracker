@@ -20,10 +20,11 @@ module Api
     end
 
     def show
-      @grade = Grade.find params[:id]
       if @api_version == 2
+        @grade = Grade.find_by uid: params.require(:id)
         respond_with :api, @grade, meta: { timestamp: Time.zone.now }, include: included_params, serializer: GradeSerializerUUID
       else
+        @grade = Grade.find params.require(:id)
         respond_with :api, @grade, meta: { timestamp: Time.zone.now }, include: included_params
       end
     end
@@ -39,21 +40,27 @@ module Api
     end
 
     def update
-      @grade = Grade.find params[:id]
-      @grade.update grade_params
-      # Needs json: attribute to render, otherwise does 204 for update by default
       if @api_version == 2
+        @grade = Grade.find_by uid: params.require(:id)
+        @grade.update grade_params
+        # Needs json: attribute to render, otherwise does 204 for update by default
         respond_with :api, @grade, json: @grade, meta: { timestamp: Time.zone.now }, include: included_params, serializer: GradeSerializerUUID
       else
+        @grade = Grade.find params[:id]
+        @grade.update grade_params
         respond_with :api, @grade, json: @grade, meta: { timestamp: Time.zone.now }, include: included_params
       end
     end
 
     def destroy
-      @grade = Grade.find params[:id]
+      @grade = @api_version == 2 ? (Grade.find_by uid: params.require(:id)) : (Grade.find params.require(:id))
       @grade.update deleted_at: Time.zone.now
       # Needs json: attribute to render, otherwise does 204 for destroy by default
-      respond_with :api, @grade, json: @grade, meta: { timestamp: Time.zone.now }, include: included_params
+      if @api_version == 2
+        respond_with :api, @grade, json: @grade, meta: { timestamp: Time.zone.now }, include: included_params, serializer: GradeSerializerUUID
+      else
+        respond_with :api, @grade, json: @grade, meta: { timestamp: Time.zone.now }, include: included_params
+      end
     end
 
     private
@@ -78,9 +85,11 @@ module Api
     end
 
     def grade_lesson_uuid_params
-      p = grade_params
+      p = params.permit :id, :student_id, :grade_descriptor_id, :lesson_id
       p[:lesson_uid] = p[:lesson_id]
       p.delete :lesson_id
+      p[:uid] = p[:id]
+      p.delete :id
       p
     end
 
