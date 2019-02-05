@@ -1,7 +1,7 @@
 ## Unreleased
 - Added UUIDs for Lessons and Grades
 - Added a v2 API for Lessons and Grades that uses UUIDs for identifiers
-- Upgraded Ruby runtime to 2.6.0
+- Upgraded Ruby runtime to 2.6.1
 - Enable showing deleted students in single group view
 
 ## 0.14.1
