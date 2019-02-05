@@ -38,7 +38,5 @@ module Tracker
       request_id: :request_id
     }
     config.log_level = :info
-
-    config.rails_semantic_logger.define_singleton_method(:filter) { nil } # Fix for Semantic Logger having the filter method which overrides Ruby #filter
   end
 end
