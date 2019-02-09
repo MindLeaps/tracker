@@ -3,6 +3,7 @@
 - Added a v2 API for Lessons and Grades that uses UUIDs for identifiers
 - Upgraded Ruby runtime to 2.6.1
 - Enable showing deleted students in single group view
+- Added paging to first and last pages
 
 ## 0.14.1
 - Add Material loading bar for Turbolinks
