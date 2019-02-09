@@ -8,6 +8,11 @@ tr.table-meta-header
       .mdl-tooltip data-mdl-for="option-link-#{i}" #{option[:tooltip]}
     span.page-info Displaying #{pagy.from} - #{pagy.to} #{resource} of #{pagy.count} in total
     nav.pagy_nav.pagination role="navigation" aria-label="pager"
+      a.mdl-button.mdl-js-button.mdl-button--icon disabled=('true' unless pagy.prev) id='first-page-button' href=(pagy_url_for(1, pagy) if pagy.prev)
+        = inline_svg('first_page.svg')
+      - if pagy.prev
+        .mdl-tooltip data-mdl-for='first-page-button'
+          = t :first_page
       a.mdl-button.mdl-js-button.mdl-button--icon disabled=('true' unless pagy.prev) id='prev-page-button' href=(pagy_url_for(pagy.prev, pagy) if pagy.prev)
         = inline_svg('chevron_left.svg')
       - if pagy.prev
@@ -18,3 +23,8 @@ tr.table-meta-header
       - if pagy.next
         .mdl-tooltip data-mdl-for='next-page-button'
           = t :next_page
+      a.mdl-button.mdl-js-button.mdl-button--icon disabled=('true' unless pagy.next) id='last-page-button' href=(pagy_url_for(pagy.last, pagy) if pagy.next)
+        = inline_svg('last_page.svg')
+      - if pagy.next
+        .mdl-tooltip data-mdl-for='last-page-button'
+          = t :last_page
