@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :subject do
-    sequence(:subject_name) { |n| "#{Faker::Educator.course}-#{n}" }
+    sequence(:subject_name) { |n| "#{Faker::Educator.course_name}-#{n}" }
     organization { create :organization }
     transient do
       number_of_skills { 7 }

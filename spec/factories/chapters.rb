@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :chapter do
-    sequence(:chapter_name) { |n| "#{Faker::StarWars.planet}-#{n}" }
+    sequence(:chapter_name) { |n| "#{Faker::Movies::StarWars.planet}-#{n}" }
     organization
   end
 end
