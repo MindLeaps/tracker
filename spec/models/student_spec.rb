@@ -6,7 +6,6 @@ RSpec.describe Student, type: :model do
   let(:gro) { create :group }
 
   describe 'relationships' do
-    it { should belong_to :profile_image }
     it { should belong_to :group }
     it { should have_many :grades }
     it { should have_many :absences }
