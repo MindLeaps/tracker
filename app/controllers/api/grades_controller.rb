@@ -108,7 +108,7 @@ module Api
         return grade if grade.save
 
         existing_grade = grade.find_duplicate
-        existing_grade.update grade_descriptor_id: grade.grade_descriptor_id
+        existing_grade.update grade_descriptor_id: grade.grade_descriptor_id, deleted_at: nil
         if @api_version == 2
           respond_with :api, existing_grade, status: :ok, meta: { timestamp: Time.zone.now }, include: {}, serializer: GradeSerializerUUID
         else

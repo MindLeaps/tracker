@@ -194,6 +194,22 @@ RSpec.describe 'Grade API', type: :request do
       end
     end
 
+    context 'submitting parameters of an already existing deleted grade' do
+      before :each do
+        @existing_grade = create :grade, student: @student, lesson: @lesson, grade_descriptor: @gd1, deleted_at: Time.zone.now
+
+        post_with_token api_grades_path, as: :json, params: { grade_descriptor_id: @gd2.id, lesson_id: @lesson.id, student_id: @student.id }
+      end
+
+      it 'overwrites an already existing grade and undeletes it' do
+        expect(grade['id']).to eq @existing_grade.id
+        expect(grade['grade_descriptor_id']).to eq @gd2.id
+        expect(grade['student_id']).to eq @student.id
+        expect(grade['lesson_id']).to eq @lesson.id
+        expect(grade['deleted_at']).to be_nil
+      end
+    end
+
     describe 'v2' do
       context 'submitting valid parameters for a new grade' do
         before :each do

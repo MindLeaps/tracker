@@ -33,7 +33,7 @@ class Grade < ApplicationRecord
 
   def find_duplicate
     Grade.joins(:grade_descriptor)
-         .where(student: student, lesson: lesson, grade_descriptors: { skill_id: grade_descriptor.skill.id }, deleted_at: nil)
+         .where(student: student, lesson: lesson, grade_descriptors: { skill_id: grade_descriptor.skill.id })
          .where.not(id: id)
          .take
   end
@@ -45,8 +45,6 @@ class Grade < ApplicationRecord
   end
 
   def grade_skill_must_be_unique_for_lesson_and_student
-    return unless deleted_at.nil? # Only do this if the current grade is not deleted, otherwise the validation doesn't matter
-
     existing_grade = find_duplicate
     add_duplicate_grade_error(existing_grade) if existing_grade
   end
