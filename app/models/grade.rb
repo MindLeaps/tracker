@@ -2,12 +2,13 @@
 
 class Grade < ApplicationRecord
   before_validation :update_uids
-  validates :lesson, :lesson_uid, :student, :grade_descriptor, presence: true
+  validates :lesson, :lesson_uid, :student, :grade_descriptor, :skill, presence: true
   validate :grade_skill_must_be_unique_for_lesson_and_student, if: :all_relations_exist?
 
   belongs_to :lesson
   belongs_to :student
   belongs_to :grade_descriptor
+  belongs_to :skill
 
   scope :by_student, ->(student_id) { where student_id: student_id }
 
@@ -15,10 +16,10 @@ class Grade < ApplicationRecord
 
   scope :exclude_deleted_students, -> { joins(:student).where students: { deleted_at: nil } }
 
-  attr_writer :skill
-
-  def skill
-    grade_descriptor.try(:skill) || @skill
+  def grade_descriptor=(new_grade_descriptor)
+    self.skill_id = new_grade_descriptor.skill_id
+    self.mark = new_grade_descriptor.mark
+    super(new_grade_descriptor)
   end
 
   def update_grade_descriptor(new_grade_descriptor)

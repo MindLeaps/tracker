@@ -273,7 +273,8 @@ CREATE TABLE public.grades (
     updated_at timestamp without time zone NOT NULL,
     deleted_at timestamp without time zone,
     lesson_uid uuid NOT NULL,
-    uid uuid DEFAULT public.uuid_generate_v4() NOT NULL
+    skill_id bigint NOT NULL,
+    mark integer NOT NULL
 );
 
 
@@ -860,14 +861,6 @@ ALTER TABLE ONLY public.grade_descriptors
 
 
 --
--- Name: grades grade_uuid_unique; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.grades
-    ADD CONSTRAINT grade_uuid_unique UNIQUE (uid);
-
-
---
 -- Name: grades grades_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1006,17 +999,17 @@ CREATE INDEX index_chapters_on_organization_id ON public.chapters USING btree (o
 
 
 --
--- Name: index_grade_descriptors_on_mark_and_skill_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_grade_descriptors_on_mark_and_skill_id ON public.grade_descriptors USING btree (mark, skill_id);
-
-
---
 -- Name: index_grade_descriptors_on_skill_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_grade_descriptors_on_skill_id ON public.grade_descriptors USING btree (skill_id);
+
+
+--
+-- Name: index_grade_descriptors_on_skill_id_and_mark; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_grade_descriptors_on_skill_id_and_mark ON public.grade_descriptors USING btree (skill_id, mark);
 
 
 --
@@ -1031,6 +1024,13 @@ CREATE INDEX index_grades_on_grade_descriptor_id ON public.grades USING btree (g
 --
 
 CREATE INDEX index_grades_on_lesson_id ON public.grades USING btree (lesson_id);
+
+
+--
+-- Name: index_grades_on_skill_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_grades_on_skill_id ON public.grades USING btree (skill_id);
 
 
 --
@@ -1351,6 +1351,14 @@ ALTER TABLE ONLY public.students
 
 
 --
+-- Name: grades fk_rails_aa113f6bf8; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.grades
+    ADD CONSTRAINT fk_rails_aa113f6bf8 FOREIGN KEY (skill_id) REFERENCES public.skills(id);
+
+
+--
 -- Name: authentication_tokens fk_rails_ad331ebb27; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1556,7 +1564,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190121174701'),
 ('20190121175252'),
 ('20190127222433'),
-('20190203003437'),
-('20190309000012');
+('20190309000012'),
+('20190309001819');
 
 
