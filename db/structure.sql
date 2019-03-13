@@ -606,6 +606,18 @@ CREATE TABLE public.students (
 
 
 --
+-- Name: student_lessons; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.student_lessons AS
+ SELECT s.id AS student_id,
+    l.id AS lesson_id
+   FROM ((public.lessons l
+     JOIN public.groups g ON ((l.group_id = g.id)))
+     JOIN public.students s ON ((g.id = s.group_id)));
+
+
+--
 -- Name: students_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -1565,6 +1577,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190121175252'),
 ('20190127222433'),
 ('20190309000012'),
-('20190309001819');
+('20190309001819'),
+('20190313032856');
 
 

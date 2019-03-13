@@ -41,9 +41,9 @@ class StudentLessonsController < ApplicationController
 
   def generate_grades_from_params(student)
     filled_grades_attributes.map do |g|
-      Grade.new(id: g[:id], student: student, lesson_id: params[:lesson_id], grade_descriptor_id: g[:grade_descriptor_id]).tap do |grade|
-        ActiveRecord::Associations::Preloader.new.preload(grade, grade_descriptor: [:skill])
-      end
+      new_grade = Grade.new(id: g[:id], student: student, lesson_id: params[:lesson_id])
+      new_grade.grade_descriptor = GradeDescriptor.find(g[:grade_descriptor_id])
+      new_grade
     end
   end
 

@@ -57,7 +57,7 @@ class Student < ApplicationRecord
   private
 
   def current_grades_for_lesson(lesson_id)
-    Grade.includes(grade_descriptor: [:skill]).where(lesson_id: lesson_id, student_id: id).exclude_deleted
+    Grade.where(lesson_id: lesson_id, student_id: id).exclude_deleted
   end
 
   def update_grade(grade, existing_grade)
