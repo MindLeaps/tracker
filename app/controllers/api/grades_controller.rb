@@ -76,6 +76,7 @@ module Api
 
     def create_v1_grade
       grade = Grade.new grade_all_params
+      grade.grade_descriptor = GradeDescriptor.find grade.grade_descriptor_id
       grade = save_or_update_if_exists(grade)
       respond_with :api, grade, meta: { timestamp: Time.zone.now }, include: included_params unless performed?
     end

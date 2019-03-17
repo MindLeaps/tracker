@@ -17,8 +17,10 @@ class Grade < ApplicationRecord
   scope :exclude_deleted_students, -> { joins(:student).where students: { deleted_at: nil } }
 
   def grade_descriptor=(new_grade_descriptor)
-    self.skill_id = new_grade_descriptor.skill_id
-    self.mark = new_grade_descriptor.mark
+    unless new_grade_descriptor.nil?
+      self.skill_id = new_grade_descriptor.skill_id
+      self.mark = new_grade_descriptor.mark
+    end
     super(new_grade_descriptor)
   end
 

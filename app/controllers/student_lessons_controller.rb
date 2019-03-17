@@ -2,60 +2,39 @@
 
 class StudentLessonsController < ApplicationController
   def show
-    @lesson = lesson_from_param
-    @student = Student.find params[:id]
-    authorize @lesson, :show?
-    @grades = @student.current_grades_for_lesson_including_ungraded_skills params[:lesson_id]
-    @absence = @lesson.absences.map(&:student_id).include? @student.id
+    lesson = lesson_from_param
+    authorize lesson, :show?
+    @student_lesson = StudentLesson.find_by student_id: params.require(:id), lesson: lesson
+    @absence = lesson.absences.map(&:student_id).include? params.require(:id)
   end
 
   def update
-    lesson = Lesson.find(params[:lesson_id])
+    lesson = Lesson.find params.require(:lesson_id)
     authorize lesson, :create?
-    perform_grading
+    student_lesson = StudentLesson.new(student_id: params.require(:id), lesson: lesson)
+    student_lesson.perform_grading format_attributes, student_absent?
+
     notice_and_redirect I18n.t(:student_graded), lesson_path(lesson)
   end
 
   private
 
-  def perform_grading
-    student = Student.find params.require(:id)
-    student.grade_lesson params.require(:lesson_id), generate_grades_from_params(student)
-
-    mark_student_absence student
-  end
-
   def student_absent?
-    absence_param = params.require(:student).permit(:absences)[:absences]
-    ActiveRecord::Type::Boolean.new.cast(absence_param)
-  end
-
-  def mark_student_absence(student)
-    lesson = Lesson.includes(:absences).find params[:lesson_id]
-    if student_absent?
-      lesson.mark_student_as_absent student
-    else
-      lesson.mark_student_as_present student
-    end
-  end
-
-  def generate_grades_from_params(student)
-    filled_grades_attributes.map do |g|
-      new_grade = Grade.new(id: g[:id], student: student, lesson_id: params[:lesson_id])
-      new_grade.grade_descriptor = GradeDescriptor.find(g[:grade_descriptor_id])
-      new_grade
-    end
-  end
-
-  def filled_grades_attributes
-    grades_attributes.select { |g| g['grade_descriptor_id'].present? || g['id'].present? }
+    absence_param = params.require(:student_lesson).permit(:absences)[:absences]
+    ActiveRecord::Type::Boolean.new.cast(absence_param) || false
   end
 
   def grades_attributes
-    params.require(:student).permit(grades_attributes: %i[id skill grade_descriptor_id])[:grades_attributes].values
+    params.require(:student_lesson).permit(grades_attributes: %i[skill_id grade_descriptor_id])[:grades_attributes].values
+  end
+
+  def format_attributes
+    grades_attributes
+      .select { |g| g['grade_descriptor_id'].present? }
+      .reduce({}) { |acc, v| acc.merge(v['skill_id'].to_i => v['grade_descriptor_id'].to_i) }
   end
 
   def lesson_from_param
-    Lesson.includes(subject: [{ skills: [:grade_descriptors] }]).find params[:lesson_id]
+    Lesson.find params[:lesson_id]
   end
 end

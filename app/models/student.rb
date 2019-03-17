@@ -36,39 +36,7 @@ class Student < ApplicationRecord
      :reason_for_leaving, :notes, :organization_id, :profile_image_id, student_images_attributes: [:image]]
   end
 
-  def current_grades_for_lesson_including_ungraded_skills(lesson_id)
-    lesson = Lesson.includes(subject: [:skills]).find lesson_id
-    skills = lesson.subject.skills
-
-    skill_grades = Hash[skills.map { |skill| [skill.id, Grade.new(lesson_id: lesson_id, student_id: id, skill: skill)] }]
-
-    current_grades_for_lesson(lesson_id).find_each { |grade| skill_grades[grade.skill.id] = grade }
-
-    skill_grades.values
-  end
-
-  def grade_lesson(lesson_id, new_grades)
-    existing_grades = Grade.includes(grade_descriptor: [:skill]).where(lesson_id: lesson_id, student_id: id).all.to_a
-    new_grades.map do |grade|
-      update_grade grade, existing_grade(grade, existing_grades)
-    end
-  end
-
   private
-
-  def current_grades_for_lesson(lesson_id)
-    Grade.where(lesson_id: lesson_id, student_id: id).exclude_deleted
-  end
-
-  def update_grade(grade, existing_grade)
-    return existing_grade.update_grade_descriptor grade.grade_descriptor if existing_grade
-
-    grade.tap(&:save)
-  end
-
-  def existing_grade(new_grade, existing_grades)
-    existing_grades.find { |g| g.id == new_grade.id }
-  end
 
   def profile_image_belongs_to_student
     errors.add(:profile_image, I18n.t(:wrong_image, student: proper_name, other_student: profile_image.student.proper_name)) if profile_image.student.id != id

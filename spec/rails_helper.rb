@@ -89,6 +89,12 @@ RSpec.configure do |config|
       Bullet.end_request
     end
 
+    config.around(:each, type: :model) do |example|
+      Bullet.unused_eager_loading_enable = false
+      example.run
+      Bullet.unused_eager_loading_enable = true
+    end
+
     config.around(:each, type: :controller) do |example|
       Bullet.unused_eager_loading_enable = false
       example.run
