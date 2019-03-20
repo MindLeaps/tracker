@@ -40,35 +40,31 @@ module Api
     end
 
     def update
-      if @api_version == 2
-        @grade = Grade.find_by uid: params.require(:id)
-        @grade.update grade_params
-        # Needs json: attribute to render, otherwise does 204 for update by default
-        respond_with :api, @grade, json: @grade, meta: { timestamp: Time.zone.now }, include: included_params, serializer: GradeSerializerUUID
-      else
-        @grade = Grade.find params[:id]
-        @grade.update grade_params
-        respond_with :api, @grade, json: @grade, meta: { timestamp: Time.zone.now }, include: included_params
-      end
+      @grade = Grade.find params[:id]
+      @grade.update grade_params
+      respond_with :api, @grade, json: @grade, meta: { timestamp: Time.zone.now }, include: included_params
     end
 
     def destroy
-      @grade = @api_version == 2 ? (Grade.find_by uid: params.require(:id)) : (Grade.find params.require(:id))
+      @grade = Grade.find params.require :id
       @grade.update deleted_at: Time.zone.now
       # Needs json: attribute to render, otherwise does 204 for destroy by default
-      if @api_version == 2
-        respond_with :api, @grade, json: @grade, meta: { timestamp: Time.zone.now }, include: included_params, serializer: GradeSerializerUUID
-      else
-        respond_with :api, @grade, json: @grade, meta: { timestamp: Time.zone.now }, include: included_params
-      end
+      respond_with :api, @grade, json: @grade, meta: { timestamp: Time.zone.now }, include: included_params
+    end
+
+    def destroy_v2
+      @grade = Grade.find_by student_id: params.require(:student_id), lesson_id: params.require(:lesson_id), skill_id: params.require(:skill_id)
+      @grade.update deleted_at: Time.zone.now
+      respond_with :api, @grade, json: @grade, meta: { timestamp: Time.zone.now }, include: included_params, serializer: GradeSerializerUUID
     end
 
     private
 
     def create_v2_grade
-      grade = Grade.new grade_all_params_lesson_uuid
+      grade = Grade.new grade_v2_all_params
       Grade.transaction do
         grade.lesson = Lesson.find_by! uid: grade.lesson_uid
+        grade.grade_descriptor = GradeDescriptor.find_by skill_id: grade.skill_id, mark: grade.mark
         grade = save_or_update_if_exists(grade)
       end
       respond_with :api, grade, meta: { timestamp: Time.zone.now }, include: included_params, serializer: GradeSerializerUUID unless performed?
@@ -85,12 +81,10 @@ module Api
       params.permit :student_id, :grade_descriptor_id, :lesson_id
     end
 
-    def grade_lesson_uuid_params
-      p = params.permit :id, :student_id, :grade_descriptor_id, :lesson_id
+    def grade_lesson_v2_params
+      p = params.permit :student_id, :mark, :skill_id, :lesson_id
       p[:lesson_uid] = p[:lesson_id]
       p.delete :lesson_id
-      p[:uid] = p[:id]
-      p.delete :id
       p
     end
 
@@ -99,9 +93,9 @@ module Api
       grade_params
     end
 
-    def grade_all_params_lesson_uuid
-      params.require %i[student_id grade_descriptor_id lesson_id]
-      grade_lesson_uuid_params
+    def grade_v2_all_params
+      params.require %i[student_id lesson_id skill_id mark]
+      grade_lesson_v2_params
     end
 
     def save_or_update_if_exists(grade)
@@ -109,7 +103,7 @@ module Api
         return grade if grade.save
 
         existing_grade = grade.find_duplicate
-        existing_grade.update grade_descriptor_id: grade.grade_descriptor_id, deleted_at: nil
+        existing_grade.update grade_descriptor: grade.grade_descriptor, deleted_at: nil
         if @api_version == 2
           respond_with :api, existing_grade, status: :ok, meta: { timestamp: Time.zone.now }, include: {}, serializer: GradeSerializerUUID
         else

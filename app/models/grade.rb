@@ -36,7 +36,7 @@ class Grade < ApplicationRecord
 
   def find_duplicate
     Grade.joins(:grade_descriptor)
-         .where(student: student, lesson: lesson, grade_descriptors: { skill_id: grade_descriptor.skill.id })
+         .where(student: student, lesson: lesson, skill_id: skill_id)
          .where.not(id: id)
          .take
   end

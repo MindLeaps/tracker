@@ -176,6 +176,9 @@ GEM
     ipaddress (0.8.3)
     jaro_winkler (1.5.2)
     json (2.1.0)
+    json_matchers (0.10.0)
+      json_schema
+    json_schema (0.20.4)
     jsonapi-renderer (0.2.0)
     jwt (2.1.0)
     loofah (2.2.3)
@@ -433,6 +436,7 @@ DEPENDENCIES
   fog-aws
   has_scope
   inline_svg
+  json_matchers
   marginalia
   meta_request
   mini_magick

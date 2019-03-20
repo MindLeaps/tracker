@@ -22,6 +22,10 @@
 require 'capybara/poltergeist'
 require 'omniauth'
 require 'coveralls'
+require 'json_matchers/rspec'
+
+JsonMatchers.schema_root = 'spec/schemas'
+
 Coveralls.wear!
 
 Capybara.register_driver :poltergeist do |app|
