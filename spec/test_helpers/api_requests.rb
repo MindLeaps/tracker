@@ -9,6 +9,10 @@ module Helpers
     post_with_token(*merge_version_header(args))
   end
 
+  def put_v2_with_token(*args)
+    put_with_token(*merge_version_header(args))
+  end
+
   def patch_v2_with_token(*args)
     patch_with_token(*merge_version_header(args))
   end
@@ -23,6 +27,10 @@ module Helpers
 
   def post_with_token(*args)
     post(*merge_auth_headers(args))
+  end
+
+  def put_with_token(*args)
+    put(*merge_auth_headers(args))
   end
 
   def patch_with_token(*args)

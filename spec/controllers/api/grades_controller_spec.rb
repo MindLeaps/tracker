@@ -41,6 +41,7 @@ RSpec.describe Api::GradesController, type: :controller do
       @gd2 = create :grade_descriptor, mark: 2, skill: @skill
       @lesson = create :lesson, group: @group, subject: @subject
     end
+
     context 'successfully creates a new grade' do
       before :each do
         post :create, format: :json, params: { grade_descriptor_id: @gd1.id, lesson_id: @lesson.id, student_id: @student.id }
@@ -78,6 +79,28 @@ RSpec.describe Api::GradesController, type: :controller do
       end
 
       it { should respond_with 400 }
+    end
+  end
+
+  describe 'put_v2' do
+    before :each do
+      @group = create :group
+      @student = create :student, group: @group
+
+      @subject = create :subject
+      @skill = create :skill, subject: @subject
+
+      @gd1 = create :grade_descriptor, mark: 1, skill: @skill
+      @gd2 = create :grade_descriptor, mark: 2, skill: @skill
+      @lesson = create :lesson, group: @group, subject: @subject
+    end
+
+    context 'successfully creates a new grade' do
+      before :each do
+        put :put_v2, format: :json, params: { lesson_id: @lesson.reload.uid, student_id: @student.id, mark: 1, skill_id: @skill.id }
+      end
+
+      it { should respond_with 201 }
     end
   end
 
