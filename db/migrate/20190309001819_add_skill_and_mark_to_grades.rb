@@ -7,6 +7,7 @@ class AddSkillAndMarkToGrades < ActiveRecord::Migration[5.2]
     add_column :grades, :mark, :integer
 
     remove_index :grade_descriptors, name: :index_grade_descriptors_on_mark_and_skill_id
+    remove_index :grade_descriptors, name: :index_grade_descriptors_on_skill_id
     add_index :grade_descriptors, %i[skill_id mark], unique: true
 
     execute <<~SQL
@@ -21,9 +22,9 @@ class AddSkillAndMarkToGrades < ActiveRecord::Migration[5.2]
   end
 
   def down
+    remove_index :grade_descriptors, name: :index_grade_descriptors_on_skill_id_and_mark
     remove_column :grades, :skill_id
     remove_column :grades, :mark
-    remove_index :grade_descriptors, colummn: %i[skill_id mark]
     add_index :grade_descriptors, %i[mark skill_id], unique: true
   end
   # rubocop:enable Metrics/MethodLength

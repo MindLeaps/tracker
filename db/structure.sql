@@ -71,8 +71,7 @@ SET default_with_oids = false;
 CREATE TABLE public.absences (
     id integer NOT NULL,
     student_id integer NOT NULL,
-    lesson_id integer NOT NULL,
-    lesson_uid uuid NOT NULL
+    lesson_id integer NOT NULL
 );
 
 
@@ -1011,13 +1010,6 @@ CREATE INDEX index_chapters_on_organization_id ON public.chapters USING btree (o
 
 
 --
--- Name: index_grade_descriptors_on_skill_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_grade_descriptors_on_skill_id ON public.grade_descriptors USING btree (skill_id);
-
-
---
 -- Name: index_grade_descriptors_on_skill_id_and_mark; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1036,6 +1028,13 @@ CREATE INDEX index_grades_on_grade_descriptor_id ON public.grades USING btree (g
 --
 
 CREATE INDEX index_grades_on_lesson_id ON public.grades USING btree (lesson_id);
+
+
+--
+-- Name: index_grades_on_lesson_uid; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_grades_on_lesson_uid ON public.grades USING btree (lesson_uid);
 
 
 --
@@ -1312,14 +1311,6 @@ CREATE OR REPLACE VIEW public.student_lesson_details AS
      LEFT JOIN public.absences a ON (((a.student_id = s.id) AND (a.lesson_id = l.id))))
   GROUP BY s.id, l.id, a.id
   ORDER BY l.subject_id;
-
-
---
--- Name: absences absences_lesson_uid_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.absences
-    ADD CONSTRAINT absences_lesson_uid_fk FOREIGN KEY (lesson_uid) REFERENCES public.lessons(uid);
 
 
 --
