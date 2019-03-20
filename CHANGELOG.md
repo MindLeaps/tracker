@@ -1,6 +1,8 @@
 ## Unreleased
-- Added UUIDs for Lessons and Grades
-- Added a v2 API for Lessons and Grades that uses UUIDs for identifiers
+- Added a v2 API for grades that uses skill_id and mark to relate to grade_descriptors
+- Added skill_id and mark to Grades
+- Added UUIDs for Lessons
+- Added a v2 API for Lessons UUIDs for identifiers
 - Upgraded Ruby runtime to 2.6.1
 - Enable showing deleted students in single group view
 - Added paging to first and last pages
