@@ -35,8 +35,8 @@ RSpec.describe StudentLessonsController, type: :controller do
 
       describe '#grade' do
         before :each do
-          post :update, params: { id: @student.id, lesson_id: @lesson.id, student: {
-            grades_attributes: { '0' => { grade_descriptor_id: @gd1.id } }
+          post :update, params: { id: @student.id, lesson_id: @lesson.id, student_lesson: {
+            grades_attributes: { '0' => { grade_descriptor_id: @gd1.id, skill_id: @gd1.skill_id } }
           } }
         end
 
@@ -49,9 +49,8 @@ RSpec.describe StudentLessonsController, type: :controller do
           end
 
           it 'Updates the existing grade' do
-            existing_grade_id = @student.grades[0].id
-            post :update, params: { id: @student.id, lesson_id: @lesson.id, student: {
-              grades_attributes: { '0' => { id: existing_grade_id, grade_descriptor_id: @gd2.id } }
+            post :update, params: { id: @student.id, lesson_id: @lesson.id, student_lesson: {
+              grades_attributes: { '0' => { grade_descriptor_id: @gd2.id, skill_id: @gd2.skill_id } }
             } }
 
             student = Student.find @student.id
@@ -62,7 +61,7 @@ RSpec.describe StudentLessonsController, type: :controller do
           it 'Updates the existing grade to be ungraded' do
             existing_grade_id = @student.grades[0].id
 
-            post :update, params: { id: @student.id, lesson_id: @lesson.id, student: {
+            post :update, params: { id: @student.id, lesson_id: @lesson.id, student_lesson: {
               grades_attributes: { '0' => { id: existing_grade_id, grade_descriptor_id: '' } }
             } }
 
@@ -71,7 +70,7 @@ RSpec.describe StudentLessonsController, type: :controller do
           end
 
           it 'Marks the student as absent from lesson' do
-            post :update, params: { id: @student.id, lesson_id: @lesson.id, student: {
+            post :update, params: { id: @student.id, lesson_id: @lesson.id, student_lesson: {
               absences: '1',
               grades_attributes: { '0' => { grade_descriptor_id: @gd1.id } }
             } }

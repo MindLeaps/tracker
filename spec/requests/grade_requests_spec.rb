@@ -54,17 +54,6 @@ RSpec.describe 'Grade API', type: :request do
       expect(grade['grade_descriptor']['mark']).to eq @gd.mark
       expect(grade['grade_descriptor']['grade_description']).to eq @gd.grade_description
     end
-
-    describe 'v2' do
-      it 'responds with a specific grade with lesson UUID and UUID as ID' do
-        get_v2_with_token api_grade_path(id: @grade.reload.uid), as: :json
-
-        expect(grade['id']).to eq @grade.uid
-        expect(grade['grade_descriptor_id']).to eq @grade.grade_descriptor_id
-        expect(grade['lesson_id']).to eq @grade.lesson_uid
-        expect(grade['student_id']).to eq @grade.student_id
-      end
-    end
   end
 
   describe 'GET /grades' do
@@ -138,8 +127,7 @@ RSpec.describe 'Grade API', type: :request do
         get_v2_with_token api_grades_path, as: :json
 
         expect(grades.length).to eq 5
-        expect(grades.map { |g| g['id'] }).to include @grade1.reload.uid, @grade2.reload.uid, @grade3.reload.uid, @grade4.reload.uid, @grade5.reload.uid
-        expect(grades.map { |g| g['lesson_id'] }).to include @lesson1.reload.uid, @lesson2.reload.uid
+        expect(response).to match_json_schema 'grades/index'
       end
     end
   end
@@ -194,50 +182,87 @@ RSpec.describe 'Grade API', type: :request do
       end
     end
 
-    describe 'v2' do
-      context 'submitting valid parameters for a new grade' do
-        before :each do
-          post_v2_with_token api_grades_path, as: :json, params: { grade_descriptor_id: @gd1.id, lesson_id: @lesson.reload.uid, student_id: @student.id }
-        end
+    context 'submitting parameters of an already existing deleted grade' do
+      before :each do
+        @existing_grade = create :grade, student: @student, lesson: @lesson, grade_descriptor: @gd1, deleted_at: Time.zone.now
 
-        it 'creates a new grade with correct lesson' do
-          g = Grade.last
-          expect(g.grade_descriptor).to eq @gd1
-          expect(g.lesson).to eq @lesson
-          expect(g.student).to eq @student
-        end
+        post_with_token api_grades_path, as: :json, params: { grade_descriptor_id: @gd2.id, lesson_id: @lesson.id, student_id: @student.id }
       end
 
-      context 'submitting valid parameters for a new grade including an ID' do
-        before :each do
-          @uuid = SecureRandom.uuid
-          post_v2_with_token api_grades_path, as: :json, params: { id: @uuid, grade_descriptor_id: @gd1.id, lesson_id: @lesson.reload.uid, student_id: @student.id }
-        end
+      it 'overwrites an already existing grade and undeletes it' do
+        expect(grade['id']).to eq @existing_grade.id
+        expect(grade['grade_descriptor_id']).to eq @gd2.id
+        expect(grade['student_id']).to eq @student.id
+        expect(grade['lesson_id']).to eq @lesson.id
+        expect(grade['deleted_at']).to be_nil
+      end
+    end
+  end
 
-        it 'creates the new grade preserving the ID' do
-          g = Grade.last
-          expect(g.uid).to eq @uuid
-          expect(g.grade_descriptor).to eq @gd1
-          expect(g.lesson).to eq @lesson
-          expect(g.student).to eq @student
+  describe 'PUT /grades' do
+    before :each do
+      @group = create :group
+      @student = create :student, group: @group
 
-          expect(grade['id']).to eq @uuid
-        end
+      @subject = create :subject
+      @skill1 = create :skill, subject: @subject
+      @skill2 = create :skill, subject: @subject
+
+      @gd1 = create :grade_descriptor, mark: 1, skill: @skill1
+      @gd2 = create :grade_descriptor, mark: 2, skill: @skill1
+      @gd3 = create :grade_descriptor, mark: 1, skill: @skill2
+      @gd4 = create :grade_descriptor, mark: 2, skill: @skill2
+
+      @lesson = create :lesson, group: @group, subject: @subject
+      @lesson2 = create :lesson, group: @group, subject: @subject
+    end
+
+    context 'submitting valid parameters for a new grade' do
+      before :each do
+        put_with_token api_grades_path, as: :json, params: { skill_id: @skill1.id, lesson_id: @lesson.reload.uid, student_id: @student.id, mark: 1 }
       end
 
-      context 'submitting parameters of an already existing grade' do
-        before :each do
-          @existing_grade = create :grade, student: @student, lesson: @lesson, grade_descriptor: @gd1
+      it 'creates a new grade with correct lesson' do
+        expect(response.status).to eq 201
+        g = Grade.last
+        expect(g.grade_descriptor).to eq @gd1
+        expect(g.lesson).to eq @lesson
+        expect(g.student).to eq @student
+      end
 
-          post_v2_with_token api_grades_path, as: :json, params: { grade_descriptor_id: @gd2.id, lesson_id: @lesson.reload.uid, student_id: @student.id }
-        end
+      it 'responds with a grade' do
+        expect(response).to match_json_schema 'grade'
+      end
+    end
 
-        it 'overwrites an already existing grade' do
-          expect(grade['id']).to eq @existing_grade.reload.uid
-          expect(grade['grade_descriptor_id']).to eq @gd2.id
-          expect(grade['student_id']).to eq @student.id
-          expect(grade['lesson_id']).to eq @lesson.uid
-        end
+    context 'submitting parameters of an already existing grade' do
+      before :each do
+        @existing_grade = create :grade, student: @student, lesson: @lesson, grade_descriptor: @gd1
+
+        put_with_token api_grades_path, as: :json, params: { lesson_id: @lesson.reload.uid, student_id: @student.id, skill_id: @skill1.id, mark: 2 }
+      end
+
+      it 'overwrites an already existing grade' do
+        expect(@existing_grade.reload.mark).to eq 2
+        expect(@existing_grade.grade_descriptor).to eq @gd2
+      end
+
+      it 'responds with a grade' do
+        expect(response).to match_json_schema 'grade'
+      end
+    end
+
+    context 'submitting parameters of an already existing deleted grade' do
+      before :each do
+        @existing_grade = create :grade, student: @student, lesson: @lesson, grade_descriptor: @gd1, deleted_at: Time.zone.now
+
+        put_with_token api_grades_path, as: :json, params: { lesson_id: @lesson.reload.uid, student_id: @student.id, skill_id: @skill1.id, mark: 2 }
+      end
+
+      it 'overwrites an already existing grade and undeletes it' do
+        expect(@existing_grade.reload.mark).to eq 2
+        expect(@existing_grade.grade_descriptor).to eq @gd2
+        expect(@existing_grade.deleted_at).to be_nil
       end
     end
   end
@@ -267,23 +292,6 @@ RSpec.describe 'Grade API', type: :request do
       expect(grade['student_id']).to eq @grade.student_id
       expect(grade['lesson_id']).to eq @lesson.id
     end
-
-    describe 'v2' do
-      it 'updates the grade\'s grade descriptor' do
-        patch_v2_with_token api_grade_path(id: @grade.reload.uid), as: :json, params: { id: @grade.uid, grade_descriptor_id: @gd2.id }
-
-        expect(@grade.reload.grade_descriptor).to eq @gd2
-      end
-
-      it 'responds with the updated grade with lesson UUID' do
-        patch_v2_with_token api_grade_path(id: @grade.reload.uid), as: :json, params: { id: @grade.uid, grade_descriptor_id: @gd2.id }
-
-        expect(grade['id']).to eq @grade.uid
-        expect(grade['grade_descriptor_id']).to eq @gd2.id
-        expect(grade['student_id']).to eq @grade.student_id
-        expect(grade['lesson_id']).to eq @lesson.reload.uid
-      end
-    end
   end
 
   describe 'DELETE /grades/:id' do
@@ -300,12 +308,11 @@ RSpec.describe 'Grade API', type: :request do
 
     describe 'v2' do
       it 'marks the grade as deleted' do
-        delete_v2_with_token api_grade_path(id: @grade.reload.uid), as: :json, params: { id: @grade.uid }
+        expect(@grade.reload.deleted_at).to be_nil
+        delete_v2_with_token api_destroy_grade_v2_path(student_id: @grade.student_id, lesson_id: @grade.lesson_id, skill_id: @grade.skill_id), as: :json
 
         expect(@grade.reload.deleted_at.nil?).to be false
         expect(@grade.reload.deleted_at).to be_within(1.second).of Time.zone.now
-
-        expect(grade['id']).to eq @grade.uid
       end
     end
   end

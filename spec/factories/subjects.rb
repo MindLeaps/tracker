@@ -18,5 +18,17 @@ FactoryBot.define do
         end
       end
     end
+
+    factory :subject_with_mindleaps_skills do
+      after :create do |subject|
+        create :skill_with_descriptors, skill_name: 'Memorization', subject: subject
+        create :skill_with_descriptors, skill_name: 'Grit', subject: subject
+        create :skill_with_descriptors, skill_name: 'Teamwork', subject: subject
+        create :skill_with_descriptors, skill_name: 'Discipline', subject: subject
+        create :skill_with_descriptors, skill_name: 'Self-Esteem', subject: subject
+        create :skill_with_descriptors, skill_name: 'Creativity', subject: subject
+        create :skill_with_descriptors, skill_name: 'Language', subject: subject
+      end
+    end
   end
 end

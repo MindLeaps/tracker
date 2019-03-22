@@ -45,10 +45,10 @@ RSpec.describe Grade, type: :model do
           .to include "#{@student.proper_name} already scored #{@grade_descriptor.mark} in #{@grade_descriptor.skill.skill_name} on #{@lesson.date} in #{@lesson.subject.subject_name}."
       end
 
-      it 'is valid if a student was already graded for a skill in that lesson but a previous grade was deleted' do
+      it 'is invalid if a deleted grade already exists' do
         @existing_grade.update deleted_at: Time.zone.now
         grade = Grade.new student: @student, lesson: @lesson, grade_descriptor: create(:grade_descriptor, skill: @grade_descriptor.skill)
-        expect(grade).to be_valid
+        expect(grade).to be_invalid
       end
     end
   end

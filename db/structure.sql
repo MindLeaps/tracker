@@ -71,8 +71,7 @@ SET default_with_oids = false;
 CREATE TABLE public.absences (
     id integer NOT NULL,
     student_id integer NOT NULL,
-    lesson_id integer NOT NULL,
-    lesson_uid uuid NOT NULL
+    lesson_id integer NOT NULL
 );
 
 
@@ -273,7 +272,8 @@ CREATE TABLE public.grades (
     updated_at timestamp without time zone NOT NULL,
     deleted_at timestamp without time zone,
     lesson_uid uuid NOT NULL,
-    uid uuid DEFAULT public.uuid_generate_v4() NOT NULL
+    skill_id bigint NOT NULL,
+    mark integer NOT NULL
 );
 
 
@@ -605,6 +605,18 @@ CREATE TABLE public.students (
 
 
 --
+-- Name: student_lessons; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.student_lessons AS
+ SELECT s.id AS student_id,
+    l.id AS lesson_id
+   FROM ((public.lessons l
+     JOIN public.groups g ON ((l.group_id = g.id)))
+     JOIN public.students s ON ((g.id = s.group_id)));
+
+
+--
 -- Name: students_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -860,14 +872,6 @@ ALTER TABLE ONLY public.grade_descriptors
 
 
 --
--- Name: grades grade_uuid_unique; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.grades
-    ADD CONSTRAINT grade_uuid_unique UNIQUE (uid);
-
-
---
 -- Name: grades grades_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1006,17 +1010,10 @@ CREATE INDEX index_chapters_on_organization_id ON public.chapters USING btree (o
 
 
 --
--- Name: index_grade_descriptors_on_mark_and_skill_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_grade_descriptors_on_skill_id_and_mark; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_grade_descriptors_on_mark_and_skill_id ON public.grade_descriptors USING btree (mark, skill_id);
-
-
---
--- Name: index_grade_descriptors_on_skill_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_grade_descriptors_on_skill_id ON public.grade_descriptors USING btree (skill_id);
+CREATE UNIQUE INDEX index_grade_descriptors_on_skill_id_and_mark ON public.grade_descriptors USING btree (skill_id, mark);
 
 
 --
@@ -1031,6 +1028,20 @@ CREATE INDEX index_grades_on_grade_descriptor_id ON public.grades USING btree (g
 --
 
 CREATE INDEX index_grades_on_lesson_id ON public.grades USING btree (lesson_id);
+
+
+--
+-- Name: index_grades_on_lesson_uid; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_grades_on_lesson_uid ON public.grades USING btree (lesson_uid);
+
+
+--
+-- Name: index_grades_on_skill_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_grades_on_skill_id ON public.grades USING btree (skill_id);
 
 
 --
@@ -1303,14 +1314,6 @@ CREATE OR REPLACE VIEW public.student_lesson_details AS
 
 
 --
--- Name: absences absences_lesson_uid_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.absences
-    ADD CONSTRAINT absences_lesson_uid_fk FOREIGN KEY (lesson_uid) REFERENCES public.lessons(uid);
-
-
---
 -- Name: assignments assignments_skill_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1348,6 +1351,14 @@ ALTER TABLE ONLY public.absences
 
 ALTER TABLE ONLY public.students
     ADD CONSTRAINT fk_rails_512f7ce835 FOREIGN KEY (profile_image_id) REFERENCES public.student_images(id);
+
+
+--
+-- Name: grades fk_rails_aa113f6bf8; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.grades
+    ADD CONSTRAINT fk_rails_aa113f6bf8 FOREIGN KEY (skill_id) REFERENCES public.skills(id);
 
 
 --
@@ -1556,6 +1567,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190121174701'),
 ('20190121175252'),
 ('20190127222433'),
-('20190203003437');
+('20190309000012'),
+('20190309001819'),
+('20190313032856');
 
 

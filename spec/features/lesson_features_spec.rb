@@ -95,8 +95,8 @@ RSpec.describe 'User interacts with lessons' do
         visit "/lessons/#{@lesson.id}"
         click_link 'Graden'
 
-        expect(page).to have_unchecked_field 'student_absences'
-        check 'student_absences'
+        expect(page).to have_unchecked_field 'student_lesson[absences]'
+        check 'student_lesson[absences]'
 
         click_button 'Save Student Grades'
         expect(page).to have_content 'Student graded.'

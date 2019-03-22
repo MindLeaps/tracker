@@ -2,12 +2,13 @@
 
 class Grade < ApplicationRecord
   before_validation :update_uids
-  validates :lesson, :lesson_uid, :student, :grade_descriptor, presence: true
+  validates :lesson, :lesson_uid, :student, :grade_descriptor, :skill, presence: true
   validate :grade_skill_must_be_unique_for_lesson_and_student, if: :all_relations_exist?
 
   belongs_to :lesson
   belongs_to :student
   belongs_to :grade_descriptor
+  belongs_to :skill
 
   scope :by_student, ->(student_id) { where student_id: student_id }
 
@@ -15,10 +16,12 @@ class Grade < ApplicationRecord
 
   scope :exclude_deleted_students, -> { joins(:student).where students: { deleted_at: nil } }
 
-  attr_writer :skill
-
-  def skill
-    grade_descriptor.try(:skill) || @skill
+  def grade_descriptor=(new_grade_descriptor)
+    unless new_grade_descriptor.nil?
+      self.skill_id = new_grade_descriptor.skill_id
+      self.mark = new_grade_descriptor.mark
+    end
+    super(new_grade_descriptor)
   end
 
   def update_grade_descriptor(new_grade_descriptor)
@@ -33,7 +36,7 @@ class Grade < ApplicationRecord
 
   def find_duplicate
     Grade.joins(:grade_descriptor)
-         .where(student: student, lesson: lesson, grade_descriptors: { skill_id: grade_descriptor.skill.id }, deleted_at: nil)
+         .where(student: student, lesson: lesson, skill_id: skill_id)
          .where.not(id: id)
          .take
   end
@@ -45,8 +48,6 @@ class Grade < ApplicationRecord
   end
 
   def grade_skill_must_be_unique_for_lesson_and_student
-    return unless deleted_at.nil? # Only do this if the current grade is not deleted, otherwise the validation doesn't matter
-
     existing_grade = find_duplicate
     add_duplicate_grade_error(existing_grade) if existing_grade
   end

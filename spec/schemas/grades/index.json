@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+
+  "$id": "file:/grades/index.json#",
+  "type": "object",
+  "properties": {
+    "grades" : {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "mark": {"type": "number"},
+          "skill_id": {"type": "number"},
+          "lesson_id": {"type": "string"},
+          "student_id": {"type": "number"},
+          "deleted_at": {"type": ["string", "null"], "format": "date-time"}
+        },
+        "required": ["mark", "skill_id", "lesson_id", "student_id", "deleted_at"],
+        "additionalProperties": false
+      }
+    },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "timestamp": {"type": "string", "format": "date-time"}
+      },
+      "required": ["timestamp"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["grades", "meta"],
+  "additionalProperties": false
+}
