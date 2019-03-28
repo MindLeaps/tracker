@@ -9,6 +9,7 @@ module Api
     def index
       @lessons = apply_scopes(Lesson).all
       if @api_version == 2
+        authorize Lesson
         respond_with @lessons, include: included_params, meta: { timestamp: Time.zone.now }, each_serializer: LessonSerializerUUID
       else
         respond_with @lessons, include: included_params, meta: { timestamp: Time.zone.now }
@@ -27,6 +28,7 @@ module Api
 
     def create
       lesson = Lesson.new @api_version == 2 ? lesson_params_with_uuid_as_id : lesson_params
+      authorize lesson if @api_version == 2
       save_lesson lesson
 
       return if performed?

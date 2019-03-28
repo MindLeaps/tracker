@@ -11,6 +11,7 @@ module Api
     end
 
     def index
+      authorize Lesson
       @grades = apply_scopes(Grade).where('grades.updated_at > :datetime', datetime: 4.months.ago).all
       if @api_version == 2
         respond_with :api, @grades, meta: { timestamp: Time.zone.now }, include: included_params, each_serializer: GradeSerializerV2
@@ -21,7 +22,8 @@ module Api
 
     def show
       if @api_version == 2
-        @grade = Grade.find_by uid: params.require(:id)
+        @grade = Grade.includes(:lesson).find_by uid: params.require(:id)
+        authorize @grade.lesson
         respond_with :api, @grade, meta: { timestamp: Time.zone.now }, include: included_params, serializer: GradeSerializerV2
       else
         @grade = Grade.find params.require(:id)
@@ -41,9 +43,9 @@ module Api
     end
 
     def put_v2
-      grade = Grade.new grade_v2_all_params
+      grade = build_grade
+      authorize grade.lesson, :create?
       Grade.transaction do
-        grade.lesson = Lesson.find_by! uid: grade.lesson_uid
         grade.grade_descriptor = GradeDescriptor.find_by skill_id: grade.skill_id, mark: grade.mark
         grade = save_or_update_if_exists(grade) { |existing_grade| respond_with :api, existing_grade, json: existing_grade, status: :ok, meta: { timestamp: Time.zone.now }, include: {}, serializer: GradeSerializerV2 }
       end
@@ -66,12 +68,20 @@ module Api
     end
 
     def destroy_v2
-      @grade = Grade.find_by student_id: params.require(:student_id), lesson_id: params.require(:lesson_id), skill_id: params.require(:skill_id)
+      @grade = Grade.includes(:lesson)
+                    .find_by student_id: params.require(:student_id), lesson_id: params.require(:lesson_id), skill_id: params.require(:skill_id)
+      authorize @grade.lesson, :destroy?
       @grade.update deleted_at: Time.zone.now
       respond_with :api, @grade, json: @grade, meta: { timestamp: Time.zone.now }, include: included_params, serializer: GradeSerializerV2
     end
 
     private
+
+    def build_grade
+      grade = Grade.new grade_v2_all_params
+      grade.lesson = Lesson.find_by! uid: grade.lesson_uid
+      grade
+    end
 
     def grade_params
       params.permit :student_id, :grade_descriptor_id, :lesson_id
