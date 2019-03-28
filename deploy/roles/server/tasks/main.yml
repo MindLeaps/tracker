@@ -1,11 +1,20 @@
 ---
-- name: Install the Beats repo Public Signing Key
-  sudo: true
-  shell: "wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -"
+- name: Add apt key for yarn
+  apt_key:
+    url: https://dl.yarnpkg.com/debian/pubkey.gpg
+    state: present
 
-- name: Save Repository Definition
-  sudo: true
-  shell: 'echo "deb https://artifacts.elastic.co/packages/6.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-6.x.list'
+- name: Add apt key for Beats
+  apt_key:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+
+- name: Add apt repository for Elastic
+  apt_repository:
+    repo: deb https://artifacts.elastic.co/packages/6.x/apt stable main
+    state: present
+    filename: yarn
+    update_cache: yes
 
 - name: Update apt repository cache
   sudo: true
