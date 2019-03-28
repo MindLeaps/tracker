@@ -1,4 +1,5 @@
 ## Unreleased
+- Added authorization for v2 API
 - Added a v2 API for grades that uses skill_id and mark to relate to grade_descriptors
 - Added skill_id and mark to Grades
 - Added UUIDs for Lessons
