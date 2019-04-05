@@ -11,7 +11,7 @@
         th class='mdl-data-table__cell--non-numeric' First Name
         th Graded / Skills
         th Average Grade
-
+    - skill_count = @lesson.subject.skills.count
     - @student_lesson_summaries.each_with_index do |summary, i|
       tr class='resource-row'
         td
@@ -21,6 +21,6 @@
         td class='mdl-data-table__cell--non-numeric'
           = link_to summary.first_name, lesson_student_path(@lesson.id, summary.student_id)
         td
-          = link_to "#{summary.grade_count} / #{@lesson.subject.skills.count}", lesson_student_path(@lesson.id, summary.student_id)
+          = link_to "#{summary.grade_count} / #{skill_count}", lesson_student_path(@lesson.id, summary.student_id)
         td
           = link_to(if summary.absent then 'Absent' else summary.average_mark end || '', lesson_student_path(@lesson.id, summary.student_id))
