@@ -1,3 +1,6 @@
+## Unreleased
+- Updated views for new grade structure
+
 ## 0.15.0
 - Added authorization for v2 API
 - Added a v2 API for grades that uses skill_id and mark to relate to grade_descriptors
