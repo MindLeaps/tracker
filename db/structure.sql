@@ -1221,73 +1221,10 @@ CREATE OR REPLACE VIEW public.organization_summaries AS
 
 
 --
--- Name: student_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.student_lesson_summaries AS
- WITH descriptive_grades AS (
-         SELECT grades.id,
-            grades.student_id,
-            grades.lesson_id,
-            grades.grade_descriptor_id,
-            grades.created_at,
-            grades.updated_at,
-            grades.deleted_at,
-            grade_descriptors.id,
-            grade_descriptors.mark,
-            grade_descriptors.grade_description,
-            grade_descriptors.skill_id,
-            grade_descriptors.created_at,
-            grade_descriptors.updated_at,
-            grade_descriptors.deleted_at
-           FROM (public.grades
-             JOIN public.grade_descriptors ON ((grades.grade_descriptor_id = grade_descriptors.id)))
-          WHERE (grades.deleted_at IS NULL)
-        )
- SELECT s.id AS student_id,
-    s.first_name,
-    s.last_name,
-    s.deleted_at,
-    l.id AS lesson_id,
-    round(avg(descriptive_grades.mark), 2) AS average_mark,
-    count(descriptive_grades.mark) AS grade_count,
-        CASE
-            WHEN (a.id IS NULL) THEN false
-            ELSE true
-        END AS absent
-   FROM ((((public.students s
-     JOIN public.groups g ON ((g.id = s.group_id)))
-     JOIN public.lessons l ON ((g.id = l.group_id)))
-     LEFT JOIN descriptive_grades descriptive_grades(id, student_id, lesson_id, grade_descriptor_id, created_at, updated_at, deleted_at, id_1, mark, grade_description, skill_id, created_at_1, updated_at_1, deleted_at_1) ON (((descriptive_grades.student_id = s.id) AND (descriptive_grades.lesson_id = l.id))))
-     LEFT JOIN public.absences a ON (((a.student_id = s.id) AND (a.lesson_id = l.id))))
-  GROUP BY s.id, l.id, a.id
-  ORDER BY s.last_name;
-
-
---
 -- Name: student_lesson_details _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
 CREATE OR REPLACE VIEW public.student_lesson_details AS
- WITH descriptive_grades AS (
-         SELECT grades.id,
-            grades.student_id,
-            grades.lesson_id,
-            grades.grade_descriptor_id,
-            grades.created_at,
-            grades.updated_at,
-            grades.deleted_at,
-            grade_descriptors.id,
-            grade_descriptors.mark,
-            grade_descriptors.grade_description,
-            grade_descriptors.skill_id,
-            grade_descriptors.created_at,
-            grade_descriptors.updated_at,
-            grade_descriptors.deleted_at
-           FROM (public.grades
-             JOIN public.grade_descriptors ON ((grades.grade_descriptor_id = grade_descriptors.id)))
-          WHERE (grades.deleted_at IS NULL)
-        )
  SELECT s.id AS student_id,
     s.first_name,
     s.last_name,
@@ -1296,9 +1233,9 @@ CREATE OR REPLACE VIEW public.student_lesson_details AS
     l.date,
     l.deleted_at AS lesson_deleted_at,
     l.subject_id,
-    round(avg(descriptive_grades.mark), 2) AS average_mark,
-    count(descriptive_grades.mark) AS grade_count,
-    COALESCE(jsonb_object_agg(descriptive_grades.skill_id, jsonb_build_object('mark', descriptive_grades.mark, 'grade_descriptor_id', descriptive_grades.grade_descriptor_id, 'skill_name', skills.skill_name)) FILTER (WHERE (skills.skill_name IS NOT NULL)), '{}'::jsonb) AS skill_marks,
+    round(avg(grades.mark), 2) AS average_mark,
+    count(grades.mark) AS grade_count,
+    COALESCE(jsonb_object_agg(grades.skill_id, jsonb_build_object('mark', grades.mark, 'grade_descriptor_id', grades.grade_descriptor_id, 'skill_name', skills.skill_name)) FILTER (WHERE (skills.skill_name IS NOT NULL)), '{}'::jsonb) AS skill_marks,
         CASE
             WHEN (a.id IS NULL) THEN false
             ELSE true
@@ -1306,11 +1243,36 @@ CREATE OR REPLACE VIEW public.student_lesson_details AS
    FROM (((((public.students s
      JOIN public.groups g ON ((g.id = s.group_id)))
      JOIN public.lessons l ON ((g.id = l.group_id)))
-     LEFT JOIN descriptive_grades descriptive_grades(id, student_id, lesson_id, grade_descriptor_id, created_at, updated_at, deleted_at, id_1, mark, grade_description, skill_id, created_at_1, updated_at_1, deleted_at_1) ON (((descriptive_grades.student_id = s.id) AND (descriptive_grades.lesson_id = l.id))))
-     LEFT JOIN public.skills ON ((skills.id = descriptive_grades.skill_id)))
+     LEFT JOIN public.grades ON (((grades.student_id = s.id) AND (grades.lesson_id = l.id))))
+     LEFT JOIN public.skills ON ((skills.id = grades.skill_id)))
      LEFT JOIN public.absences a ON (((a.student_id = s.id) AND (a.lesson_id = l.id))))
   GROUP BY s.id, l.id, a.id
   ORDER BY l.subject_id;
+
+
+--
+-- Name: student_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.student_lesson_summaries AS
+ SELECT s.id AS student_id,
+    s.first_name,
+    s.last_name,
+    s.deleted_at,
+    l.id AS lesson_id,
+    round(avg(grades.mark), 2) AS average_mark,
+    count(grades.mark) AS grade_count,
+        CASE
+            WHEN (a.id IS NULL) THEN false
+            ELSE true
+        END AS absent
+   FROM ((((public.students s
+     JOIN public.groups g ON ((g.id = s.group_id)))
+     JOIN public.lessons l ON ((g.id = l.group_id)))
+     LEFT JOIN public.grades ON (((grades.student_id = s.id) AND (grades.lesson_id = l.id))))
+     LEFT JOIN public.absences a ON (((a.student_id = s.id) AND (a.lesson_id = l.id))))
+  GROUP BY s.id, l.id, a.id
+  ORDER BY s.last_name;
 
 
 --
@@ -1569,6 +1531,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190127222433'),
 ('20190309000012'),
 ('20190309001819'),
-('20190313032856');
+('20190313032856'),
+('20190405030134'),
+('20190406163831');
 
 
