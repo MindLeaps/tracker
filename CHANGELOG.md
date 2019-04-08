@@ -1,5 +1,6 @@
 ## Unreleased
 - Updated views for new grade structure
+- Policy scoping API index responses for V2 of API
 
 ## 0.15.0
 - Added authorization for v2 API
