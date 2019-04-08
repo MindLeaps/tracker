@@ -7,7 +7,7 @@ module Api
     has_scope :by_subject, as: :subject_id
 
     def index
-      @lessons = apply_scopes(Lesson).all
+      @lessons = apply_scopes(@api_version == 2 ? policy_scope(Lesson) : Lesson).all
       if @api_version == 2
         authorize Lesson
         respond_with @lessons, include: included_params, meta: { timestamp: Time.zone.now }, each_serializer: LessonSerializerUUID
