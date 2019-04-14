@@ -305,15 +305,19 @@ RSpec.describe 'Grade API', type: :request do
       expect(@grade.reload.deleted_at.nil?).to be false
       expect(@grade.reload.deleted_at).to be_within(1.second).of Time.zone.now
     end
+  end
 
-    describe 'v2' do
-      it 'marks the grade as deleted' do
-        expect(@grade.reload.deleted_at).to be_nil
-        delete_v2_with_token api_destroy_grade_v2_path(student_id: @grade.student_id, lesson_id: @grade.lesson_id, skill_id: @grade.skill_id), as: :json
+  describe 'DELETE /grades/student/:student_id/lesson/:lesson_id/skill/:skill_id' do
+    before :each do
+      @grade = create :grade
+    end
 
-        expect(@grade.reload.deleted_at.nil?).to be false
-        expect(@grade.reload.deleted_at).to be_within(1.second).of Time.zone.now
-      end
+    it 'marks the grade as deleted' do
+      expect(@grade.reload.deleted_at).to be_nil
+      delete_v2_with_token api_destroy_grade_v2_path(student_id: @grade.student_id, lesson_id: @grade.lesson_uid, skill_id: @grade.skill_id), as: :json
+
+      expect(@grade.reload.deleted_at.nil?).to be false
+      expect(@grade.reload.deleted_at).to be_within(1.second).of Time.zone.now
     end
   end
 end

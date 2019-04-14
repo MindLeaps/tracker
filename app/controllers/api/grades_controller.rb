@@ -69,7 +69,7 @@ module Api
 
     def destroy_v2
       @grade = Grade.includes(:lesson)
-                    .find_by student_id: params.require(:student_id), lesson_id: params.require(:lesson_id), skill_id: params.require(:skill_id)
+                    .find_by student_id: params.require(:student_id), lesson_uid: params.require(:lesson_id), skill_id: params.require(:skill_id)
       authorize @grade.lesson, :destroy?
       @grade.update deleted_at: Time.zone.now
       respond_with :api, @grade, json: @grade, meta: { timestamp: Time.zone.now }, include: included_params, serializer: GradeSerializerV2
