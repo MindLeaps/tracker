@@ -4,42 +4,41 @@ table class='mdl-data-table mdl-js-data-table resource-table'
       {name: t(:show_deleted), href: show_deleted_url, checked: !excluding_deleted?, tooltip: excluding_deleted? ? t(:show_deleted_students_tooltip) : t(:hide_deleted_students_tooltip) } \
     ] }
     tr
-      th
+      th.mdl-data-table__cell--non-numeric
         | #
       == render partial: 'shared/ordered_column', locals: { order_key: :mlid, column_name: 'MLID' }
-      th class="mdl-data-table__cell--non-numeric"
+      th.mdl-data-table__cell--non-numeric
         | Image
       == render partial: 'shared/ordered_column', locals: { order_key: :last_name, column_name: 'Last Name' }
       == render partial: 'shared/ordered_column', locals: { order_key: :first_name, column_name: 'First Name' }
       == render partial: 'shared/ordered_column', locals: { order_key: :gender, column_name: 'Gender' }
       == render partial: 'shared/ordered_column', locals: { order_key: :dob, column_name: 'Date of Birth' }
       == render partial: 'shared/ordered_column', locals: { order_key: :order_by_group_name, column_name: 'Group', custom_order?: true }
-      th class="mdl-data-table__cell--non-numeric"
+      th
         | Actions
   tbody
   - students.each_with_index do |student, i|
 
     tr class=(['resource-row', student.deleted_at ? 'deleted-row' : nil])
-      td
+      td.mdl-data-table__cell--non-numeric
         = link_to pagy.from + i, student_path(student)
-      td class="mdl-data-table__cell--non-numeric"
+      td.mdl-data-table__cell--non-numeric
         = link_to student.mlid, student_path(student)
-      td class="mdl-data-table__cell--non-numeric"
+      td.mdl-data-table__cell--non-numeric
         = link_to image_tag(student_mini_thumbnail(student), alt: 'profile image', class: 'mini-thumb-profile-image'), student_path(student)
-      td class="mdl-data-table__cell--non-numeric"
+      td.mdl-data-table__cell--non-numeric
         = link_to student.last_name, student_path(student)
-      td class="mdl-data-table__cell--non-numeric"
+      td.mdl-data-table__cell--non-numeric
         = link_to student.first_name, student_path(student)
-      td class="mdl-data-table__cell--non-numeric"
+      td.mdl-data-table__cell--non-numeric
         = link_to student.gender_i18n, student_path(student)
-      td class="mdl-data-table__cell--non-numeric"
+      td.mdl-data-table__cell--non-numeric
         = link_to "#{student.dob} #{student.estimated_dob ? 'EST' : ''}", student_path(student)
-      td class="mdl-data-table__cell--non-numeric"
+      td.mdl-data-table__cell--non-numeric
         = link_to student_group_name(student), student_path(student)
-      td class="mdl-data-table__cell--non-numeric"
-        .cell-wrapper
-          - if policy(student).update?
-            a href=edit_student_path(student) id="edit-button-#{i}" class='mdl-button mdl-js-button mdl-button--icon table-action-icon'
-              = image_tag 'edit.svg'
-            .mdl-tooltip data-mdl-for="edit-button-#{i}"
-              | Edit Student
+      td
+        - if policy(student).update?
+          a href=edit_student_path(student) id="edit-button-#{i}" class='mdl-button mdl-js-button mdl-button--icon table-action-icon'
+            = image_tag 'edit.svg'
+          .mdl-tooltip data-mdl-for="edit-button-#{i}"
+            | Edit Student

@@ -1,3 +1,6 @@
+## Unreleased
+- Updated table styles to simplify and unify table margins
+
 ## 0.15.1
 - Updated views for new grade structure
 - Policy scoping API index responses for V2 of API

@@ -4,7 +4,7 @@ table class="mdl-data-table mdl-js-data-table resource-table"
       {name: t(:show_deleted), href: show_deleted_url, checked: !excluding_deleted?, tooltip: excluding_deleted? ? t(:show_deleted_groups_tooltip) : t(:hide_deleted_groups_tooltip) } \
     ] }
     tr
-      th
+      th.mdl-data-table__cell--non-numeric
         | #
       == render partial: 'shared/ordered_column', locals: { order_key: :group_name, column_name: 'Group Name' }
       == render partial: 'shared/ordered_column', locals: { order_key: :chapter_name, column_name: 'Chapter - Organization' }
@@ -12,7 +12,7 @@ table class="mdl-data-table mdl-js-data-table resource-table"
   - groups.each_with_index do |group_summary, i|
     - path = group_path group_summary.id
     tr class=(['resource-row', 'group-row', group_summary.deleted_at ? 'deleted-row' : nil])
-      td
+      td.mdl-data-table__cell--non-numeric
         = link_to pagy.from + i, path
       td.mdl-data-table__cell--non-numeric
         = link_to group_summary.group_name, path
