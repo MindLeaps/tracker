@@ -80,21 +80,38 @@ RSpec.describe GroupsController, type: :controller do
       @student1 = create :student, group: @group
       @student2 = create :student, group: @group
       @deleted_student = create :student, group: @group, deleted_at: Time.zone.now
-
-      get :show, params: { id: @group.id }
     end
 
-    it { should respond_with 200 }
+    context 'regular visit' do
+      before :each do
+        get :show, params: { id: @group.id }
+      end
 
-    it { should render_template :show }
+      it { should respond_with 200 }
 
-    it 'exposes current group' do
-      expect(assigns(:group)).to eq @group
+      it { should render_template :show }
+
+      it 'exposes current group' do
+        expect(assigns(:group)).to eq @group
+      end
+
+      it 'exposes non-deleted students in a group' do
+        expect(assigns(:students)).to include @student1, @student2
+        expect(assigns(:students)).not_to include @deleted_student
+      end
     end
 
-    it 'exposes non-deleted students in a group' do
-      expect(assigns(:students)).to include @student1, @student2
-      expect(assigns(:students)).not_to include @deleted_student
+    context 'search' do
+      before :each do
+        get :show, params: { id: @group.id, search: @student1.first_name }
+      end
+
+      it { should respond_with 200 }
+
+      it 'responds with a listed of searched students' do
+        expect(assigns(:students).length).to eq 1
+        expect(assigns(:students)).to include @student1
+      end
     end
   end
 
