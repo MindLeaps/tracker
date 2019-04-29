@@ -15,19 +15,19 @@
       table class='mdl-data-table mdl-js-data-table resource-table'
         thead
           tr
-            th #
-            th class='mdl-data-table__cell--non-numeric' Date
+            th.mdl-data-table__cell--non-numeric #
+            th.mdl-data-table__cell--non-numeric Date
             th Average Mark
             - subject.skills.each do |skill|
               th
                 = skill.skill_name
 
-        tbody.no-links
+        tbody
           - lessons_details.each_with_index do |lesson_detail, i|
             tr
-              td
+              td.mdl-data-table__cell--non-numeric
                 = i + 1
-              td class='mdl-data-table__cell--non-numeric'
+              td.mdl-data-table__cell--non-numeric
                 = lesson_detail.date
               td
                 = lesson_detail.average_mark
