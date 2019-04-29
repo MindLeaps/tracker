@@ -5,6 +5,7 @@ class StudentsController < ApplicationController
   has_scope :exclude_deleted, only: :index, type: :boolean, default: true
   has_scope :exclude_empty, only: :performance, type: :boolean, default: true
   has_scope :table_order, only: :index, type: :hash
+  has_scope :search, only: :index
 
   def index
     authorize Student

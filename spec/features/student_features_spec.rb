@@ -24,6 +24,24 @@ RSpec.describe 'User interacts with Students' do
     end
   end
 
+  describe 'Search for Students', js: true do
+    before :each do
+      create :student, first_name: 'Umborato', last_name: 'Aco', mlid: 'ACO-123'
+      create :student, first_name: 'Umberto', last_name: 'Eco', mlid: 'ECO-123'
+      create :student, first_name: 'Amberto', last_name: 'Oce', mlid: 'OCE-123'
+    end
+
+    it 'displays only searched students' do
+      visit '/students'
+      find('#search-field').send_keys('Umb', :enter)
+      expect(page).to have_selector('.resource-row', count: 2)
+      rows = page.all('.resource-row')
+      expect(rows[0]).to have_content 'Umborato'
+      expect(rows[1]).to have_content 'Umberto'
+      expect(page).to have_field('search-field', with: 'Umb')
+    end
+  end
+
   describe 'Clicking on a student shows their performance and details' do
     before :each do
       create :graded_student, first_name: 'Umberto', last_name: 'Eco', mlid: 'ECO-123', grades: {
