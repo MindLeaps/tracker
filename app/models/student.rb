@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class Student < ApplicationRecord
+  include PgSearch
+  pg_search_scope :search, against: [:first_name, :last_name], using: { tsearch: { prefix: true } }
+
   validates :mlid, :first_name, :last_name, :dob, :gender, :group, presence: true
   validates :mlid, uniqueness: true
   validate :profile_image_belongs_to_student, if: proc { |student| !student.profile_image.nil? }
