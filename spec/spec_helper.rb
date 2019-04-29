@@ -112,7 +112,7 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 
   # Use capybara webkit for feature tests
-  Capybara.javascript_driver = :poltergeist
+  Capybara.javascript_driver = :selenium_chrome_headless
 end
 
 OmniAuth.config.test_mode = true

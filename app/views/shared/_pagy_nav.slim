@@ -3,10 +3,7 @@ tr.table-meta-header
     .flex
       .left-section
         - unless local_assigns[:search].nil?
-          = form_tag(students_path, method: :get, remote: true) do
-            .mdl-textfield.mdl-js-textfield
-              = text_field_tag :search, search[:term], autofocus: true, onfocus: 'this.setSelectionRange(this.value.length,this.value.length)', class: 'mdl-textfield__input', id: 'search-field'
-              label.mdl-textfield__label for='search-field' Search
+          == render partial: 'shared/search_form', locals: { search: search }
 
       .right-section
         - local_assigns.fetch(:options, []).each_with_index do |option, i|
