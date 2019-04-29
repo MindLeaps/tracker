@@ -35,7 +35,7 @@ RSpec.describe 'User interacts with Students' do
     it 'displays serched for students, including deleted' do
       visit '/students'
       expect(page).to have_selector('.resource-row', count: 3)
-      click_link 'Show Deleted'
+      click_link_compat 'Show Deleted'
       expect(page).to have_selector('.resource-row', count: 4)
       find('#search-field').send_keys('Umb', :enter)
       expect(page).to have_selector('.resource-row', count: 3)
@@ -44,7 +44,7 @@ RSpec.describe 'User interacts with Students' do
       expect(rows[1]).to have_content 'Umberto'
       expect(rows[2]).to have_content 'Umbdeleto'
       expect(page).to have_field('search-field', with: 'Umb')
-      click_link 'Show Deleted'
+      click_link_compat 'Show Deleted'
       expect(page).to have_selector('.resource-row', count: 2)
       rows = page.all('.resource-row')
       expect(rows[0]).to have_content 'Umborato'
