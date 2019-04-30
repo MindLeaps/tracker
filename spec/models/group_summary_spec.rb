@@ -37,4 +37,24 @@ RSpec.describe GroupSummary, type: :model do
       expect(GroupSummary.all.map(&:student_count).sort).to eq [3, 0, 0].sort
     end
   end
+
+  describe 'search' do
+    before :each do
+      @group1 = create :group, group_name: 'Abisamol'
+      @group2 = create :group, group_name: 'Abisouena'
+      @group3 = create :group, group_name: 'Milatava'
+    end
+
+    it 'finds the group by exact group name match' do
+      result = GroupSummary.search('Abisamol')
+      expect(result.length).to eq 1
+      expect(result.first).to eq GroupSummary.find(@group1.id)
+    end
+
+    it 'finds groups by partial group name match' do
+      result = GroupSummary.search('Abi')
+      expect(result.length).to eq 2
+      expect(result).to include GroupSummary.find(@group1.id), GroupSummary.find(@group2.id)
+    end
+  end
 end

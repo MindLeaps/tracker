@@ -93,4 +93,30 @@ RSpec.describe 'User interacts with Groups' do
       expect(@deleted_group.reload.deleted_at).to be_nil
     end
   end
+
+  describe 'Group searching and filtering', js: true do
+    before :each do
+      @group1 = create :group, group_name: 'Abisamol'
+      @group2 = create :group, group_name: 'Abisouena'
+      @group4 = create :group, group_name: 'Abilatava', deleted_at: Time.zone.now
+      @group3 = create :group, group_name: 'Milatava'
+    end
+
+    it 'searches different groups' do
+      visit '/groups'
+      expect(page).to have_selector('.resource-row', count: 3)
+      click_link_compat 'Show Deleted'
+      expect(page).to have_selector('.resource-row', count: 4)
+      find('#search-field').send_keys('Abi', :enter)
+      expect(page).to have_selector('.resource-row', count: 3)
+      expect(page).to have_content 'Abisamol'
+      expect(page).to have_content 'Abisouena'
+      expect(page).to have_content 'Abilatava'
+      expect(page).to have_field('search-field', with: 'Abi')
+      click_link_compat 'Show Deleted'
+      expect(page).to have_selector('.resource-row', count: 2)
+      expect(page).to have_content'Abisamol'
+      expect(page).to have_content'Abisouena'
+    end
+  end
 end

@@ -4,7 +4,7 @@ class GroupsController < ApplicationController
   include Pagy::Backend
   has_scope :exclude_deleted, type: :boolean, default: true
   has_scope :table_order, type: :hash
-  has_scope :search, only: :show
+  has_scope :search, only: :index
 
   def index
     authorize Group
