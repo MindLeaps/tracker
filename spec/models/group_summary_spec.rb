@@ -42,7 +42,8 @@ RSpec.describe GroupSummary, type: :model do
     before :each do
       @group1 = create :group, group_name: 'Abisamol'
       @group2 = create :group, group_name: 'Abisouena'
-      @group3 = create :group, group_name: 'Milatava'
+      @group3 = create :group, group_name: 'Milatava', chapter: create(:chapter, chapter_name: 'Xalnatutron')
+      @group4 = create :group, group_name: 'Zombara', chapter: create(:chapter, organization: create(:organization, organization_name: 'Xibalba'))
     end
 
     it 'finds the group by exact group name match' do
@@ -55,6 +56,18 @@ RSpec.describe GroupSummary, type: :model do
       result = GroupSummary.search('Abi')
       expect(result.length).to eq 2
       expect(result).to include GroupSummary.find(@group1.id), GroupSummary.find(@group2.id)
+    end
+
+    it 'finds a group by chapter name' do
+      result = GroupSummary.search('Xalna')
+      expect(result.length).to eq 1
+      expect(result).to include GroupSummary.find(@group3.id)
+    end
+
+    it 'finds a group by organization name' do
+      result = GroupSummary.search('Xiba')
+      expect(result.length).to eq 1
+      expect(result).to include GroupSummary.find(@group4.id)
     end
   end
 end

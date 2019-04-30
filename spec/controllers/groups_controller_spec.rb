@@ -50,27 +50,52 @@ RSpec.describe GroupsController, type: :controller do
 
   describe '#index' do
     before :each do
-      @groups = create_list :group, 3
-      @deleted_group = create :group, deleted_at: 1.second.ago
-
-      get :index
+      @group1 = create :group, group_name: 'Dumbator'
+      @group2 = create :group, group_name: 'Albator'
+      @group3 = create :group, group_name: 'Albion'
+      @deleted_group = create :group, deleted_at: 1.second.ago, group_name: 'Albaritor'
     end
 
-    it 'gets a list of groups' do
-      expect(response).to be_successful
-      expect(assigns(:groups).length).to eq 3
-      expect(assigns(:groups).map(&:id)).to include(*@groups.map(&:id))
+    context 'regular visit' do
+      before :each do
+        get :index
+      end
+
+      it 'gets a list of groups' do
+        expect(response).to be_successful
+        expect(assigns(:groups).length).to eq 3
+        expect(assigns(:groups)).to include GroupSummary.find(@group1.id), GroupSummary.find(@group2.id), GroupSummary.find(@group3.id)
+      end
+
+      it 'does not include deleted groups' do
+        expect(assigns(:groups)).not_to include GroupSummary.find(@deleted_group.id)
+      end
+
+      it 'includes deleted groups' do
+        get :index, params: { exclude_deleted: false }
+
+        expect(assigns(:groups).length).to eq 4
+        expect(assigns(:groups)).to include GroupSummary.find(@deleted_group.id)
+      end
     end
 
-    it 'does not include deleted groups' do
-      expect(assigns(:groups).map(&:id)).not_to include @deleted_group.id
-    end
+    context 'searching for a group' do
+      before :each do
+        get :index, params: { search: 'Alb' }
+      end
 
-    it 'includes deleted groups' do
-      get :index, params: { exclude_deleted: false }
+      it { should respond_with 200 }
 
-      expect(assigns(:groups).length).to eq 4
-      expect(assigns(:groups).map(&:id)).to include @deleted_group.id
+      it 'assigns searched groups' do
+        expect(assigns(:groups).length).to eq 2
+        expect(assigns(:groups)).to include GroupSummary.find(@group2.id), GroupSummary.find(@group3.id)
+      end
+
+      it 'includes deleted groups' do
+        get :index, params: { search: 'Alb', exclude_deleted: false }
+        expect(assigns(:groups).length).to eq 3
+        expect(assigns(:groups)).to include GroupSummary.find(@group2.id), GroupSummary.find(@group3.id), GroupSummary.find(@deleted_group.id)
+      end
     end
   end
 
