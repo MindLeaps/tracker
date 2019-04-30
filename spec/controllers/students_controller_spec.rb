@@ -137,19 +137,36 @@ RSpec.describe StudentsController, type: :controller do
         @student1 = create :student
         @student2 = create :student
         @deleted_student = create :student, deleted_at: Time.zone.now
-
-        get :index
       end
 
-      it { should respond_with 200 }
+      context 'regular visit' do
+        before :each do
+          get :index
+        end
 
-      it 'gets a list of students' do
-        expect(assigns(:students)).to include @student1
-        expect(assigns(:students)).to include @student2
+        it { should respond_with 200 }
+
+        it 'gets a list of students' do
+          expect(assigns(:students)).to include @student1
+          expect(assigns(:students)).to include @student2
+        end
+
+        it 'does not display deleted students' do
+          expect(assigns(:students)).not_to include @deleted_student
+        end
       end
 
-      it 'does not display deleted students' do
-        expect(assigns(:students)).not_to include @deleted_student
+      context 'search' do
+        before :each do
+          get :index, params: { search: @student1.first_name }
+        end
+
+        it { should respond_with 200 }
+
+        it 'responds with a listed of searched students' do
+          expect(assigns(:students).length).to eq 1
+          expect(assigns(:students)).to include @student1
+        end
       end
     end
 

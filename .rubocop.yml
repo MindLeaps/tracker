@@ -34,3 +34,6 @@ Rails:
 
 Rails/BulkChangeTable:
   Enabled: false
+
+Style/SymbolArray:
+  Enabled: false

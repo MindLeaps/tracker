@@ -2,7 +2,7 @@ table class='mdl-data-table mdl-js-data-table resource-table'
   thead
     == render partial: 'shared/pagy_nav', locals: { pagy: pagy, resource: 'chapters', span: 5 }
     tr
-      th
+      th.mdl-data-table__cell--non-numeric
         | #
       == render partial: 'shared/ordered_column', locals: { order_key: :chapter_name, column_name: 'Chapter Name' }
       == render partial: 'shared/ordered_column', locals: { order_key: :organization_name, column_name: 'Organization Name' }
@@ -11,7 +11,7 @@ table class='mdl-data-table mdl-js-data-table resource-table'
   - chapters.each_with_index do |chapter_summary, i|
     - path = chapter_path(chapter_summary.id)
     tr class='resource-row'
-      td
+      td.mdl-data-table__cell--non-numeric
         = link_to pagy.from + i, path
       td class="mdl-data-table__cell--non-numeric"
         = link_to chapter_summary.chapter_name, path

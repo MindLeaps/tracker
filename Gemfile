@@ -31,6 +31,7 @@ gem 'marginalia'
 gem 'mini_magick'
 gem 'pagy'
 gem 'pg_query', '>= 0.9.0'
+gem 'pg_search'
 gem 'pghero'
 gem 'puma'
 gem 'scenic'
@@ -47,7 +48,7 @@ group :production do
 end
 
 group :development, :test do
-  gem 'bullet'
+  gem 'bullet', '!= 6.0.0' # 6.0.0 seems to break with Turbolinks
   gem 'debase'
   gem 'rails-controller-testing'
   gem 'rubocop'

@@ -26,6 +26,7 @@ en:
         create: Add User
 
   students: students
+  groups: groups
   student_created: Student "%{name}" created.
   create_another: Create another
   delete_student: Delete Student

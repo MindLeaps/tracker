@@ -113,6 +113,38 @@ RSpec.describe Student, type: :model do
         expect(Student.table_order(key: :order_by_group_name, order: 'ASC', custom_scope_order: 'true')).to eq Student.order_by_group_name('asc')
       end
     end
+
+    describe 'search' do
+      before :each do
+        @zombarato = create :student, first_name: 'Zombarato', last_name: 'Agustato'
+        @zombaruto = create :student, first_name: 'Zombaruto', last_name: 'Agurat'
+        @zomzovato = create :student, first_name: 'Zomzovato', last_name: 'Domovat'
+      end
+
+      it 'finds the student by the first name match' do
+        result = Student.search('Zombarato')
+        expect(result.length).to eq 1
+        expect(result).to include @zombarato
+      end
+
+      it 'finds the student by the last name match' do
+        result = Student.search('Agustato')
+        expect(result.length).to eq 1
+        expect(result).to include @zombarato
+      end
+
+      it 'finds students by a partial first name match' do
+        result = Student.search('Zomb')
+        expect(result.length).to eq 2
+        expect(result).to include @zombarato, @zombaruto
+      end
+
+      it 'finds students by a partial last name match' do
+        result = Student.search('Dom')
+        expect(result.length).to eq 1
+        expect(result).to include @zomzovato
+      end
+    end
   end
 
   describe '#organization' do

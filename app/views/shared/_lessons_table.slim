@@ -2,7 +2,7 @@ table class='mdl-data-table mdl-js-data-table resource-table'
   thead
     == render partial: 'shared/pagy_nav', locals: { pagy: pagy, resource: 'lessons', span: 4 }
     tr
-      th
+      th.mdl-data-table__cell--non-numeric
         | #
       th class='mdl-data-table__cell--non-numeric' Group Name
       == render partial: 'shared/ordered_column', locals: { order_key: :date, column_name: 'Date' }
@@ -10,7 +10,7 @@ table class='mdl-data-table mdl-js-data-table resource-table'
 
   - lessons.each_with_index do |lesson, i|
     tr class='resource-row'
-      td
+      td.mdl-data-table__cell--non-numeric
         = link_to pagy.from + i, lesson_path(lesson)
       td class='mdl-data-table__cell--non-numeric'
         = link_to lesson.group.group_name, lesson_path(lesson)
