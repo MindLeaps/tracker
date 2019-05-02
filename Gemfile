@@ -58,7 +58,6 @@ group :development, :test do
 
   # Rspec requires capybara > 2.1
   gem 'capybara', '> 2.1'
-  gem 'chromedriver-helper'
   gem 'coveralls', require: false
   gem 'database_cleaner'
   gem 'factory_bot_rails'
@@ -71,6 +70,7 @@ group :development, :test do
   gem 'selenium-webdriver'
   gem 'shoulda-matchers'
   gem 'smarter_csv'
+  gem 'webdrivers'
   gem 'webmock'
 end
 

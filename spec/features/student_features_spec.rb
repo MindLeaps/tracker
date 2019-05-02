@@ -24,34 +24,6 @@ RSpec.describe 'User interacts with Students' do
     end
   end
 
-  describe 'Interact with Search and Show Deleted', js: true do
-    before :each do
-      create :student, first_name: 'Umborato', last_name: 'Aco', mlid: 'ACO-123'
-      create :student, first_name: 'Umberto', last_name: 'Eco', mlid: 'ECO-123'
-      create :student, first_name: 'Umbdeleto', last_name: 'Del', mlid: 'DEL-123', deleted_at: Time.zone.now
-      create :student, first_name: 'Amberto', last_name: 'Oce', mlid: 'OCE-123'
-    end
-
-    it 'displays serched for students, including deleted' do
-      visit '/students'
-      expect(page).to have_selector('.resource-row', count: 3)
-      click_link_compat 'Show Deleted'
-      expect(page).to have_selector('.resource-row', count: 4)
-      find('#search-field').send_keys('Umb', :enter)
-      expect(page).to have_selector('.resource-row', count: 3)
-      rows = page.all('.resource-row')
-      expect(rows[0]).to have_content 'Umborato'
-      expect(rows[1]).to have_content 'Umberto'
-      expect(rows[2]).to have_content 'Umbdeleto'
-      expect(page).to have_field('search-field', with: 'Umb')
-      click_link_compat 'Show Deleted'
-      expect(page).to have_selector('.resource-row', count: 2)
-      rows = page.all('.resource-row')
-      expect(rows[0]).to have_content 'Umborato'
-      expect(rows[1]).to have_content 'Umberto'
-    end
-  end
-
   describe 'Clicking on a student shows their performance and details' do
     before :each do
       create :graded_student, first_name: 'Umberto', last_name: 'Eco', mlid: 'ECO-123', grades: {
