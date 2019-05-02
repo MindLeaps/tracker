@@ -2,6 +2,7 @@
 - Updated table styles to simplify and unify table margins
 - Implemented Search for Students table
 - Implemented Search for Groups table
+- Handle pagination overflows by displaying the last page
 
 ## 0.15.1
 - Updated views for new grade structure
