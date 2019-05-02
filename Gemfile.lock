@@ -50,8 +50,6 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.6.0)
       public_suffix (>= 2.0.2, < 4.0)
-    archive-zip (0.12.0)
-      io-like (~> 0.3.0)
     arel (9.0.0)
     ast (2.4.0)
     awesome_print (1.8.0)
@@ -94,9 +92,6 @@ GEM
       activesupport
     childprocess (1.0.1)
       rake (< 13.0)
-    chromedriver-helper (2.1.1)
-      archive-zip (~> 0.10)
-      nokogiri (~> 1.8)
     cliver (0.3.2)
     cocoon (1.2.12)
     coderay (1.1.2)
@@ -172,7 +167,6 @@ GEM
     inline_svg (1.4.0)
       activesupport (>= 3.0)
       nokogiri (>= 1.6)
-    io-like (0.3.0)
     ipaddress (0.8.3)
     jaro_winkler (1.5.2)
     json (2.1.0)
@@ -400,6 +394,10 @@ GEM
       activemodel (>= 5.0)
       bindex (>= 0.4.0)
       railties (>= 5.0)
+    webdrivers (3.8.0)
+      nokogiri (~> 1.6)
+      rubyzip (~> 1.0)
+      selenium-webdriver (~> 3.0)
     webmock (3.5.1)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -426,7 +424,6 @@ DEPENDENCIES
   carrierwave
   carrierwave-bombshelter
   carrierwave-imageoptimizer
-  chromedriver-helper
   cocoon
   coveralls
   database_cleaner
@@ -474,6 +471,7 @@ DEPENDENCIES
   tiddle
   turbolinks
   web-console
+  webdrivers
   webmock
 
 BUNDLED WITH
