@@ -340,4 +340,34 @@ RSpec.describe User, type: :model do
       it { is_expected.to be false }
     end
   end
+
+  describe 'scopes' do
+    describe 'search' do
+      before :each do
+        @user1 = create :user, name: 'Alojandro Umberto', email: 'aumberto@example.com'
+        @user2 = create :user, name: 'Aloemawe Uracca', email: 'aurraca@example.com'
+        @user3 = create :user, name: 'Imberato Umberto', email: 'iumberto@example.com'
+      end
+
+      it 'searches for the user by a partial name match' do
+        result = User.search('Alojandro')
+        expect(result.length).to eq 1
+        expect(result).to include @user1
+
+        result = User.search('Alo')
+        expect(result.length).to eq 2
+        expect(result).to include @user1, @user2
+
+        result = User.search('Umb')
+        expect(result.length).to eq 2
+        expect(result).to include @user1, @user3
+      end
+
+      it 'searches for the user by a partial email match' do
+        result = User.search('aumberto')
+        expect(result.length).to eq 1
+        expect(result).to include @user1
+      end
+    end
+  end
 end

@@ -10,17 +10,41 @@ RSpec.describe UsersController, type: :controller do
   end
 
   describe '#index' do
-    before :each do
-      get :index
-      @users = create_list :user, 3
+    context 'regular visit' do
+      before :each do
+        get :index
+        @users = create_list :user, 3
+      end
+      it { should respond_with 200 }
+
+      it 'lists all existing users' do
+        get :index
+        expect(response).to be_successful
+
+        expect(assigns(:users)).to include(*@users)
+      end
     end
-    it { should respond_with 200 }
 
-    it 'lists all existing users' do
-      get :index
-      expect(response).to be_successful
+    context 'search visit' do
+      before :each do
+        @user1 = create :user, name: 'Alojandro Umberto', email: 'aumberto@example.com'
+        @user2 = create :user, name: 'Aloemawe Uracca', email: 'aurraca@example.com'
+        @user3 = create :user, name: 'Imberato Umberto', email: 'iumberto@example.com'
+      end
 
-      expect(assigns(:users)).to include(*@users)
+      it 'lists searched users by name' do
+        get :index, params: { search: 'alo' }
+
+        expect(assigns(:users).length).to eq 2
+        expect(assigns(:users)).to include @user1, @user2
+      end
+
+      it 'lists searched users by email' do
+        get :index, params: { search: 'iumbe' }
+
+        expect(assigns(:users).length).to eq 1
+        expect(assigns(:users)).to include @user3
+      end
     end
   end
 

@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
+  include PgSearch
+  pg_search_scope :search, against: [:name, :email], using: { tsearch: { prefix: true } }
+
   has_many :authentication_tokens, dependent: :destroy
   rolify before_add: :before_add_role, strict: true
   validates :email, presence: true

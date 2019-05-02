@@ -1,6 +1,6 @@
 table class='mdl-data-table mdl-js-data-table resource-table'
   thead
-    == render partial: 'shared/pagy_nav', locals: { pagy: pagy, resource: 'users', span: 4 }
+    == render partial: 'shared/pagy_nav', locals: { pagy: pagy, resource: 'users', span: 4, search: { term: params[:search] } }
     tr
       th.mdl-data-table__cell--non-numeric
         | #
