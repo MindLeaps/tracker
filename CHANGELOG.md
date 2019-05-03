@@ -1,4 +1,4 @@
-## Unreleased
+## 0.16.0 - Search
 - Updated table styles to simplify and unify table margins
 - Implemented Search for Students table
 - Implemented Search for Groups table
