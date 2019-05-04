@@ -12,7 +12,7 @@ module Api
 
     def index
       authorize Lesson
-      @grades = apply_scopes(Grade).where('grades.updated_at > :datetime', datetime: 4.months.ago).all
+      @grades = apply_scopes(@api_version == 2 ? policy_scope(Grade) : Grade).where('grades.updated_at > :datetime', datetime: 4.months.ago).all
       if @api_version == 2
         respond_with :api, @grades, meta: { timestamp: Time.zone.now }, include: included_params, each_serializer: GradeSerializerV2
       else

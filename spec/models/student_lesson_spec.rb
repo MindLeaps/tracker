@@ -44,8 +44,9 @@ RSpec.describe StudentLesson, type: :model do
     end
 
     it 'returns nulled grades for deleted grades' do
-      @student.grades[0].deleted_at = Time.zone.now
-      @student.grades[0].save
+      deleted_grade = Grade.find_by(mark: 3, student_id: @student.id)
+      deleted_grade.deleted_at = Time.zone.now
+      deleted_grade.save
 
       expect(@student_lesson.formatted_grades_for_grading.length).to eq 3
       expect(@student_lesson.formatted_grades_for_grading.map(&:mark)).to match_array [nil, 2, nil]
