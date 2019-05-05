@@ -35,7 +35,8 @@ class UsersController < ApplicationController
   end
 
   def show
-    @user = User.find params[:id]
+    @user = User.includes(:roles).find params[:id]
+    @user_roles = @user.roles.map { |r| [r.resource_id, r.name.to_sym] }.to_h # { organization_id => :role_name }
     @membership = Membership.new user: @user
     authorize @user
   end
