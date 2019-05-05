@@ -48,6 +48,23 @@ RSpec.describe UsersController, type: :controller do
     end
   end
 
+  describe '#show' do
+    before :each do
+      @org1 = create :organization
+      @org2 = create :organization
+      @user = create :teacher_in, organization: @org1
+      @user.add_role :admin, @org2
+
+      get :show, params: { id: @user.id }
+    end
+
+    it { should respond_with 200 }
+
+    it 'assigns user roles keyed by organization' do
+      expect(assigns(:user_roles)).to eq @org1.id => :teacher, @org2.id => :admin
+    end
+  end
+
   describe '#new' do
     before :each do
       get :new
