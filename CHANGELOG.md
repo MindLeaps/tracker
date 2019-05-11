@@ -1,6 +1,7 @@
 ## Unreleased
 - Policy scoped grade v2 API
 - Fix N+1 Query on individual user view
+- Implemented search for Skills
 
 ## 0.16.0 - Search
 - Updated table styles to simplify and unify table margins

@@ -6,16 +6,29 @@ RSpec.describe 'User interacts with skills', js: true do
   context 'As a global administrator' do
     include_context 'login_with_global_admin'
 
-    it 'list all skills' do
-      create :skill, skill_name: 'Skill Feature Skill I'
-      create :skill, skill_name: 'Skill Feature Skill II'
+    describe 'listing, searching, and filtering skills' do
+      before :each do
+        create :skill, skill_name: 'Memorization'
+        create :skill, skill_name: 'Discipline'
+        create :skill, skill_name: 'Language'
 
-      visit '/'
-      click_link 'Skills'
+        visit '/skills'
+      end
 
-      expect(page).to have_css '.resource-row', count: 2
-      expect(page).to have_content 'Skill Feature Skill I'
-      expect(page).to have_content 'Skill Feature Skill II'
+      it 'lists all skills' do
+        expect(page).to have_css '.resource-row', count: 3
+        rows = page.all('.resource-row')
+        expect(rows[0]).to have_content 'Memorization'
+        expect(rows[1]).to have_content 'Discipline'
+        expect(rows[2]).to have_content 'Language'
+      end
+
+      it 'searched for a specific skill' do
+        find('#search-field').send_keys('lan', :enter)
+        expect(page).to have_css '.resource-row', count: 1
+        rows = page.all('.resource-row')
+        expect(rows[0]).to have_content 'Language'
+      end
     end
 
     it 'creates a skill' do

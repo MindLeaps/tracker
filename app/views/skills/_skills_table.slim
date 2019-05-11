@@ -1,6 +1,6 @@
 table class='mdl-data-table mdl-js-data-table resource-table'
   thead
-    == render partial: 'shared/pagy_nav', locals: { pagy: pagy, resource: 'skills', span: 3 }
+    == render partial: 'shared/pagy_nav', locals: { pagy: pagy, resource: 'skills', span: 3, search: { term: params[:search] } }
     tr
       th #
       th class='mdl-data-table__cell--non-numeric' Skill Name
