@@ -1,4 +1,4 @@
-## Unreleased
+## 0.17.0 - Policy scoped Grades API
 - Policy scoped grade v2 API
 - Fix N+1 Query on individual user view
 - Implemented search for Skills
