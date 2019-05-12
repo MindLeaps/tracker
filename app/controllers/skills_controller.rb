@@ -2,9 +2,11 @@
 
 class SkillsController < ApplicationController
   include Pagy::Backend
+  has_scope :search, only: :index
+
   def index
     authorize Skill
-    @pagy, @skills = pagy policy_scope(Skill.includes(:organization))
+    @pagy, @skills = pagy apply_scopes(policy_scope(Skill.includes(:organization)))
   end
 
   def create

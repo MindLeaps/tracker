@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class Skill < ApplicationRecord
+  include PgSearch
+  pg_search_scope :search, against: [:skill_name], using: { tsearch: { prefix: true } }
+
   validates :skill_name, :organization, presence: true
   validate :grade_descriptors_must_have_unique_marks
 

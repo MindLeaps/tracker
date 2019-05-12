@@ -22,6 +22,17 @@ RSpec.describe SkillsController, type: :controller do
 
         expect(assigns(:skills)).to include @skill1, @skill2
       end
+
+      context 'search' do
+        before :each do
+          get :index, params: { search: 'team' }
+        end
+
+        it 'Lists only Teamwork skill' do
+          expect(assigns(:skills).length).to eq 1
+          expect(assigns(:skills)).to include @skill2
+        end
+      end
     end
 
     describe '#create' do
