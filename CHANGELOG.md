@@ -1,3 +1,6 @@
+## Unreleased
+- Upgrade Ruby to 2.6.3
+
 ## 0.17.0 - Policy scoped Grades API
 - Policy scoped grade v2 API
 - Fix N+1 Query on individual user view
