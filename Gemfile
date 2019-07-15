@@ -17,7 +17,7 @@ gem 'tiddle'
 gem 'awesome_print'
 gem 'rails_semantic_logger'
 
-gem 'active_model_serializers', '~> 0.10.8'
+gem 'active_model_serializers', '~> 0.10.10'
 gem 'bootsnap'
 gem 'carrierwave'
 gem 'carrierwave-bombshelter'
