@@ -10,9 +10,7 @@ require 'rubocop/rake_task'
 
 desc 'Run Rubocop for static analysis of Ruby code'
 task :rubocop do
-  RuboCop::RakeTask.new(:rubocop) do |task|
-    task.options = ['-RD']
-  end
+  RuboCop::RakeTask.new(:rubocop)
 end
 
 Rake::Task['test'].clear # Overriding Rails default test task which runs minitest
