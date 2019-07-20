@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Student < ApplicationRecord
-  include PgSearch
+  include PgSearch::Model
   pg_search_scope :search, against: [:first_name, :last_name], using: { tsearch: { prefix: true } }
 
   validates :mlid, :first_name, :last_name, :dob, :gender, :group, presence: true
