@@ -53,6 +53,7 @@ group :development, :test do
   gem 'rails-controller-testing'
   gem 'rubocop'
   gem 'rubocop-performance'
+  gem 'rubocop-rails'
   gem 'ruby-debug-ide'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
