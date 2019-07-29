@@ -170,9 +170,9 @@ GEM
     ipaddress (0.8.3)
     jaro_winkler (1.5.3)
     json (2.2.0)
-    json_matchers (0.11.0)
+    json_matchers (0.11.1)
       json_schema
-    json_schema (0.20.4)
+    json_schema (0.20.7)
     jsonapi-renderer (0.2.2)
     jwt (2.2.1)
     loofah (2.2.3)
