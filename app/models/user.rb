@@ -85,7 +85,7 @@ class User < ApplicationRecord
       client = OAuth2::Client.new(Rails.configuration.google_client_id, Rails.configuration.google_client_secret)
 
       response = client.request(:get, Rails.configuration.google_token_info_url, params: { id_token: id_token }).parsed
-      User.find_by(email: response['email'])
+      User.find_for_authentication(email: response['email'])
     end
 
     private
