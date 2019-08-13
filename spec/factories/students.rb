@@ -2,11 +2,11 @@
 
 FactoryBot.define do
   factory :student do
-    sequence(:mlid) { |n| " #{Faker::Lorem.characters(1)}#{n}" }
+    sequence(:mlid) { |n| " #{Faker::Lorem.characters(number: 1)}#{n}" }
     first_name { Faker::Name.first_name }
     last_name { Faker::Name.last_name }
-    dob { Faker::Time.between 20.years.ago, 10.years.ago }
-    estimated_dob { Faker::Boolean.boolean 0.2 }
+    dob { Faker::Time.between from: 20.years.ago, to: 10.years.ago }
+    estimated_dob { Faker::Boolean.boolean true_ratio: 0.2 }
     gender { %w[male female].sample }
     group { create :group }
     transient do
