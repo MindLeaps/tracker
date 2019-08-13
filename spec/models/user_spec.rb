@@ -8,14 +8,24 @@ RSpec.describe User, type: :model do
   end
 
   describe '#from_id_token' do
-    before :each do
-      @valid_token = 'some_valid_google_id_token_123'
-      stub_request(:get, "#{Rails.configuration.google_token_info_url}?id_token=#{@valid_token}")
-        .to_return(status: 200, body: JSON.unparse(email: @user.email), headers: { content_type: 'application/json' })
+    let(:id_token) { 'some_valid_google_id_token_123' }
+
+    context 'user has a lowercase Google email address' do
+      it 'returns a user identified by the email' do
+        stub_request(:get, "#{Rails.configuration.google_token_info_url}?id_token=#{id_token}")
+          .to_return(status: 200, body: JSON.unparse(email: @user.email), headers: { content_type: 'application/json' })
+
+        expect(User.from_id_token(id_token)).to eq @user
+      end
     end
 
-    it 'returns a user identified by the email' do
-      expect(User.from_id_token(@valid_token)).to eq @user
+    context 'user has a mixed case Google email address' do
+      it 'returns a user identified by the email' do
+        stub_request(:get, "#{Rails.configuration.google_token_info_url}?id_token=#{id_token}")
+          .to_return(status: 200, body: JSON.unparse(email: @user.email.capitalize), headers: { content_type: 'application/json' })
+
+        expect(User.from_id_token(id_token)).to eq @user
+      end
     end
   end
 

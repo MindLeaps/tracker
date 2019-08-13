@@ -1,5 +1,6 @@
 ## Unreleased
 - Upgrade Ruby to 2.6.3
+- Fix Google Login for users that have uppercase letters in their emails
 
 ## 0.17.0 - Policy scoped Grades API
 - Policy scoped grade v2 API
