@@ -1440,7 +1440,7 @@ ALTER TABLE ONLY public.subjects
 --
 
 ALTER TABLE ONLY public.users_roles
-    ADD CONSTRAINT users_roles_role_id_fk FOREIGN KEY (role_id) REFERENCES public.roles(id);
+    ADD CONSTRAINT users_roles_role_id_fk FOREIGN KEY (role_id) REFERENCES public.roles(id) ON DELETE CASCADE;
 
 
 --
@@ -1448,7 +1448,7 @@ ALTER TABLE ONLY public.users_roles
 --
 
 ALTER TABLE ONLY public.users_roles
-    ADD CONSTRAINT users_roles_user_id_fk FOREIGN KEY (user_id) REFERENCES public.users(id);
+    ADD CONSTRAINT users_roles_user_id_fk FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
 --
@@ -1533,6 +1533,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190309001819'),
 ('20190313032856'),
 ('20190405030134'),
-('20190406163831');
+('20190406163831'),
+('20190615165333'),
+('20190817044440');
 
 
