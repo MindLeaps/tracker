@@ -17,6 +17,10 @@ class UserPolicy < ApplicationPolicy
     user.id == record.id
   end
 
+  def destroy?
+    create? && user.id != record.id
+  end
+
   class Scope
     attr_reader :user, :scope
 

@@ -1,5 +1,18 @@
 - content_for :header_content do
   = render partial: '/shared/header_content', locals: { back_button_url: users_path, back_tooltip: 'Back to Users', title: user_name(@user) }
+
+- content_for :header_actions do
+  - if policy(@user).destroy?
+    = render partial: '/shared/delete_dialog', locals: { target: @user, content: t(:delete_confirmation_text) }
+    button#delete-dialog-button.mdl-button.mdl-js-button.mdl-button--icon
+      = inline_svg 'delete.svg'
+      .mdl-tooltip data-mdl-for='delete-dialog-button' #{t(:delete_user)}
+
+javascript:
+  document.querySelector('#delete-dialog-button').addEventListener('click', function() {
+    document.querySelector('#delete-dialog').showModal();
+  });
+
 .mdl-cell.mdl-cell--4-col
   .mdl-card.mdl-shadow--2dp.user-profile-card
     .mdl-card__title.primary

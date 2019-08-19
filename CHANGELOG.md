@@ -1,4 +1,5 @@
 ## Unreleased
+- Implemented User Deletion
 - Upgrade Ruby to 2.6.3
 - Fix Google Login for users that have uppercase letters in their emails
 

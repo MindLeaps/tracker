@@ -50,6 +50,9 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.6.0)
       public_suffix (>= 2.0.2, < 4.0)
+    apparition (0.4.0)
+      capybara (~> 3.13, < 4)
+      websocket-driver (>= 0.6.5)
     arel (9.0.0)
     ast (2.4.0)
     awesome_print (1.8.0)
@@ -91,7 +94,6 @@ GEM
       activesupport
     childprocess (1.0.1)
       rake (< 13.0)
-    cliver (0.3.2)
     cocoon (1.2.14)
     coderay (1.1.2)
     concurrent-ruby (1.1.5)
@@ -232,10 +234,6 @@ GEM
       activesupport (>= 4.2)
     pghero (2.3.0)
       activerecord (>= 5)
-    poltergeist (1.18.1)
-      capybara (>= 2.1, < 4)
-      cliver (~> 0.3.1)
-      websocket-driver (>= 0.2.0)
     pry (0.12.2)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
@@ -416,6 +414,7 @@ PLATFORMS
 DEPENDENCIES
   SyslogLogger
   active_model_serializers (~> 0.10.10)
+  apparition
   awesome_print
   better_errors
   binding_of_caller
@@ -449,7 +448,6 @@ DEPENDENCIES
   pg_query (>= 0.9.0)
   pg_search
   pghero
-  poltergeist
   pry
   puma
   pundit

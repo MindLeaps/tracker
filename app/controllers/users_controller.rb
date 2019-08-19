@@ -26,6 +26,14 @@ class UsersController < ApplicationController
     render :index
   end
 
+  def destroy
+    @user = User.includes(:roles).find params[:id]
+    authorize @user
+    @user.destroy!
+
+    notice_and_redirect t(:delete_user_notice, email: @user.email), users_path
+  end
+
   def create_api_token
     @user = User.find params.require(:id)
     authorize @user

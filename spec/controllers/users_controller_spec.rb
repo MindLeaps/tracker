@@ -92,6 +92,21 @@ RSpec.describe UsersController, type: :controller do
     end
   end
 
+  describe '#destroy' do
+    before :each do
+      @user = create :user
+      delete :destroy, params: {
+        id: @user.id
+      }
+    end
+
+    it { should redirect_to users_path }
+    it { should set_flash[:notice] }
+    it 'deletes an existing user' do
+      expect(User.where(id: @user.id)).not_to exist
+    end
+  end
+
   describe '#create_token' do
     before :each do
       @user = create :user
