@@ -29,7 +29,7 @@ Rails.application.routes.draw do
     delete '/grades/student/:student_id/lesson/:lesson_id/skill/:skill_id', action: :destroy_v2, controller: 'grades', as: :destroy_grade_v2
   end
 
-  resources :users, only: %i[index new create show] do
+  resources :users, only: %i[index new create destroy show] do
     member do
       post :create_api_token
     end

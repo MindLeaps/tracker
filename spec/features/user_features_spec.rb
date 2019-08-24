@@ -77,6 +77,18 @@ RSpec.describe 'User interacts with other users', js: true do
         expect(@global_guest.has_role?(:global_admin)).to be false
       end
     end
+
+    describe 'Delete User' do
+      it 'deletes an existing user' do
+        click_link user_name(@other_user)
+
+        click_button 'delete-dialog-button'
+        click_button 'confirm-delete-button'
+
+        expect(page).to have_content "User with e-mail address #{@other_user.email} deleted."
+        expect(User.where(id: @other_user.id)).not_to exist
+      end
+    end
   end
 end
 

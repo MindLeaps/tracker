@@ -48,6 +48,7 @@ group :production do
 end
 
 group :development, :test do
+  gem 'apparition'
   gem 'bullet', '!= 6.0.0' # 6.0.0 seems to break with Turbolinks
   gem 'debase'
   gem 'rails-controller-testing'
@@ -66,7 +67,6 @@ group :development, :test do
   gem 'faker'
   gem 'json_matchers'
   gem 'meta_request'
-  gem 'poltergeist'
   gem 'pundit-matchers'
   gem 'rspec-rails'
   gem 'selenium-webdriver'

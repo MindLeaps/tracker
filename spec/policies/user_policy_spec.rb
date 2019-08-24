@@ -17,6 +17,7 @@ RSpec.describe UserPolicy do
         let(:user) { create :user }
         it { is_expected.to permit_action :show }
         it { is_expected.to forbid_action :create_api_token }
+        it { is_expected.to permit_action :destroy }
       end
 
       context 'on a new user' do
@@ -27,6 +28,7 @@ RSpec.describe UserPolicy do
       context 'on themselves' do
         let(:user) { current_user }
         it { is_expected.to permit_action :create_api_token }
+        it { is_expected.not_to permit_action :destroy }
       end
     end
 
@@ -39,8 +41,10 @@ RSpec.describe UserPolicy do
       end
 
       context 'on any existing user' do
-        let(:user) { User }
+        let(:org) { create :organization }
+        let(:user) { create :teacher_in, organization: org }
         it { is_expected.to permit_action :show }
+        it { is_expected.to permit_action :destroy }
       end
 
       context 'on a new user' do
@@ -60,6 +64,7 @@ RSpec.describe UserPolicy do
       context 'on any existing user' do
         let(:user) { User }
         it { is_expected.to permit_action :show }
+        it { is_expected.not_to permit_action :destroy }
       end
 
       context 'on a new user' do
@@ -79,6 +84,7 @@ RSpec.describe UserPolicy do
       context 'on any existing user' do
         let(:user) { User }
         it { is_expected.to permit_action :show }
+        it { is_expected.not_to permit_action :destroy }
       end
 
       context 'on a new user' do
@@ -99,16 +105,13 @@ RSpec.describe UserPolicy do
       context 'on a user inside own\'s organization' do
         let(:user) { create :teacher_in, organization: org }
         it { is_expected.to permit_action :show }
+        it { is_expected.not_to permit_action :destroy }
       end
 
       context 'on a user outside of own\'s organization' do
         let(:user) { create :teacher_in, organization: create(:organization) }
         it { is_expected.to forbid_action :show }
-      end
-
-      context 'on a user outside of own\'s organization' do
-        let(:user) { create :teacher_in, organization: create(:organization) }
-        it { is_expected.to forbid_action :show }
+        it { is_expected.not_to permit_action :destroy }
       end
 
       context 'on a new user' do
@@ -129,16 +132,13 @@ RSpec.describe UserPolicy do
       context 'on a user inside own\'s organization' do
         let(:user) { create :teacher_in, organization: org }
         it { is_expected.to permit_action :show }
+        it { is_expected.not_to permit_action :destroy }
       end
 
       context 'on a user outside of own\'s organization' do
         let(:user) { create :teacher_in, organization: create(:organization) }
         it { is_expected.to forbid_action :show }
-      end
-
-      context 'on a user outside of own\'s organization' do
-        let(:user) { create :teacher_in, organization: create(:organization) }
-        it { is_expected.to forbid_action :show }
+        it { is_expected.not_to permit_action :destroy }
       end
 
       context 'on a new user' do
@@ -159,16 +159,13 @@ RSpec.describe UserPolicy do
       context 'on a user inside own\'s organization' do
         let(:user) { create :teacher_in, organization: org }
         it { is_expected.to permit_action :show }
+        it { is_expected.not_to permit_action :destroy }
       end
 
       context 'on a user outside of own\'s organization' do
         let(:user) { create :teacher_in, organization: create(:organization) }
         it { is_expected.to forbid_action :show }
-      end
-
-      context 'on a user outside of own\'s organization' do
-        let(:user) { create :teacher_in, organization: create(:organization) }
-        it { is_expected.to forbid_action :show }
+        it { is_expected.not_to permit_action :destroy }
       end
 
       context 'on a new user' do
@@ -189,16 +186,13 @@ RSpec.describe UserPolicy do
       context 'on a user inside own\'s organization' do
         let(:user) { create :teacher_in, organization: org }
         it { is_expected.to permit_action :show }
+        it { is_expected.not_to permit_action :destroy }
       end
 
       context 'on a user outside of own\'s organization' do
         let(:user) { create :teacher_in, organization: create(:organization) }
         it { is_expected.to forbid_action :show }
-      end
-
-      context 'on a user outside of own\'s organization' do
-        let(:user) { create :teacher_in, organization: create(:organization) }
-        it { is_expected.to forbid_action :show }
+        it { is_expected.not_to permit_action :destroy }
       end
 
       context 'on a new user' do
@@ -213,6 +207,7 @@ RSpec.describe UserPolicy do
       context 'on themselves' do
         let(:user) { current_user }
         it { is_expected.to permit_action :create_api_token }
+        it { is_expected.not_to permit_action :destroy }
       end
     end
   end

@@ -19,7 +19,7 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
-require 'capybara/poltergeist'
+require 'capybara/apparition'
 require 'omniauth'
 require 'coveralls'
 require 'json_matchers/rspec'
@@ -28,17 +28,8 @@ JsonMatchers.schema_root = 'spec/schemas'
 
 Coveralls.wear!
 
-Capybara.register_driver :poltergeist do |app|
-  Capybara::Poltergeist::Driver.new(app, window_size: [1920, 1024])
-end
-
-# Useful for debugging issues with the spec js: true tests
-Capybara.register_driver :poltergeist_debug do |app|
-  Capybara::Poltergeist::Driver.new(app,
-                                    inspector: true,
-                                    debug: true,
-                                    js_errors: true,
-                                    phantomjs_options: ['--debug=true'])
+Capybara.register_driver :apparition do |app|
+  Capybara::Apparition::Driver.new(app, window_size: [1920, 1024])
 end
 
 RSpec.configure do |config|
@@ -111,8 +102,7 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 
-  # Use capybara webkit for feature tests
-  Capybara.javascript_driver = :poltergeist
+  Capybara.javascript_driver = :apparition
 end
 
 OmniAuth.config.test_mode = true
