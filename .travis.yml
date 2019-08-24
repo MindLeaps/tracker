@@ -25,5 +25,6 @@ notifications:
 
 addons:
   postgresql: "9.5"
+  chrome: stable
   code_climate:
       repo_token: 5db3f72ce9253ebdff56c2f98793691557a46415e09f70ab9c46036216d22580
