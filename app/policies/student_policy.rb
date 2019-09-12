@@ -14,7 +14,7 @@ class StudentPolicy < ApplicationPolicy
   end
 
   def create?
-    user.administrator?(record.organization) || user.is_teacher_of?(record.organization)
+    user.administrator?(record.group.chapter.organization) || user.is_teacher_of?(record.group.chapter.organization)
   end
 
   def undelete?

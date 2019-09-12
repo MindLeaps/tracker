@@ -1,3 +1,6 @@
+## Unreleased
+- Improved the performance of student index listing (fix for N+1 query)
+
 ## 0.18.0 - User Deletion and Login Improvements
 - Implemented User Deletion
 - Upgrade Ruby to 2.6.3
