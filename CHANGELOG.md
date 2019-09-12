@@ -2,6 +2,7 @@
 - Implemented User Deletion
 - Upgrade Ruby to 2.6.3
 - Fix Google Login for users that have uppercase letters in their emails
+- Differentiate between invalid Google id_token and a valid id_token but non-existent MindLeaps user
 
 ## 0.17.0 - Policy scoped Grades API
 - Policy scoped grade v2 API
