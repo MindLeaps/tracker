@@ -18,6 +18,10 @@
 //= require_tree .
 
 document.addEventListener('turbolinks:load', function() {
+  var elements = document.querySelectorAll('[data-upgraded]');
+  for(var i = 0; i < elements.length; i++) {
+    elements[i].removeAttribute('data-upgraded');
+  }
   componentHandler.upgradeDom();
 });
 
