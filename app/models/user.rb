@@ -12,9 +12,13 @@ class User < ApplicationRecord
   devise :trackable, :token_authenticatable, :omniauthable, omniauth_providers: [:google_oauth2]
 
   def role_level_in(organization)
-    levels = roles.global.map(&:level)
-    levels << local_role_level_in(organization)
-    levels.max
+    [global_role_level, local_role_level_in(organization)].max
+  end
+
+  def global_role_level
+    return Role::MINIMAL_ROLE_LEVEL if roles.global.empty?
+
+    roles.global.map(&:level).max
   end
 
   def role_in(organization)

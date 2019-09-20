@@ -244,6 +244,27 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe '#global_role_level' do
+    subject { user.global_role_level }
+
+    context 'user is a global super admin' do
+      let(:user) { create :super_admin }
+      it { is_expected.to eq Role::ROLE_LEVELS[:super_admin] }
+    end
+
+    context 'user is a global admin' do
+      let(:user) { create :global_admin }
+      it { is_expected.to eq Role::ROLE_LEVELS[:global_admin] }
+    end
+
+    context 'user is a local admin' do
+      let(:org) { create :organization }
+      let(:user) { create :admin_of, organization: org }
+
+      it { is_expected.to eq Role::MINIMAL_ROLE_LEVEL }
+    end
+  end
+
   describe '#role_in' do
     let(:org) { create :organization }
     let(:org2) { create :organization }

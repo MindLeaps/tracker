@@ -2,6 +2,7 @@
 - Improved the performance of student index listing (fix for N+1 query)
 - Fixed inconsistencies in UI after clicking back/forward - MDL and Turbolinks were not properly resetting
 - Upgraded Ruby to 2.6.4
+- Only allow global administrators with a higher global role to delete users
 
 ## 0.18.0 - User Deletion and Login Improvements
 - Implemented User Deletion

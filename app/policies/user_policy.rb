@@ -18,7 +18,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def destroy?
-    create? && user.id != record.id
+    create? && user.global_role_level > record.global_role_level
   end
 
   class Scope

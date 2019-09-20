@@ -13,6 +13,16 @@ RSpec.describe UserPolicy do
         it { is_expected.to permit_action :index }
       end
 
+      context 'on another Super Administrator' do
+        let(:user) { create :super_admin }
+        it { is_expected.to forbid_action :destroy }
+      end
+
+      context 'on a Global Administrator' do
+        let(:user) { create :global_admin }
+        it { is_expected.to permit_action :destroy }
+      end
+
       context 'on any existing user' do
         let(:user) { create :user }
         it { is_expected.to permit_action :show }
@@ -45,6 +55,16 @@ RSpec.describe UserPolicy do
         let(:user) { create :teacher_in, organization: org }
         it { is_expected.to permit_action :show }
         it { is_expected.to permit_action :destroy }
+      end
+
+      context 'on a Super Administrator' do
+        let(:user) { create :super_admin }
+        it { is_expected.to forbid_action :destroy }
+      end
+
+      context 'on another Global Administrator' do
+        let(:user) { create :global_admin }
+        it { is_expected.to forbid_action :destroy }
       end
 
       context 'on a new user' do
