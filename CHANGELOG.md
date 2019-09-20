@@ -1,4 +1,4 @@
-## Unreleased
+## 0.20.0 - Sidebar image and Mobile app link
 - Limit user image size to 50px in the sidebar
 - Added link to download mobile app
 
