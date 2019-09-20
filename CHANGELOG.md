@@ -1,3 +1,6 @@
+## Unreleased
+- Limit user image size to 50px in the sidebar
+
 ## 0.19.0 - Deletion Policy and navigation improvement
 - Improved the performance of student index listing (fix for N+1 query)
 - Fixed inconsistencies in UI after clicking back/forward - MDL and Turbolinks were not properly resetting
