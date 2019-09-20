@@ -1,5 +1,6 @@
 ## Unreleased
 - Limit user image size to 50px in the sidebar
+- Added link to download mobile app
 
 ## 0.19.0 - Deletion Policy and navigation improvement
 - Improved the performance of student index listing (fix for N+1 query)

@@ -37,13 +37,28 @@ $endColor: $accent-color;
   max-width: 600px;
 }
 
-.google-button {
-  background: white;
 
-  img {
+.home {
+  .mdl-card__actions {
+    display: flex;
+  }
+
+  .button-icon {
     padding-right: 10px;
   }
-  span {
-    vertical-align: middle;
+
+  .mdl-button {
+    img {
+      padding-right: 10px;
+    }
+    span {
+      vertical-align: middle;
+    }
+
+    &.google-button:not(:hover) {
+      background: white;
+    }
   }
 }
+
+
