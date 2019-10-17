@@ -87,6 +87,10 @@ en:
   performance: Performance
   details: Details
   images: Images
+  grades: Grades
+  grade_description: Grade Description
+  mark: Mark
+  skill_description: Skill Description
 
   errors:
     messages:

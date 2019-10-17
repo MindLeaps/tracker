@@ -52,7 +52,7 @@ RSpec.describe 'User interacts with skills', js: true do
       expect(page).to have_content 'Feature Test Skill'
     end
 
-    it 'show a skill' do
+    it 'shows a skill' do
       org = create :organization, organization_name: 'Skill Feature Show Organization'
       desc1 = create :grade_descriptor, mark: 1, grade_description: 'Show Skill Feature Test Grade One'
       desc2 = create :grade_descriptor, mark: 2, grade_description: 'Show Skill Feature Test Grade Two'
@@ -67,9 +67,9 @@ RSpec.describe 'User interacts with skills', js: true do
       expect(page).to have_content 'Skill Feature Show Skill'
       expect(page).to have_content 'This is a skill for feature testing'
       expect(page).to have_content 'Skill Feature Show Organization'
-      expect(page).to have_content 'Grade Descriptors'
-      expect(page).to have_content '1 - Show Skill Feature Test Grade One'
-      expect(page).to have_content '2 - Show Skill Feature Test Grade Two'
+      expect(page).to have_content 'Grades'
+      expect(page).to have_content 'Show Skill Feature Test Grade One'
+      expect(page).to have_content 'Show Skill Feature Test Grade Two'
     end
   end
 end
