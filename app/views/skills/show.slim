@@ -1,9 +1,40 @@
 - content_for :header_content do
   = render partial: '/shared/header_content', locals: {back_button_url: skills_path, back_tooltip: 'Back to Skills', title: "#{@skill.skill_name} skill in #{@skill.organization.organization_name}"}
 
-.single-content-card
-  p = @skill.skill_description
-  h3 Grade Descriptors
-  - @skill.grade_descriptors.each do |g|
-    li
-      = "#{g.mark} - #{g.grade_description}"
+- content_for :header_actions do
+  - if policy(@skill).destroy?
+    = render partial: '/shared/delete_dialog', locals: { target: @skill, content: t(:delete_skill_confirmation_text) }
+    button#delete-dialog-button.mdl-button.mdl-js-button.mdl-button--icon
+      = inline_svg 'delete.svg'
+      .mdl-tooltip data-mdl-for='delete-dialog-button' #{t(:delete_skill)}
+
+javascript:
+  document.querySelector('#delete-dialog-button').addEventListener('click', function() {
+    document.querySelector('#delete-dialog').showModal();
+  });
+
+.mdl-cell.mdl-cell--4-col
+  .mdl-card.mdl-shadow--2dp.full-width
+    .mdl-card__title.primary
+      h2.mdl-card__title-text = t(:skill_description)
+    .mdl-card__supporting-text
+      = @skill.skill_description
+
+.mdl-cell.mdl-cell--8-col
+  .mdl-card.mdl-shadow--2dp.full-width
+    .mdl-card__title.primary
+      h2.mdl-card__title-text = t(:grades)
+    table.mdl-data-table.mdl-js-data-table.resource-table.wrap
+      thead
+        tr
+          th
+            = t(:mark)
+          th.mdl-data-table__cell--non-numeric
+            = t(:grade_description)
+      tbody
+        - @skill.grade_descriptors.each do |g|
+          tr
+            td
+              = g.mark
+            td.mdl-data-table__cell--non-numeric
+              = g.grade_description

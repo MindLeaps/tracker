@@ -25,6 +25,10 @@ class Skill < ApplicationRecord
     errors.add :grade_descriptors, 'Grade Descriptors cannot have duplicate marks.'
   end
 
+  def can_delete?
+    subjects.count.zero? && Grade.where(skill: self, deleted_at: nil).count.zero?
+  end
+
   private
 
   def duplicates?(arr)

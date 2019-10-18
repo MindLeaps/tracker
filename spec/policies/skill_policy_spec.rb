@@ -16,6 +16,8 @@ RSpec.describe SkillPolicy do
       context 'on any existing skill' do
         let(:skill) { create :skill }
         it { is_expected.to permit_action :show }
+        it { is_expected.to permit_action :destroy }
+        it { is_expected.to permit_action :undelete }
       end
 
       context 'on a new skill' do
@@ -35,6 +37,8 @@ RSpec.describe SkillPolicy do
       context 'on any existing skill' do
         let(:skill) { create :skill }
         it { is_expected.to permit_action :show }
+        it { is_expected.to permit_action :destroy }
+        it { is_expected.to permit_action :undelete }
       end
 
       context 'on a new skill' do
@@ -54,6 +58,8 @@ RSpec.describe SkillPolicy do
       context 'on any existing skill' do
         let(:skill) { create :skill }
         it { is_expected.to permit_action :show }
+        it { is_expected.to forbid_action :destroy }
+        it { is_expected.to forbid_action :undelete }
       end
 
       context 'on a new skill' do
@@ -73,6 +79,8 @@ RSpec.describe SkillPolicy do
       context 'on any existing skill' do
         let(:skill) { create :skill }
         it { is_expected.to permit_action :show }
+        it { is_expected.to forbid_action :destroy }
+        it { is_expected.to forbid_action :undelete }
       end
 
       context 'on a new skill' do
@@ -93,11 +101,15 @@ RSpec.describe SkillPolicy do
       context 'on a skill inside own\'s organization' do
         let(:skill) { create :skill, organization: org }
         it { is_expected.to permit_action :show }
+        it { is_expected.to permit_action :destroy }
+        it { is_expected.to permit_action :undelete }
       end
 
       context 'on a skill outside of own\'s organization' do
         let(:skill) { create :skill, organization: create(:organization) }
         it { is_expected.to forbid_action :show }
+        it { is_expected.to forbid_action :destroy }
+        it { is_expected.to forbid_action :undelete }
       end
 
       context 'on a new skill in own organization' do
@@ -115,6 +127,8 @@ RSpec.describe SkillPolicy do
         let(:skill) { create :skill_in_subject, organization: create(:organization), subject: subject1 }
 
         it { is_expected.to permit_action :show }
+        it { is_expected.to forbid_action :destroy }
+        it { is_expected.to forbid_action :undelete }
       end
     end
 
