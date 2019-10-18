@@ -27,6 +27,21 @@ class SkillsController < ApplicationController
     authorize @skill
   end
 
+  def destroy
+    @skill = Skill.find params.require(:id)
+    authorize @skill
+    @skill.deleted_at = Time.zone.now
+    undo_notice_and_redirect t(:skill_deleted, skill_name: @skill.skill_name), undelete_skill_path, skills_path if @skill.save
+  end
+
+  def undelete
+    @skill = Skill.find params.require :id
+    authorize @skill
+    @skill.deleted_at = nil
+
+    notice_and_redirect t(:skill_restored, skill_name: @skill.skill_name), request.referer || skill_path(@skill) if @skill.save
+  end
+
   private
 
   def skill_parameters

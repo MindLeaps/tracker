@@ -71,7 +71,7 @@ en:
   unauthorized_logout: You have been loged out for performing unauthorized activity
   user_added: User with email %{email} added.
   delete_user: Delete User
-  delete_confirmation_text: Are you sure you want to delete this user?
+  delete_user_confirmation_text: Are you sure you want to delete this user?
   delete_user_notice: User with e-mail address %{email} deleted.
   first_page: First Page
   last_page: Last Page
@@ -91,6 +91,11 @@ en:
   grade_description: Grade Description
   mark: Mark
   skill_description: Skill Description
+  delete_skill: Delete Skill
+  delete_skill_confirmation_text: Are you sure you want to delete this skill?
+  skill_deleted: Skill "%{skill_name}" deleted.
+  skill_restored: Skill "%{skill_name}" restored.
+
 
   errors:
     messages:

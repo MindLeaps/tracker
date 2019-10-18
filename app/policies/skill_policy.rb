@@ -17,6 +17,14 @@ class SkillPolicy < ApplicationPolicy
     user.administrator? record.organization
   end
 
+  def destroy?
+    create?
+  end
+
+  def undelete?
+    destroy?
+  end
+
   class Scope < ApplicationPolicy::Scope
     def resolve
       return scope.all if user.global_role?
