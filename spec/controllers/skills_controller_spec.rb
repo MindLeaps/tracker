@@ -113,18 +113,60 @@ RSpec.describe SkillsController, type: :controller do
     end
 
     describe '#destroy' do
-      before :each do
-        @skill = create :skill
-        delete :destroy, params: {
-          id: @skill.id
-        }
+      context 'Skill that has no grade and does not belong to a subject' do
+        before :each do
+          @skill = create :skill
+          delete :destroy, params: {
+            id: @skill.id
+          }
+        end
+
+        it { should redirect_to skills_path }
+        it { should set_flash[:undo_notice] }
+
+        it 'deletes the skill' do
+          expect(@skill.reload.deleted_at).not_to be_nil
+        end
       end
 
-      it { should redirect_to skills_path }
-      it { should set_flash[:undo_notice] }
+      context 'Skill that belongs to a Subject but has no grades' do
+        before :each do
+          subject = create :subject
+          @skill = create :skill_in_subject, subject: subject
+          request.env['HTTP_REFERER'] = 'http://example.com/skills?param=1'
 
-      it 'deletes the skill' do
-        expect(@skill.reload.deleted_at).not_to be_nil
+          delete :destroy, params: {
+            id: @skill.id
+          }
+        end
+
+        it { should redirect_to 'http://example.com/skills?param=1' }
+
+        it { should set_flash[:notice].to 'Skill not deleted because it belongs to a subject. Remove it from the subject before deleting.' }
+
+        it 'does not delete the skill' do
+          expect(@skill.reload.deleted_at).to be_nil
+        end
+      end
+
+      context 'Skill does not belong to a subject but has grades' do
+        before :each do
+          @skill = create :skill
+          gd = create :grade_descriptor, skill: @skill
+          create :grade, grade_descriptor: gd
+          request.env['HTTP_REFERER'] = 'http://example.com/skills?param=1'
+          delete :destroy, params: {
+            id: @skill.id
+          }
+        end
+
+        it { should redirect_to 'http://example.com/skills?param=1' }
+
+        it { should set_flash[:notice].to 'Skill not deleted because it has grades associated with it. You cannot delete a graded skill.' }
+
+        it 'does not delete the skill' do
+          expect(@skill.reload.deleted_at).to be_nil
+        end
       end
     end
 

@@ -95,6 +95,8 @@ en:
   delete_skill_confirmation_text: Are you sure you want to delete this skill?
   skill_deleted: Skill "%{skill_name}" deleted.
   skill_restored: Skill "%{skill_name}" restored.
+  skill_not_deleted_because_subject: Skill not deleted because it belongs to a subject. Remove it from the subject before deleting.
+  skill_not_deleted_because_grades: Skill not deleted because it has grades associated with it. You cannot delete a graded skill.
 
 
   errors:

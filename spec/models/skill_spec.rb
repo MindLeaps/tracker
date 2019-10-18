@@ -71,4 +71,32 @@ RSpec.describe Skill, type: :model do
       end
     end
   end
+
+  describe '#can_delete?' do
+    it 'returns false if a skill has grades' do
+      skill = create :skill
+      gd = create :grade_descriptor, skill: skill
+      create :grade, grade_descriptor: gd
+
+      expect(skill.can_delete?).to eq false
+    end
+
+    it 'returns true if a skill has only deleted grades' do
+      skill = create :skill
+      gd = create :grade_descriptor, skill: skill
+      create :grade, grade_descriptor: gd, deleted_at: Time.zone.now
+
+      expect(skill.can_delete?).to eq true
+    end
+
+    it 'returns false if a skill is associated with a subject' do
+      skill = create :skill_in_subject
+      expect(skill.can_delete?).to eq false
+    end
+
+    it 'returns true if a skill has no grades and is not associated with a subject' do
+      skill = create :skill
+      expect(skill.can_delete?).to eq true
+    end
+  end
 end

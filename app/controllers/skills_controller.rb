@@ -30,8 +30,13 @@ class SkillsController < ApplicationController
   def destroy
     @skill = Skill.find params.require(:id)
     authorize @skill
-    @skill.deleted_at = Time.zone.now
-    undo_notice_and_redirect t(:skill_deleted, skill_name: @skill.skill_name), undelete_skill_path, skills_path if @skill.save
+
+    if @skill.can_delete?
+      @skill.deleted_at = Time.zone.now
+      undo_notice_and_redirect t(:skill_deleted, skill_name: @skill.skill_name), undelete_skill_path, skills_path if @skill.save
+    else
+      render_deletion_error
+    end
   end
 
   def undelete
@@ -46,5 +51,13 @@ class SkillsController < ApplicationController
 
   def skill_parameters
     params.require(:skill).permit(:skill_name, :organization_id, :skill_description, grade_descriptors_attributes: %i[mark grade_description _destroy])
+  end
+
+  def render_deletion_error
+    if Grade.where(skill: @skill).count != 0
+      notice_and_redirect t(:skill_not_deleted_because_grades), request.referer || skill_path(@skill)
+    elsif @skill.subjects.count != 0
+      notice_and_redirect t(:skill_not_deleted_because_subject), request.referer || skill_path(@skill)
+    end
   end
 end
