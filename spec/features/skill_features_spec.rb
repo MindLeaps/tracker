@@ -71,5 +71,30 @@ RSpec.describe 'User interacts with skills', js: true do
       expect(page).to have_content 'Show Skill Feature Test Grade One'
       expect(page).to have_content 'Show Skill Feature Test Grade Two'
     end
+
+    describe 'Skill Deletion' do
+      before :each do
+        @skill = create :skill, skill_name: 'Skill To Be Deleted'
+        visit '/skills'
+      end
+
+      it 'deletes an existing skill, lists it in the skill table, and then undeletes it' do
+        click_link 'Skill To Be Deleted'
+
+        click_button 'delete-dialog-button'
+        click_button 'confirm-delete-button'
+
+        expect(page).to have_content 'Skill "Skill To Be Deleted" deleted.'
+        expect(@skill.reload.deleted_at).not_to be_nil
+
+        expect(page).not_to have_link('Skill To Be Deleted')
+        click_link_compat 'Show Deleted'
+        click_link 'Skill To Be Deleted'
+
+        click_button 'undelete-button'
+        expect(page).to have_content 'Skill "Skill To Be Deleted" restored.'
+        expect(@skill.reload.deleted_at).to be_nil
+      end
+    end
   end
 end
