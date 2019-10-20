@@ -15,12 +15,25 @@ RSpec.describe SkillsController, type: :controller do
         org = create :organization
         @skill1 = create :skill, skill_name: 'Memorization', organization: org
         @skill2 = create :skill, skill_name: 'Teamwork', organization: org
+        @deleted_skill = create :skill, skill_name: 'Grit', organization: org, deleted_at: Time.zone.now
       end
 
-      it 'Lists existing subjects' do
+      it 'Lists existing skills' do
         get :index
 
         expect(assigns(:skills)).to include @skill1, @skill2
+      end
+
+      it 'does not include deleted skill' do
+        get :index
+
+        expect(assigns(:skills)).not_to include @deleted_skill
+      end
+
+      it 'includes deleted skill when the exclude_deleted is set to false' do
+        get :index, params: { exclude_deleted: false }
+
+        expect(assigns(:skills)).to include @skill1, @skill2, @deleted_skill
       end
 
       context 'search' do
