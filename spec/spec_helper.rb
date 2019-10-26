@@ -102,6 +102,7 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 
+  # Change this to :selenium_chrome to see the tests running in the browser
   Capybara.javascript_driver = :apparition
 end
 
