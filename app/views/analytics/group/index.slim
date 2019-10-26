@@ -1,0 +1,131 @@
+= content_for :head_content
+  meta name="turbolinks-cache-control" content="no-cache"
+  = javascript_include_tag 'analytics'
+
+= content_for :header_content do
+  = render partial: '/shared/header_content', locals: { title: 'General Analytics' }
+
+= render '/shared/analytics_tabs'
+
+= form_tag do
+  table
+    tr
+      td style="padding-right: 20px;"
+        = label_tag :organization_label, "Organization"
+        = select_tag :organization_select, options_from_collection_for_select(@organizations, :id, :organization_name, @selected_organization_id), :prompt => 'All'
+      td style="padding-right: 20px;"
+        = label_tag :chapter_label, "Chapter"
+        = select_tag :chapter_select, options_from_collection_for_select(@chapters, :id, :chapter_name, @selected_chapter_id), :prompt => 'All'
+      td style="padding-right: 20px;"
+        = submit_tag "Submit"
+
+table id="trellis" style="width: 100%; table-layout: fixed;"
+  - rows = (@count + 1)/2
+  - rows.times do
+    tr
+      td
+      td
+
+javascript:
+  $('#organization_select').change(function () {
+    var selectedOrganization = $('#organization_select :selected').val();
+    var selectedChapter = $('#chapter_select :selected').val();
+    var selectedGroup = $('#group_select :selected').val();
+
+    pegasus('#{{find_update_chapters_path}}?organization_id=' + selectedOrganization + '&chapter_id=' + selectedChapter + '&group_id=' + selectedGroup)
+      .then(function (data) {
+          var chapters = data.chapters;
+
+          $('#chapter_select').empty();
+          var opt = document.createElement('option');
+          opt.text = 'All';
+          $('#chapter_select').append(opt, null);
+
+          for (i = 0; i < chapters.length; i++) {
+            var chapter = chapters[i];
+
+            var opt = document.createElement('option');
+            opt.text = chapter.chapter_name;
+            opt.value = chapter.id;
+
+            $('#chapter_select').append(opt, null);
+          }
+          $('#chapter_select').select(0);
+          $('#chapter_select').change();
+        },function (data) {
+        }
+      );
+  });
+
+  function startAnalytics() {
+      var charts = [],
+          $containers = $('#trellis td'),
+          datasets = #{{ @series8.html_safe }};
+
+      $.each(datasets, function (i, dataset) {
+          charts.push(new Highcharts.Chart({
+
+              chart: {
+                  renderTo: $containers[i],
+                  zoomType: 'x',
+                  type: 'scatter'
+              },
+              exporting: {
+                filename: dataset.group + '-chart',
+                buttons: {
+                  contextButton: {
+                    menuItems: [
+                      'downloadPNG',
+                      'downloadJPEG',
+                      'downloadPDF',
+                      'downloadSVG'
+                    ]
+                  }
+                },
+                fallbackToExportServer: false
+              },
+              title: {
+                  text: dataset.group
+              },
+              credits: {
+                  enabled: false
+              },
+              tooltip: {
+                  valueDecimals: 1
+              },
+              xAxis: {
+                  title: {
+                      text: '#{{ t(:nr_of_lessons) }}'
+                  }
+              },
+              yAxis: {
+                  allowDecimals: false,
+                  title: {
+                      text: '#{{ t(:performance)}}'
+                  }
+              },
+              legend: {
+                  enabled: false
+              },
+              plotOptions: {
+                  series: {
+                      marker: {
+                          radius: 2
+                      }
+                  }
+              },
+              series: dataset.series
+
+          }));
+      });
+  }
+
+  function pollForHighcharts(cb) {
+    if (window.Highcharts) {
+      cb()
+    } else {
+      setTimeout(pollForHighcharts.bind(this, cb), 100);
+    }
+  }
+
+  pollForHighcharts(startAnalytics);
