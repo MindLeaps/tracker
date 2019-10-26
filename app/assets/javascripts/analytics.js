@@ -3,5 +3,3 @@
 //= require optimized-exporting
 //= require optimized-offline-exporting
 //= require highcharts-regression
-
-//= require_tree ./analytics

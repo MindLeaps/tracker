@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SQL
   def performance_per_skill_in_lessons_query(lessons)
     <<~SQL

@@ -104,7 +104,7 @@ module ApplicationHelper
     "href=#{url}"
   end
 
-  def href_to url
+  def href_to(url)
     "href=#{url}"
   end
 end

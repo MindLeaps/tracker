@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Analytics
   class AnalyticsController < :: ApplicationController
     protect_from_forgery with: :exception
@@ -27,11 +29,10 @@ module Analytics
     end
 
     def colors
-      %w(#7cb5ec #434348 #90ed7d #f7a35c #8085e9 #f15c80 #e4d354 #2b908f #f45b5b #91e8e1)
-      %w(#7cb5ec #434348 #90ed7d #f7a35c #8085e9 #f15c80 #e4d354 #2b908f #f45b5b #91e8e1)
+      %w[#7cb5ec #434348 #90ed7d #f7a35c #8085e9 #f15c80 #e4d354 #2b908f #f45b5b #91e8e1]
     end
 
-    def get_color(i)
+    def get_color(i) # rubocop:disable Naming/UncommunicativeMethodParamName
       colors[i % colors.length]
     end
   end

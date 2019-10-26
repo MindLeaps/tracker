@@ -1,33 +1,39 @@
+# frozen_string_literal: true
+
 require 'sql/queries'
-include SQL
+include SQL # rubocop:disable Style/MixinUsage
 
 module Analytics
-  class GeneralController < AnalyticsController
+  class GeneralController < AnalyticsController # rubocop:disable Metrics/ClassLength
+    # rubocop:disable Metrics/PerceivedComplexity
+    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/AbcSize
     def index
       @organizations = policy_scope Organization
-      if not @selected_organization_id.nil? and not @selected_organization_id == '' and not @selected_organization_id == 'All'
-        @chapters = Chapter.where(organization_id: @selected_organization_id)
-      else
-        @chapters = policy_scope Chapter
-      end
+      @chapters = if !@selected_organization_id.nil? && (@selected_organization_id != '') && (@selected_organization_id != 'All')
+                    Chapter.where(organization_id: @selected_organization_id)
+                  else
+                    policy_scope Chapter
+                  end
 
-      if not @selected_chapter_id.nil? and not @selected_chapter_id == '' and not @selected_chapter_id == 'All'
-        @groups = Group.where(chapter_id: @selected_chapter_id)
-      elsif not @selected_organization_id.nil? and not @selected_organization_id == '' and not @selected_organization_id == 'All'
-        @groups = Group.includes(:chapter).where(chapters: {organization_id: @selected_organization_id})
-      else
-        @groups = policy_scope Group
-      end
+      @groups = if !@selected_chapter_id.nil? && (@selected_chapter_id != '') && (@selected_chapter_id != 'All')
+                  Group.where(chapter_id: @selected_chapter_id)
+                elsif !@selected_organization_id.nil? && (@selected_organization_id != '') && (@selected_organization_id != 'All')
+                  Group.includes(:chapter).where(chapters: { organization_id: @selected_organization_id })
+                else
+                  policy_scope Group
+                end
 
-      if not @selected_group_id.nil? and not @selected_group_id == '' and not @selected_group_id == 'All'
-        @students = Student.where(group_id: @selected_group_id).order(:last_name, :first_name).all
-      elsif not @selected_chapter_id.nil? and not @selected_chapter_id == '' and not @selected_chapter_id == 'All'
-        @students = Student.includes(:group).where(groups: {chapter_id: @selected_chapter_id}).order(:last_name, :first_name).all
-      elsif not @selected_organization_id.nil? and not @selected_organization_id == '' and not @selected_organization_id == 'All'
-        @students = Student.includes(group: :chapter).where(chapters: {organization_id: @selected_organization_id}).order(:last_name, :first_name).all
-      else
-        @students = policy_scope Student.order(:last_name, :first_name)
-      end
+      @students = if !@selected_group_id.nil? && (@selected_group_id != '') && (@selected_group_id != 'All')
+                    Student.where(group_id: @selected_group_id).order(:last_name, :first_name).all
+                  elsif !@selected_chapter_id.nil? && (@selected_chapter_id != '') && (@selected_chapter_id != 'All')
+                    Student.includes(:group).where(groups: { chapter_id: @selected_chapter_id }).order(:last_name, :first_name).all
+                  elsif !@selected_organization_id.nil? && (@selected_organization_id != '') && (@selected_organization_id != 'All')
+                    Student.includes(group: :chapter).where(chapters: { organization_id: @selected_organization_id }).order(:last_name, :first_name).all
+                  else
+                    policy_scope Student.order(:last_name, :first_name)
+                  end
 
       res2 = assesments_per_month
       @categories2 = res2[:categories].to_json
@@ -37,18 +43,22 @@ module Analytics
       @series6 = histogram_of_student_performance_change_by_gender.to_json
       @series10 = average_performance_per_group_by_lesson.to_json
     end
+    # rubocop:enable Metrics/PerceivedComplexity
+    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/CyclomaticComplexity
+    # rubocop:enable Metrics/AbcSize
 
     private
 
     def histogram_of_student_performance
       conn = ActiveRecord::Base.connection.raw_connection
-      if @selected_students.blank?
-        res = []
-      else
-        res = conn.exec(student_performance_query(@selected_students)).values
-      end
+      res = if @selected_students.blank?
+              []
+            else
+              conn.exec(student_performance_query(@selected_students)).values
+            end
 
-      [{name: t(:frequency_perc), data: res}]
+      [{ name: t(:frequency_perc), data: res }]
     end
 
     def histogram_of_student_performance_change_by_gender
@@ -56,15 +66,11 @@ module Analytics
       male_students = @selected_students.where(gender: 'M')
       female_students = @selected_students.where(gender: 'F')
 
-      result= []
+      result = []
 
-      if male_students.length.positive?
-        result << { name: "#{t(:gender)} M", data: conn.exec(performance_change_query(male_students)).values }
-      end
+      result << { name: "#{t(:gender)} M", data: conn.exec(performance_change_query(male_students)).values } if male_students.length.positive?
 
-      if female_students.length.positive?
-        result << { name: "#{t(:gender)} F", data: conn.exec(performance_change_query(female_students)).values }
-      end
+      result << { name: "#{t(:gender)} F", data: conn.exec(performance_change_query(female_students)).values } if female_students.length.positive?
 
       result
     end
@@ -72,35 +78,35 @@ module Analytics
     def histogram_of_student_performance_change
       conn = ActiveRecord::Base.connection.raw_connection
 
-      if @selected_students.blank?
-        res = []
-      else
-        res = conn.exec(performance_change_query(@selected_students)).values
-      end
-      [{name: t(:frequency_perc), data: res}]
+      res = if @selected_students.blank?
+              []
+            else
+              conn.exec(performance_change_query(@selected_students)).values
+            end
+      [{ name: t(:frequency_perc), data: res }]
     end
 
-    def assesments_per_month
+    def assesments_per_month # rubocop:disable Metrics/MethodLength
       conn = ActiveRecord::Base.connection.raw_connection
       lesson_ids = Lesson.where(group_id: @selected_students.map(&:group_id).uniq).pluck(:id)
 
-      if lesson_ids.blank?
-        res = []
-      else
-        res = conn.exec("select to_char(date_trunc('month', l.date), 'YYYY-MM') as month, count(distinct(l.id, g.student_id)) as assessments
-                                      from lessons as l
-                                        inner join grades as g
-                                          on l.id = g.lesson_id
-                                        inner join groups as gr
-                                          on gr.id = l.group_id
-                                      where l.id IN (#{lesson_ids.join(', ')})
-                                      group by month
-                                      order by month;").values
-      end
+      res = if lesson_ids.blank?
+              []
+            else
+              conn.exec("select to_char(date_trunc('month', l.date), 'YYYY-MM') as month, count(distinct(l.id, g.student_id)) as assessments
+                                            from lessons as l
+                                              inner join grades as g
+                                                on l.id = g.lesson_id
+                                              inner join groups as gr
+                                                on gr.id = l.group_id
+                                            where l.id IN (#{lesson_ids.join(', ')})
+                                            group by month
+                                            order by month;").values
+            end
 
       {
-          categories: res.map { |e| e[0] },
-          series: [{ name: t(:nr_of_assessments), data: res.map { |e| e[1] } }]
+        categories: res.map { |e| e[0] },
+        series: [{ name: t(:nr_of_assessments), data: res.map { |e| e[1] } }]
       }
     end
 
@@ -114,7 +120,10 @@ module Analytics
       end
     end
 
-    def get_groups_for_average_performance
+    # rubocop:disable Naming/AccessorMethodName
+    # rubocop:disable Metrics/PerceivedComplexity
+    # rubocop:disable Metrics/MethodLength
+    def get_groups_for_average_performance # rubocop:disable Metrics/CyclomaticComplexity
       if @selected_student_id.present? && @selected_student_id != 'All'
         Student.find(@selected_student_id).group
       elsif @selected_group_id.present? && @selected_group_id != 'All'
@@ -127,5 +136,8 @@ module Analytics
         @groups.includes(:chapter)
       end
     end
+    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/PerceivedComplexity
+    # rubocop:enable Naming/AccessorMethodName
   end
 end
