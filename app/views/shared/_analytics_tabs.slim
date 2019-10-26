@@ -1,0 +1,8 @@
+.mdl-tabs.mdl-js-tabs.mdl-js-ripple-effect
+  .mdl-tabs__tab-bar
+    a href=(general_analytics_url unless general_analytics?) class="mdl-tabs__tab #{general_analytics? ? 'is-active' :''}"
+      | General
+    a href=(subject_analytics_url unless subject_analytics?) class="mdl-tabs__tab #{subject_analytics? ? 'is-active' : ''}"
+      | Subject
+    a href=(group_analytics_url unless group_analytics?) class="mdl-tabs__tab #{group_analytics? ? 'is-active' : ''}"
+      | Group

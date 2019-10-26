@@ -1,0 +1,363 @@
+= content_for :head_content
+  meta name="turbolinks-cache-control" content="no-cache"
+  = javascript_include_tag 'analytics'
+
+= content_for :header_content do
+  = render partial: '/shared/header_content', locals: { title: 'General Analytics' }
+
+= render '/shared/analytics_tabs'
+
+= form_tag do
+  table
+    tr
+      td style="padding-right: 20px;"
+        = label_tag :organization_label, "Organization"
+        = select_tag :organization_select, options_from_collection_for_select(@organizations, :id, :organization_name, @selected_organization_id), :prompt => 'All'
+      td style="padding-right: 20px;"
+        = label_tag :chapter_label, "Chapter"
+        = select_tag :chapter_select, options_from_collection_for_select(@chapters, :id, :chapter_name, @selected_chapter_id), :prompt => 'All'
+      td style="padding-right: 20px;"
+        = label_tag :group_label, "Group"
+        = select_tag :group_select, options_from_collection_for_select(@groups, :id, :group_name, @selected_group_id), :prompt => 'All'
+      td style="padding-right: 20px;"
+        = label_tag :student_label, "Student"
+        = select_tag :student_select, options_from_collection_for_select(@students, :id, :proper_name, @selected_student_id), :prompt => 'All'
+      td style="padding-right: 20px;"
+        = submit_tag "Submit"
+
+table style="width: 100%; table-layout: fixed;"
+  tr
+    td style="width: 50%;"
+      div id="chart2" style="width:100%; height:400px;"
+    td style="width: 50%;"
+      div id="chart4" style="width:100%; height:400px;"
+  tr
+    td style="width: 50%;"
+      div id="chart5" style="width:100%; height:400px;"
+    td style="width: 50%;"
+      div id="chart6" style="width:100%; height:400px;"
+  tr
+    td style="width: 50%;"
+      div id="chart10" style="width:100%; height:400px;"
+
+javascript:
+  $('#organization_select').change(function () {
+    var selectedOrganization = $('#organization_select :selected').val();
+    var selectedChapter = $('#chapter_select :selected').val();
+    var selectedGroup = $('#group_select :selected').val();
+
+    pegasus('#{{find_update_chapters_path}}?organization_id=' + selectedOrganization + '&chapter_id=' + selectedChapter + '&group_id=' + selectedGroup)
+      .then(function (data) {
+        var chapters = data.chapters;
+
+        $('#chapter_select').empty();
+        var opt = document.createElement('option');
+        opt.text = 'All';
+        $('#chapter_select').append(opt, null);
+
+        for (i = 0; i < chapters.length; i++) {
+          var chapter = chapters[i];
+
+          var opt = document.createElement('option');
+          opt.text = chapter.chapter_name;
+          opt.value = chapter.id;
+
+          $('#chapter_select').append(opt, null);
+        }
+        $('#chapter_select').select(0);
+        $('#chapter_select').change();
+      },function (data) {
+      }
+    );
+  });
+  $('#chapter_select').change(function () {
+    var selectedOrganization = $('#organization_select :selected').val();
+    var selectedChapter = $('#chapter_select :selected').val();
+    var selectedGroup = $('#group_select :selected').val();
+
+    pegasus('#{{find_update_groups_path}}?organization_id=' + selectedOrganization + '&chapter_id=' + selectedChapter + '&group_id=' + selectedGroup)
+      .then(function (data) {
+        var groups = data.groups;
+
+        $('#group_select').empty();
+        var opt = document.createElement('option');
+        opt.text = 'All';
+
+        $('#group_select').append(opt, null);
+        for (i = 0; i < groups.length; i++) {
+          var group = groups[i];
+
+          var opt = document.createElement('option');
+          opt.text = group.group_name;
+          opt.value = group.id;
+
+          $('#group_select').append(opt, null);
+        }
+        $('#group_select').select(0);
+        $('#group_select').change();
+      }, function (data) {
+      }
+    );
+  });
+
+  $('#group_select').change(function () {
+    var selectedOrganization = $('#organization_select :selected').val();
+    var selectedChapter = $('#chapter_select :selected').val();
+    var selectedGroup = $('#group_select :selected').val();
+
+    pegasus('#{{find_update_students_path}}?organization_id=' + selectedOrganization + '&chapter_id=' + selectedChapter + '&group_id=' + selectedGroup)
+      .then(function (data) {
+        var students = data.students;
+
+        $('#student_select').empty();
+        var opt = document.createElement('option');
+        opt.text = 'All';
+
+        $('#student_select').append(opt, null);
+        for (i = 0; i < students.length; i++) {
+          var student = students[i];
+
+          var opt = document.createElement('option');
+          opt.text = student.last_name + ', ' + student.first_name;
+          opt.value = student.id;
+
+          $('#student_select').append(opt, null);
+        }
+      }, function (data) {
+      }
+    );
+  });
+
+  function startAnalytics() {
+      var Chart2 = Highcharts.chart('chart2', {
+          chart: {
+              type: 'column',
+              zoomType: 'x'
+          },
+          legend: {
+              enabled: false
+          },
+          credits: {
+              enabled: false
+          },
+          exporting: {
+            filename: 'quantity-of-data-chart',
+            buttons: {
+              contextButton: {
+                menuItems: [
+                  'downloadPNG',
+                  'downloadJPEG',
+                  'downloadPDF',
+                  'downloadSVG'
+                ]
+              }
+            },
+            fallbackToExportServer: false
+          },
+          title: {
+              text: '#{{ t(:title_chart_2)}}'
+          },
+          xAxis: {
+              title: {
+                  text: '#{{ t(:month) }}'
+              },
+              categories: #{{ @categories2.html_safe }}
+          },
+          yAxis: {
+              title: {
+                  text: '#{{ t(:nr_of_assessments) }}'
+              }
+          },
+          series: #{{ @series2.html_safe }}
+      });
+
+      var Chart4 = Highcharts.chart('chart4', {
+          chart: {
+              type: 'column'
+          },
+          legend: {
+              enabled: false
+          },
+          credits: {
+              enabled: false
+          },
+          tooltip: {
+              valueDecimals: 1
+          },
+          exporting: {
+            filename: 'histogram-performance-chart',
+            buttons: {
+              contextButton: {
+                menuItems: [
+                  'downloadPNG',
+                  'downloadJPEG',
+                  'downloadPDF',
+                  'downloadSVG'
+                ]
+              }
+            },
+            fallbackToExportServer: false
+          },
+          title: {
+              text: '#{{ t(:title_chart_4)}}'
+          },
+          xAxis: {
+              title: {
+                  text: '#{{ t(:performance) }}'
+              }
+          },
+          yAxis: {
+              title: {
+                  text: '#{{ t(:frequency_perc) }}'
+              }
+          },
+          series: #{{ @series4.html_safe }}
+      });
+
+      var Chart5 = Highcharts.chart('chart5', {
+          chart: {
+              type: 'column'
+          },
+          legend: {
+              enabled: false
+          },
+          credits: {
+              enabled: false
+          },
+          tooltip: {
+              valueDecimals: 1
+          },
+          exporting: {
+            filename: 'performance-change-chart',
+            buttons: {
+              contextButton: {
+                menuItems: [
+                  'downloadPNG',
+                  'downloadJPEG',
+                  'downloadPDF',
+                  'downloadSVG'
+                ]
+              }
+            },
+            fallbackToExportServer: false
+          },
+          title: {
+              text: '#{{ t(:title_chart_5)}}'
+          },
+          xAxis: {
+              title: {
+                  text: '#{{ t(:performance_change) }}'
+              }
+          },
+          yAxis: {
+              title: {
+                  text: '#{{ t(:frequency_perc) }}'
+              }
+          },
+          series: #{{ @series5.html_safe }}
+      });
+
+      var Chart6 = Highcharts.chart('chart6', {
+          chart: {
+              type: 'column'
+          },
+          legend: {
+              enabled: true
+          },
+          credits: {
+              enabled: false
+          },
+          tooltip: {
+              valueDecimals: 1
+          },
+          title: {
+              text: '#{{ t(:title_chart_6)}}'
+          },
+          exporting: {
+            filename: 'gender-performance-change-chart',
+            buttons: {
+              contextButton: {
+                menuItems: [
+                  'downloadPNG',
+                  'downloadJPEG',
+                  'downloadPDF',
+                  'downloadSVG'
+                ]
+              }
+            },
+            fallbackToExportServer: false
+          },
+          xAxis: {
+              title: {
+                  text: '#{{ t(:performance_change) }}'
+              }
+          },
+          yAxis: {
+              title: {
+                  text: '#{{ t(:frequency_perc) }}'
+              }
+          },
+          series: #{{ @series6.html_safe }}
+      });
+
+      var Chart10 = Highcharts.chart('chart10', {
+          chart: {
+              type: 'scatter',
+              zoomType: 'x'
+          },
+          legend: {
+              enabled: true
+          },
+          credits: {
+              enabled: false
+          },
+          tooltip: {
+              valueDecimals: 2
+          },
+          exporting: {
+            filename: 'average-performance-chart',
+            buttons: {
+              contextButton: {
+                menuItems: [
+                  'downloadPNG',
+                  'downloadJPEG',
+                  'downloadPDF',
+                  'downloadSVG'
+                ]
+              }
+            },
+            fallbackToExportServer: false
+          },
+          title: {
+              text: '#{{ t(:title_chart_8)}}'
+          },
+          xAxis: {
+              title: {
+                  text: '#{{ t(:nr_of_lessons) }}'
+              }
+          },
+          yAxis: {
+              title: {
+                  text: '#{{ t(:performance)}}'
+              }
+          },
+          plotOptions: {
+              series: {
+                  marker: {
+                      radius: 2
+                  }
+              }
+          },
+          series: #{{ @series10.html_safe }}
+      });
+  }
+
+  function pollForHighcharts (cb) {
+    if (window.Highcharts) {
+      cb()
+    } else {
+      setTimeout(pollForHighcharts.bind(this, cb), 100);
+    }
+  }
+
+  pollForHighcharts(startAnalytics);

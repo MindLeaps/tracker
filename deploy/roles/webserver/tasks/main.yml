@@ -133,28 +133,6 @@
     line="source ~/.rvm/scripts/rvm"
     insertafter=EOF
 
-- name: Copy Analytics source to the machine
-  sudo: true
-  sudo_user: mindleaps
-  synchronize:
-    dest: /home/mindleaps/Tracker-Analytics
-    src: ../../../../../Tracker-Analytics
-    delete: yes
-    owner: no
-    group: no
-    rsync_opts:
-      - "--exclude=.DS_Store"
-      - "--exclude=.git"
-      - "--exclude=.gitignore"
-      - "--exclude=.rspec"
-      - "--exclude=.rubocop.yml"
-      - "--exclude=.travis.yml"
-      - "--exclude=deploy"
-      - "--exclude=spec"
-      - "--exclude=db/*.sqlite3"
-      - "--exclude=log"
-      - "--exclude=tmp"
-
 - name: Copy the source to the machine
   sudo: true
   sudo_user: mindleaps
@@ -221,7 +199,7 @@
 - name: Install all gems
   sudo: true
   sudo_user: mindleaps
-  shell: MINDLEAPS_ANALYTICS_PATH=../Tracker-Analytics ~/.rvm/bin/rvm . do bundle install
+  shell: ~/.rvm/bin/rvm . do bundle install
   args:
     chdir: /home/mindleaps/tracker
 
@@ -242,7 +220,7 @@
 - name: Precompile the assets
   sudo: true
   sudo_user: mindleaps
-  shell: MINDLEAPS_ANALYTICS_PATH=../Tracker-Analytics SECRET_KEY_BASE={{ secret_key_base }} DEVISE_SECRET_KEY={{ devise_secret_key }} RAILS_ENV=production ~/.rvm/bin/rvm . do rake assets:precompile
+  shell: SECRET_KEY_BASE={{ secret_key_base }} DEVISE_SECRET_KEY={{ devise_secret_key }} RAILS_ENV=production ~/.rvm/bin/rvm . do rake assets:precompile
   args:
     chdir: /home/mindleaps/tracker
 

@@ -101,15 +101,3 @@ You can test the application by running:
 ```sh
 rake test
 ```
-
-## Running MindLeaps Tracker with Analytics
-
-Analytics engine is located in a separate repository:
-
-1. Clone the Analytics repository (put it somewhere outside of tracker repo): https://github.com/MindLeaps/Tracker-Analytics
-
-2. Start Tracker by running
-
-    ```sh
-        MINDLEAPS_ANALYTICS_PATH={path to where you cloned analytics repo} bundle exec rails s
-    ```

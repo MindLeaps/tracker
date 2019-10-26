@@ -15,7 +15,7 @@
 //= require jquery-3.2.1.slim.min
 //= require turbolinks
 //= require cocoon
-//= require_tree .
+//= require_tree ./application
 
 document.addEventListener('turbolinks:load', function() {
   var elements = document.querySelectorAll('[data-upgraded]');
