@@ -164,7 +164,7 @@ javascript:
                       return '<span style="color:' + this.point.color + '">\u25CF</span> ' + this.series.name +
                              '<br/><span>x: <span style="font-weight: bold">' + this.point.x + '</span></span>' +
                              '<br/><span>y: <span style="font-weight: bold">' + this.point.y + '</span></span>' +
-                             (this.point.date ? '<br/><span>Lesson Date: ' + this.point.date + '</span>' : '');
+                             (this.point.date ? '<br/><span>#{t(:lesson_date)}: ' + this.point.date + '</span>' : '');
                     }
                 },
                 exporting: {
@@ -199,7 +199,9 @@ javascript:
                     series: {
                         events: {
                             click: function(e, a1, a2) {
-                              window.open(e.point.lesson_url, '_blank')
+                              if (e.point.lesson_url) {
+                                window.open(e.point.lesson_url, '_blank');
+                              }
                             }
                         },
                         marker: {

@@ -91,12 +91,12 @@ module Analytics
         acc.tap do |a|
           if a.key?(skill_name)
             if a[skill_name].key?(group_name)
-              a[skill_name][group_name].push(x: e[0], y: e[1], lesson_url: Rails.application.routes.url_helpers.lesson_path(e[2]), date: e[3])
+              a[skill_name][group_name].push(x: e[0], y: e[1], lesson_url: lesson_path(e[2]), date: e[3])
             else
-              a[skill_name][group_name] = [{ x: e[0], y: e[1], lesson_url: Rails.application.routes.url_helpers.lesson_path(e[2]), date: e[3] }]
+              a[skill_name][group_name] = [{ x: e[0], y: e[1], lesson_url: lesson_path(e[2]), date: e[3] }]
             end
           else
-            a[skill_name] = { group_name => [{ x: e[0], y: e[1], lesson_url: Rails.application.routes.url_helpers.lesson_path(e[2]), date: e[3] }] }
+            a[skill_name] = { group_name => [{ x: e[0], y: e[1], lesson_url: lesson_path(e[2]), date: e[3] }] }
           end
         end
       end

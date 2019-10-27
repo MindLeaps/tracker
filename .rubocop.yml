@@ -40,3 +40,6 @@ Rails/BulkChangeTable:
 
 Style/SymbolArray:
   Enabled: false
+
+Style/MultilineBlockChain:
+  Enabled: false

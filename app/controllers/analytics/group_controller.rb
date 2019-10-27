@@ -27,35 +27,32 @@ module Analytics
     # rubocop:disable Metrics/AbcSize
     # rubocop:disable Metrics/MethodLength
     def performance_per_group
-      groups = if !@selected_chapter_id.nil? && (@selected_chapter_id != '') && (@selected_chapter_id != 'All')
-                 Group.where(chapter_id: @selected_chapter_id)
-               # lessons = Lesson.joins(:grades).includes(:group).group('lessons.id').where(groups: {chapter_id: @selected_chapter_id})
-               else
-                 # lessons = Lesson.joins(:grades, group: :chapter).group('lessons.id').where(chapters: {organization_id: @selected_organization_id})
-                 Group.joins(:chapter).where(chapters: { organization_id: @selected_organization_id })
-               end
-      conn = ActiveRecord::Base.connection.raw_connection
+      groups_lesson_summaries = if !@selected_chapter_id.nil? && (@selected_chapter_id != '') && (@selected_chapter_id != 'All')
+                                  GroupLessonSummary.where(chapter_id: @selected_chapter_id)
+                                else
+                                  GroupLessonSummary.joins(:chapter).where(chapters: { organization_id: @selected_organization_id })
+                                end
 
-      groups
-        .map { |group| { group_name: group.group_chapter_name, result: conn.exec(average_mark_in_group_lessons(group)).values } }
-        .reject { |group_result| group_result[:result].empty? }
-        .map do |group_result|
+      groups_lesson_summaries
+        .group_by(&:group_id)
+        .map do |group_id, summaries|
           group_series = []
           group_series << {
-            name: group_result[:group_name],
-            data: group_result[:result],
-            regression: group_result[:result].length > 1,
+            name: summaries[0].group_chapter_name,
+            data: summaries.map.with_index { |summary, i| { x: i, y: summary.average_mark, date: summary.lesson_date, lesson_url: lesson_path(summary.lesson_id), grade_count: summary.grade_count } },
+            regression: true,
             color: get_color(0),
             regressionSettings: {
               type: 'polynomial',
               order: 4,
               color: get_color(0),
-              name: "#{t(:group)} #{group_result[:group_name]} - Regression",
+              name: "#{t(:group)} #{summaries[0].group_chapter_name} - Regression",
               lineWidth: 1
             }
           }
-          { group: t(:group) + ' ' + group_result[:group_name], series: group_series }
+          { group: "#{t(:group)} #{summaries[0].group_chapter_name}", series: group_series, group_id: group_id }
         end
+        .sort_by { |e| e[:group_id] }
     end
     # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/MethodLength

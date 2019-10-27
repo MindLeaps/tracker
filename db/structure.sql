@@ -297,6 +297,22 @@ ALTER SEQUENCE public.grades_id_seq OWNED BY public.grades.id;
 
 
 --
+-- Name: group_lesson_summaries; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.group_lesson_summaries AS
+SELECT
+    NULL::integer AS lesson_id,
+    NULL::uuid AS lesson_uid,
+    NULL::date AS lesson_date,
+    NULL::integer AS group_id,
+    NULL::integer AS chapter_id,
+    NULL::text AS group_chapter_name,
+    NULL::double precision AS average_mark,
+    NULL::bigint AS grade_count;
+
+
+--
 -- Name: group_summaries; Type: VIEW; Schema: public; Owner: -
 --
 
@@ -1276,6 +1292,28 @@ CREATE OR REPLACE VIEW public.student_lesson_summaries AS
 
 
 --
+-- Name: group_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.group_lesson_summaries AS
+ SELECT l.id AS lesson_id,
+    l.uid AS lesson_uid,
+    l.date AS lesson_date,
+    gr.id AS group_id,
+    gr.chapter_id,
+    concat(gr.group_name, ' - ', c.chapter_name) AS group_chapter_name,
+    (round(avg(g.mark), 2))::double precision AS average_mark,
+    count(*) AS grade_count
+   FROM (((public.lessons l
+     JOIN public.groups gr ON ((l.group_id = gr.id)))
+     JOIN public.grades g ON ((g.lesson_id = l.id)))
+     JOIN public.chapters c ON ((gr.chapter_id = c.id)))
+  WHERE (g.deleted_at IS NULL)
+  GROUP BY l.id, gr.id, c.id
+  ORDER BY l.date;
+
+
+--
 -- Name: assignments assignments_skill_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1535,6 +1573,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190405030134'),
 ('20190406163831'),
 ('20190615165333'),
-('20190817044440');
+('20190817044440'),
+('20191026230403');
 
 
