@@ -199,7 +199,9 @@ javascript:
                     series: {
                         events: {
                             click: function(e, a1, a2) {
-                              window.open(e.point.lesson_url, '_blank')
+                              if (e.point.lesson_url) {
+                                window.open(e.point.lesson_url, '_blank');
+                              }
                             }
                         },
                         marker: {
