@@ -118,6 +118,9 @@ en:
   gender: Gender
   month: Month
 
+  lesson_date: Lesson Date
+
+
 
   errors:
     messages:
