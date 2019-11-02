@@ -15,6 +15,7 @@ class LessonsController < ApplicationController
     @lesson = Lesson.includes(:group, :subject).find(params[:id])
     authorize @lesson
     @pagy, @student_lesson_summaries = pagy apply_scopes(StudentLessonSummary.where(lesson_id: @lesson.id))
+    @group_lessons_data = process_group_lesson_data(GroupLessonSummary.find_by(lesson_uid: @lesson.uid)&.around(31) || [], @lesson)
   end
 
   def new
@@ -28,5 +29,29 @@ class LessonsController < ApplicationController
     return notice_and_redirect(t(:lesson_created), lessons_url) if @lesson.save
 
     render :index
+  end
+
+  private
+
+  def process_group_lesson_data(data, current_lesson)
+    {
+      prev_lesson_url: get_prev_lesson_url(current_lesson, data),
+      next_lesson_url: get_next_lesson_url(current_lesson, data),
+      group_lessons: data.map do |l|
+        h = l.as_json
+        h[:lesson_url] = lesson_url l.lesson_id
+        h
+      end
+    }
+  end
+
+  def get_prev_lesson_url(lesson, data)
+    i = data.find_index { |e| e.lesson_uid == lesson.uid }
+    i.present? && i.positive? ? lesson_url(data[i - 1].lesson_id) : nil
+  end
+
+  def get_next_lesson_url(lesson, data)
+    i = data.find_index { |e| e.lesson_uid == lesson.uid }
+    i.present? && i + 1 < data.size ? lesson_url(data[i + 1].lesson_id) : nil
   end
 end

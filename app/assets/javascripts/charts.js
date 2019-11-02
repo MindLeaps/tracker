@@ -6,12 +6,12 @@ function displayLessonGraph(containerId, lessonUid, data) {
       {
         data: data.map(function(e) {
           return {
-            x: e[0],
-            y: e[1],
+            x: e.timestamp,
+            y: e.average_mark,
             meta: {
-              date: e[2],
-              lesson_uid: e[3],
-              lesson_url: e[4]
+              date: e.date,
+              lesson_uid: e.lesson_uid,
+              lesson_url: e.lesson_url
             }
           };
         })

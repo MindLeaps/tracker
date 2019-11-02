@@ -77,6 +77,8 @@ en:
   last_page: Last Page
   prev_page: Previous Page
   next_page: Next Page
+  prev_lesson: Previous Lesson
+  next_lesson: Next Lesson
   name_unknown: Unknown
   create_api_token: Create API Token
   show_deleted: Show Deleted

@@ -1,5 +1,25 @@
+= javascript_include_tag 'charts'
 - content_for :header_content do
   = render layout: '/shared/header_content', locals: { back_button_url: lessons_path, back_tooltip: 'Back to Lessons', title: "#{ @lesson.group.group_chapter_name } - #{ @lesson.subject.subject_name } on #{ @lesson.date }" } do
+
+.mdl-cell.mdl-cell--4-col
+  .mdl-card.mdl-shadow--2dp.full-width
+    .mdl-card__title.primary
+      .flex
+        .left-section
+          h2.mdl-card__title-text Group History
+        .right-section.card-navigation
+          a.mdl-button.mdl-js-button.mdl-button--icon id='prev-lesson-button' disabled=('true' unless @group_lessons_data[:prev_lesson_url]) href=(@group_lessons_data[:prev_lesson_url] if @group_lessons_data[:prev_lesson_url])
+            = inline_svg('chevron_left.svg')
+            .mdl-tooltip data-mdl-for='prev-lesson-button'
+              = t :prev_lesson
+          a.mdl-button.mdl-js-button.mdl-button--icon id='next-lesson-button' disabled=('true' unless @group_lessons_data[:next_lesson_url]) href=(@group_lessons_data[:next_lesson_url] if @group_lessons_data[:next_lesson_url])
+            = inline_svg('chevron_right.svg')
+            .mdl-tooltip data-mdl-for='next-lesson-button'
+              = t :next_lesson
+    .mdl-card__supporting-text
+      .ct-chart.ct-perfect-fourth
+
 
 .single-content-card
   table class='mdl-data-table mdl-js-data-table resource-table'
@@ -24,3 +44,6 @@
           = link_to "#{summary.grade_count} / #{skill_count}", lesson_student_path(@lesson.id, summary.student_id)
         td
           = link_to(if summary.absent then 'Absent' else summary.average_mark end || '', lesson_student_path(@lesson.id, summary.student_id))
+
+javascript:
+  displayLessonGraph('.ct-chart', '#{@lesson.uid.html_safe}', #{@group_lessons_data[:group_lessons].to_json.html_safe});

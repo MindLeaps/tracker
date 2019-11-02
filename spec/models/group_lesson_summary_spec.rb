@@ -3,7 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe GroupLessonSummary, type: :model do
-
   describe '#readonly?' do
     before :each do
       @group = create :group
@@ -47,18 +46,18 @@ RSpec.describe GroupLessonSummary, type: :model do
         'Grit' => [2, 3, 5, 3, 4, 5, 6]
       }
     end
-    
+
     it 'returns the target group lesson summary and 2 before and after it' do
       lesson = Lesson.order(:date).all[3]
       summary = GroupLessonSummary.find(lesson.uid)
       result = summary.around 5
-      
+
       expect(result.size).to eq 5
-      expect(result[0][1]).to eq 2.5
-      expect(result[1][1]).to eq 3
-      expect(result[2][1]).to eq 3
-      expect(result[3][1]).to eq 3
-      expect(result[4][1]).to eq 4
+      expect(result[0].average_mark).to eq 2.5
+      expect(result[1].average_mark).to eq 3
+      expect(result[2].average_mark).to eq 3
+      expect(result[3].average_mark).to eq 3
+      expect(result[4].average_mark).to eq 4
     end
 
     it 'bounds the result to the first lesson' do
@@ -67,11 +66,11 @@ RSpec.describe GroupLessonSummary, type: :model do
       result = summary.around 5
 
       expect(result.size).to eq 5
-      expect(result[0][1]).to eq 1.5
-      expect(result[1][1]).to eq 2.5
-      expect(result[2][1]).to eq 3
-      expect(result[3][1]).to eq 3
-      expect(result[4][1]).to eq 3
+      expect(result[0].average_mark).to eq 1.5
+      expect(result[1].average_mark).to eq 2.5
+      expect(result[2].average_mark).to eq 3
+      expect(result[3].average_mark).to eq 3
+      expect(result[4].average_mark).to eq 3
     end
 
     it 'bounds the result to the last lesson' do
@@ -80,11 +79,11 @@ RSpec.describe GroupLessonSummary, type: :model do
       result = summary.around 5
 
       expect(result.size).to eq 5
-      expect(result[0][1]).to eq 3
-      expect(result[1][1]).to eq 3
-      expect(result[2][1]).to eq 3
-      expect(result[3][1]).to eq 4
-      expect(result[4][1]).to eq 5
+      expect(result[0].average_mark).to eq 3
+      expect(result[1].average_mark).to eq 3
+      expect(result[2].average_mark).to eq 3
+      expect(result[3].average_mark).to eq 4
+      expect(result[4].average_mark).to eq 5
     end
 
     it 'correctly bounds the result when the number of elements requested is higher than the count' do
@@ -93,13 +92,13 @@ RSpec.describe GroupLessonSummary, type: :model do
       result = summary.around 8
 
       expect(result.size).to eq 7
-      expect(result[0][1]).to eq 1.5
-      expect(result[1][1]).to eq 2.5
-      expect(result[2][1]).to eq 3
-      expect(result[3][1]).to eq 3
-      expect(result[4][1]).to eq 3
-      expect(result[5][1]).to eq 4
-      expect(result[6][1]).to eq 5
+      expect(result[0].average_mark).to eq 1.5
+      expect(result[1].average_mark).to eq 2.5
+      expect(result[2].average_mark).to eq 3
+      expect(result[3].average_mark).to eq 3
+      expect(result[4].average_mark).to eq 3
+      expect(result[5].average_mark).to eq 4
+      expect(result[6].average_mark).to eq 5
     end
   end
 end
