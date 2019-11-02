@@ -21,29 +21,40 @@
       .ct-chart.ct-perfect-fourth
 
 
-.single-content-card
-  table class='mdl-data-table mdl-js-data-table resource-table'
-    thead
-      == render partial: 'shared/pagy_nav', locals: { pagy: @pagy, resource: 'students', span: 5 }
-      tr
-        th #
-        th class='mdl-data-table__cell--non-numeric' Last Name
-        th class='mdl-data-table__cell--non-numeric' First Name
-        th Graded / Skills
-        th Average Grade
-    - skill_count = @lesson.subject.skills.count
-    - @student_lesson_summaries.each_with_index do |summary, i|
-      tr class='resource-row'
-        td
-          = link_to @pagy.from + i, lesson_student_path(@lesson.id, summary.student_id)
-        td class='mdl-data-table__cell--non-numeric'
-          = link_to summary.last_name, lesson_student_path(@lesson.id, summary.student_id)
-        td class='mdl-data-table__cell--non-numeric'
-          = link_to summary.first_name, lesson_student_path(@lesson.id, summary.student_id)
-        td
-          = link_to "#{summary.grade_count} / #{skill_count}", lesson_student_path(@lesson.id, summary.student_id)
-        td
-          = link_to(if summary.absent then 'Absent' else summary.average_mark end || '', lesson_student_path(@lesson.id, summary.student_id))
+.mdl-cell.mdl-cell--8-col
+  .mdl-card.mdl-shadow--2dp.full-width
+    .mdl-card__title.primary
+      h2.mdl-card__title-text Students
+    .mdl-card__supporting-text.full-width.no-padding
+      table class='mdl-data-table mdl-js-data-table resource-table'
+        thead
+          == render partial: 'shared/pagy_nav', locals: { pagy: @pagy, resource: 'students', span: 5, options: [ \
+            { name: t(:show_deleted), href: show_deleted_url, checked: !excluding_deleted?, tooltip: excluding_deleted? ? t(:show_deleted_students_tooltip) : t(:hide_deleted_students_tooltip) } \
+        ] }
+          tr
+            th #
+            th class='mdl-data-table__cell--non-numeric' Last Name
+            th class='mdl-data-table__cell--non-numeric' First Name
+            th Graded / Skills
+            th Average Grade
+        - skill_count = @lesson.subject.skills.count
+        - @student_lesson_summaries.each_with_index do |summary, i|
+          tr class='resource-row'
+            td
+              a href=(lesson_student_path(@lesson.id, summary.student_id))
+                - if @lesson.group_id != summary.group_id
+                  span.mdl-badge id=("wrong-group-student-#{summary.student_id}") data-badge="!"
+                  .mdl-tooltip data-mdl-for=("wrong-group-student-#{summary.student_id}")
+                    = t(:student_does_not_belong_to_group)
+                =(@pagy.from + i)
+            td class='mdl-data-table__cell--non-numeric'
+              = link_to summary.last_name, lesson_student_path(@lesson.id, summary.student_id)
+            td class='mdl-data-table__cell--non-numeric'
+              = link_to summary.first_name, lesson_student_path(@lesson.id, summary.student_id)
+            td
+              = link_to "#{summary.grade_count} / #{skill_count}", lesson_student_path(@lesson.id, summary.student_id)
+            td
+              = link_to(if summary.absent then 'Absent' else summary.average_mark end || '', lesson_student_path(@lesson.id, summary.student_id))
 
 javascript:
   displayLessonGraph('.ct-chart', '#{@lesson.uid.html_safe}', #{@group_lessons_data[:group_lessons].to_json.html_safe});

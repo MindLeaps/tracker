@@ -15,6 +15,7 @@ class LessonsController < ApplicationController
     @lesson = Lesson.includes(:group, :subject).find(params[:id])
     authorize @lesson
     @pagy, @student_lesson_summaries = pagy apply_scopes(StudentLessonSummary.where(lesson_id: @lesson.id))
+    @students = @lesson.group.students
     @group_lessons_data = process_group_lesson_data(GroupLessonSummary.find_by(lesson_uid: @lesson.uid)&.around(31) || [], @lesson)
   end
 
@@ -47,11 +48,11 @@ class LessonsController < ApplicationController
 
   def get_prev_lesson_url(lesson, data)
     i = data.find_index { |e| e.lesson_uid == lesson.uid }
-    i.present? && i.positive? ? lesson_url(data[i - 1].lesson_id) : nil
+    i.present? && i.positive? ? lesson_url(data[i - 1].lesson_id, request.query_parameters) : nil
   end
 
   def get_next_lesson_url(lesson, data)
     i = data.find_index { |e| e.lesson_uid == lesson.uid }
-    i.present? && i + 1 < data.size ? lesson_url(data[i + 1].lesson_id) : nil
+    i.present? && i + 1 < data.size ? lesson_url(data[i + 1].lesson_id, request.query_parameters) : nil
   end
 end

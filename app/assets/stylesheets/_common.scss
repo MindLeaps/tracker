@@ -43,3 +43,8 @@
     fill: white;
   }
 }
+
+.mdl-badge:after {
+  color: white !important;
+  background-color: $primary-color !important;
+}
