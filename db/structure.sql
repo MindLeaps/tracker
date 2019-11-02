@@ -307,6 +307,7 @@ SELECT
     NULL::date AS lesson_date,
     NULL::integer AS group_id,
     NULL::integer AS chapter_id,
+    NULL::integer AS subject_id,
     NULL::text AS group_chapter_name,
     NULL::double precision AS average_mark,
     NULL::bigint AS grade_count;
@@ -1301,15 +1302,17 @@ CREATE OR REPLACE VIEW public.group_lesson_summaries AS
     l.date AS lesson_date,
     gr.id AS group_id,
     gr.chapter_id,
+    s.id AS subject_id,
     concat(gr.group_name, ' - ', c.chapter_name) AS group_chapter_name,
     (round(avg(g.mark), 2))::double precision AS average_mark,
     count(*) AS grade_count
-   FROM (((public.lessons l
+   FROM ((((public.lessons l
      JOIN public.groups gr ON ((l.group_id = gr.id)))
      JOIN public.grades g ON ((g.lesson_id = l.id)))
      JOIN public.chapters c ON ((gr.chapter_id = c.id)))
+     JOIN public.subjects s ON ((l.subject_id = s.id)))
   WHERE (g.deleted_at IS NULL)
-  GROUP BY l.id, gr.id, c.id
+  GROUP BY l.id, gr.id, c.id, s.id
   ORDER BY l.date;
 
 
@@ -1574,6 +1577,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190406163831'),
 ('20190615165333'),
 ('20190817044440'),
-('20191026230403');
+('20191026230403'),
+('20191102173151');
 
 
