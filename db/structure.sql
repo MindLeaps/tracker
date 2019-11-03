@@ -1387,6 +1387,7 @@ CREATE OR REPLACE VIEW public.lesson_skill_summaries AS
      JOIN public.assignments a ON ((su.id = a.subject_id)))
      JOIN public.skills sk ON ((a.skill_id = sk.id)))
      LEFT JOIN public.grades g ON (((g.lesson_uid = l.uid) AND (g.skill_id = sk.id))))
+  WHERE (g.deleted_at IS NULL)
   GROUP BY l.uid, sk.id;
 
 
@@ -1654,6 +1655,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20191026230403'),
 ('20191102173151'),
 ('20191102200044'),
-('20191102234931');
+('20191102234931'),
+('20191103021012');
 
 

@@ -38,7 +38,7 @@
               td = link_to  i + 1, skill_path(summary.skill_id)
               td.mdl-data-table__cell--non-numeric
                 = link_to summary.skill_name, skill_path(summary.skill_id)
-              td = link_to summary.average_mark, skill_path(summary.skill_id)
+              td = link_to summary.average_mark || '-', skill_path(summary.skill_id)
               td = link_to summary.grade_count, skill_path(summary.skill_id)
 
 

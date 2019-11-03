@@ -49,8 +49,7 @@ RSpec.describe GroupLessonSummary, type: :model do
 
     it 'returns the target group lesson summary and 2 before and after it' do
       lesson = Lesson.order(:date).all[3]
-      summary = GroupLessonSummary.find(lesson.uid)
-      result = summary.around 5
+      result = GroupLessonSummary.around lesson, 5
 
       expect(result.size).to eq 5
       expect(result[0].average_mark).to eq 2.5
@@ -62,8 +61,7 @@ RSpec.describe GroupLessonSummary, type: :model do
 
     it 'bounds the result to the first lesson' do
       lesson = Lesson.order(:date).all[1]
-      summary = GroupLessonSummary.find(lesson.uid)
-      result = summary.around 5
+      result = GroupLessonSummary.around lesson, 5
 
       expect(result.size).to eq 5
       expect(result[0].average_mark).to eq 1.5
@@ -75,8 +73,7 @@ RSpec.describe GroupLessonSummary, type: :model do
 
     it 'bounds the result to the last lesson' do
       lesson = Lesson.order(:date).all[6]
-      summary = GroupLessonSummary.find(lesson.uid)
-      result = summary.around 5
+      result = GroupLessonSummary.around lesson, 5
 
       expect(result.size).to eq 5
       expect(result[0].average_mark).to eq 3
@@ -88,8 +85,7 @@ RSpec.describe GroupLessonSummary, type: :model do
 
     it 'correctly bounds the result when the number of elements requested is higher than the count' do
       lesson = Lesson.order(:date).all[1]
-      summary = GroupLessonSummary.find(lesson.uid)
-      result = summary.around 8
+      result = GroupLessonSummary.around lesson, 8
 
       expect(result.size).to eq 7
       expect(result[0].average_mark).to eq 1.5

@@ -17,7 +17,7 @@ class LessonsController < ApplicationController
     @pagy, @student_lesson_summaries = pagy apply_scopes(StudentLessonSummary.where(lesson_id: @lesson.id))
     @students = @lesson.group.students
     @lesson_skill_summary = LessonSkillSummary.where(lesson_uid: @lesson.uid)
-    @group_lessons_data = process_group_lesson_data(GroupLessonSummary.find_by(lesson_uid: @lesson.uid)&.around(31) || [], @lesson)
+    @group_lessons_data = process_group_lesson_data(GroupLessonSummary.around(@lesson, 31) || [], @lesson)
   end
 
   def new
