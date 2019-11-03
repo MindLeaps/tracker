@@ -46,6 +46,7 @@ en:
   chapter_updated: Chapter "%{chapter}" updated.
   duplicate_lesson: Lesson already exists for group "%{group}" in "%{subject}" on selected date.
   duplicate_grade: "%{name} already scored %{mark} in %{skill} on %{date} in %{subject}."
+  subject: Subject
   subject_created: Subject "%{subject}" created.
   subject_updated: Subject updated.
   lesson_created: Lesson created.
@@ -92,6 +93,9 @@ en:
   grades: Grades
   grade_description: Grade Description
   mark: Mark
+  average_grade: Average Grade
+  grade_count: Grade Count
+  skill: Skill
   skill_description: Skill Description
   delete_skill: Delete Skill
   delete_skill_confirmation_text: Are you sure you want to delete this skill?

@@ -1,4 +1,6 @@
 ## Unreleased
+- Redesigned Lesson Page
+- Added nearby lesson performance visualization to the Lesson Page
 - Redesigned Skill Page
 - Skill Deletion
 - Skill Undeletion

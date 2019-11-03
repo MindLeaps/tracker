@@ -37,6 +37,20 @@ COMMENT ON EXTENSION pg_stat_statements IS 'track execution statistics of all SQ
 
 
 --
+-- Name: tablefunc; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS tablefunc WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION tablefunc; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION tablefunc IS 'functions that manipulate whole tables, including crosstab';
+
+
+--
 -- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -360,6 +374,19 @@ CREATE SEQUENCE public.groups_id_seq
 --
 
 ALTER SEQUENCE public.groups_id_seq OWNED BY public.groups.id;
+
+
+--
+-- Name: lesson_skill_summaries; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.lesson_skill_summaries AS
+SELECT
+    NULL::uuid AS lesson_uid,
+    NULL::integer AS skill_id,
+    NULL::character varying AS skill_name,
+    NULL::numeric AS average_mark,
+    NULL::bigint AS grade_count;
 
 
 --
@@ -1346,6 +1373,24 @@ CREATE OR REPLACE VIEW public.student_lesson_summaries AS
 
 
 --
+-- Name: lesson_skill_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.lesson_skill_summaries AS
+ SELECT l.uid AS lesson_uid,
+    sk.id AS skill_id,
+    sk.skill_name,
+    round(avg(g.mark), 2) AS average_mark,
+    count(g.mark) AS grade_count
+   FROM ((((public.lessons l
+     JOIN public.subjects su ON ((su.id = l.subject_id)))
+     JOIN public.assignments a ON ((su.id = a.subject_id)))
+     JOIN public.skills sk ON ((a.skill_id = sk.id)))
+     LEFT JOIN public.grades g ON (((g.lesson_uid = l.uid) AND (g.skill_id = sk.id))))
+  GROUP BY l.uid, sk.id;
+
+
+--
 -- Name: assignments assignments_skill_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1608,6 +1653,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190817044440'),
 ('20191026230403'),
 ('20191102173151'),
-('20191102200044');
+('20191102200044'),
+('20191102234931');
 
 
