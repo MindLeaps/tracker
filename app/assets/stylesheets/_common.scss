@@ -28,3 +28,23 @@
   @extend .mdl-button;
   @extend .mdl-color-text--red;
 }
+
+.flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.card-navigation {
+  [disabled] {
+    opacity: 0.2;
+  }
+  svg {
+    fill: white;
+  }
+}
+
+.mdl-badge:after {
+  color: white !important;
+  background-color: $primary-color !important;
+}

@@ -37,6 +37,20 @@ COMMENT ON EXTENSION pg_stat_statements IS 'track execution statistics of all SQ
 
 
 --
+-- Name: tablefunc; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS tablefunc WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION tablefunc; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION tablefunc IS 'functions that manipulate whole tables, including crosstab';
+
+
+--
 -- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -307,6 +321,7 @@ SELECT
     NULL::date AS lesson_date,
     NULL::integer AS group_id,
     NULL::integer AS chapter_id,
+    NULL::integer AS subject_id,
     NULL::text AS group_chapter_name,
     NULL::double precision AS average_mark,
     NULL::bigint AS grade_count;
@@ -359,6 +374,19 @@ CREATE SEQUENCE public.groups_id_seq
 --
 
 ALTER SEQUENCE public.groups_id_seq OWNED BY public.groups.id;
+
+
+--
+-- Name: lesson_skill_summaries; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.lesson_skill_summaries AS
+SELECT
+    NULL::uuid AS lesson_uid,
+    NULL::integer AS skill_id,
+    NULL::character varying AS skill_name,
+    NULL::numeric AS average_mark,
+    NULL::bigint AS grade_count;
 
 
 --
@@ -578,6 +606,7 @@ SELECT
 CREATE VIEW public.student_lesson_summaries AS
 SELECT
     NULL::integer AS student_id,
+    NULL::integer AS group_id,
     NULL::character varying AS first_name,
     NULL::character varying AS last_name,
     NULL::timestamp without time zone AS deleted_at,
@@ -1267,31 +1296,6 @@ CREATE OR REPLACE VIEW public.student_lesson_details AS
 
 
 --
--- Name: student_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.student_lesson_summaries AS
- SELECT s.id AS student_id,
-    s.first_name,
-    s.last_name,
-    s.deleted_at,
-    l.id AS lesson_id,
-    round(avg(grades.mark), 2) AS average_mark,
-    count(grades.mark) AS grade_count,
-        CASE
-            WHEN (a.id IS NULL) THEN false
-            ELSE true
-        END AS absent
-   FROM ((((public.students s
-     JOIN public.groups g ON ((g.id = s.group_id)))
-     JOIN public.lessons l ON ((g.id = l.group_id)))
-     LEFT JOIN public.grades ON (((grades.student_id = s.id) AND (grades.lesson_id = l.id))))
-     LEFT JOIN public.absences a ON (((a.student_id = s.id) AND (a.lesson_id = l.id))))
-  GROUP BY s.id, l.id, a.id
-  ORDER BY s.last_name;
-
-
---
 -- Name: group_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
@@ -1301,16 +1305,89 @@ CREATE OR REPLACE VIEW public.group_lesson_summaries AS
     l.date AS lesson_date,
     gr.id AS group_id,
     gr.chapter_id,
+    s.id AS subject_id,
     concat(gr.group_name, ' - ', c.chapter_name) AS group_chapter_name,
     (round(avg(g.mark), 2))::double precision AS average_mark,
     count(*) AS grade_count
-   FROM (((public.lessons l
+   FROM ((((public.lessons l
      JOIN public.groups gr ON ((l.group_id = gr.id)))
      JOIN public.grades g ON ((g.lesson_id = l.id)))
      JOIN public.chapters c ON ((gr.chapter_id = c.id)))
+     JOIN public.subjects s ON ((l.subject_id = s.id)))
   WHERE (g.deleted_at IS NULL)
-  GROUP BY l.id, gr.id, c.id
+  GROUP BY l.id, gr.id, c.id, s.id
   ORDER BY l.date;
+
+
+--
+-- Name: student_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.student_lesson_summaries AS
+ SELECT united.student_id,
+    united.group_id,
+    united.first_name,
+    united.last_name,
+    united.deleted_at,
+    united.lesson_id,
+    united.average_mark,
+    united.grade_count,
+    united.absent
+   FROM ( SELECT s.id AS student_id,
+            s.group_id,
+            s.first_name,
+            s.last_name,
+            s.deleted_at,
+            l.id AS lesson_id,
+            round(avg(grades.mark), 2) AS average_mark,
+            count(grades.mark) AS grade_count,
+                CASE
+                    WHEN (a.id IS NULL) THEN false
+                    ELSE true
+                END AS absent
+           FROM ((((public.students s
+             JOIN public.groups g ON ((g.id = s.group_id)))
+             JOIN public.lessons l ON ((g.id = l.group_id)))
+             LEFT JOIN public.grades ON (((grades.student_id = s.id) AND (grades.lesson_id = l.id))))
+             LEFT JOIN public.absences a ON (((a.student_id = s.id) AND (a.lesson_id = l.id))))
+          GROUP BY s.id, l.id, a.id
+        UNION
+         SELECT s.id AS student_id,
+            s.group_id,
+            s.first_name,
+            s.last_name,
+            s.deleted_at,
+            l.id AS lesson_id,
+            round(avg(grades.mark), 2) AS average_mark,
+            count(grades.mark) AS grade_count,
+                CASE
+                    WHEN (a.id IS NULL) THEN false
+                    ELSE true
+                END AS absent
+           FROM ((((public.lessons l
+             JOIN public.groups g ON ((g.id = l.group_id)))
+             JOIN public.grades ON ((grades.lesson_id = l.id)))
+             JOIN public.students s ON ((grades.student_id = s.id)))
+             LEFT JOIN public.absences a ON (((a.student_id = s.id) AND (a.lesson_id = l.id))))
+          GROUP BY s.id, l.id, a.id) united;
+
+
+--
+-- Name: lesson_skill_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.lesson_skill_summaries AS
+ SELECT l.uid AS lesson_uid,
+    sk.id AS skill_id,
+    sk.skill_name,
+    round(avg(g.mark), 2) AS average_mark,
+    count(g.mark) AS grade_count
+   FROM ((((public.lessons l
+     JOIN public.subjects su ON ((su.id = l.subject_id)))
+     JOIN public.assignments a ON ((su.id = a.subject_id)))
+     JOIN public.skills sk ON ((a.skill_id = sk.id)))
+     LEFT JOIN public.grades g ON (((g.lesson_uid = l.uid) AND (g.skill_id = sk.id))))
+  GROUP BY l.uid, sk.id;
 
 
 --
@@ -1574,6 +1651,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20190406163831'),
 ('20190615165333'),
 ('20190817044440'),
-('20191026230403');
+('20191026230403'),
+('20191102173151'),
+('20191102200044'),
+('20191102234931');
 
 

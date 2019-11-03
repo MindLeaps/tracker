@@ -46,6 +46,7 @@ en:
   chapter_updated: Chapter "%{chapter}" updated.
   duplicate_lesson: Lesson already exists for group "%{group}" in "%{subject}" on selected date.
   duplicate_grade: "%{name} already scored %{mark} in %{skill} on %{date} in %{subject}."
+  subject: Subject
   subject_created: Subject "%{subject}" created.
   subject_updated: Subject updated.
   lesson_created: Lesson created.
@@ -77,6 +78,8 @@ en:
   last_page: Last Page
   prev_page: Previous Page
   next_page: Next Page
+  prev_lesson: Previous Lesson
+  next_lesson: Next Lesson
   name_unknown: Unknown
   create_api_token: Create API Token
   show_deleted: Show Deleted
@@ -90,6 +93,9 @@ en:
   grades: Grades
   grade_description: Grade Description
   mark: Mark
+  average_grade: Average Grade
+  grade_count: Grade Count
+  skill: Skill
   skill_description: Skill Description
   delete_skill: Delete Skill
   delete_skill_confirmation_text: Are you sure you want to delete this skill?
@@ -97,6 +103,7 @@ en:
   skill_restored: Skill "%{skill_name}" restored.
   skill_not_deleted_because_subject: Skill not deleted because it belongs to a subject. Remove it from the subject before deleting.
   skill_not_deleted_because_grades: Skill not deleted because it has grades associated with it. You cannot delete a graded skill.
+  student_does_not_belong_to_group: Student does not belong to this group anymore.
 
   title_chart_2: Quantity of Data Collected By Month
   title_chart_4: Histogram of student performance values
