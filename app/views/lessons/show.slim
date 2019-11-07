@@ -38,6 +38,10 @@
                 = link_to summary.skill_name, skill_path(summary.skill_id)
               td = link_to summary.average_mark || '-', skill_path(summary.skill_id)
               td = link_to summary.grade_count, skill_path(summary.skill_id)
+          tr.resource-row
+            td.mdl-data-table__cell--non-numeric = t(:total)
+            td = @lesson_skill_summary.average(:average_mark).try(:round, 2) || '-'
+            td = @lesson_skill_summary.sum(:grade_count).to_i
 
 .mdl-cell.mdl-cell--7-col
   .mdl-card.mdl-shadow--2dp.full-width

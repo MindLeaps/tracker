@@ -1,6 +1,7 @@
 ## Unreleased
 - Adjusted layout for smaller screens in single lesson view
 - Fixed showing Student Lesson for a lesson when student is no longer in the group lesson was in
+- Added total average mark and grade count in single lesson view 
 
 ## 0.21.0 - Integrated Analytics
 - Redesigned Lesson Page
