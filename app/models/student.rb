@@ -2,7 +2,7 @@
 
 class Student < ApplicationRecord
   include PgSearch::Model
-  pg_search_scope :search, against: [:first_name, :last_name], using: { tsearch: { prefix: true } }
+  pg_search_scope :search, against: [:first_name, :last_name, :mlid], using: { tsearch: { prefix: true } }
 
   validates :mlid, :first_name, :last_name, :dob, :gender, :group, presence: true
   validates :mlid, uniqueness: true

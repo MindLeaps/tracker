@@ -116,7 +116,7 @@ RSpec.describe Student, type: :model do
 
     describe 'search' do
       before :each do
-        @zombarato = create :student, first_name: 'Zombarato', last_name: 'Agustato'
+        @zombarato = create :student, first_name: 'Zombarato', last_name: 'Agustato', mlid: 'ot32to'
         @zombaruto = create :student, first_name: 'Zombaruto', last_name: 'Agurat'
         @zomzovato = create :student, first_name: 'Zomzovato', last_name: 'Domovat'
       end
@@ -129,6 +129,12 @@ RSpec.describe Student, type: :model do
 
       it 'finds the student by the last name match' do
         result = Student.search('Agustato')
+        expect(result.length).to eq 1
+        expect(result).to include @zombarato
+      end
+
+      it 'finds the student by the MLID match' do
+        result = Student.search('ot3')
         expect(result.length).to eq 1
         expect(result).to include @zombarato
       end

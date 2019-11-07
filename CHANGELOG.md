@@ -3,7 +3,8 @@
 - Fixed showing Student Lesson for a lesson when student is no longer in the group lesson was in
 - Added total average mark and grade count in single lesson view
 - Ignoring deleted grades in Students list in single lesson view
-- Showing all skills in single lesson view, even if their grades were deleted  
+- Showing all skills in single lesson view, even if their grades were deleted
+- Made Students searchable by MLID  
 
 ## 0.21.0 - Integrated Analytics
 - Redesigned Lesson Page
