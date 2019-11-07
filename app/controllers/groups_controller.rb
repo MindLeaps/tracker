@@ -14,13 +14,13 @@ class GroupsController < ApplicationController
 
   def new
     authorize Group
-    @group = Group.new
+    @group = populate_new_group
   end
 
   def create
     @group = Group.new group_params
     authorize @group
-    return link_notice_and_redirect t(:group_created, group: @group.group_name), new_group_path, t(:create_another), group_path(@group) if @group.save
+    return link_notice_and_redirect t(:group_created, group: @group.group_name), new_group_path(chapter_id: @group.chapter_id), t(:create_another), group_path(@group) if @group.save
 
     render :new
   end
@@ -62,5 +62,15 @@ class GroupsController < ApplicationController
 
   def group_params
     params.require(:group).permit :group_name, :chapter_id
+  end
+
+  def populate_new_group
+    group = Group.new
+    group.chapter = Chapter.find(new_params[:chapter_id]) if new_params[:chapter_id]
+    group
+  end
+
+  def new_params
+    params.permit :chapter_id
   end
 end

@@ -8,6 +8,7 @@
 - Added "Create another" prompt after creating a new group
 - Added the button to Add a new student directly to the current group
 - Made "Create another" student prompt pre-fill the current group
+- Made "Create another" group prompt pre-fill the current chapter
 
 ## 0.21.0 - Integrated Analytics
 - Redesigned Lesson Page
