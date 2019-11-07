@@ -170,6 +170,18 @@ RSpec.describe StudentsController, type: :controller do
       end
     end
 
+    describe '#new' do
+      before :each do
+        @group = create :group
+        get :new, params: { group_id: @group.id }
+      end
+
+      it 'prepopulates the student with the correct group' do
+        expect(assigns(:student).group.id).to eq @group.id
+        expect(assigns(:student).group.group_name).to eq @group.group_name
+      end
+    end
+
     describe '#performance' do
       before :each do
         @student = create :graded_student, grades: {

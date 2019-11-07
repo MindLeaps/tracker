@@ -27,7 +27,7 @@ RSpec.describe 'User interacts with Groups' do
 
   describe 'Group creation' do
     before :each do
-      create :chapter, chapter_name: 'Chapter One'
+      @chapter = create :chapter, chapter_name: 'Chapter One'
     end
 
     it 'creates a new group', js: true do
@@ -39,6 +39,7 @@ RSpec.describe 'User interacts with Groups' do
 
       expect(page).to have_content 'Feature Test Group'
       expect(page).to have_content 'Group "Feature Test Group" created.'
+      expect(page).to have_link 'Create another', href: new_group_path(chapter_id: @chapter.id)
     end
   end
 

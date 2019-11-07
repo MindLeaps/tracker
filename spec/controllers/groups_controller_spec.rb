@@ -20,6 +20,14 @@ RSpec.describe GroupsController, type: :controller do
     it 'assigns the new empty group' do
       expect(assigns(:group)).to be_kind_of(Group)
     end
+
+    it 'prepopulates the group with the correct chapter' do
+      chapter = create :chapter
+      get :new, params: { chapter_id: chapter.id }
+
+      expect(assigns(:group).chapter.id).to eq chapter.id
+      expect(assigns(:group).chapter.chapter_name).to eq chapter.chapter_name
+    end
   end
 
   describe '#create' do
