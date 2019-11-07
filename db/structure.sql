@@ -1320,25 +1320,6 @@ CREATE OR REPLACE VIEW public.group_lesson_summaries AS
 
 
 --
--- Name: lesson_skill_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.lesson_skill_summaries AS
- SELECT l.uid AS lesson_uid,
-    sk.id AS skill_id,
-    sk.skill_name,
-    round(avg(g.mark), 2) AS average_mark,
-    count(g.mark) AS grade_count
-   FROM ((((public.lessons l
-     JOIN public.subjects su ON ((su.id = l.subject_id)))
-     JOIN public.assignments a ON ((su.id = a.subject_id)))
-     JOIN public.skills sk ON ((a.skill_id = sk.id)))
-     LEFT JOIN public.grades g ON (((g.lesson_uid = l.uid) AND (g.skill_id = sk.id))))
-  WHERE (g.deleted_at IS NULL)
-  GROUP BY l.uid, sk.id;
-
-
---
 -- Name: student_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
@@ -1389,6 +1370,24 @@ CREATE OR REPLACE VIEW public.student_lesson_summaries AS
              JOIN public.students s ON ((grades.student_id = s.id)))
              LEFT JOIN public.absences a ON (((a.student_id = s.id) AND (a.lesson_id = l.id))))
           GROUP BY s.id, l.id, a.id) united;
+
+
+--
+-- Name: lesson_skill_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.lesson_skill_summaries AS
+ SELECT l.uid AS lesson_uid,
+    sk.id AS skill_id,
+    sk.skill_name,
+    round(avg(g.mark), 2) AS average_mark,
+    count(g.mark) AS grade_count
+   FROM ((((public.lessons l
+     JOIN public.subjects su ON ((su.id = l.subject_id)))
+     JOIN public.assignments a ON ((su.id = a.subject_id)))
+     JOIN public.skills sk ON ((a.skill_id = sk.id)))
+     LEFT JOIN public.grades g ON (((g.lesson_uid = l.uid) AND (g.skill_id = sk.id) AND (g.deleted_at IS NULL))))
+  GROUP BY l.uid, sk.id;
 
 
 --
@@ -1657,6 +1656,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20191102200044'),
 ('20191102234931'),
 ('20191103021012'),
-('20191107004248');
+('20191107004248'),
+('20191107010120');
 
 
