@@ -15,6 +15,7 @@
 - Integrated Analytics
 - Added Lesson date and grade count to Group Analytics graphs tooltips
 - Added clicking on data points in Group Analytics to go to individual lessons
+- Added "Create another" prompt after creating a new group
 
 ## 0.20.0 - Sidebar image and Mobile app link
 - Limit user image size to 50px in the sidebar

@@ -20,7 +20,7 @@ class GroupsController < ApplicationController
   def create
     @group = Group.new group_params
     authorize @group
-    return notice_and_redirect t(:group_created, group: @group.group_name), group_path(@group) if @group.save
+    return link_notice_and_redirect t(:group_created, group: @group.group_name), new_group_path, t(:create_another), group_path(@group) if @group.save
 
     render :new
   end
