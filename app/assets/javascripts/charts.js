@@ -25,6 +25,9 @@ function displayLessonGraph(containerId, lessonUid, data) {
         return new Date(value * 1000).toLocaleDateString('en-US');
       }
     },
+    axisY: {
+      onlyInteger: true
+    },
     low: 1,
     high: 7,
     plugins: [

@@ -93,6 +93,7 @@ en:
   grades: Grades
   grade_description: Grade Description
   mark: Mark
+  average: Average
   average_grade: Average Grade
   grade_count: Grade Count
   skill: Skill
@@ -104,6 +105,7 @@ en:
   skill_not_deleted_because_subject: Skill not deleted because it belongs to a subject. Remove it from the subject before deleting.
   skill_not_deleted_because_grades: Skill not deleted because it has grades associated with it. You cannot delete a graded skill.
   student_does_not_belong_to_group: Student does not belong to this group anymore.
+  total: Total
 
   title_chart_2: Quantity of Data Collected By Month
   title_chart_4: Histogram of student performance values

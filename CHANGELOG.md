@@ -1,3 +1,6 @@
+## Unreleased
+- Adjusted layout for smaller screens in single lesson view
+
 ## 0.21.0 - Integrated Analytics
 - Redesigned Lesson Page
 - Added nearby lesson performance visualization to the Lesson Page

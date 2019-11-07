@@ -2,7 +2,7 @@
 - content_for :header_content do
   = render layout: '/shared/header_content', locals: { back_button_url: lessons_path, back_tooltip: 'Back to Lessons', title: "#{ @lesson.group.group_chapter_name } - #{ @lesson.subject.subject_name } on #{ @lesson.date }" } do
 
-.mdl-cell.mdl-cell--4-col
+.mdl-cell.mdl-cell--5-col
   .mdl-card.mdl-shadow--2dp.full-width
     .mdl-card__title.primary
       .flex
@@ -18,7 +18,7 @@
             .mdl-tooltip data-mdl-for='next-lesson-button'
               = t :next_lesson
     .mdl-card__supporting-text
-      .ct-chart.ct-perfect-fourth
+      .ct-chart.ct-octave
   br
   .mdl-card.mdl-shadow--2dp.full-width
     .mdl-card__title.primary
@@ -29,21 +29,17 @@
         table class='mdl-data-table mdl-js-data-table resource-table'
           thead
             tr
-              th #
               th.mdl-data-table__cell--non-numeric = t(:skill)
-              th = t(:average_grade)
-              th = t(:grade_count)
+              th = t(:average)
+              th = t(:grades)
           - @lesson_skill_summary.each_with_index do |summary, i|
             tr.resource-row
-              td = link_to  i + 1, skill_path(summary.skill_id)
               td.mdl-data-table__cell--non-numeric
                 = link_to summary.skill_name, skill_path(summary.skill_id)
               td = link_to summary.average_mark || '-', skill_path(summary.skill_id)
               td = link_to summary.grade_count, skill_path(summary.skill_id)
 
-
-
-.mdl-cell.mdl-cell--8-col
+.mdl-cell.mdl-cell--7-col
   .mdl-card.mdl-shadow--2dp.full-width
     .mdl-card__title.primary
       h2.mdl-card__title-text Students
@@ -58,7 +54,7 @@
             th class='mdl-data-table__cell--non-numeric' Last Name
             th class='mdl-data-table__cell--non-numeric' First Name
             th Graded / Skills
-            th = t(:average_grade)
+            th = t(:average)
         - skill_count = @lesson.subject.skills.count
         - @student_lesson_summaries.each_with_index do |summary, i|
           tr class='resource-row'
