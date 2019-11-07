@@ -39,6 +39,7 @@ RSpec.describe 'User interacts with Groups' do
 
       expect(page).to have_content 'Feature Test Group'
       expect(page).to have_content 'Group "Feature Test Group" created.'
+      expect(page).to have_link 'Create another', href: new_group_path
     end
   end
 

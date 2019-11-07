@@ -14,13 +14,13 @@ class StudentsController < ApplicationController
 
   def new
     authorize Student
-    @student = Student.new
+    @student = populate_new_student
   end
 
   def create
     @student = Student.new student_params
     authorize @student
-    return link_notice_and_redirect t(:student_created, name: @student.proper_name), new_student_path, I18n.t(:create_another), details_student_path(@student) if @student.save
+    return link_notice_and_redirect t(:student_created, name: @student.proper_name), new_student_path(group_id: @student.group_id), I18n.t(:create_another), details_student_path(@student) if @student.save
 
     render :new
   end
@@ -78,5 +78,15 @@ class StudentsController < ApplicationController
 
   def set_back_url_flash
     flash[:back_from_student] = flash[:back_from_student] || request.referer
+  end
+
+  def populate_new_student
+    student = Student.new
+    student.group = Group.find(new_params[:group_id]) if new_params[:group_id]
+    student
+  end
+
+  def new_params
+    params.permit :group_id
   end
 end

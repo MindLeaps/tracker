@@ -1,5 +1,6 @@
 - content_for :header_content do
-  = render partial: '/shared/header_content', locals: { back_button_url: groups_path, back_tooltip: 'Back to Group', title: @group.group_chapter_name }
+  = render layout: '/shared/header_content', locals: { back_button_url: groups_path, back_tooltip: 'Back to Group', title: @group.group_chapter_name } do
+    = render partial: '/shared/main_header_button', locals: {href: new_student_path(group_id: @group.id), title: t(:add_student_to_group)}
 
 - content_for :header_actions do
   - if policy(@group).edit?

@@ -4,7 +4,10 @@
 - Added total average mark and grade count in single lesson view
 - Ignoring deleted grades in Students list in single lesson view
 - Showing all skills in single lesson view, even if their grades were deleted
-- Made Students searchable by MLID  
+- Made Students searchable by MLID
+- Added "Create another" prompt after creating a new group
+- Added the button to Add a new student directly to the current group
+- Made "Create another" student prompt pre-fill the current group
 
 ## 0.21.0 - Integrated Analytics
 - Redesigned Lesson Page
@@ -15,7 +18,6 @@
 - Integrated Analytics
 - Added Lesson date and grade count to Group Analytics graphs tooltips
 - Added clicking on data points in Group Analytics to go to individual lessons
-- Added "Create another" prompt after creating a new group
 
 ## 0.20.0 - Sidebar image and Mobile app link
 - Limit user image size to 50px in the sidebar
