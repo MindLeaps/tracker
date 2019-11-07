@@ -5,7 +5,7 @@
 .mdl-cell.mdl-cell--4-col
   .mdl-card.mdl-shadow--2dp.full-width.student-lesson-card
     .mdl-card__supporting-text
-      = simple_form_for @student_lesson, url: {action: 'update'} do |f|
+      = simple_form_for @student_lesson, url: { action: :update }, method: :put do |f|
         = render partial: 'shared/errors', locals: {subject: @student_lesson.lesson}
         = f.simple_fields_for :grades, @student_lesson.formatted_grades_for_grading  do |grade|
           br

@@ -4,7 +4,7 @@ class StudentLessonsController < ApplicationController
   def show
     lesson = lesson_from_param
     authorize lesson, :show?
-    @student_lesson = StudentLesson.find_by student_id: params.require(:id), lesson: lesson
+    @student_lesson = StudentLesson.new student_id: params.require(:id), lesson: lesson
     @absence = lesson.absences.map(&:student_id).include? params.require(:id)
   end
 
