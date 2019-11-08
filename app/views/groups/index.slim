@@ -1,3 +1,5 @@
+- content_for :title, t(:groups).capitalize
+
 = content_for :header_content do
   = render layout: '/shared/header_content', locals: { title: t(:groups).capitalize } do
     = render partial: '/shared/main_header_button', locals: {href: new_group_path, title: t(:add_group)}

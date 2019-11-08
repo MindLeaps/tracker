@@ -1,3 +1,5 @@
+-content_for :title, t(:students).capitalize
+
 - content_for :header_content do
   = render layout: '/shared/header_content', locals: { title: t(:students).capitalize } do
     = render partial: '/shared/main_header_button', locals: {href: new_student_path, title: t(:add_student)}

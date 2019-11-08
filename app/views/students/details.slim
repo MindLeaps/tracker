@@ -1,3 +1,5 @@
+-content_for :title, "#{t(:student_details)} - #{@student.proper_name}"
+
 - content_for :header_content do
   = render layout: '/shared/header_content', locals: { back_button_url: flash[:back_from_student] || students_path, back_tooltip: 'Back to Students', title: "#{@student.proper_name} - Details" } do
 

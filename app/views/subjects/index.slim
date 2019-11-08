@@ -1,3 +1,5 @@
+- content_for :title, t(:subjects)
+
 - content_for :header_content do
   = render layout: '/shared/header_content', locals: {title: 'Subjects'} do
     = render partial: '/shared/main_header_button', locals: {href: new_subject_path, title: 'Add Subject'}

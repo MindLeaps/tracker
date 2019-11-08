@@ -1,3 +1,5 @@
+-content_for :title, "#{t(:edit_student)} - #{@student.proper_name}"
+
 - content_for :header_content do
   = render partial: '/shared/header_content', locals: { back_button_url: student_path(@student), back_tooltip: "Back to #{@student.proper_name}", title: "Edit #{@student.proper_name}" }
 

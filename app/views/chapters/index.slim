@@ -1,3 +1,5 @@
+- content_for :title, "#{t(:chapters).capitalize}"
+
 - content_for :header_content do
   = render layout: '/shared/header_content', locals: { title: 'Chapters' } do
     = render partial: '/shared/main_header_button', locals: {href: new_chapter_path, title: 'Add Chapter'}

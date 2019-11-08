@@ -1,3 +1,5 @@
+- content_for :title, "#{t(:skill)} - #{@skill.skill_name}"
+
 - content_for :header_content do
   = render partial: '/shared/header_content', locals: {back_button_url: skills_path, back_tooltip: 'Back to Skills', title: "#{@skill.skill_name} skill in #{@skill.organization.organization_name}"}
 

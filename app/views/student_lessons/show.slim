@@ -1,3 +1,5 @@
+- content_for :title, t(:lesson_for_student, { date: @student_lesson.lesson.date, name: @student_lesson.student.proper_name })
+
 - content_for :header_content do
   = render layout: '/shared/header_content', locals: { back_button_url: lesson_path(@student_lesson.lesson), back_tooltip: 'Back to Lesson', title: "Grades for #{@student_lesson.student.proper_name}" } do
 

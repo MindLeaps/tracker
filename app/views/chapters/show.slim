@@ -1,3 +1,5 @@
+- content_for :title, "#{t(:chapter).capitalize} - #{@chapter.chapter_name}"
+
 - content_for :header_content do
   = render partial: '/shared/header_content', locals: {back_button_url: chapters_path, back_tooltip: 'Back to Chapters', title: @chapter.chapter_name}
 

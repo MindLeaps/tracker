@@ -1,6 +1,7 @@
 ## Unreleased
 - Made snackbar more consistent by removing the in-out animation
 - Added autofocus to first field of most forms (student, group, chapter, ...)
+- Added page titles
 
 ## 0.21.1 - Student & Group Creation Improvements
 - Adjusted layout for smaller screens in single lesson view

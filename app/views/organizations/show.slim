@@ -1,3 +1,5 @@
+- content_for :title, "#{t(:organization)} - #{@organization.organization_name}"
+
 - content_for :header_content do
   = render partial: '/shared/header_content', locals: { back_button_url: organizations_path, back_tooltip: 'Back to Organizations', title: @organization.organization_name }
 

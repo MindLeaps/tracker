@@ -1,3 +1,5 @@
+- content_for :title, t(:lessons)
+
 = content_for :header_content do
   = render layout: '/shared/header_content', locals: {title: 'Lessons'} do
     = render partial: '/shared/main_header_button', locals: {href: new_lesson_path, title: 'Add Lesson'}
