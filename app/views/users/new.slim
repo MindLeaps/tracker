@@ -4,5 +4,5 @@
 .content-card--most.center
   = simple_form_for @user, url: {action: 'create'} do |f|
     = render partial: 'shared/errors', locals: {subject: @user}
-    = f.input :email
+    = f.input :email, input_html: { autofocus: true }
     = f.button :submit, class: 'mdl-button--raised mdl-button--accent mdl-js-ripple-effect'
