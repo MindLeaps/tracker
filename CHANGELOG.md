@@ -1,4 +1,4 @@
-## Unreleased
+## 0.21.2 - Page Titles
 - Made snackbar more consistent by removing the in-out animation
 - Added autofocus to first field of most forms (student, group, chapter, ...)
 - Added page titles
