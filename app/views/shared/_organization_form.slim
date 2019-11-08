@@ -1,4 +1,4 @@
 = simple_form_for organization, url: {action: action} do |f|
   = render partial: 'shared/errors', locals: {subject: organization}
-  = f.input :organization_name
+  = f.input :organization_name, input_html: { autofocus: true }
   = f.button :submit, class: 'mdl-button--raised mdl-button--accent mdl-js-ripple-effect'

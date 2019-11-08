@@ -1,6 +1,6 @@
 = simple_form_for skill, url: {action: 'create'} do |f|
   = render partial: 'shared/errors', locals: {subject: skill}
-  = f.input :skill_name
+  = f.input :skill_name, input_html: { autofocus: true }
   = f.association :organization, label_method: :organization_name, include_blank: false
   br
   = f.input :skill_description

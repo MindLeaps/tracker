@@ -1,6 +1,6 @@
 = simple_form_for student, url: { action: action }, html: { multipart: true } do |f|
   = render partial: 'shared/errors', locals: {subject: student}
-  = f.input :mlid, label: 'MLID'
+  = f.input :mlid, label: 'MLID', input_html: { autofocus: true }
   = f.input :first_name
   = f.input :last_name
   = f.input :gender, as: :radio_buttons, item_wrapper_tag: 'label', item_wrapper_class: 'mdl-radio mdl-js-radio mdl-js-ripple-effect', checked: student.gender || 'M'
