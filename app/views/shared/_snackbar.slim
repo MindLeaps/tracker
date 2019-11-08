@@ -1,12 +1,11 @@
 - if notice or link_notice or undo_notice or alert
-  .snackbar-wrapper
-    .snackbar
-      - if notice
-        = notice
-      - if link_notice
-        = link_notice.try(:html_safe)
-      - if undo_notice
-        = undo_notice['text']
-        = button_to 'Undo', undo_notice['path'], class: 'snackbar-action-button mdl-js-button'
-      - if alert
-        = alert
+  .snackbar
+    - if notice
+      = notice
+    - if link_notice
+      = link_notice.try(:html_safe)
+    - if undo_notice
+      = undo_notice['text']
+      = button_to 'Undo', undo_notice['path'], class: 'snackbar-action-button mdl-js-button'
+    - if alert
+      = alert
