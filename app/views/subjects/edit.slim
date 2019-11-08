@@ -1,3 +1,5 @@
+- content_for :title, "#{t(:edit_subject)} - #{@subject.subject_name}"
+
 - content_for :header_content do
   = render partial: '/shared/header_content', locals: { back_button_url: subjects_path, back_tooltip: 'Back to Users', title: @subject.subject_name }
 

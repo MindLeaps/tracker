@@ -1,3 +1,5 @@
+- content_for :title, t(:skills)
+
 - content_for :header_content do
   = render layout: '/shared/header_content', locals: {title: 'Skills'} do
     = render partial: '/shared/main_header_button', locals: {href: new_skill_path, title: 'Add Skill'}

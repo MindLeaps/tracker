@@ -1,3 +1,5 @@
+-content_for :title, t(:new_student)
+
 - content_for :header_content do
   = render partial: '/shared/header_content', locals: { back_button_url: students_path, back_tooltip: 'Back to Students', title: 'New Student' }
 

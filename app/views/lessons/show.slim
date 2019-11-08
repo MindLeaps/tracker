@@ -1,3 +1,5 @@
+- content_for :title, "#{t(:lesson)} - #{@lesson.date} - #{@lesson.group.group_chapter_name}"
+
 = javascript_include_tag 'charts'
 - content_for :header_content do
   = render layout: '/shared/header_content', locals: { back_button_url: lessons_path, back_tooltip: 'Back to Lessons', title: "#{ @lesson.group.group_chapter_name } - #{ @lesson.subject.subject_name } on #{ @lesson.date }" } do

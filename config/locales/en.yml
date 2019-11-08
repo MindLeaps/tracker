@@ -26,7 +26,20 @@ en:
         create: Add User
 
   students: students
+  student_details: Student Details
+  new_student: New Student
   groups: groups
+  new_group: New Group
+  chapter: Chapter
+  new_chapter: New Chapter
+  chapters: Chapters
+  edit_chapter: Edit Chapter
+  organizations: Organizations
+  new_organization: New Organization
+  organization: Organization
+  users: Users
+  new_user: New User
+  user: User
   add_student: Add Student
   add_student_to_group: Add Student to Group
   add_group: Add Group
@@ -49,7 +62,10 @@ en:
   chapter_updated: Chapter "%{chapter}" updated.
   duplicate_lesson: Lesson already exists for group "%{group}" in "%{subject}" on selected date.
   duplicate_grade: "%{name} already scored %{mark} in %{skill} on %{date} in %{subject}."
+  new_subject: New Subject
+  subjects: Subjects
   subject: Subject
+  edit_subject: Edit Subject
   subject_created: Subject "%{subject}" created.
   subject_updated: Subject updated.
   lesson_created: Lesson created.
@@ -99,7 +115,12 @@ en:
   average: Average
   average_grade: Average Grade
   grade_count: Grade Count
+  lesson: Lesson
+  lessons: Lessons
+  new_lesson: New Lesson
   skill: Skill
+  skills: Skills
+  new_skill: New Skill
   skill_description: Skill Description
   delete_skill: Delete Skill
   delete_skill_confirmation_text: Are you sure you want to delete this skill?
@@ -108,7 +129,11 @@ en:
   skill_not_deleted_because_subject: Skill not deleted because it belongs to a subject. Remove it from the subject before deleting.
   skill_not_deleted_because_grades: Skill not deleted because it has grades associated with it. You cannot delete a graded skill.
   student_does_not_belong_to_group: Student does not belong to this group anymore.
+  lesson_for_student: Lesson %{date} - Student %{name}
   total: Total
+  general_analytics: General Analytics
+  group_analytics: Group Analytics
+  subject_analytics: Subject Analytics
 
   title_chart_2: Quantity of Data Collected By Month
   title_chart_4: Histogram of student performance values

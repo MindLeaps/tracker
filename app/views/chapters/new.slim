@@ -1,3 +1,5 @@
+- content_for :title, t(:new_chapter)
+
 - content_for :header_content do
   = render partial: '/shared/header_content', locals: { back_button_url: chapters_path, back_tooltip: 'Back to Chapters', title: 'New Chapter' }
 

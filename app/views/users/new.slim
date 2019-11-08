@@ -1,5 +1,7 @@
+- content_for :title, t(:new_user)
+
 - content_for :header_content do
-  = render partial: '/shared/header_content', locals: {back_button_url: users_path, back_tooltip: 'Back to Users', title: 'New User'}
+  = render partial: '/shared/header_content', locals: {back_button_url: users_path, back_tooltip: 'Back to Users', title: t(:new_user)}
 
 .content-card--most.center
   = simple_form_for @user, url: {action: 'create'} do |f|

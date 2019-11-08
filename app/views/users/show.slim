@@ -1,3 +1,5 @@
+- content_for :title, "#{t(:user)} - #{@user.email}"
+
 - content_for :header_content do
   = render partial: '/shared/header_content', locals: { back_button_url: users_path, back_tooltip: 'Back to Users', title: user_name(@user) }
 
