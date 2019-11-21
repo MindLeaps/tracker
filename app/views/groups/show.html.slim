@@ -7,16 +7,16 @@
 - content_for :header_actions do
   - if policy(@group).edit?
     a href=edit_group_path(@group) id='edit-button' class='mdl-button mdl-js-button mdl-button--icon'
-      = inline_svg 'edit.svg'
+      = inline_svg_tag 'edit.svg'
     .mdl-tooltip data-mdl-for='edit-button' #{t(:edit_group)}
   - if policy(@group).destroy?
     - if @group.deleted_at
       = button_to undelete_group_path(@group), id: 'undelete-button', class: 'mdl-button mdl-js-button mdl-button--icon' do
-        = inline_svg 'restore.svg'
+        = inline_svg_tag 'restore.svg'
       .mdl-tooltip data-mdl-for='undelete-button' #{t(:restore_group)}
     - else
       = button_to @group, method: :delete, id: 'delete-button', class: 'mdl-button mdl-js-button mdl-button--icon' do
-        = inline_svg 'delete.svg'
+        = inline_svg_tag 'delete.svg'
       .mdl-tooltip data-mdl-for='delete-button' #{t(:delete_group)}
 
 .single-content-card

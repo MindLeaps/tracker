@@ -17,10 +17,10 @@ html
           | Welcome to MindLeaps Tracker. Please sign in with your Google Account.
         .mdl-card__actions.mdl-card--border
           a.mdl-button.mdl-js-button.mdl-button--raised.mdl-js-ripple-effect.google-button href=omniauth_authorize_path(User, :google_oauth2)
-            = inline_svg 'google_logo.svg', class: 'button-icon'
+            = inline_svg_tag'google_logo.svg', class: 'button-icon'
             span Sign in with Google
           .mdl-layout-spacer
           a.mdl-button.mdl-js-button.mdl-js-ripple-effect.mdl-button--colored href='https://releases.mindleaps.app/latest'
-            = inline_svg 'tablet.svg', class: 'button-icon'
+            = inline_svg_tag'tablet.svg', class: 'button-icon'
             span Download Mobile App
 

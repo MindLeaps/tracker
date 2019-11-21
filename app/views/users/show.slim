@@ -7,7 +7,7 @@
   - if policy(@user).destroy?
     = render partial: '/shared/delete_dialog', locals: { target: @user, content: t(:delete_confirmation_text) }
     button#delete-dialog-button.mdl-button.mdl-js-button.mdl-button--icon
-      = inline_svg 'delete.svg'
+      = inline_svg_tag 'delete.svg'
       .mdl-tooltip data-mdl-for='delete-dialog-button' #{t(:delete_user)}
 
 javascript:
