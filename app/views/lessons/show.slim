@@ -81,4 +81,4 @@
               = link_to(if summary.absent then 'Absent' else summary.average_mark end || '', lesson_student_path(@lesson.id, summary.student_id))
 
 javascript:
-  displayLessonGraph('.ct-chart', '#{@lesson.uid.html_safe}', #{@group_lessons_data[:group_lessons].to_json.html_safe});
+  displayLessonGraph('.ct-chart', '#{@lesson.uid}', #{@group_lessons_data[:group_lessons].to_json.html_safe});
