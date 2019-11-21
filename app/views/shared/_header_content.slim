@@ -1,6 +1,6 @@
 - if defined? back_button_url
   a id="back-button" href=(back_button_url || request.referer) class="mdl-button mdl-js-button mdl-button--icon unset-color"
-    = inline_svg 'arrow_back.svg'
+    = inline_svg_tag 'arrow_back.svg'
   - if defined? back_tooltip
     .mdl-tooltip data-mdl-for="back-button" = back_tooltip
 

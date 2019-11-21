@@ -12,11 +12,11 @@
           h2.mdl-card__title-text Group History
         .right-section.card-navigation
           a.mdl-button.mdl-js-button.mdl-button--icon id='prev-lesson-button' disabled=('true' unless @group_lessons_data[:prev_lesson_url]) href=(@group_lessons_data[:prev_lesson_url] if @group_lessons_data[:prev_lesson_url])
-            = inline_svg('chevron_left.svg')
+            = inline_svg_tag('chevron_left.svg')
             .mdl-tooltip data-mdl-for='prev-lesson-button'
               = t :prev_lesson
           a.mdl-button.mdl-js-button.mdl-button--icon id='next-lesson-button' disabled=('true' unless @group_lessons_data[:next_lesson_url]) href=(@group_lessons_data[:next_lesson_url] if @group_lessons_data[:next_lesson_url])
-            = inline_svg('chevron_right.svg')
+            = inline_svg_tag('chevron_right.svg')
             .mdl-tooltip data-mdl-for='next-lesson-button'
               = t :next_lesson
     .mdl-card__supporting-text

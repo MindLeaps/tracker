@@ -8,7 +8,7 @@
     - if policy(@skill).destroy?
       = render partial: '/shared/delete_dialog', locals: { target: @skill, content: t(:delete_skill_confirmation_text) }
       button#delete-dialog-button.mdl-button.mdl-js-button.mdl-button--icon
-        = inline_svg 'delete.svg'
+        = inline_svg_tag 'delete.svg'
         .mdl-tooltip data-mdl-for='delete-dialog-button' #{t(:delete_skill)}
       javascript:
         document.querySelector('#delete-dialog-button').addEventListener('click', function () {
@@ -17,7 +17,7 @@
   - else
     - if policy(@skill).undelete?
       = button_to undelete_skill_path(@skill), id: 'undelete-button', class: 'mdl-button mdl-js-button mdl-button--icon' do
-        = inline_svg 'restore.svg'
+        = inline_svg_tag 'restore.svg'
 
 .mdl-cell.mdl-cell--4-col
   .mdl-card.mdl-shadow--2dp.full-width
