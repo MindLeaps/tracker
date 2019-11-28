@@ -9,6 +9,7 @@ RSpec.describe 'User interacts with subjects', js: true do
     it 'creates a subject' do
       create :organization, organization_name: 'Subject Org'
       create :skill, skill_name: 'Feature Test Skill I'
+      create :skill, skill_name: 'Deleted Skill', deleted_at: Time.zone.now
 
       visit '/'
       click_link 'Subjects'
@@ -16,8 +17,11 @@ RSpec.describe 'User interacts with subjects', js: true do
 
       fill_in 'Subject name', with: 'Classical Dance'
       select 'Subject Org', from: 'Organization'
+
       click_link 'Add Skill'
+      expect(page).not_to have_content 'Deleted Skill'
       select 'Feature Test Skill I', from: 'Skill'
+
       click_button 'Create'
 
       expect(page).to have_content 'Subject "Classical Dance" created'

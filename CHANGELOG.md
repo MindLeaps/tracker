@@ -1,3 +1,6 @@
+## Unreleased
+- Not displaying deleted skills when creating subjects
+
 ## 0.21.3 - Logs
 - Updated Logging aggregation
 
