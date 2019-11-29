@@ -16,13 +16,13 @@ module ApplicationHelper
   end
 
   def order_for(order_key)
-    return current_scopes[:table_order][:order] if current_scopes.dig(:table_order, :key) == order_key.to_s
+    return current_scopes[:table_order][:order] if current_scopes.dig(:table_order, :key).to_s == order_key.to_s
 
     nil
   end
 
   def order_parameters(order_key, custom_scope_order = false)
-    request.query_parameters.merge(table_order: { key: order_key, order: order_for(order_key) == 'asc' ? :desc : :asc, custom_scope_order: custom_scope_order })
+    request.query_parameters.merge(table_order: { key: order_key, order: order_for(order_key).to_s == 'asc' ? :desc : :asc, custom_scope_order: custom_scope_order })
   end
 
   def order_icon(order_key)

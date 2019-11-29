@@ -3,7 +3,9 @@
 class LessonsController < ApplicationController
   include Pagy::Backend
   has_scope :exclude_deleted, type: :boolean, default: true
-  has_scope :table_order, type: :hash
+  has_scope :table_order, type: :hash, only: :index, default: { key: :date, order: :desc }
+  # has_scope cannot have 2 scopes with the same name. table_order_lesson_students is just an alias for table_order
+  has_scope :table_order_lesson_students, type: :hash, as: :table_order, default: { key: :last_name, order: :asc }, only: :show
 
   def index
     authorize Lesson
@@ -15,7 +17,6 @@ class LessonsController < ApplicationController
     @lesson = Lesson.includes(:group, :subject).find(params[:id])
     authorize @lesson
     @pagy, @student_lesson_summaries = pagy apply_scopes(StudentLessonSummary.where(lesson_id: @lesson.id))
-    @students = @lesson.group.students
     @lesson_skill_summary = LessonSkillSummary.where(lesson_uid: @lesson.uid)
     @group_lessons_data = process_group_lesson_data(GroupLessonSummary.around(@lesson, 31) || [], @lesson)
   end

@@ -57,10 +57,10 @@
         ] }
           tr
             th #
-            th class='mdl-data-table__cell--non-numeric' Last Name
-            th class='mdl-data-table__cell--non-numeric' First Name
-            th Graded / Skills
-            th = t(:average)
+            == render partial: 'shared/ordered_column', locals: { order_key: :last_name, column_name: t(:last_name) }
+            == render partial: 'shared/ordered_column', locals: { order_key: :first_name, column_name: t(:first_name) }
+            th = t(:graded_of_skills)
+            == render partial: 'shared/ordered_column', locals: { order_key: :average_mark, column_name: t(:average), numeric: true }
         - skill_count = @lesson.subject.skills.count
         - @student_lesson_summaries.each_with_index do |summary, i|
           tr class='resource-row'
