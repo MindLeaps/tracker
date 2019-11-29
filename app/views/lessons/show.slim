@@ -64,7 +64,7 @@
         - skill_count = @lesson.subject.skills.count
         - @student_lesson_summaries.each_with_index do |summary, i|
           tr class='resource-row'
-            td
+            td class="#{student_lesson_row_mark_class(summary.grade_count, skill_count)}"
               a href=(lesson_student_path(@lesson.id, summary.student_id))
                 - if @lesson.group_id != summary.group_id
                   span.mdl-badge id=("wrong-group-student-#{summary.student_id}") data-badge="!"
