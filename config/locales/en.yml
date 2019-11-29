@@ -27,6 +27,8 @@ en:
 
   students: students
   student_details: Student Details
+  last_name: Last Name
+  first_name: First Name
   new_student: New Student
   groups: groups
   new_group: New Group
@@ -114,6 +116,7 @@ en:
   mark: Mark
   average: Average
   average_grade: Average Grade
+  graded_of_skills: Graded / Skills
   grade_count: Grade Count
   lesson: Lesson
   lessons: Lessons

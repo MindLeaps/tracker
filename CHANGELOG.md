@@ -1,5 +1,7 @@
 ## Unreleased
 - Not displaying deleted skills when creating subjects
+- Implemented student ordering in single lesson view 
+- Default Lessons view order
 
 ## 0.21.3 - Logs
 - Updated Logging aggregation
