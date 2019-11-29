@@ -91,3 +91,26 @@ table.resource-table {
     }
   }
 }
+
+@mixin marked-row {
+  content: '';
+  width: 5px;
+  height: 100%;
+  position: absolute;
+  left: 0;
+}
+
+.red-marked-row:before {
+  @include marked-row;
+  background: red;
+}
+
+.yellow-marked-row:before {
+  @include marked-row;
+  background: yellow;
+}
+
+.green-marked-row:before {
+  @include marked-row;
+  background: green;
+}

@@ -107,4 +107,11 @@ module ApplicationHelper
   def href_to(url)
     "href=#{url}"
   end
+
+  def student_lesson_row_mark_class(grade_count, skill_count)
+    return 'green-marked-row' if grade_count == skill_count
+    return 'red-marked-row' if grade_count.zero?
+
+    'yellow-marked-row'
+  end
 end
