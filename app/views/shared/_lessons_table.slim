@@ -1,26 +1,23 @@
 table class='mdl-data-table mdl-js-data-table resource-table'
   thead
-    == render partial: 'shared/pagy_nav', locals: { pagy: pagy, resource: 'lessons', span: 4 }
+    == render partial: 'shared/pagy_nav', locals: { pagy: pagy, resource: 'lessons', span: 6 }
     tr
       th.mdl-data-table__cell--non-numeric
         | #
-      th class='mdl-data-table__cell--non-numeric' Group Name
-      == render partial: 'shared/ordered_column', locals: { order_key: :date, column_name: 'Date' }
-      th class='mdl-data-table__cell--non-numeric' Subject
-      th class='mdl-data-table__cell--non-numeric' Total Students
-      th class='mdl-data-table__cell--non-numeric' Graded Students
+      th class='mdl-data-table__cell--non-numeric' = t(:group_chapter)
+      == render partial: 'shared/ordered_column', locals: { order_key: :date, column_name: t(:lesson_date) }
+      th class='mdl-data-table__cell--non-numeric' = t(:subject)
+      th class='mdl-data-table__cell' = t(:graded_vs_students_in_group)
 
-  - lessons.each_with_index do |lesson, i|
+  - lesson_rows.each_with_index do |lesson_row, i|
     tr class='resource-row'
       td.mdl-data-table__cell--non-numeric
-        = link_to pagy.from + i, lesson_path(lesson)
+        = link_to pagy.from + i, lesson_path(lesson_row)
       td class='mdl-data-table__cell--non-numeric'
-        = link_to lesson.group.group_name, lesson_path(lesson)
+        = link_to "#{lesson_row.group_name} - #{lesson_row.chapter_name}", lesson_path(lesson_row)
       td class='mdl-data-table__cell--non-numeric'
-        = link_to lesson.date, lesson_path(lesson)
+        = link_to lesson_row.date, lesson_path(lesson_row)
       td class='mdl-data-table__cell--non-numeric'
-        = link_to lesson.subject.subject_name, lesson_path(lesson)
-      td class='mdl-data-table__cell--numeric'
-        = link_to lesson.group.students.count, group_path(lesson.group)
-      td class='mdl-data-table__cell--numeric'
-        = link_to lesson.group.students.select {|s| s.grades.count > 0 }.count, group_path(lesson.group)
+        = link_to lesson_row.subject_name, lesson_path(lesson_row)
+      td class='mdl-data-table__cell'
+        = link_to "#{lesson_row.graded_student_count} / #{lesson_row.group_student_count}", lesson_path(lesson_row)

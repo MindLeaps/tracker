@@ -390,6 +390,27 @@ SELECT
 
 
 --
+-- Name: lesson_table_rows; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.lesson_table_rows AS
+SELECT
+    NULL::integer AS id,
+    NULL::integer AS group_id,
+    NULL::date AS date,
+    NULL::timestamp without time zone AS created_at,
+    NULL::timestamp without time zone AS updated_at,
+    NULL::integer AS subject_id,
+    NULL::timestamp without time zone AS deleted_at,
+    NULL::uuid AS uid,
+    NULL::character varying AS group_name,
+    NULL::character varying AS chapter_name,
+    NULL::character varying AS subject_name,
+    NULL::bigint AS group_student_count,
+    NULL::bigint AS graded_student_count;
+
+
+--
 -- Name: lessons; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1391,6 +1412,41 @@ CREATE OR REPLACE VIEW public.lesson_skill_summaries AS
 
 
 --
+-- Name: lesson_table_rows _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.lesson_table_rows AS
+ WITH group_student_counts AS (
+         SELECT gr.id AS group_id,
+            gr.group_name,
+            c.chapter_name,
+            COALESCE(count(s.id), (0)::bigint) AS student_count
+           FROM ((public.groups gr
+             LEFT JOIN public.students s ON (((s.group_id = gr.id) AND (s.deleted_at IS NULL))))
+             JOIN public.chapters c ON ((gr.chapter_id = c.id)))
+          GROUP BY gr.id, c.chapter_name
+        )
+ SELECT l.id,
+    l.group_id,
+    l.date,
+    l.created_at,
+    l.updated_at,
+    l.subject_id,
+    l.deleted_at,
+    l.uid,
+    sc.group_name,
+    sc.chapter_name,
+    su.subject_name,
+    sc.student_count AS group_student_count,
+    count(DISTINCT g.student_id) AS graded_student_count
+   FROM (((public.lessons l
+     JOIN public.subjects su ON ((l.subject_id = su.id)))
+     LEFT JOIN public.grades g ON (((l.id = g.lesson_id) AND (g.deleted_at IS NULL))))
+     JOIN group_student_counts sc ON ((l.group_id = sc.group_id)))
+  GROUP BY l.id, su.subject_name, sc.student_count, sc.group_name, sc.chapter_name;
+
+
+--
 -- Name: assignments assignments_skill_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1657,6 +1713,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20191102234931'),
 ('20191103021012'),
 ('20191107004248'),
-('20191107010120');
+('20191107010120'),
+('20191201014634');
 
 

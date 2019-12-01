@@ -22,7 +22,7 @@ RSpec.describe LessonsController, type: :controller do
       it { should render_template 'index' }
 
       it 'Lists existing lessons' do
-        expect(assigns(:lessons)).to include @lesson1, @lesson2
+        expect(assigns(:lesson_rows).map(&:uid)).to include @lesson1.reload.uid, @lesson2.reload.uid
       end
     end
 

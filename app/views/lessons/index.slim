@@ -5,4 +5,4 @@
     = render partial: '/shared/main_header_button', locals: {href: new_lesson_path, title: 'Add Lesson'}
 
 .single-content-card
-  = render partial: 'shared/lessons_table', locals: {lessons: @lessons, pagy: @pagy}
+  = render partial: 'shared/lessons_table', locals: {lesson_rows: @lesson_rows, pagy: @pagy}
