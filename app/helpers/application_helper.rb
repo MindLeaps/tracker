@@ -29,7 +29,7 @@ module ApplicationHelper
     order = order_for order_key
     return 'sortable.svg' unless order
 
-    order == 'desc' ? 'arrow_down.svg' : 'arrow_up.svg'
+    order.to_s == 'desc' ? 'arrow_down.svg' : 'arrow_up.svg'
   end
 
   def excluding_deleted?

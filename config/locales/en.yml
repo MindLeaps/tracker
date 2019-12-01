@@ -33,6 +33,7 @@ en:
   groups: groups
   new_group: New Group
   chapter: Chapter
+  group_chapter: Group - Chapter
   new_chapter: New Chapter
   chapters: Chapters
   edit_chapter: Edit Chapter
@@ -78,6 +79,7 @@ en:
   student_graded: Student graded.
   student_absent: Absent
   student_not_graded: Not Graded
+  graded_vs_students_in_group: Graded / Students in Group
   back_to_subjects: Back to All Subjects
   cancel: Cancel
   student_has_no_images: This student has no images

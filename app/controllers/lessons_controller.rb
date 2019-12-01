@@ -9,8 +9,7 @@ class LessonsController < ApplicationController
 
   def index
     authorize Lesson
-    @pagy, @lessons = pagy apply_scopes(policy_scope(Lesson.includes(:subject, :group)))
-    @lesson = Lesson.new
+    @pagy, @lesson_rows = pagy apply_scopes(policy_scope(LessonTableRow, policy_scope_class: LessonPolicy::Scope))
   end
 
   def show

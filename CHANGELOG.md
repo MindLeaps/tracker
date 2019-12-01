@@ -3,6 +3,7 @@
 - Implemented student ordering in single lesson view 
 - Default Lessons view order
 - Added color indicators for student grading status in single lesson view
+- Added a display of graded and total students in group in the lesson table
 
 ## 0.21.3 - Logs
 - Updated Logging aggregation
