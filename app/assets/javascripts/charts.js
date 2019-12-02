@@ -9,7 +9,6 @@ function displayLessonGraph(containerId, lessonUid, data) {
             x: e.timestamp,
             y: e.average_mark,
             meta: {
-              date: e.date,
               lesson_uid: e.lesson_uid,
               lesson_url: e.lesson_url
             }

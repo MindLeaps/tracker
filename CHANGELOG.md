@@ -6,6 +6,7 @@
 - Added a display of graded and total students in group in the lesson table
 - Fix Lesson Graph not showing on the first load
 - Added Average Grade column to lesson table
+- Fix some lessons erroring out because of wrong date format
 
 ## 0.21.3 - Logs
 - Updated Logging aggregation
