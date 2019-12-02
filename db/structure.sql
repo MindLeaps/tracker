@@ -407,7 +407,8 @@ SELECT
     NULL::character varying AS chapter_name,
     NULL::character varying AS subject_name,
     NULL::bigint AS group_student_count,
-    NULL::bigint AS graded_student_count;
+    NULL::bigint AS graded_student_count,
+    NULL::numeric AS average_mark;
 
 
 --
@@ -1438,7 +1439,8 @@ CREATE OR REPLACE VIEW public.lesson_table_rows AS
     sc.chapter_name,
     su.subject_name,
     sc.student_count AS group_student_count,
-    count(DISTINCT g.student_id) AS graded_student_count
+    count(DISTINCT g.student_id) AS graded_student_count,
+    round(avg(g.mark), 2) AS average_mark
    FROM (((public.lessons l
      JOIN public.subjects su ON ((l.subject_id = su.id)))
      LEFT JOIN public.grades g ON (((l.id = g.lesson_id) AND (g.deleted_at IS NULL))))
@@ -1714,6 +1716,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20191103021012'),
 ('20191107004248'),
 ('20191107010120'),
-('20191201014634');
+('20191201014634'),
+('20191202044021');
 
 
