@@ -1,6 +1,6 @@
-## Unreleased
-- Not displaying deleted skills when creating subjects
-- Implemented student ordering in single lesson view 
+## 0.22.0 - Lesson Table Improvements
+- Not displaying deleted skills when creating subject
+- Implemented student ordering in single lesson view
 - Default Lessons view order
 - Added color indicators for student grading status in single lesson view
 - Added a display of graded and total students in group in the lesson table
