@@ -1,3 +1,6 @@
+## Unreleased
+- Upgraded Ruby to 2.6.5
+
 ## 0.22.0 - Lesson Table Improvements
 - Not displaying deleted skills when creating subject
 - Implemented student ordering in single lesson view
