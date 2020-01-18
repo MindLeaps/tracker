@@ -14,6 +14,12 @@ RSpec.shared_context 'login_with_super_admin' do
   end
 end
 
+RSpec.shared_context 'login_with_global_guest' do
+  before :each do
+    login create :global_guest
+  end
+end
+
 RSpec.shared_context 'super_admin_request' do
   before(:each) do
     @current_user = create :super_admin

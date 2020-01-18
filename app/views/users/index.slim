@@ -2,7 +2,7 @@
 
 = content_for :header_content do
   = render layout: '/shared/header_content', locals: {title: 'Users'} do
-    = render partial: '/shared/main_header_button', locals: {href: new_user_path, title: 'Add User'}
+    = render partial: '/shared/main_header_button', locals: {href: new_user_path, title: 'Add User'} if policy(User).new?
 
 .single-content-card
   = render partial: 'shared/users_table', locals: { users: @users, pagy: @pagy }

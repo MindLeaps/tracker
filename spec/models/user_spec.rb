@@ -95,14 +95,14 @@ RSpec.describe User, type: :model do
         expect(user.administrator?(organization)).to eq true
       end
 
+      it 'is true when no organization is passed' do
+        expect(user.administrator?).to eq true
+      end
+
       it 'is false for an organization the user is not an admin of' do
         organization2 = create :organization
 
         expect(user.administrator?(organization2)).to eq false
-      end
-
-      it 'is false globally' do
-        expect(user.administrator?).to eq false
       end
     end
 

@@ -36,7 +36,7 @@ class CSVDataSeeder
 
   def seed_row(row, chapter)
     group = create_group(row[:group], chapter)
-    student = create_student(row[:id], group, chapter, row[:gender] == 1 ? 'male' : 'female', row[:age] || 13)
+    student = create_student(row[:id], group, row[:gender] == 1 ? 'male' : 'female', row[:age] || 13)
     lesson = create_lesson(group, row[:date])
     grade_student student, lesson, get_row_grades(row)
   end
@@ -51,7 +51,7 @@ class CSVDataSeeder
     @group_names[group_id]
   end
 
-  def create_student(id, group, chapter, gender, age)
+  def create_student(id, group, gender, age)
     @students[id] ||= Student.create(
       mlid: id,
       first_name: Faker::Name.first_name,
@@ -59,8 +59,7 @@ class CSVDataSeeder
       gender: gender,
       dob: age.years.ago,
       estimated_dob: 'true',
-      group: group,
-      organization: chapter.organization
+      group: group
     )
   end
 
