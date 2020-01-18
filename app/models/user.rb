@@ -27,7 +27,9 @@ class User < ApplicationRecord
   end
 
   def administrator?(organization = nil)
-    has_cached_role?(:admin, organization) || global_administrator?
+    global_administrator? || if organization.nil?
+                               has_cached_role?(:admin, :any) else has_cached_role?(:admin, organization)
+                             end
   end
 
   def global_role?

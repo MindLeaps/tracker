@@ -1,5 +1,6 @@
 ## Unreleased
 - Upgraded Ruby to 2.6.5
+- Hiding creation buttons from users that aren't permitted to use them
 
 ## 0.22.0 - Lesson Table Improvements
 - Not displaying deleted skills when creating subject

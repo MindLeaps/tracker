@@ -2,7 +2,7 @@
 
 - content_for :header_content do
   = render layout: '/shared/header_content', locals: { title: t(:students).capitalize } do
-    = render partial: '/shared/main_header_button', locals: {href: new_student_path, title: t(:add_student)}
+    = render partial: '/shared/main_header_button', locals: {href: new_student_path, title: t(:add_student)} if policy(Student).new?
 
 .single-content-card
   = render partial: 'shared/students_table', locals: {students: @students, pagy: @pagy}

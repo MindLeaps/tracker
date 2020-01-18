@@ -10,7 +10,7 @@ class SkillPolicy < ApplicationPolicy
   end
 
   def new?
-    create?
+    user.administrator?
   end
 
   def create?
