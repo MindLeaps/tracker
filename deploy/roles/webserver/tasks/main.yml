@@ -12,13 +12,13 @@
     update_cache: yes
 
 - name: Update apt repository cache
-  sudo: true
+  become: yes
   apt:
     update_cache: yes
 
 - name: Install required packages
-  sudo: true
-  apt: pkg={{ item }} state=installed
+  become: yes
+  apt: pkg={{ item }} state=present
   with_items:
     - apt-transport-https
     - build-essential
@@ -49,7 +49,7 @@
   ignore_errors: True
 
 - name: Install letsencrypt challenge nginx config
-  sudo: true
+  become: yes
   template:
     src: letsencrypt-nginx.conf.j2
     dest: /etc/nginx/nginx.conf
@@ -66,7 +66,7 @@
     mode: a+x
 
 - name: Get SSL Certificate
-  sudo: true
+  become: yes
   shell: "/etc/certbot-auto certonly -n -m {{ letsencrypt_email }} --agree-tos --webroot -w /home/mindleaps/tracker/public -d {{ deploy_domain }}"
   args:
     creates: "{{ ssl_certificate }}"
@@ -83,13 +83,13 @@
 
   # Full nginx config serving SSL and forwarding to the app
 - name: Install nginx config
-  sudo: true
+  become: yes
   template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf
   notify: Reload nginx config
 
 - name: Install rvm dependencies
-  sudo: true
-  apt: pkg={{ item }} update_cache=yes state=installed
+  become: yes
+  apt: pkg={{ item }} update_cache=yes state=present
   with_items:
     - automake
     - bison
@@ -99,34 +99,34 @@
     - libtool
 
 - name: Create the mindleaps user
-  sudo: true
+  become: yes
   user: name=mindleaps
 
 - name: Trust RVM public key
-  sudo: true
-  sudo_user: mindleaps
+  become: yes
+  become_user: mindleaps
   shell: "\\gpg --keyserver hkp://keys.gnupg.net --recv-keys 7D2BAF1CF37B13E2069D6956105BD0E739499BDB"
 
 - name: Get rvm
-  sudo: true
-  sudo_user: mindleaps
+  become: yes
+  become_user: mindleaps
   shell: "\\curl -L https://get.rvm.io | bash -s stable --ignore-dotfiles"
   args:
     creates: "/home/mindleaps/.rvm"
 
 - name: Update rvm
-  sudo: true
-  sudo_user: mindleaps
+  become: yes
+  become_user: mindleaps
   shell: ~/.rvm/bin/rvm get stable
 
 - name: Dont install documentation with gems
-  sudo: true
-  sudo_user: mindleaps
+  become: yes
+  become_user: mindleaps
   command: 'echo "gem: --no-ri --no-rdoc" > ~/.gemrc creates=~/.gemrc'
 
 - name: Add rvm to bashrc
-  sudo: true
-  sudo_user: mindleaps
+  become: yes
+  become_user: mindleaps
   lineinfile:
     dest="~/.bashrc"
     state=present
@@ -134,8 +134,8 @@
     insertafter=EOF
 
 - name: Copy the source to the machine
-  sudo: true
-  sudo_user: mindleaps
+  become: yes
+  become_user: mindleaps
   synchronize:
     dest: /home/mindleaps/tracker
     src: ../../../../
@@ -156,100 +156,100 @@
       - "--exclude=tmp"
 
 - name: Change ownership of destination directory
-  sudo: true
-  sudo_user: root
+  become: yes
+  become_user: root
   shell: chown -R mindleaps:mindleaps /home/mindleaps/tracker
 
 - name: Grant the rails app access to tmp
-  sudo: true
+  become: yes
   file: dest=/home/mindleaps/tracker/tmp owner=mindleaps group=mindleaps mode=0700 state=directory recurse=yes
 
 - name: Install database config
-  sudo: true
+  become: yes
   template: src=database.yml.j2 dest=/home/mindleaps/tracker/config/database.yml
   notify: Restart tracker
 
 - name: Install libs required by RVM
-  sudo: true
+  become: yes
   shell: /home/mindleaps/.rvm/bin/rvm --autolibs=enabled requirements .
   args:
     chdir: /home/mindleaps/tracker
 
 - name: Install the ruby version needed by mindleaps
-  sudo: true
-  sudo_user: mindleaps
+  become: yes
+  become_user: mindleaps
   shell: ~/.rvm/bin/rvm install `cat ~/tracker/.ruby-version`
   args:
     chdir: /home/mindleaps/tracker
 
 - name: Install Bundler
-  sudo: true
-  sudo_user: mindleaps
+  become: yes
+  become_user: mindleaps
   shell: ~/.rvm/bin/rvm . do gem install bundler
   args:
     chdir: /home/mindleaps/tracker
 
 - name: Update Rubygems
-  sudo: true
-  sudo_user: mindleaps
+  become: yes
+  become_user: mindleaps
   shell: ~/.rvm/bin/rvm . do rvm rubygems latest
   args:
       chdir: /home/mindleaps/tracker
 
 - name: Install all gems
-  sudo: true
-  sudo_user: mindleaps
+  become: yes
+  become_user: mindleaps
   shell: ~/.rvm/bin/rvm . do bundle install
   args:
     chdir: /home/mindleaps/tracker
 
 - name: Migrate the Database
-  sudo: true
-  sudo_user: mindleaps
+  become: yes
+  become_user: mindleaps
   shell: SECRET_KEY_BASE={{ secret_key_base }} DEVISE_SECRET_KEY={{ devise_secret_key }} RAILS_ENV=production ~/.rvm/bin/rvm . do rake db:migrate
   args:
     chdir: /home/mindleaps/tracker
 
 - name: Reset Postgres sequences of table primary key ids
-  sudo: true
-  sudo_user: mindleaps
+  become: yes
+  become_user: mindleaps
   shell: SECRET_KEY_BASE={{ secret_key_base }} DEVISE_SECRET_KEY={{ devise_secret_key }} RAILS_ENV=production ~/.rvm/bin/rvm . do rake db:correct_sequence_ids
   args:
     chdir: /home/mindleaps/tracker
 
 - name: Precompile the assets
-  sudo: true
-  sudo_user: mindleaps
+  become: yes
+  become_user: mindleaps
   shell: SECRET_KEY_BASE={{ secret_key_base }} DEVISE_SECRET_KEY={{ devise_secret_key }} RAILS_ENV=production ~/.rvm/bin/rvm . do rake assets:precompile
   args:
     chdir: /home/mindleaps/tracker
 
 - name: Install rsyslog config
-  sudo: true
+  become: yes
   template: src=tracker.rsyslog.conf.j2 dest=/etc/rsyslog.d/mindleaps-tracker.conf
 
 - name: Restart rsyslog
-  sudo: true
+  become: yes
   service: name=rsyslog state=restarted
 
 - name: Install the systemd script for tracker
-  sudo: true
+  become: yes
   template: src=tracker.service.j2 dest=/etc/systemd/system/tracker.service
   notify: Restart tracker
 
 - name: Start tracker
-  sudo: true
+  become: yes
   service: name=tracker state=started
 
 - name: Install Datadog nginx config
-  sudo: true
+  become: yes
   template: src=datadog.nginx.yaml.j2 dest=/etc/datadog-agent/conf.d/nginx.yaml
 
 - name: Ensures datadog conf.d/ruby.d dir exists
   file: path=/etc/datadog-agent/conf.d/ruby.d state=directory
 
 - name: Install Datadog ruby config
-  sudo: true
+  become: yes
   template: src=datadog.ruby.yaml.j2 dest=/etc/datadog-agent/conf.d/ruby.d/conf.yaml
 
 - name: Restart Datadog Service
@@ -258,7 +258,7 @@
     name: datadog-agent.service
 
 - name: Install Filebeat config
-  sudo: true
+  become: yes
   template: src=filebeat.yml.j2 dest=/etc/filebeat/filebeat.yml
 
 - name: Restart Filebeat Service

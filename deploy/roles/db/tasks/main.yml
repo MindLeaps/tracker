@@ -12,7 +12,7 @@
   notify: restart postgresql
 
 - name: Install Datadog Postgres config
-  sudo: true
+  become: yes
   template: src=datadog.postgres.yaml.j2 dest=/etc/datadog-agent/conf.d/postgres.yaml
 
 - name: Restart Datadog Service

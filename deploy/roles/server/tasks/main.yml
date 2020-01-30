@@ -17,52 +17,52 @@
     update_cache: yes
 
 - name: Update apt repository cache
-  sudo: true
+  become: yes
   apt:
     update_cache: yes
 
 - name: Install Datadog and Filebeat Dependencies
-  sudo: true
-  apt: pkg={{ item }} state=installed
+  become: yes
+  apt: pkg={{ item }} state=present
   with_items:
     - apt-transport-https
     - filebeat
 
 - name: Ensures /etc/pki/tls/certs for Logz.io certificate
-  sudo: true
+  become: yes
   file: path=/etc/pki/tls/certs state=directory
 
 - name: Install Filebeat Logz.io certificate
-  sudo: true
+  become: yes
   get_url:
     url: https://raw.githubusercontent.com/logzio/public-certificates/master/COMODORSADomainValidationSecureServerCA.crt
     dest: /etc/pki/tls/certs/COMODORSADomainValidationSecureServerCA.crt
 
 - name: Set up the Datadog deb repo
-  sudo: true
+  become: yes
   shell: "echo 'deb https://apt.datadoghq.com/ stable 6' > /etc/apt/sources.list.d/datadog.list"
 
 - name: Import Datadog key
-  sudo: true
+  become: yes
   shell: "apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 382E94DE"
 
 - name: Update apt repository cache (again for Datadog)
-  sudo: true
+  become: yes
   apt:
     update_cache: yes
 
 - name: Install Datadog Agent
-  sudo: true
-  apt: pkg={{ item }} state=installed
+  become: yes
+  apt: pkg={{ item }} state=present
   with_items:
     - datadog-agent
 
 - name: Setup Datadog Config
-  sudo: true
+  become: yes
   shell: "sed 's/api_key:.*/api_key: {{ datadog_key }}/' /etc/datadog-agent/datadog.yaml.example > /etc/datadog-agent/datadog.yaml"
 
 - name: Enable logging in Datadog Config
-  sudo: true
+  become: yes
   lineinfile:
     path: /etc/datadog-agent/datadog.yaml
     regexp: 'logs_enabled'

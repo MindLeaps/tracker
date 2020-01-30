@@ -13,6 +13,6 @@
     daemon_reload: yes
 
 - name: Run DB migrations
-  sudo: true
-  sudo_user: mindleaps
+  become: yes
+  become_user: mindleaps
   shell: RAILS_ENV=production ~/.rvm/bin/rvm all do rake db:migrate
