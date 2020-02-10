@@ -11,3 +11,9 @@
     = link_to_add_association f, :grade_descriptors do
       button class='mdl-button mdl-button--primary mdl-js-button mdl-js-ripple-effect' Add Grade Descriptor
   = f.button :submit, class: 'mdl-button--raised mdl-button--accent mdl-js-ripple-effect form-submit'
+
+javascript:
+  $('div.new-grade-descriptor-container').on('cocoon:after-insert', function (e, insertedItem) {
+    componentHandler.upgradeDom();
+    $(insertedItem).find('input').first().focus();
+  });
