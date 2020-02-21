@@ -116,8 +116,8 @@ RSpec.describe 'User interacts with Groups' do
       expect(page).to have_field('search-field', with: 'Abi')
       click_link_compat 'Show Deleted'
       expect(page).to have_selector('.resource-row', count: 2)
-      expect(page).to have_content'Abisamol'
-      expect(page).to have_content'Abisouena'
+      expect(page).to have_content 'Abisamol'
+      expect(page).to have_content 'Abisouena'
     end
   end
 end
