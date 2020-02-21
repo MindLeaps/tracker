@@ -12,4 +12,6 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
+  username: <%= ENV['DATABASE_USER'] %>
+  password: <%= ENV['DATABASE_PASSWORD'] %>
   database: tracker_test
