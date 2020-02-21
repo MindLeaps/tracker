@@ -8,8 +8,11 @@ jobs:
 
     services:
       db:
-        image: postgres:9.5
+        image: postgres:9.6
         ports: ['5432:5432']
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -31,6 +34,8 @@ jobs:
     - name: Migrate Database
       env:
         RAILS_ENV: test
+        DATABASE_USER: postgres
+        DATABASE_PASSWORD: postgres
         DATABASE_URL: postgres://postgres:@localhost:5432
       run: |
         bundle exec rake db:create
@@ -38,6 +43,8 @@ jobs:
     - name: Test
       env:
         RAILS_ENV: test
+        DATABASE_USER: postgres
+        DATABASE_PASSWORD: postgres
         DATABASE_URL: postgres://postgres:@localhost:5432
       run: |
         bundle exec rake test
