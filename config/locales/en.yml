@@ -27,6 +27,9 @@ en:
 
   students: students
   student_details: Student Details
+  student_deleted_at: Student deleted at
+  date_of_birth: Date of Birth
+  country_of_nationality: Country of Nationality
   last_name: Last Name
   first_name: First Name
   new_student: New Student

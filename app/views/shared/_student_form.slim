@@ -8,6 +8,7 @@
   = f.input :estimated_dob, label: 'DOB estimated'
   hr
   = f.association :group, collection: policy_scope(Group.includes(:chapter)), label_method: :group_chapter_name
+  = f.input :country_of_nationality, collection: I18nData.countries(locale.to_s).map { |k, v| [v, k] }.sort_alphabetical_by(&:first)
   = f.input :quartier
   hr
   = f.input :guardian_name

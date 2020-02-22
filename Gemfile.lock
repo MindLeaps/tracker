@@ -163,6 +163,7 @@ GEM
     hashie (3.6.0)
     i18n (1.8.2)
       concurrent-ruby (~> 1.0)
+    i18n_data (0.10.0)
     image_optimizer (1.8.0)
     inline_svg (1.7.0)
       activesupport (>= 3.0)
@@ -270,6 +271,9 @@ GEM
       nokogiri (>= 1.6)
     rails-html-sanitizer (1.3.0)
       loofah (~> 2.3)
+    rails-i18n (5.1.3)
+      i18n (>= 0.7, < 2)
+      railties (>= 5.0, < 6)
     rails_semantic_logger (4.4.3)
       rack
       railties (>= 3.2)
@@ -363,6 +367,8 @@ GEM
       temple (>= 0.7.6, < 0.9)
       tilt (>= 2.0.6, < 2.1)
     smarter_csv (1.2.6)
+    sort_alphabetical (1.1.0)
+      unicode_utils (>= 1.2.2)
     spring (2.1.0)
     sprockets (3.7.2)
       concurrent-ruby (~> 1.0)
@@ -387,6 +393,7 @@ GEM
     tzinfo (1.2.6)
       thread_safe (~> 0.1)
     unicode-display_width (1.6.1)
+    unicode_utils (1.4.0)
     uniform_notifier (1.13.0)
     warden (1.2.8)
       rack (>= 2.0.6)
@@ -437,6 +444,7 @@ DEPENDENCIES
   faker
   fog-aws
   has_scope
+  i18n_data
   inline_svg
   json_matchers
   marginalia
@@ -455,6 +463,7 @@ DEPENDENCIES
   pundit-matchers
   rails
   rails-controller-testing
+  rails-i18n
   rails_semantic_logger
   rolify
   rspec-rails
@@ -470,6 +479,7 @@ DEPENDENCIES
   skylight
   slim
   smarter_csv
+  sort_alphabetical
   spring
   tiddle
   turbolinks

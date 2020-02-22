@@ -9,6 +9,12 @@ class ApplicationController < BaseController
   # rubocop:disable Rails/LexicallyScopedActionFilter
   after_action :verify_policy_scoped, only: :index
   # rubocop:enable Rails/LexicallyScopedActionFilter
+  around_action :switch_locale
+
+  def switch_locale(&action)
+    locale = params[:locale] || I18n.default_locale
+    I18n.with_locale(locale, &action)
+  end
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 

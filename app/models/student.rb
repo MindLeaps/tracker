@@ -33,7 +33,7 @@ class Student < ApplicationRecord
   end
 
   def self.permitted_params
-    [:mlid, :first_name, :last_name, :dob, :estimated_dob, :group_id, :gender, :quartier,
+    [:mlid, :first_name, :last_name, :dob, :estimated_dob, :group_id, :gender, :country_of_nationality, :quartier,
      :guardian_name, :guardian_occupation, :guardian_contact, :family_members, :health_insurance,
      :health_issues, :hiv_tested, :name_of_school, :school_level_completed, :year_of_dropout,
      :reason_for_leaving, :notes, :organization_id, :profile_image_id, student_images_attributes: [:image]]

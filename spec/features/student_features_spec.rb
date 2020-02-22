@@ -65,6 +65,7 @@ RSpec.describe 'User interacts with Students' do
       fill_in 'MLID', with: '1A'
       fill_in 'First name', with: 'Rick'
       fill_in 'Last name', with: 'Sanchez'
+      select('Antarctica', from: 'Country of nationality')
       select(@group.group_chapter_name, from: 'Group')
       click_button 'Create'
 
@@ -74,6 +75,7 @@ RSpec.describe 'User interacts with Students' do
       created_student = Student.find_by! first_name: 'Rick', last_name: 'Sanchez'
 
       expect(created_student.gender).to eq('M')
+      expect(created_student.country_of_nationality).to eq('AQ')
     end
   end
 
