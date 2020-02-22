@@ -2,6 +2,7 @@
 - Upgraded Ruby to 2.6.5
 - Hiding creation buttons from users that aren't permitted to use them
 - Fixed issue with new MDL fields not being activated in coccoon forms
+- Added Country of Nationality field to Students
 
 ## 0.22.0 - Lesson Table Improvements
 - Not displaying deleted skills when creating subject
