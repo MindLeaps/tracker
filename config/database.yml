@@ -2,7 +2,7 @@ default: &default
   adapter: postgresql
   pool: 5
   timeout: 5000
-  host: db
+  host: <%= ENV['DATABASE_USER'] || 'db' %>
   username: <%= ENV['DATABASE_USER'] || 'tracker' %>
   password: <%= ENV['DATABASE_PASSWORD'] || 'tracker' %>
 
@@ -16,3 +16,8 @@ development:
 test:
   <<: *default
   database: tracker_test
+
+production:
+  <<: *default
+  encoding: unicode
+  database: tracker
