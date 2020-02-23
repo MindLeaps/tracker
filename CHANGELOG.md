@@ -1,4 +1,4 @@
-## Unreleased
+## 0.23.0 - Country of Nationality for Students
 - Upgraded Ruby to 2.6.5
 - Hiding creation buttons from users that aren't permitted to use them
 - Fixed issue with new MDL fields not being activated in coccoon forms
