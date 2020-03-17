@@ -165,7 +165,7 @@ GEM
       concurrent-ruby (~> 1.0)
     i18n_data (0.10.0)
     image_optimizer (1.8.0)
-    inline_svg (1.7.0)
+    inline_svg (1.7.1)
       activesupport (>= 3.0)
       nokogiri (>= 1.6)
     ipaddress (0.8.3)
