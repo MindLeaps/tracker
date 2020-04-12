@@ -1,6 +1,20 @@
 # frozen_string_literal: true
 
 module SQL
+  def performance_per_skill_in_lessons_per_student_query(student_ids)
+    <<~SQL
+      select rank() over(PARTITION BY stu.id, s.id order by date) - 1 as rank, round(avg(mark), 2)::FLOAT, l.id, date, s.skill_name, stu.id::INT from
+          lessons as l
+          join groups as gr on gr.id = l.group_id
+          join students as stu on stu.group_id = gr.id
+          join grades as g on l.id = g.lesson_id AND g.student_id IN (#{student_ids.join(', ')})
+          join skills as s on s.id = g.skill_id
+        WHERE stu.id IN (#{student_ids.join(', ')})
+        GROUP BY stu.id, l.id, s.id
+        ORDER BY stu.id, date, s.id;
+    SQL
+  end
+
   def performance_per_skill_in_lessons_query(lessons)
     <<~SQL
       select rank() over(PARTITION BY gr.id, s.id order by date) - 1 as rank, round(avg(mark), 2)::FLOAT, l.id, date, s.skill_name, gr.id::INT from

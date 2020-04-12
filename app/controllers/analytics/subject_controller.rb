@@ -4,6 +4,7 @@ require 'sql/queries'
 include SQL # rubocop:disable Style/MixinUsage
 
 module Analytics
+  # rubocop:disable Metrics/ClassLength
   class SubjectController < AnalyticsController
     # rubocop:disable Metrics/PerceivedComplexity
     # rubocop:disable Metrics/MethodLength
@@ -51,22 +52,42 @@ module Analytics
       # x-axis: nr. of lessons
       # y-axis: average score
       # series = [{skill : skill_name, series : [{name : group_name, data : [[x, y], ..]}]}]
-      series3 = performance_per_skill
+      series3 = if @selected_student_id.present? && @selected_student_id != 'All'
+                  performance_per_skill_single_student
+                else
+                  performance_per_skill
+                end
       @count = series3.count
       @series3 = series3.to_json
     end
-    # rubocop:enable Metrics/MethodLength
-    # rubocop:enable Metrics/PerceivedComplexity
-    # rubocop:enable Metrics/CyclomaticComplexity
-    # rubocop:enable Metrics/AbcSize
 
     private
 
-    # rubocop:disable Metrics/PerceivedComplexity
-    # rubocop:disable Metrics/MethodLength
-    # rubocop:disable Metrics/AbcSize
-    def performance_per_skill # rubocop:disable Metrics/CyclomaticComplexity
-      series = []
+    def performance_per_skill_single_student
+      conn = ActiveRecord::Base.connection.raw_connection
+      students = {}
+
+      query_result = conn.exec(performance_per_skill_in_lessons_per_student_query([@selected_student_id])).values
+      result = query_result.reduce({}) do |acc, e|
+        student_id = e[-1]
+        student_name = students[student_id] ||= Student.find(student_id).proper_name
+        skill_name = e[-2]
+        acc.tap do |a|
+          if a.key?(skill_name)
+            if a[skill_name].key?(student_name)
+              a[skill_name][student_name].push(x: e[0], y: e[1], lesson_url: lesson_path(e[2]), date: e[3])
+            else
+              a[skill_name][student_name] = [{ x: e[0], y: e[1], lesson_url: lesson_path(e[2]), date: e[3] }]
+            end
+          else
+            a[skill_name] = { student_name => [{ x: e[0], y: e[1], lesson_url: lesson_path(e[2]), date: e[3] }] }
+          end
+        end
+      end
+      render_performance_per_skill(result)
+    end
+
+    def performance_per_skill
       lessons = if @selected_student_id.present? && @selected_student_id != 'All'
                   Lesson.includes(:grades).where(grades: { student_id: @selected_student_id })
                 elsif @selected_group_id.present? && @selected_group_id != 'All'
@@ -100,18 +121,21 @@ module Analytics
           end
         end
       end
+      render_performance_per_skill(result, t(:group))
+    end
 
-      # Calculation is done, now convert the series_hash to something HighCharts understands
+    def render_performance_per_skill(result, prefix = '')
+      series = []
       result.each do |skill_name, hash|
         # regression = RegressionService.new.skill_regression skill_name, hash.values.map(&:length).max
 
         skill_series = []
         hash.each_with_index do |(group, array), index|
-          skill_series << { name: "#{t(:group)} #{group}", data: array, color: get_color(index), regression: array.length > 1, regressionSettings: {
+          skill_series << { name: "#{prefix} #{group}", data: array, color: get_color(index), regression: array.length > 1, regressionSettings: {
             type: 'polynomial',
             order: 4,
             color: get_color(index),
-            name: "#{t(:group)} #{group} - Regression",
+            name: "#{prefix} #{group} - Regression",
             lineWidth: 1
           } }
         end
@@ -121,8 +145,11 @@ module Analytics
       end
       series
     end
+
     # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/MethodLength
     # rubocop:enable Metrics/PerceivedComplexity
+    # rubocop:enable Metrics/CyclomaticComplexity
   end
+  # rubocop:enable Metrics/ClassLength
 end
