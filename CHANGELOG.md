@@ -1,3 +1,6 @@
+## Unreleased
+- Fixed displaying group analytics instead of a single student when a student is selected
+
 ## 0.23.0 - Country of Nationality for Students
 - Upgraded Ruby to 2.6.5
 - Hiding creation buttons from users that aren't permitted to use them
