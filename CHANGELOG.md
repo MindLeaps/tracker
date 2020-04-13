@@ -1,4 +1,4 @@
-## Unreleased
+## 0.23.1 - Fix analytics display of individual students
 - Fixed displaying group analytics instead of a single student when a student is selected
 
 ## 0.23.0 - Country of Nationality for Students
