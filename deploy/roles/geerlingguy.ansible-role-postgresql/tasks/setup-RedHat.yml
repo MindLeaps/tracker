@@ -1,7 +1,7 @@
 ---
 - name: Ensure PostgreSQL packages are installed.
-  package: "name={{ item }} state=installed enablerepo={{ postgresql_enablerepo }}"
+  package: "name={{ item }} state=present enablerepo={{ postgresql_enablerepo }}"
   with_items: "{{ postgresql_packages }}"
 
 - name: Ensure PostgreSQL Python libraries are installed.
-  package: "name=python-psycopg2 state=installed enablerepo={{ postgresql_enablerepo }}"
+  package: "name=python-psycopg2 state=present enablerepo={{ postgresql_enablerepo }}"
