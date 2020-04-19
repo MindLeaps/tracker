@@ -1,5 +1,5 @@
 # MindLeaps Tracker
-[![Build Status](https://travis-ci.org/MindLeaps/tracker.svg?branch=master)](https://travis-ci.org/MindLeaps/tracker) [![security](https://hakiri.io/github/MindLeaps/tracker/master.svg)](https://hakiri.io/github/MindLeaps/tracker/master)
+![CI](https://github.com/MindLeaps/tracker/workflows/CI/badge.svg) [![security](https://hakiri.io/github/MindLeaps/tracker/master.svg)](https://hakiri.io/github/MindLeaps/tracker/master)
 [![Coverage Status](https://coveralls.io/repos/github/MindLeaps/tracker/badge.svg?branch=master)](https://coveralls.io/github/MindLeaps/tracker?branch=master)
 
 This software is responsible for keeping track of Students in the field and their progress in MindLeaps programs.
