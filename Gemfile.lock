@@ -294,7 +294,7 @@ GEM
     rb-fsevent (0.10.3)
     rb-inotify (0.10.0)
       ffi (~> 1.0)
-    regexp_parser (1.7.0)
+    regexp_parser (1.7.1)
     responders (3.0.0)
       actionpack (>= 5.0)
       railties (>= 5.0)
@@ -330,7 +330,8 @@ GEM
       parser (>= 2.7.0.1)
     rubocop-performance (1.6.1)
       rubocop (>= 0.71.0)
-    rubocop-rails (2.3.2)
+    rubocop-rails (2.5.2)
+      activesupport
       rack (>= 1.1)
       rubocop (>= 0.72.0)
     ruby-debug-ide (0.7.2)
