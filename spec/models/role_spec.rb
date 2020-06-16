@@ -14,7 +14,7 @@ RSpec.describe Role, type: :model do
         end
 
         it 'is invalid when set as a local role' do
-          user.add_role :super_admin, org
+          expect { user.add_role :super_admin, org }.to raise_error ActiveRecord::RecordInvalid
           expect(user.has_role?(:super_admin)).to be false
           expect(user.has_role?(:super_admin, org)).to be false
         end
@@ -27,7 +27,7 @@ RSpec.describe Role, type: :model do
         end
 
         it 'is invalid when set as a local role' do
-          user.add_role :global_admin, org
+          expect { user.add_role :global_admin, org }.to raise_error ActiveRecord::RecordInvalid
           expect(user.has_role?(:global_admin)).to be false
           expect(user.has_role?(:global_admin, org)).to be false
         end
@@ -35,7 +35,7 @@ RSpec.describe Role, type: :model do
 
       describe 'admin' do
         it 'is invalid when set as a global role' do
-          user.add_role :admin
+          expect { user.add_role :admin }.to raise_error ActiveRecord::RecordInvalid
           expect(user.has_role?(:admin)).to be false
         end
 
@@ -48,7 +48,7 @@ RSpec.describe Role, type: :model do
 
       describe 'teacher' do
         it 'is invalid when set as a global role' do
-          user.add_role :teacher
+          expect { user.add_role :teacher }.to raise_error ActiveRecord::RecordInvalid
           expect(user.has_role?(:teacher)).to be false
         end
 
@@ -61,7 +61,7 @@ RSpec.describe Role, type: :model do
 
       describe 'researcher' do
         it 'is invalid when set as a global role' do
-          user.add_role :researcher
+          expect { user.add_role :researcher }.to raise_error ActiveRecord::RecordInvalid
           expect(user.has_role?(:researcher)).to be false
         end
 

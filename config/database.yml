@@ -2,7 +2,7 @@ default: &default
   adapter: postgresql
   pool: 5
   timeout: 5000
-  host: <%= ENV['DATABASE_USER'] || 'db' %>
+  host: <%= ENV['DATABASE_HOST'] || 'localhost' %>
   username: <%= ENV['DATABASE_USER'] || 'tracker' %>
   password: <%= ENV['DATABASE_PASSWORD'] || 'tracker' %>
 

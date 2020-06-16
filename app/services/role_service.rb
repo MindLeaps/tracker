@@ -5,14 +5,14 @@ class RoleService
     def update_global_role(user, new_role)
       role_update_global_transaction user, new_role
       true
-    rescue ActiveRecord::RecordNotSaved
+    rescue ActiveRecord::RecordInvalid
       false
     end
 
     def update_local_role(user, new_role, org)
       role_update_transaction user, new_role, org
       true
-    rescue ActiveRecord::RecordNotSaved
+    rescue ActiveRecord::RecordInvalid
       false
     end
 

@@ -106,8 +106,8 @@ end
 RSpec.shared_examples :it_cannot_change_local_role do
   subject { MembershipPolicy.new user, membership }
 
-  context :revoke_global_role_from_user do
-    let(:other_user) { create :user_with_global_role, role: role, organization: org }
+  context :change_local_role_for_user do
+    let(:other_user) { create :user_with_role, role: role, organization: org }
     let(:membership) { Membership.new user: other_user, role: :guest, org: org }
     it { is_expected.to forbid_action :update }
   end
