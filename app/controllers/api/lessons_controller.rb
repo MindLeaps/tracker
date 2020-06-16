@@ -10,7 +10,7 @@ module Api
       @lessons = apply_scopes(@api_version == 2 ? policy_scope(Lesson) : Lesson).all
       if @api_version == 2
         authorize Lesson
-        respond_with @lessons, include: included_params, meta: { timestamp: Time.zone.now }, each_serializer: LessonSerializerUUID
+        respond_with @lessons, include: included_params, meta: { timestamp: Time.zone.now }, each_serializer: LessonSerializerUuid
       else
         respond_with @lessons, include: included_params, meta: { timestamp: Time.zone.now }
       end
@@ -19,7 +19,7 @@ module Api
     def show
       if @api_version == 2
         @lesson = Lesson.find_by uid: params.require(:id)
-        respond_with @lesson, include: included_params, meta: { timestamp: Time.zone.now }, serializer: LessonSerializerUUID
+        respond_with @lesson, include: included_params, meta: { timestamp: Time.zone.now }, serializer: LessonSerializerUuid
       else
         @lesson = Lesson.find params.require :id
         respond_with @lesson, include: included_params, meta: { timestamp: Time.zone.now }
@@ -34,7 +34,7 @@ module Api
       return if performed?
 
       if @api_version == 2
-        respond_with lesson.reload, meta: { timestamp: Time.zone.now }, serializer: LessonSerializerUUID, location: api_lesson_url(id: lesson.uid)
+        respond_with lesson.reload, meta: { timestamp: Time.zone.now }, serializer: LessonSerializerUuid, location: api_lesson_url(id: lesson.uid)
       else
         respond_with lesson, meta: { timestamp: Time.zone.now }
       end
@@ -64,7 +64,7 @@ module Api
       return unless lesson
 
       if @api_version == 2
-        respond_with(lesson, status: :ok, meta: { timestamp: Time.zone.now }, serializer: LessonSerializerUUID)
+        respond_with(lesson, status: :ok, meta: { timestamp: Time.zone.now }, serializer: LessonSerializerUuid)
       else
         respond_with(lesson, status: :ok, meta: { timestamp: Time.zone.now })
       end
