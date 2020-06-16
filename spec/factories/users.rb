@@ -29,19 +29,19 @@ FactoryBot.define do
     end
 
     factory :admin_of do
-      after(:create) { |user, evaluator| user.add_role :admin, evaluator.organization }
+      after(:create) { |user, evaluator| evaluator.organization && user.add_role(:admin, evaluator.organization) }
     end
 
     factory :teacher_in do
-      after(:create) { |user, evaluator| user.add_role :teacher, evaluator.organization }
+      after(:create) { |user, evaluator| evaluator.organization && user.add_role(:teacher, evaluator.organization) }
     end
 
     factory :guest_in do
-      after(:create) { |user, evaluator| user.add_role :guest, evaluator.organization }
+      after(:create) { |user, evaluator| evaluator.organization && user.add_role(:guest, evaluator.organization) }
     end
 
     factory :researcher_in do
-      after(:create) { |user, evaluator| user.add_role :researcher, evaluator.organization }
+      after(:create) { |user, evaluator| evaluator.organization && user.add_role(:researcher, evaluator.organization) }
     end
 
     factory :user_with_role do

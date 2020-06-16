@@ -66,8 +66,8 @@ class User < ApplicationRecord
   private
 
   def before_add_role(role)
-    raise ActiveRecord::Rollback if Role::LOCAL_ROLES[role.symbol].nil? && Role::GLOBAL_ROLES[role.symbol].nil?
-    raise ActiveRecord::Rollback if roles.pluck(:resource_id).include?(role.resource_id)
+    raise ActiveRecord::RecordInvalid if Role::LOCAL_ROLES[role.symbol].nil? && Role::GLOBAL_ROLES[role.symbol].nil?
+    raise ActiveRecord::RecordInvalid if roles.pluck(:resource_id).include?(role.resource_id)
   end
 
   def local_role_level_in(organization)
