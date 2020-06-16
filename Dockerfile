@@ -2,7 +2,7 @@ ARG APP_ENV=dev
 ARG MINDLEAPS_HOME=/mindleaps
 ARG TRACKER_HOME=$MINDLEAPS_HOME/tracker
 
-FROM ruby:2.6.4 as base
+FROM ruby:2.7.1 as base
 RUN apt-get update && apt-get -y --no-install-recommends install \
     ca-certificates \
     curl
