@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class LessonSerializerUUID < ActiveModel::Serializer
+class LessonSerializerUuid < ActiveModel::Serializer
   attribute :uid, key: :id
   attributes :group_id, :subject_id, :date, :deleted_at
 

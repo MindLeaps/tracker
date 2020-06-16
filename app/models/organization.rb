@@ -16,6 +16,6 @@ class Organization < ApplicationRecord
   end
 
   def members
-    User.includes(:users_roles, :roles).where('roles.resource_id' => id)
+    User.includes(:roles_users, :roles).where('roles.resource_id' => id)
   end
 end
