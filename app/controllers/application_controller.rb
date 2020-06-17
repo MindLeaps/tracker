@@ -1,59 +1,32 @@
 # frozen_string_literal: true
 
-class ApplicationController < BaseController
-  # Prevent CSRF attacks by raising an exception.
-  # For APIs, you may want to use :null_session instead.
-  protect_from_forgery with: :exception
-  before_action :better_errors_hack, if: -> { Rails.env.development? } # Hack to make better errors work with Puma
-  after_action :verify_authorized, unless: :devise_controller?
-  # rubocop:disable Rails/LexicallyScopedActionFilter
-  after_action :verify_policy_scoped, only: :index
-  # rubocop:enable Rails/LexicallyScopedActionFilter
-  around_action :switch_locale
+class ApplicationController < ActionController::Base
+  include Pundit
+  before_action :authenticate_user!
 
-  def switch_locale(&action)
-    locale = params[:locale] || I18n.default_locale
-    I18n.with_locale(locale, &action)
+  def append_info_to_payload(payload)
+    super
+    payload[:user_email] = current_user.try :email
   end
 
-  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
-
-  def session_path(*args)
-    new_user_session_path(*args)
+  def current_user
+    # Including roles in Devise's current_user so we can use has_cached_role? and avoid N+1 when checking for roles
+    # https://stackoverflow.com/questions/6902531/how-to-eager-load-associations-with-the-current-user
+    @current_user ||= super && User.includes(:roles).where(id: @current_user.id).first
   end
 
-  def notice_and_redirect(notice, redirect_url)
-    flash[:notice] = notice
-    redirect_to redirect_url
-  end
-
-  def undo_notice_and_redirect(notice, undo_path, redirect_url)
-    flash[:undo_notice] = { text: notice, path: undo_path }
-    redirect_to redirect_url
-  end
-
-  def link_notice_and_redirect(notice, link_path, link_text, redirect_url)
-    link = view_context.link_to link_text, link_path, class: 'notice-link alert-link btn-link'
-    flash[:link_notice] = notice + " #{link}"
-    redirect_to redirect_url
-  end
-
-  def user_not_authorized
-    flash[:alert] = I18n.t :unauthorized_logout
-    sign_out current_user
-    render :unauthorized, status: :unauthorized, layout: false
-  end
-
-  add_flash_types :undo_notice, :link_notice
-
-  helper_method :session_path
-
-  private
-
-  # On Puma 3.x, better errors tries to serialize all of Puma's variables, which includes a massive > 2MB :app variable
-  # which is completely useless for debugging and causes long loading times; therefore, we remove it.
-  # More info: https://github.com/charliesome/better_errors/issues/341
-  def better_errors_hack
-    request.env['puma.config'].options.user_options.delete(:app) if request.env.key?('puma.config')
-  end
+  # Uncomment this to skip authentication in development
+  # def authenticate_user!
+  #   return true if Rails.env.development?
+  #
+  #   raise SecurityError
+  # end
+  #
+  # def current_user
+  #   raise SecurityError unless Rails.env.development?
+  #
+  #   user = User.find_or_create_by!(email: 'test@example.com')
+  #   user.add_role :super_admin
+  #   user
+  # end
 end

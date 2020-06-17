@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SkillsController < ApplicationController
+class SkillsController < HtmlController
   include Pagy::Backend
   has_scope :exclude_deleted, only: :index, type: :boolean, default: true
   has_scope :search, only: :index

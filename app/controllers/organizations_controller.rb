@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class OrganizationsController < ApplicationController
+class OrganizationsController < HtmlController
   include Pagy::Backend
   has_scope :table_order, type: :hash
 

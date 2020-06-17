@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Api
-  class ApiController < BaseController
+  class ApiController < ApplicationController
     before_action :skip_session_cookie
     before_action :set_api_version
     protect_from_forgery with: :null_session

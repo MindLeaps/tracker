@@ -2,7 +2,7 @@
 
 task stats: 'st'
 
-task :st do
+task st: :environment do
   require 'rails/code_statistics'
   ::STATS_DIRECTORIES << ['Policies', 'app/policies']
   ::STATS_DIRECTORIES << ['Serializers', 'app/serializers']

@@ -2,6 +2,7 @@ require:
   - rubocop-performance
   - rubocop-rails
 AllCops:
+  NewCops: enable
   Exclude:
     - db/schema.rb
     - bin/spring

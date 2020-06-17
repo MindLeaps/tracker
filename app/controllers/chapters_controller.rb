@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ChaptersController < ApplicationController
+class ChaptersController < HtmlController
   include Pagy::Backend
   has_scope :table_order, type: :hash
 

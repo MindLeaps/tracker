@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class StudentsController < ApplicationController
+class StudentsController < HtmlController
   include Pagy::Backend
   has_scope :exclude_deleted, only: :index, type: :boolean, default: true
   has_scope :exclude_empty, only: :performance, type: :boolean, default: true

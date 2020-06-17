@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Analytics
-  class AnalyticsController < :: ApplicationController
+  class AnalyticsController < ::HtmlController
     protect_from_forgery with: :exception
     skip_after_action :verify_authorized
 

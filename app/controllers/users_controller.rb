@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class UsersController < ApplicationController
+class UsersController < HtmlController
   include Pagy::Backend
   has_scope :table_order, type: :hash
   has_scope :search, only: :index
