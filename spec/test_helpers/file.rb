@@ -2,11 +2,11 @@
 
 module Helpers
   def test_image_path
-    Rails.root.join('spec', 'images', 'student_image.png')
+    Rails.root.join('spec/images/student_image.png')
   end
 
   def invalid_image_path
-    Rails.root.join('spec', 'images', 'invalid_image.txt')
+    Rails.root.join('spec/images/invalid_image.txt')
   end
 
   def test_image

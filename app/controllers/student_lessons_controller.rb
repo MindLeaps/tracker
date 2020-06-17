@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class StudentLessonsController < ApplicationController
+class StudentLessonsController < HtmlController
   def show
     lesson = lesson_from_param
     authorize lesson, :show?

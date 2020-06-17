@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SubjectsController < ApplicationController
+class SubjectsController < HtmlController
   include Pagy::Backend
 
   def index

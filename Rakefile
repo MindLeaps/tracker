@@ -9,7 +9,7 @@ Rails.application.load_tasks
 require 'rubocop/rake_task'
 
 desc 'Run Rubocop for static analysis of Ruby code'
-task :rubocop do
+task rubocop: :environment do
   RuboCop::RakeTask.new(:rubocop)
 end
 

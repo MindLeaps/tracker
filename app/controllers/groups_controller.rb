@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class GroupsController < ApplicationController
+class GroupsController < HtmlController
   include Pagy::Backend
   has_scope :exclude_deleted, type: :boolean, default: true
   has_scope :table_order, type: :hash

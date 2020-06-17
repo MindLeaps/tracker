@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class StudentImagesController < ApplicationController
+class StudentImagesController < HtmlController
   skip_after_action :verify_policy_scoped, only: :index
 
   def index
