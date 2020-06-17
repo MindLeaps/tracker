@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/LineLength
+# rubocop:disable Layout/LineLength
 # rubocop:disable Metrics/MethodLength
 def seed_mindleaps_skills(organization)
   Skill.create([
@@ -69,5 +69,5 @@ def seed_mindleaps_skills(organization)
                                                                                                                                                                                   ]) }
                ])
 end
-# rubocop:enable Metrics/LineLength
+# rubocop:enable Layout/LineLength
 # rubocop:enable Metrics/MethodLength
