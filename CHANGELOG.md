@@ -1,5 +1,5 @@
 ## Unreleased
-- Upgraded Rails to 6.0.3.1
+- Upgraded Rails to 6.0.3.2
 - Upgraded Ruby to 2.7.1
 
 ## 0.23.1 - Fix analytics display of individual students
