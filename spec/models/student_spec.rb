@@ -11,6 +11,8 @@ RSpec.describe Student, type: :model do
     it { should have_many :absences }
     it { should have_many :student_images }
     it { should accept_nested_attributes_for :student_images }
+    it { should have_many :student_tags }
+    it { should have_many :tags }
   end
 
   describe 'validate' do

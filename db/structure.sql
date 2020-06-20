@@ -24,6 +24,20 @@ COMMENT ON EXTENSION pg_stat_statements IS 'track execution statistics of all SQ
 
 
 --
+-- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
+
+
+--
 -- Name: tablefunc; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -690,6 +704,18 @@ CREATE VIEW public.student_lessons AS
 
 
 --
+-- Name: student_tags; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.student_tags (
+    student_id bigint NOT NULL,
+    tag_id uuid NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
 -- Name: students_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -739,6 +765,20 @@ CREATE SEQUENCE public.subjects_id_seq
 --
 
 ALTER SEQUENCE public.subjects_id_seq OWNED BY public.subjects.id;
+
+
+--
+-- Name: tags; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.tags (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    tag_name character varying NOT NULL,
+    organization_id bigint NOT NULL,
+    shared boolean NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
 
 
 --
@@ -1033,6 +1073,14 @@ ALTER TABLE ONLY public.subjects
 
 
 --
+-- Name: tags tags_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.tags
+    ADD CONSTRAINT tags_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1181,6 +1229,20 @@ CREATE INDEX index_student_images_on_student_id ON public.student_images USING b
 
 
 --
+-- Name: index_student_tags_on_student_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_student_tags_on_student_id ON public.student_tags USING btree (student_id);
+
+
+--
+-- Name: index_student_tags_on_tag_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_student_tags_on_tag_id ON public.student_tags USING btree (tag_id);
+
+
+--
 -- Name: index_students_on_group_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1199,6 +1261,13 @@ CREATE INDEX index_students_on_profile_image_id ON public.students USING btree (
 --
 
 CREATE INDEX index_subjects_on_organization_id ON public.subjects USING btree (organization_id);
+
+
+--
+-- Name: index_tags_on_organization_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_tags_on_organization_id ON public.tags USING btree (organization_id);
 
 
 --
@@ -1479,6 +1548,14 @@ ALTER TABLE ONLY public.chapters
 
 
 --
+-- Name: student_tags fk_rails_21aa011b2b; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.student_tags
+    ADD CONSTRAINT fk_rails_21aa011b2b FOREIGN KEY (tag_id) REFERENCES public.tags(id);
+
+
+--
 -- Name: absences fk_rails_442f8d40b0; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1492,6 +1569,14 @@ ALTER TABLE ONLY public.absences
 
 ALTER TABLE ONLY public.students
     ADD CONSTRAINT fk_rails_512f7ce835 FOREIGN KEY (profile_image_id) REFERENCES public.student_images(id);
+
+
+--
+-- Name: student_tags fk_rails_a7fbbb3454; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.student_tags
+    ADD CONSTRAINT fk_rails_a7fbbb3454 FOREIGN KEY (student_id) REFERENCES public.students(id);
 
 
 --
@@ -1637,6 +1722,7 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('0'),
 ('20151101232844'),
 ('20151220030058'),
 ('20151221020928'),
@@ -1724,6 +1810,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20191107010120'),
 ('20191201014634'),
 ('20191202044021'),
-('20200222045456');
+('20200222045456'),
+('20200619222042');
 
 
