@@ -26,7 +26,12 @@
   = f.input :hiv_tested
   hr
     #tag-container
-  = f.association :tags, collection: Tag.all, label_method: :tag_name, value_method: :id, include_hidden: false, wrapper_html: { class: 'hidden' }, input_html: { id: 'tags-field', multiple: true }
+  = f.association :tags,
+          collection: policy_scope(Tag),
+          label_method: :tag_name,
+          value_method: :id,
+          include_hidden: false,
+          wrapper_html: { class: 'hidden' }, input_html: { id: 'tags-field', multiple: true }
   = f.input :tags_autocomplete, as: :fake, label: t(:tags), input_html: { id: 'tag-autocomplete' }
   hr
   = f.input :notes, input_html: {rows: 5}
