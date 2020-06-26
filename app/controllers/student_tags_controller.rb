@@ -15,16 +15,35 @@ class StudentTagsController < HtmlController
     authorize @tag
   end
 
+  def edit
+    @tag = Tag.find params.require(:id)
+    authorize @tag
+  end
+
+  def update
+    @tag = Tag.find params.require(:id)
+    authorize @tag
+    return redirect_to student_tag_path(@tag) if @tag.update tag_params
+
+    render :edit
+  end
+
   def new
     authorize Tag
-    @student_tag = Tag.new
+    @tag = Tag.new
   end
 
   def create
-    tag = Tag.new(params.require(:tag).permit(:tag_name, :organization_id, :shared))
+    tag = Tag.new tag_params
     authorize tag
     return link_notice_and_redirect t(:tag_created, name: tag.tag_name), new_student_tag_path, I18n.t(:create_another), student_tag_path(tag) if tag.save
 
     render :new
+  end
+
+  private
+
+  def tag_params
+    params.require(:tag).permit(:tag_name, :organization_id, :shared)
   end
 end

@@ -66,7 +66,7 @@ Rails.application.routes.draw do
   end
   get '/students/:id', to: redirect('/students/%{id}/performance')
 
-  resources :student_tags, only: %i[index new create show edit]
+  resources :student_tags, only: %i[index new create show edit update]
 
   resources :lessons, only: %i[index new create show] do
     resources :students, controller: :student_lessons, only: %i[show update]

@@ -24,8 +24,8 @@ RSpec.describe StudentTagsController, type: :controller do
         it { should respond_with 200 }
 
         it 'gets a list of student tags' do
-          expect(assigns(:tags)).to include @tag1
-          expect(assigns(:tags)).to include @tag2
+          expect(assigns(:tags).length).to eq 2
+          expect(assigns(:tags).map(&:id)).to include @tag1.id, @tag2.id
         end
       end
     end
@@ -49,6 +49,29 @@ RSpec.describe StudentTagsController, type: :controller do
       end
 
       it { should respond_with 200 }
+    end
+
+    describe '#edit' do
+      before :each do
+        @tag = create :tag
+        get :edit, params: { id: @tag.id }
+      end
+
+      it { should respond_with 200 }
+    end
+
+    describe '#update' do
+      before :each do
+        @tag = create :tag, tag_name: 'My Old Tag'
+      end
+
+      it 'updates the student\'s profile image' do
+        post :update, params: { id: @tag.id, tag: {
+          tag_name: 'My New Tag'
+        } }
+
+        expect(@tag.reload.tag_name).to eq 'My New Tag'
+      end
     end
 
     describe '#create' do

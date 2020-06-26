@@ -172,6 +172,7 @@ en:
   add_tag: Add Tag
   edit_tag: Edit Tag
   new_student_tag: New Student Tag
+  edit_student_tag: Edit Student Tag
   tag_shared_explanation: Shared tags will be available to all organizations, rather than just the organization the tag belongs to.
   tag_created: Tag "%{name}" created.
 

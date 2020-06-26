@@ -30,6 +30,16 @@ RSpec.describe 'User interacts with Student Tags' do
       expect(page).to have_content @tags[0].tag_name
       expect(page).to have_content @tags[1].tag_name
       expect(page).to have_content @tags[2].tag_name
+
+      find(:css, '#edit-button-0').click
+
+      fill_in 'Tag name', with: 'My Edited Tag'
+      click_button 'Update'
+
+      expect(page).to have_content 'My Edited Tag'
+
+      find(:css, '#back-button').click
+      expect(page).to have_content 'My Edited Tag'
     end
   end
 end
