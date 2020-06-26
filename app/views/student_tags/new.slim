@@ -1,0 +1,16 @@
+-content_for :title, t(:new_student_tag).capitalize
+
+- content_for :header_content do
+  = render layout: '/shared/header_content', locals: { title: t(:new_student_tag).capitalize } do
+
+.content-card--most.center
+  = simple_form_for @student_tag, url: {action: :create} do |f|
+    = render partial: 'shared/errors', locals: {subject: @student_tag}
+    = f.input :tag_name, input_html: {autofocus: true}
+    hr
+    = f.association :organization, collection: policy_scope(Organization), label_method: :organization_name
+    = f.input :shared
+    div
+      = t :tag_shared_explanation
+    hr
+    = f.button :submit, class: 'mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-js-ripple-effect'

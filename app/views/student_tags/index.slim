@@ -1,0 +1,39 @@
+-content_for :title, t(:student_tags).capitalize
+
+- content_for :header_content do
+  = render layout: '/shared/header_content', locals: { title: t(:student_tags).capitalize } do
+    = render partial: '/shared/main_header_button', locals: {href: new_student_tag_path, title: t(:add_tag)} if policy(Tag).new?
+
+.mdl-tabs.mdl-js-tabs.mdl-js-ripple-effect
+  .mdl-tabs__tab-bar
+    a href=(students_url) class="mdl-tabs__tab"
+      = (t :students)
+    a href="" class="mdl-tabs__tab is-active"
+      = (t :student_tags)
+
+.single-content-card
+  table.mdl-data-table.mdl-js-data-table.resource-table
+    thead
+      == render partial: 'shared/pagy_nav', locals: {pagy: @pagy, resource: t(:students), span: 4, search: {term: params[:search]}}
+      tr
+        th.mdl-data-table__cell--non-numeric
+          | #
+        == render partial: 'shared/ordered_column', locals: {order_key: :tag_name, column_name: t(:tag_name)}
+        == render partial: 'shared/ordered_column', locals: {order_key: :organization_name, column_name: t(:organization)}
+        th
+          | Actions
+    tbody
+    - @tags.each_with_index do |tag, i|
+      tr.resource-row
+        td.mdl-data-table__cell--non-numeric
+          = link_to @pagy.from + i, student_tag_path(tag)
+        td.mdl-data-table__cell--non-numeric
+          = link_to tag.tag_name, student_tag_path(tag)
+        td.mdl-data-table__cell--non-numeric
+          = link_to tag.organization.organization_name + (tag.shared ? " - #{t(:shared)}" : ''), student_tag_path(tag)
+        td
+          - if policy(tag).update?
+            a href=edit_student_tag_path(tag) id="edit-button-#{i}" class='mdl-button mdl-js-button mdl-button--icon table-action-icon'
+              = image_tag 'edit.svg'
+            .mdl-tooltip data-mdl-for="edit-button-#{i}"
+              = t(:edit_tag)

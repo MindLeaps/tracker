@@ -7,7 +7,7 @@ RSpec.describe TagPolicy do
     describe 'resolve_for_organization_id' do
       let(:org1) { create :organization }
       let(:org2) { create :organization }
-      let(:current_user) {create :admin_of, organization: org1}
+      let(:current_user) { create :admin_of, organization: org1 }
       subject(:result) { TagPolicy::Scope.new(current_user, Tag).resolve_for_organization_id(org1.id) }
 
       it 'scopes to organization and shared tags' do
