@@ -56,6 +56,7 @@ en:
   student_delete_confirmation: Are you sure you want to delete student "%{name}"?
   student_deleted: Student "%{name}" deleted.
   student_restored: Student "%{name}" restored.
+  number_of_students: Number of Students
   edit_student: Edit Student
   group_created: Group "%{group}" created.
   group_updated: Group "%{group}" updated.

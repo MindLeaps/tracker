@@ -8,7 +8,7 @@ table class="mdl-data-table mdl-js-data-table resource-table"
         | #
       == render partial: 'shared/ordered_column', locals: { order_key: :group_name, column_name: 'Group Name' }
       == render partial: 'shared/ordered_column', locals: { order_key: :chapter_name, column_name: 'Chapter - Organization' }
-      == render partial: 'shared/ordered_column', locals: { order_key: :student_count, column_name: 'Number of Students', numeric: true }
+      == render partial: 'shared/ordered_column', locals: { order_key: :student_count, column_name: t(:number_of_students), numeric: true }
   - groups.each_with_index do |group_summary, i|
     - path = group_path group_summary.id
     tr class=(['resource-row', 'group-row', group_summary.deleted_at ? 'deleted-row' : nil])

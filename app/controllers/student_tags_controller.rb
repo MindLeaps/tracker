@@ -3,10 +3,11 @@
 class StudentTagsController < HtmlController
   include Pagy::Backend
   has_scope :table_order, only: :index, type: :hash
+  has_scope :search, only: [:index]
 
   def index
     authorize Tag
-    @pagy, @tags = pagy apply_scopes(policy_scope(Tag.includes(:organization)))
+    @pagy, @tags = pagy apply_scopes(policy_scope(StudentTagTableRow.includes(:organization), policy_scope_class: TagPolicy::Scope))
   end
 
   def show

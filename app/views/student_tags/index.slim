@@ -14,12 +14,13 @@
 .single-content-card
   table.mdl-data-table.mdl-js-data-table.resource-table
     thead
-      == render partial: 'shared/pagy_nav', locals: {pagy: @pagy, resource: t(:students), span: 4, search: {term: params[:search]}}
+      == render partial: 'shared/pagy_nav', locals: {pagy: @pagy, resource: t(:tags), span: 5, search: {term: params[:search]}}
       tr
         th.mdl-data-table__cell--non-numeric
           | #
         == render partial: 'shared/ordered_column', locals: {order_key: :tag_name, column_name: t(:tag_name)}
         == render partial: 'shared/ordered_column', locals: {order_key: :organization_name, column_name: t(:organization)}
+        == render partial: 'shared/ordered_column', locals: {order_key: :student_count, column_name: t(:number_of_students), numeric: true}
         th
           | Actions
     tbody
@@ -30,7 +31,9 @@
         td.mdl-data-table__cell--non-numeric
           = link_to tag.tag_name, student_tag_path(tag)
         td.mdl-data-table__cell--non-numeric
-          = link_to tag.organization.organization_name + (tag.shared ? " - #{t(:shared)}" : ''), student_tag_path(tag)
+          = link_to tag.organization_name + (tag.shared ? " - #{t(:shared)}" : ''), student_tag_path(tag)
+        td.mdl-data-table__cell
+          = link_to tag.student_count, student_tag_path(tag)
         td
           - if policy(tag).update?
             a href=edit_student_tag_path(tag) id="edit-button-#{i}" class='mdl-button mdl-js-button mdl-button--icon table-action-icon'

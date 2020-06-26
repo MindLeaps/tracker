@@ -704,6 +704,20 @@ CREATE VIEW public.student_lessons AS
 
 
 --
+-- Name: student_tag_table_rows; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.student_tag_table_rows AS
+SELECT
+    NULL::uuid AS id,
+    NULL::character varying AS tag_name,
+    NULL::boolean AS shared,
+    NULL::bigint AS organization_id,
+    NULL::character varying AS organization_name,
+    NULL::bigint AS student_count;
+
+
+--
 -- Name: student_tags; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1524,6 +1538,23 @@ CREATE OR REPLACE VIEW public.student_lesson_summaries AS
 
 
 --
+-- Name: student_tag_table_rows _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.student_tag_table_rows AS
+ SELECT t.id,
+    t.tag_name,
+    t.shared,
+    t.organization_id,
+    o.organization_name,
+    count(st.student_id) AS student_count
+   FROM ((public.tags t
+     JOIN public.organizations o ON ((t.organization_id = o.id)))
+     LEFT JOIN public.student_tags st ON ((t.id = st.tag_id)))
+  GROUP BY t.id, t.organization_id, o.organization_name;
+
+
+--
 -- Name: assignments assignments_skill_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1811,6 +1842,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20191201014634'),
 ('20191202044021'),
 ('20200222045456'),
-('20200619222042');
+('20200619222042'),
+('20200626021523');
 
 
