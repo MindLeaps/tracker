@@ -28,7 +28,7 @@ class GroupsController < HtmlController
   def show
     @group = Group.includes(:chapter).find params[:id]
     authorize @group
-    @pagy, @students = pagy apply_scopes(@group.students.includes(:profile_image))
+    @pagy, @students = pagy apply_scopes(@group.students.includes(:tags))
   end
 
   def edit
