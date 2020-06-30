@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :tag do
-    tag_name { Faker::Blood.group }
+    tag_name { Faker::Games::Pokemon.name }
     organization { create :organization }
     shared { true }
   end

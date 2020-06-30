@@ -50,4 +50,10 @@ div class="content-card--full"
     li class="mdl-list__item"
       | HIV Tested: #{@student.hiv_tested}
     li class="mdl-list__item"
+      | #{t(:tags)}:
+      - @student.tags.each do |tag|
+        span.mdl-chip
+          span.mdl-chip__text
+            = tag.tag_name
+    li class="mdl-list__item"
       | Notes: #{@student.notes}

@@ -247,6 +247,16 @@ RSpec.describe StudentsController, type: :controller do
 
         expect(@student.reload.profile_image).to eq @image
       end
+
+      it 'updates the student\'s tags' do
+        tag1 = create :tag
+        tag2 = create :tag
+
+        post :update, params: { id: @student.id, student: { tag_ids: [tag1.id, tag2.id, @student.tags[0].id] } }
+
+        expect(@student.reload.tags.map(&:tag_name)).to include(tag1.tag_name, tag2.tag_name, @student.tags[0].tag_name)
+        expect(@student.reload.tags.length).to eq 3
+      end
     end
 
     describe '#destroy' do

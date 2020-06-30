@@ -7,12 +7,12 @@ table class='mdl-data-table mdl-js-data-table resource-table'
       th.mdl-data-table__cell--non-numeric
         | #
       == render partial: 'shared/ordered_column', locals: { order_key: :mlid, column_name: 'MLID' }
-      th.mdl-data-table__cell--non-numeric
-        | Image
       == render partial: 'shared/ordered_column', locals: { order_key: :last_name, column_name: 'Last Name' }
       == render partial: 'shared/ordered_column', locals: { order_key: :first_name, column_name: 'First Name' }
       == render partial: 'shared/ordered_column', locals: { order_key: :gender, column_name: 'Gender' }
       == render partial: 'shared/ordered_column', locals: { order_key: :dob, column_name: 'Date of Birth' }
+      th.mdl-data-table__cell--non-numeric
+        = t(:tags)
       == render partial: 'shared/ordered_column', locals: { order_key: :order_by_group_name, column_name: 'Group', custom_order?: true }
       th
         | Actions
@@ -25,8 +25,6 @@ table class='mdl-data-table mdl-js-data-table resource-table'
       td.mdl-data-table__cell--non-numeric
         = link_to student.mlid, student_path(student)
       td.mdl-data-table__cell--non-numeric
-        = link_to image_tag(student_mini_thumbnail(student), alt: 'profile image', class: 'mini-thumb-profile-image'), student_path(student)
-      td.mdl-data-table__cell--non-numeric
         = link_to student.last_name, student_path(student)
       td.mdl-data-table__cell--non-numeric
         = link_to student.first_name, student_path(student)
@@ -34,6 +32,12 @@ table class='mdl-data-table mdl-js-data-table resource-table'
         = link_to student.gender_i18n, student_path(student)
       td.mdl-data-table__cell--non-numeric
         = link_to "#{student.dob} #{student.estimated_dob ? 'EST' : ''}", student_path(student)
+      td.mdl-data-table__cell--non-numeric
+        a href=student_path(student)
+          - student.tags.each do |tag|
+            span.mdl-chip
+              span.mdl-chip__text
+                = tag.tag_name
       td.mdl-data-table__cell--non-numeric
         = link_to student_group_name(student), student_path(student)
       td
