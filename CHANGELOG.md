@@ -1,6 +1,7 @@
 ## Unreleased
 - Upgraded Rails to 6.0.3.2
 - Upgraded Ruby to 2.7.1
+- Implement Student Tags
 
 ## 0.23.1 - Fix analytics display of individual students
 - Fixed displaying group analytics instead of a single student when a student is selected
