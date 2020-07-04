@@ -14,7 +14,7 @@ gem 'pundit'
 gem 'rolify'
 gem 'tiddle'
 
-gem 'awesome_print'
+gem 'amazing_print'
 gem 'rails_semantic_logger'
 
 gem 'active_model_serializers', '~> 0.10.10'
