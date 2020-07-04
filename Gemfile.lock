@@ -64,11 +64,11 @@ GEM
       zeitwerk (~> 2.2, >= 2.2.2)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
+    amazing_print (1.2.1)
     apparition (0.6.0)
       capybara (~> 3.13, < 4)
       websocket-driver (>= 0.6.5)
     ast (2.4.1)
-    awesome_print (1.8.0)
     bcrypt (3.1.13)
     better_errors (2.7.1)
       coderay (>= 1.0.0)
@@ -451,8 +451,8 @@ PLATFORMS
 DEPENDENCIES
   SyslogLogger
   active_model_serializers (~> 0.10.10)
+  amazing_print
   apparition
-  awesome_print
   better_errors
   binding_of_caller
   bootsnap
