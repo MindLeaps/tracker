@@ -25,6 +25,113 @@
   = f.input :health_issues
   = f.input :hiv_tested
   hr
+    #tag-container
+  = f.association :tags,
+          collection: policy_scope(Tag),
+          label_method: :tag_name,
+          value_method: :id,
+          include_hidden: false,
+          wrapper_html: { class: 'hidden' }, input_html: { id: 'tags-field', multiple: true }
+  = f.input :tags_autocomplete, as: :fake, label: t(:student_tags), input_html: { id: 'tag-autocomplete' }
+  hr
   = f.input :notes, input_html: {rows: 5}
   hr
   = f.button :submit, class: 'mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-js-ripple-effect'
+
+javascript:
+  var input = document.getElementById('tag-autocomplete');
+  var tagsField = document.getElementById('tags-field');
+
+  var autocomplete = new Awesomplete(input, {
+    list: formatOptions(getOptionsToDisplayInAutocomplete()),
+    minChars: 0
+  });
+
+  var imageTag = '#{ image_tag "delete_forever.svg" }';
+
+  input.addEventListener('focus', function(e) {
+    autocomplete.evaluate();
+  });
+
+  input.addEventListener('keydown', function(e) {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+    }
+  });
+
+  var tagContainer = document.getElementById('tag-container');
+
+  input.addEventListener('awesomplete-selectcomplete', function (e) {
+    addTag(e.text);
+    input.value = '';
+    autocomplete.evaluate();
+  });
+
+  function renderTags() {
+    tagContainer.innerHTML = '';
+    tags = formatOptions(getOptions().filter(function(option) {
+      return option.selected === true;
+    }));
+
+    tags.forEach(function(tag) {
+      var chipSpan = document.createElement('span');
+      chipSpan.className = 'mdl-chip mdl-chip--deletable'
+
+      var chipText = document.createElement('span');
+      chipText.className = 'mdl-chip__text'
+      var text = document.createTextNode(tag.label);
+      chipText.appendChild(text);
+      chipSpan.appendChild(chipText);
+
+      var chipButton = document.createElement('button');
+      chipButton.className = 'mdl-chip__action'
+      chipButton.type = 'button'
+      chipButton.innerHTML = imageTag;
+      chipButton.addEventListener('click', function (e) {
+        removeTagWithValue(tag.value);
+      });
+      chipSpan.appendChild(chipButton);
+
+      tagContainer.appendChild(chipSpan);
+    });
+
+    updateAutocomplete();
+  }
+
+  function addTag(tag) {
+    var tagToAdd = getOptions().find(function(option) {
+      return option.value === tag.value;
+    })
+    tagToAdd.setAttribute('selected', 'selected');
+    renderTags();
+  }
+
+  function removeTagWithValue(value) {
+    var tagToRemove = getOptions().find(function(option) {
+      return option.value === value;
+    });
+    tagToRemove.removeAttribute('selected');
+    renderTags();
+  }
+
+  function getOptions() {
+    return Array.prototype.slice.call(tagsField.getElementsByTagName('option'));
+  }
+
+  function getOptionsToDisplayInAutocomplete() {
+    return getOptions().filter(function(option) {
+      return !option.selected;
+    });
+  }
+
+  function formatOptions(options) {
+    return options.map(function (option) {
+      return {value: option.value, label: option.innerText};
+    });
+  }
+
+  function updateAutocomplete() {
+    autocomplete.list = formatOptions(getOptionsToDisplayInAutocomplete());
+  }
+
+  renderTags();

@@ -30,10 +30,16 @@
 @import 'tables';
 @import 'chartist-settings';
 @import 'chartist';
+@import 'awesomplete.base';
+@import 'awesomplete.theme';
 //
 //* {
 //  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
 //}
+
+.card-padding {
+  padding: 16px;
+}
 
 .content-card {
   @extend .mdl-shadow--2dp;
@@ -52,6 +58,7 @@
 
 .content-card--most {
   @extend .content-card--cell;
+  @extend .card-padding;
   @extend .mdl-cell--8-col;
 }
 

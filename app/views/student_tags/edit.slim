@@ -1,0 +1,7 @@
+-content_for :title, t(:edit_student_tag).capitalize
+
+- content_for :header_content do
+  = render layout: '/shared/header_content', locals: { title: t(:new_student_tag).capitalize } do
+
+.content-card--most.center
+  = render partial: 'shared/tag_form', locals: {tag: @tag, action: :update}

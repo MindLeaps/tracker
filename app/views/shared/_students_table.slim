@@ -6,16 +6,16 @@ table class='mdl-data-table mdl-js-data-table resource-table'
     tr
       th.mdl-data-table__cell--non-numeric
         | #
-      == render partial: 'shared/ordered_column', locals: { order_key: :mlid, column_name: 'MLID' }
+      == render partial: 'shared/ordered_column', locals: { order_key: :mlid, column_name: t(:mlid) }
+      == render partial: 'shared/ordered_column', locals: { order_key: :last_name, column_name: t(:last_name) }
+      == render partial: 'shared/ordered_column', locals: { order_key: :first_name, column_name: t(:first_name) }
+      == render partial: 'shared/ordered_column', locals: { order_key: :gender, column_name: t(:gender) }
+      == render partial: 'shared/ordered_column', locals: { order_key: :dob, column_name: t(:date_of_birth), numeric: true }
       th.mdl-data-table__cell--non-numeric
-        | Image
-      == render partial: 'shared/ordered_column', locals: { order_key: :last_name, column_name: 'Last Name' }
-      == render partial: 'shared/ordered_column', locals: { order_key: :first_name, column_name: 'First Name' }
-      == render partial: 'shared/ordered_column', locals: { order_key: :gender, column_name: 'Gender' }
-      == render partial: 'shared/ordered_column', locals: { order_key: :dob, column_name: 'Date of Birth' }
-      == render partial: 'shared/ordered_column', locals: { order_key: :order_by_group_name, column_name: 'Group', custom_order?: true }
+        = t(:tags)
+      == render partial: 'shared/ordered_column', locals: { order_key: :order_by_group_name, column_name: t(:group), custom_order?: true }
       th
-        | Actions
+        = t(:actions)
   tbody
   - students.each_with_index do |student, i|
 
@@ -25,15 +25,19 @@ table class='mdl-data-table mdl-js-data-table resource-table'
       td.mdl-data-table__cell--non-numeric
         = link_to student.mlid, student_path(student)
       td.mdl-data-table__cell--non-numeric
-        = link_to image_tag(student_mini_thumbnail(student), alt: 'profile image', class: 'mini-thumb-profile-image'), student_path(student)
-      td.mdl-data-table__cell--non-numeric
         = link_to student.last_name, student_path(student)
       td.mdl-data-table__cell--non-numeric
         = link_to student.first_name, student_path(student)
       td.mdl-data-table__cell--non-numeric
         = link_to student.gender_i18n, student_path(student)
+      td.mdl-data-table__cell
+        = link_to "#{student.estimated_dob ? t(:circa) : ''}#{student.dob}", student_path(student)
       td.mdl-data-table__cell--non-numeric
-        = link_to "#{student.dob} #{student.estimated_dob ? 'EST' : ''}", student_path(student)
+        a href=student_path(student)
+          - student.tags.each do |tag|
+            span.mdl-chip
+              span.mdl-chip__text
+                = tag.tag_name
       td.mdl-data-table__cell--non-numeric
         = link_to student_group_name(student), student_path(student)
       td
@@ -41,4 +45,4 @@ table class='mdl-data-table mdl-js-data-table resource-table'
           a href=edit_student_path(student) id="edit-button-#{i}" class='mdl-button mdl-js-button mdl-button--icon table-action-icon'
             = image_tag 'edit.svg'
           .mdl-tooltip data-mdl-for="edit-button-#{i}"
-            | Edit Student
+            = t(:edit_student)

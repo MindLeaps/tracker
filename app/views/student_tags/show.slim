@@ -1,0 +1,18 @@
+- content_for :title, "#{t(:tag)} - #{@tag.tag_name}"
+
+- content_for :header_content do
+  = render layout: '/shared/header_content', locals: { back_button_url: student_tags_url, back_tooltip: t(:back_to_student_tags), title: "#{t(:tag)} - #{@tag.tag_name}" } do
+
+- content_for :header_actions do
+  - if policy(@tag).edit?
+    a href=edit_student_tag_path(@tag) id='edit-button' class='mdl-button mdl-js-button mdl-button--icon'
+      = inline_svg_tag 'edit.svg'
+      .mdl-tooltip data-mdl-for='edit-button' #{t(:edit_tag)}
+
+.content-card--most.center
+  ul class="mdl-list"
+    li.mdl-list__item #{t(:tag_name)}: #{@tag.tag_name}
+    li.mdl-list__item #{t(:organization)}: #{@tag.organization.organization_name}
+    li.mdl-list__item #{t(:shared)}: #{@tag.shared}
+
+  = render partial: "shared/students_table", locals: {students: @students, pagy: @pagy}

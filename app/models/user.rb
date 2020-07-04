@@ -33,11 +33,11 @@ class User < ApplicationRecord
   end
 
   def global_role?
-    roles.global.present?
+    !global_role.nil?
   end
 
   def global_role
-    roles.global.first
+    roles.find { |r| Role::GLOBAL_ROLES.key? r.symbol }
   end
 
   def organizations

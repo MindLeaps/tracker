@@ -9,7 +9,7 @@ class StudentsController < HtmlController
 
   def index
     authorize Student
-    @pagy, @students = pagy apply_scopes(policy_scope(Student.includes({ group: { chapter: :organization } }, :profile_image)))
+    @pagy, @students = pagy apply_scopes(policy_scope(Student.includes(:tags, { group: { chapter: :organization } })))
   end
 
   def new
@@ -49,7 +49,7 @@ class StudentsController < HtmlController
   def update
     @student = Student.find params[:id]
     authorize @student
-    return redirect_to details_student_path(@student) if @student.update student_params
+    return redirect_to details_student_path(@student) if update_student @student
 
     render :edit
   end
@@ -73,7 +73,10 @@ class StudentsController < HtmlController
   private
 
   def student_params
-    params.require(:student).permit(*Student.permitted_params)
+    p = params.require(:student)
+    p[:student_tags_attributes] = p.fetch(:tag_ids, []).map { |tag_id| { tag_id: tag_id } }
+    p.delete :tag_ids
+    p.permit(*Student.permitted_params)
   end
 
   def set_back_url_flash
@@ -88,5 +91,13 @@ class StudentsController < HtmlController
 
   def new_params
     params.permit :group_id
+  end
+
+  def update_student(student)
+    p = student_params
+    tags = Tag.where id: p[:student_tags_attributes].map { |t| t[:tag_id] }
+    p.delete :student_tags_attributes
+    student.tags = tags
+    student.update p
   end
 end

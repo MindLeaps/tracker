@@ -38,10 +38,6 @@ RSpec.describe 'User interacts with student images' do
 
       expect(page.current_path).to eq details_student_path @student
       expect(page).to have_selector 'img.student-profile-image'
-
-      visit students_path
-
-      expect(page).to have_css "img.mini-thumb-profile-image[src='#{@image1.image.mini_thumb.url}']"
     end
   end
 end

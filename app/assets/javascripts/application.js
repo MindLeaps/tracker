@@ -15,6 +15,7 @@
 //= require jquery-3.2.1.slim.min
 //= require turbolinks
 //= require cocoon
+//= require awesomplete
 //= require_tree ./application
 
 document.addEventListener('turbolinks:load', function() {

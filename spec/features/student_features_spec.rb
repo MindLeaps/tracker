@@ -80,24 +80,27 @@ RSpec.describe 'User interacts with Students' do
   end
 
   describe 'Edit student' do
-    let(:test_student) { create :student, first_name: 'Editovska', last_name: 'Editus', gender: 'F' }
-
     it 'renames Editovska', js: true do
-      test_student
+      test_student = create :student, first_name: 'Editovska', last_name: 'Editus', gender: 'F'
+      create :tag, tag_name: 'Soldier'
 
       visit '/students'
 
       click_link 'Editovska'
       click_link 'edit-button'
       fill_in 'First name', with: 'Editoredska'
+      fill_in 'tags_autocomplete', with: 'Sol'
+      find('#awesomplete_list_1_item_0').click
       click_button 'Update'
 
       expect(page).to have_content 'Editoredska'
       expect(page).to have_content 'Editus'
+      expect(page).to have_content 'Soldier'
       test_student.reload
       expect(test_student.first_name).to eq('Editoredska')
       expect(test_student.last_name).to eq('Editus')
       expect(test_student.gender).to eq('F')
+      expect(test_student.tags.map(&:tag_name)).to include('Soldier')
     end
   end
 

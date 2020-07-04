@@ -25,10 +25,12 @@ en:
       user:
         create: Add User
 
+  mlid: MLID
   students: students
   student_details: Student Details
   student_deleted_at: Student deleted at
   date_of_birth: Date of Birth
+  circa: "c. "
   country_of_nationality: Country of Nationality
   last_name: Last Name
   first_name: First Name
@@ -56,6 +58,7 @@ en:
   student_delete_confirmation: Are you sure you want to delete student "%{name}"?
   student_deleted: Student "%{name}" deleted.
   student_restored: Student "%{name}" restored.
+  number_of_students: Number of Students
   edit_student: Edit Student
   group_created: Group "%{group}" created.
   group_updated: Group "%{group}" updated.
@@ -142,6 +145,7 @@ en:
   general_analytics: General Analytics
   group_analytics: Group Analytics
   subject_analytics: Subject Analytics
+  actions: Actions
 
   title_chart_2: Quantity of Data Collected By Month
   title_chart_4: Histogram of student performance values
@@ -162,6 +166,19 @@ en:
   group: Group
   gender: Gender
   month: Month
+
+  tag: Tag
+  tags: Tags
+  shared: Shared
+  tag_name: Tag Name
+  back_to_student_tags: Back to Student Tags
+  student_tags: Student Tags
+  add_tag: Add Tag
+  edit_tag: Edit Tag
+  new_student_tag: New Student Tag
+  edit_student_tag: Edit Student Tag
+  tag_shared_explanation: Shared tags will be available to all organizations, rather than just the organization the tag belongs to.
+  tag_created: Tag "%{name}" created.
 
   lesson_date: Lesson Date
 

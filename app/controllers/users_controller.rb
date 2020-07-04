@@ -6,7 +6,7 @@ class UsersController < HtmlController
   has_scope :search, only: :index
 
   before_action do
-    @pagy, @users = pagy apply_scopes(policy_scope(User.all))
+    @pagy, @users = pagy apply_scopes(policy_scope(User.includes(:roles).all))
   end
 
   def index
