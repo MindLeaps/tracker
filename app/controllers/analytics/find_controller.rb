@@ -13,7 +13,6 @@ module Analytics
       end
     end
 
-    # rubocop:disable Metrics/CyclomaticComplexity
     # rubocop:disable Metrics/AbcSize
     # rubocop:disable Metrics/PerceivedComplexity
     def update_groups
@@ -28,7 +27,7 @@ module Analytics
         format.json { render json: groups, fields: [:id, :group_name], include: [] }
       end
     end
-    # rubocop:enable Metrics/CyclomaticComplexity
+
     # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/PerceivedComplexity
 
