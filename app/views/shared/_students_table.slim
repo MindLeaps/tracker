@@ -6,16 +6,16 @@ table class='mdl-data-table mdl-js-data-table resource-table'
     tr
       th.mdl-data-table__cell--non-numeric
         | #
-      == render partial: 'shared/ordered_column', locals: { order_key: :mlid, column_name: 'MLID' }
-      == render partial: 'shared/ordered_column', locals: { order_key: :last_name, column_name: 'Last Name' }
-      == render partial: 'shared/ordered_column', locals: { order_key: :first_name, column_name: 'First Name' }
-      == render partial: 'shared/ordered_column', locals: { order_key: :gender, column_name: 'Gender' }
-      == render partial: 'shared/ordered_column', locals: { order_key: :dob, column_name: 'Date of Birth', numeric: true }
+      == render partial: 'shared/ordered_column', locals: { order_key: :mlid, column_name: t(:mlid) }
+      == render partial: 'shared/ordered_column', locals: { order_key: :last_name, column_name: t(:last_name) }
+      == render partial: 'shared/ordered_column', locals: { order_key: :first_name, column_name: t(:first_name) }
+      == render partial: 'shared/ordered_column', locals: { order_key: :gender, column_name: t(:gender) }
+      == render partial: 'shared/ordered_column', locals: { order_key: :dob, column_name: t(:date_of_birth), numeric: true }
       th.mdl-data-table__cell--non-numeric
         = t(:tags)
-      == render partial: 'shared/ordered_column', locals: { order_key: :order_by_group_name, column_name: 'Group', custom_order?: true }
+      == render partial: 'shared/ordered_column', locals: { order_key: :order_by_group_name, column_name: t(:group), custom_order?: true }
       th
-        | Actions
+        = t(:actions)
   tbody
   - students.each_with_index do |student, i|
 

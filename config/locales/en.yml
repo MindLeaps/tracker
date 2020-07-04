@@ -25,6 +25,7 @@ en:
       user:
         create: Add User
 
+  mlid: MLID
   students: students
   student_details: Student Details
   student_deleted_at: Student deleted at
@@ -144,6 +145,7 @@ en:
   general_analytics: General Analytics
   group_analytics: Group Analytics
   subject_analytics: Subject Analytics
+  actions: Actions
 
   title_chart_2: Quantity of Data Collected By Month
   title_chart_4: Histogram of student performance values
