@@ -14,3 +14,5 @@
     li.mdl-list__item #{t(:tag_name)}: #{@tag.tag_name}
     li.mdl-list__item #{t(:organization)}: #{@tag.organization.organization_name}
     li.mdl-list__item #{t(:shared)}: #{@tag.shared}
+
+  = render partial: "shared/students_table", locals: {students: @students, pagy: @pagy}

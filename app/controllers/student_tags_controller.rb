@@ -2,8 +2,8 @@
 
 class StudentTagsController < HtmlController
   include Pagy::Backend
-  has_scope :table_order, only: :index, type: :hash
-  has_scope :search, only: [:index]
+  has_scope :table_order, only: [:index, :show], type: :hash
+  has_scope :search, only: [:index, :show]
 
   def index
     authorize Tag
@@ -13,6 +13,7 @@ class StudentTagsController < HtmlController
   def show
     @tag = Tag.find params.require(:id)
     authorize @tag
+    @pagy, @students = pagy apply_scopes(policy_scope(Student.includes(:tags, { group: { chapter: :organization } }).joins("INNER JOIN student_tags ON student_id = students.id AND tag_id = '#{@tag.id}'")))
   end
 
   def edit

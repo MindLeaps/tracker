@@ -33,6 +33,9 @@ RSpec.describe StudentTagsController, type: :controller do
     describe '#show' do
       before :each do
         @tag = create :tag
+        @students_with_tag = create_list :student, 4, tags: [@tag]
+        @students_without_tag = create_list :student, 2
+
         get :show, params: { id: @tag.id }
       end
 
@@ -40,6 +43,19 @@ RSpec.describe StudentTagsController, type: :controller do
 
       it 'displays the requested tag' do
         expect(assigns(:tag)).to eq @tag
+      end
+
+      it 'assigns the associated students' do
+        expect(assigns(:students).length).to eq @students_with_tag.length
+        expect(assigns(:students).map(&:id)).to include(*@students_with_tag.map(&:id))
+        expect(assigns(:students).map(&:id)).not_to include(*@students_without_tag.map(&:id))
+      end
+
+      it 'searches students with this tag' do
+        get :show, params: { id: @tag.id, search: @students_with_tag[0].first_name }
+
+        expect(assigns(:students).length).to eq 1
+        expect(assigns(:students)[0].id).to eq @students_with_tag[0].id
       end
     end
 
