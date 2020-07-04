@@ -1,0 +1,21 @@
+name: Build and Publish Docker Image
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build_image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: docker/build-push-action@v1
+        env:
+          DOCKER_BUILDKIT: 1
+        with:
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.pkg.github.com
+          repository: mindleaps/tracker/tracker-test-image
+          build_args: APP_ENV=prod
+          tag_with_ref: true
