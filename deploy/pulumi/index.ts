@@ -1,9 +1,10 @@
-import * as pulumi from "@pulumi/pulumi";
-import * as aws from "@pulumi/aws";
-import * as awsx from "@pulumi/awsx";
 import {createS3Bucket} from "./src/s3";
+import {createVpc} from "./src/vpc";
 
 const bucket = createS3Bucket();
+// const vpc = createVpc();
 
-// Export the name of the bucket
 export const bucketName = bucket.id;
+// export const vpcId = vpc.id;
+// export const vpcPrivateSubnetIds = vpc.privateSubnetIds;
+// export const vpcPublicSubnetIds = vpc.publicSubnetIds;

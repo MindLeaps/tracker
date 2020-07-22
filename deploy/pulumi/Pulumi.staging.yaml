@@ -2,3 +2,4 @@ encryptionsalt: v1:Yiq6KQEuhHA=:v1:s+Myjjcfc2KHdaZs:ocwTBwLXW3/e7qOZMRnFQiv2YX4F
 config:
   aws:region: us-east-1
   mindleaps-tracker:s3_bucket_name: mindleaps-tracker-staging
+  mindleaps-tracker:vpc_name: tracker_staging_vpc

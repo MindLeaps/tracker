@@ -6,7 +6,7 @@ const config = new pulumi.Config();
 const S3_BUCKET_NAME = config.require('s3_bucket_name');
 
 export function createS3Bucket(): Bucket {
-    return new aws.s3.Bucket('mindleaps-tracker-staging-s3-bucket', {
+    return new aws.s3.Bucket(S3_BUCKET_NAME, {
         bucket: S3_BUCKET_NAME,
         grants: [
             {
@@ -24,5 +24,7 @@ export function createS3Bucket(): Bucket {
             targetBucket: S3_BUCKET_NAME,
             targetPrefix: 'logs/'
         }]
-    }, { import: S3_BUCKET_NAME })
+    }, {
+        import: S3_BUCKET_NAME
+    });
 }
