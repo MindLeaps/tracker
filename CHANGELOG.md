@@ -1,5 +1,6 @@
 ## Unreleased
 - Optimized a few eager database queries
+- Fixed clicking Update Role when no role is selected crashing the app on the single user screen
 
 ## 0.24.0 - Student Tags
 - Upgraded Rails to 6.0.3.2

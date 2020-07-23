@@ -64,7 +64,7 @@ javascript:
               h4 = org.organization_name
               - Role::LOCAL_ROLES.each do |role_value, role_name|
                 label class='mdl-radio mdl-js-radio mdl-js-ripple-effect global-role-radio'
-                  = radio_button_tag role_value, role_value.to_s, @user_roles[org.id] == role_value, name: "role", class: "mdl-radio__button"
+                  = radio_button_tag role_value, role_value.to_s, @user_roles[org.id] == role_value, name: "role", class: "mdl-radio__button", required: true
                   span class='mdl-radio__label' = role_name
             <div class="mdl-card__actions mdl-card--border role-actions">
               = f.button :submit, t(:update_role_button), class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect'
