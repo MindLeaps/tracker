@@ -88,7 +88,7 @@ module Analytics
 
     def assesments_per_month # rubocop:disable Metrics/MethodLength
       conn = ActiveRecord::Base.connection.raw_connection
-      lesson_ids = Lesson.where(group_id: @selected_students.map(&:group_id).uniq).pluck(:id)
+      lesson_ids = Lesson.where(group_id: @selected_students.map(&:group_id).uniq).ids
 
       res = if lesson_ids.blank?
               []

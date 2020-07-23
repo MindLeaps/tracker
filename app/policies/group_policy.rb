@@ -31,6 +31,6 @@ class GroupPolicy < ApplicationPolicy
   protected
 
   def user_in_record_organization?
-    user.membership_organizations.pluck(:id).include?(record.chapter.organization_id)
+    user.membership_organizations.ids.include?(record.chapter.organization_id)
   end
 end

@@ -5,7 +5,7 @@ class GradePolicy < ApplicationPolicy
     def resolve
       return scope.all if user.global_role?
 
-      scope.joins(lesson: { group: :chapter }).where(chapters: { organization_id: user.roles.pluck(:resource_id) }).distinct
+      scope.joins(lesson: { group: :chapter }).where(chapters: { organization_id: user.roles.select(:resource_id) }).distinct
     end
   end
 end

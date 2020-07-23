@@ -32,7 +32,7 @@ class UserPolicy < ApplicationPolicy
     def resolve
       return scope.all if user.global_role?
 
-      scope.joins(:roles).where(roles: { resource_id: user.roles.pluck(:resource_id) }).distinct
+      scope.joins(:roles).where(roles: { resource_id: user.roles.select(:resource_id) }).distinct
     end
   end
 

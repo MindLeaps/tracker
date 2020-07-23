@@ -10,9 +10,9 @@ task st: :environment do
 
   # Order main code before test code
   ::STATS_DIRECTORIES.sort! do |a, b|
-    if a[0].include?('specs') && !b[0].include?('specs')
+    if a[0].include?('specs') && b[0].exclude?('specs')
       1
-    elsif !a[0].include?('specs') && b[0].include?('specs')
+    elsif a[0].exclude?('specs') && b[0].include?('specs')
       -1
     else
       a[0] <=> b[0]
