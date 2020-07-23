@@ -95,7 +95,8 @@ class StudentsController < HtmlController
 
   def update_student(student)
     p = student_params
-    tags = Tag.where id: p[:student_tags_attributes].map { |t| t[:tag_id] }
+    tag_ids = p[:student_tags_attributes].pluck(:tag_id)
+    tags = Tag.where id: tag_ids
     p.delete :student_tags_attributes
     student.tags = tags
     student.update p

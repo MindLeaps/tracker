@@ -52,7 +52,7 @@ class User < ApplicationRecord
 
   def membership_organizations
     # All organizations in which this user has an explicit role, not including global roles
-    Organization.where(id: roles.pluck(:resource_id))
+    Organization.where(id: roles.select(:resource_id))
   end
 
   def member_of?(organization)

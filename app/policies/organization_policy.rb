@@ -21,7 +21,7 @@ class OrganizationPolicy < ApplicationPolicy
     def resolve
       return scope.all if user.global_role?
 
-      scope.where(id: user.roles.pluck(:resource_id))
+      scope.where(id: user.roles.select(:resource_id))
     end
   end
 end

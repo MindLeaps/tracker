@@ -12,7 +12,7 @@ class Lesson < ApplicationRecord
 
   validates :date, uniqueness: {
     scope: %i[group subject],
-    message: ->(object, _data) { I18n.translate :duplicate_lesson, group: object.group.group_name, subject: object.subject.subject_name }
+    message: ->(object, _data) { I18n.t :duplicate_lesson, group: object.group.group_name, subject: object.subject.subject_name }
   }
 
   def mark_student_as_absent(student)

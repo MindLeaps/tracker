@@ -53,12 +53,12 @@ class Grade < ApplicationRecord
   end
 
   def add_duplicate_grade_error(duplicate_grade)
-    errors.add(:grade_descriptor, I18n.translate(:duplicate_grade,
-                                                 name: student.proper_name,
-                                                 mark: duplicate_grade.grade_descriptor.mark,
-                                                 skill: grade_descriptor.skill.skill_name,
-                                                 date: lesson.date,
-                                                 subject: lesson.subject.subject_name))
+    errors.add(:grade_descriptor, I18n.t(:duplicate_grade,
+                                         name: student.proper_name,
+                                         mark: duplicate_grade.grade_descriptor.mark,
+                                         skill: grade_descriptor.skill.skill_name,
+                                         date: lesson.date,
+                                         subject: lesson.subject.subject_name))
   end
 
   def mark_grade_as_deleted

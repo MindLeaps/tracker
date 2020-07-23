@@ -22,7 +22,7 @@ module SQL
           join groups as gr on gr.id = l.group_id
           join grades as g on l.id = g.lesson_id
           join skills as s on s.id = g.skill_id
-        WHERE l.id IN (#{lessons.pluck(:id).join(', ')})
+        WHERE l.id IN (#{lessons.ids.join(', ')})
         GROUP BY gr.id, l.id, s.id
         ORDER BY gr.id, date, s.id;
     SQL
@@ -35,7 +35,7 @@ module SQL
               from students as s
                 left join grades as g
                   on s.id = g.student_id
-              WHERE s.id IN (#{students.pluck(:id).join(', ')}) AND s.deleted_at IS NULL AND g.deleted_at IS NULL
+              WHERE s.id IN (#{students.ids.join(', ')}) AND s.deleted_at IS NULL AND g.deleted_at IS NULL
               GROUP BY s.id
         ) as student_round_mark
       GROUP BY mark
@@ -57,7 +57,7 @@ module SQL
               ON s.id = g.student_id
             JOIN lessons AS l
               ON l.id = g.lesson_id
-          WHERE s.id IN (#{students.pluck(:id).join(', ')}) AND g.deleted_at IS NULL AND s.deleted_at IS NULL
+          WHERE s.id IN (#{students.ids.join(', ')}) AND g.deleted_at IS NULL AND s.deleted_at IS NULL
           GROUP BY s.id, l.id
       ),
       min_table AS (

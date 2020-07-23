@@ -5,7 +5,7 @@ class RolePolicy < ApplicationPolicy
     def resolve
       return scope if user.global_administrator?
 
-      scope.where(resource_id: user.organizations.pluck(:id))
+      scope.where(resource_id: user.organizations.select(:id))
     end
   end
 end
