@@ -14,7 +14,7 @@
 .single-content-card
   table.mdl-data-table.mdl-js-data-table.resource-table
     thead
-      == render partial: 'shared/pagy_nav', locals: {pagy: @pagy, resource: t(:tags), span: 5, search: {term: params[:search]}}
+      == render partial: 'shared/pagy_table_nav', locals: {pagy: @pagy, resource: t(:tags), span: 5, search: {term: params[:search]}}
       tr
         th.mdl-data-table__cell--non-numeric
           | #

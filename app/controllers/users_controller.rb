@@ -3,7 +3,7 @@
 class UsersController < HtmlController
   include Pagy::Backend
   has_scope :table_order, type: :hash
-  has_scope :search, only: :index
+  has_scope :search, only: [:index, :show]
 
   before_action do
     @pagy, @users = pagy apply_scopes(policy_scope(User.includes(:roles).all))
@@ -45,6 +45,7 @@ class UsersController < HtmlController
   def show
     @user = User.includes(:roles).find params[:id]
     @user_roles = @user.roles.map { |r| [r.resource_id, r.name.to_sym] }.to_h # { organization_id => :role_name }
+    @pagy, @organizations = pagy apply_scopes(policy_scope(Organization))
     @membership = Membership.new user: @user
     authorize @user
   end
