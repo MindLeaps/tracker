@@ -1,5 +1,8 @@
-encryptionsalt: v1:Yiq6KQEuhHA=:v1:s+Myjjcfc2KHdaZs:ocwTBwLXW3/e7qOZMRnFQiv2YX4Fdw==
+secretsprovider: awskms://6155d7ef-3531-47d2-a3e1-469ee1c83305?region=us-east-1
+encryptedkey: AQICAHh0ioDbLD6nhMlKcdSEfGE7/piYHqOA+7FQziQxkgaiBQFLSTeRcNv0txXQW91Y61T3AAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMx+loWJeNDzr+ltpxAgEQgDvxY2mumPQ27TvHYj5OgWmaxj9IPtg5ZEsZpNtJ+EjV0sxf0O35DP2wSsYjxwc9guQPhVHZjx0KNqCoGA==
 config:
   aws:region: us-east-1
-  mindleaps-tracker:s3_bucket_name: mindleaps-tracker-staging
-  mindleaps-tracker:vpc_name: tracker_staging_vpc
+  mindleaps-tracker:environment: staging
+  mindleaps-tracker:region: us-east-1
+  mindleaps-tracker:s3_logs_bucket_name: mindleaps-tracker-staging-logs
+  mindleaps-tracker:s3_photo_bucket_name: mindleaps-tracker-staging-photos

@@ -9,4 +9,3 @@ export function createVpc() {
         cidrBlock: '172.31.0.0/16'
     });
 }
-
