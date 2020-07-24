@@ -92,6 +92,7 @@ en:
   images_uploaded: Images uploaded.
   no_image_submitted: No image submitted.
   wrong_image: Image of %{other_student} cannot be a profile image for %{student}
+  membership: Membership
   member_email_missing: Member Email missing
   already_member: User is already a member of the organization
   update_role_button: Update Role

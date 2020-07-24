@@ -56,17 +56,25 @@ javascript:
   .mdl-cell.mdl-cell--4-col
     .mdl-card.mdl-shadow--2dp.role-administration-card
       .mdl-card__title.primary
-        h2.mdl-card__title-text Organization Roles
-      - current_user.organizations.each do |org|
-        - if policy(Membership.new(user: @user, org: org)).update?
-          = simple_form_for @membership, url: user_membership_path(@user, org), method: :put, html: { id: "user-roles-for[#{org.id}]" } do |f|
-            .mdl-card__supporting-text
-              h4 = org.organization_name
-              - Role::LOCAL_ROLES.each do |role_value, role_name|
-                label class='mdl-radio mdl-js-radio mdl-js-ripple-effect global-role-radio'
-                  = radio_button_tag role_value, role_value.to_s, @user_roles[org.id] == role_value, name: "role", class: "mdl-radio__button", required: true
-                  span class='mdl-radio__label' = role_name
+        .flex
+          .left-section
+            h2.mdl-card__title-text = t(:membership)
+          .right-section
+            == render partial: 'shared/pagy_nav', locals: { pagy: @pagy }
+      .mdl-card__supporting-text
+        == render partial: 'shared/search_form', locals: { search: { term: params[:search] } }
+      - @organizations.each do |org|
+        - can_update = policy(Membership.new(user: @user, org: org)).update?
+        = simple_form_for @membership, url: user_membership_path(@user, org), method: :put, html: { id: "user-roles-for[#{org.id}]" } do |f|
+          .mdl-card__supporting-text
+            h4 = org.organization_name
+            - Role::LOCAL_ROLES.each do |role_value, role_name|
+              label class='mdl-radio mdl-js-radio mdl-js-ripple-effect global-role-radio'
+                = radio_button_tag role_value, role_value.to_s, @user_roles[org.id] == role_value, name: "role", class: "mdl-radio__button", required: true, disabled: !can_update
+                span class='mdl-radio__label' = role_name
+          - if can_update
             <div class="mdl-card__actions mdl-card--border role-actions">
               = f.button :submit, t(:update_role_button), class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect'
+        - if can_update
           = button_to t(:revoke_local_role_button, org: org.organization_name), user_membership_path(@user, org), method: :delete, class: 'mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect button--danger' if @user.member_of?(org)
           </div>

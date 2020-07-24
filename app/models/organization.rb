@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Organization < ApplicationRecord
+  include PgSearch::Model
+  pg_search_scope :search, against: [:organization_name], using: { tsearch: { prefix: true } }
   resourcify
   validates :organization_name, presence: true, uniqueness: true
 

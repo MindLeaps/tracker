@@ -156,3 +156,10 @@
 .wrap {
   white-space: normal;
 }
+
+.mdl-card__title {
+  color: white;
+  svg {
+    fill: white;
+  }
+}

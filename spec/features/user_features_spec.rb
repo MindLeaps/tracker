@@ -35,7 +35,7 @@ RSpec.describe 'User interacts with other users', js: true do
         Bullet.enable = true
       end
 
-      it 'changes user\'s role, in the organization, from teacher to administrator and add an admin role in other organization' do
+      it 'changes user\'s role, in the organization, from teacher to administrator and add an admin role in another organization' do
         click_link user_name(@other_user)
         form_for(@org2).find('label', text: 'Teacher').click
         form_for(@org2).click_button 'Update Role'

@@ -21,16 +21,7 @@
       pointer-events: none;
     }
   }
-  nav {
-    vertical-align: middle;
-    display: inline-block;
-    a {
-      opacity: 0.54;
-      &[disabled] {
-        opacity: 0.2;
-      }
-    }
-  }
+
   .table-option {
     margin: 0 10px;
     font-size: 12px;
