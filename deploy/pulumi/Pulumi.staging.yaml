@@ -2,7 +2,17 @@ secretsprovider: awskms://6155d7ef-3531-47d2-a3e1-469ee1c83305?region=us-east-1
 encryptedkey: AQICAHh0ioDbLD6nhMlKcdSEfGE7/piYHqOA+7FQziQxkgaiBQFLSTeRcNv0txXQW91Y61T3AAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMx+loWJeNDzr+ltpxAgEQgDvxY2mumPQ27TvHYj5OgWmaxj9IPtg5ZEsZpNtJ+EjV0sxf0O35DP2wSsYjxwc9guQPhVHZjx0KNqCoGA==
 config:
   aws:region: us-east-1
+  mindleaps-tracker:domain_name:
+    secure: v1:Tcip3k6w5GPY4zcO:C/cT9qWHZixiZeLkuVvRvY94W3ovzb9DPuvu8jO0eA==
   mindleaps-tracker:environment: staging
   mindleaps-tracker:region: us-east-1
   mindleaps-tracker:s3_logs_bucket_name: mindleaps-tracker-staging-logs
   mindleaps-tracker:s3_photo_bucket_name: mindleaps-tracker-staging-photos
+  mindleaps-tracker:tracker_app_destination:
+    secure: v1:yA3MyJpTmkgnQ/M8:A0M55ZqzGYsKpT3pC8HUZrVmBy1UOouJDUR61bEr
+  mindleaps-tracker:tracker_app_subdomain:
+    secure: v1:P9yzT72RN6MMJMBV:NsiCTMc5ytAHEkoHpAGTl4oOwDbNK6rLk0JTVDFZmQ==
+  mindleaps-tracker:tracker_db_destination:
+    secure: v1:ayTX1y/8d2hqcMEN:YKHeMcbUjbnZQbIOnvsTNQO0bCtBH04jlVV1JrzpjA67fQWRFs0/qn7edxPlzonq4EMDix5Of4vWzYcjsir/uEx/F4gcwVGLINFc
+  mindleaps-tracker:tracker_db_subdomain:
+    secure: v1:YL5K8GYeyRdrBRJF:xY7Rj7jUI0Pfs75CpCgJCbkDAJDDbSwLAsQKM9xW+zsc5g==
