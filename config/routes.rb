@@ -76,5 +76,7 @@ Rails.application.routes.draw do
     member { post :undelete }
   end
 
+  get '/health', controller: 'application', action: :health
+
   root to: 'home#index'
 end

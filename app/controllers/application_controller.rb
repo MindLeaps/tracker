@@ -2,11 +2,17 @@
 
 class ApplicationController < ActionController::Base
   include Pundit
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: :health
 
   def append_info_to_payload(payload)
     super
     payload[:user_email] = current_user.try :email
+  end
+
+  def health
+    conn = ActiveRecord::Base.connection.raw_connection
+    migrations = conn.exec('SELECT * FROM schema_migrations').values
+    render json: migrations, status: :ok
   end
 
   def current_user
