@@ -5,6 +5,10 @@ config:
   mindleaps-tracker:domain_name:
     secure: v1:Tcip3k6w5GPY4zcO:C/cT9qWHZixiZeLkuVvRvY94W3ovzb9DPuvu8jO0eA==
   mindleaps-tracker:environment: staging
+  mindleaps-tracker:main_vpc_availability_zones:
+  - us-east-1a
+  - us-east-1b
+  - us-east-1c
   mindleaps-tracker:region: us-east-1
   mindleaps-tracker:s3_logs_bucket_name: mindleaps-tracker-staging-logs
   mindleaps-tracker:s3_photo_bucket_name: mindleaps-tracker-staging-photos

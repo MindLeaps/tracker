@@ -3,6 +3,7 @@ import {Bucket, PrivateAcl, PublicReadAcl} from "@pulumi/aws/s3";
 import * as pulumi from "@pulumi/pulumi";
 const config = new pulumi.Config();
 const region = config.require('region');
+const env = config.require('environment');
 
 const S3_PHOTO_BUCKET_PULUMI_NAME = 'S3_PHOTO_BUCKET_LOGS';
 const S3_PHOTO_BUCKET_NAME = config.require('s3_photo_bucket_name');
@@ -31,7 +32,10 @@ export function createS3LogsBucket(): Bucket {
                     storageClass: 'ONEZONE_IA'
                 }
             ]
-        }]
+        }],
+        tags: {
+            environment: env
+        }
     })
 }
 
@@ -44,6 +48,9 @@ export function createS3PhotoBucket(logsBucket: Bucket): Bucket {
         loggings: [{
             targetBucket: logsBucket.bucket,
             targetPrefix: `${S3_PHOTO_BUCKET_NAME}/`
-        }]
+        }],
+        tags: {
+            environment: env
+        }
     });
 }
