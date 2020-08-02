@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import {InstanceTypes, KeyPair, SecurityGroup, Subnet, Vpc} from "@pulumi/aws/ec2";
 import {ec2, getAmi} from "@pulumi/aws";
 import * as pulumi from "@pulumi/pulumi";
@@ -23,11 +24,12 @@ const BASTION_AMI = pulumi.output(getAmi({
 }));
 
 const BASTION_SECURITY_GROUP_PULUMI_NAME = 'BASTION_SECURITY_GROUP';
-const BASTION_SECURITY_GROUP_NAME = `sg-bastion-${env}-mindleaps-tracker`;
+const BASTION_SECURITY_GROUP_NAME = `security-group-bastion-${env}-mindleaps-tracker`;
 
 export function createBastionSecurityGroup(vpc: Vpc): SecurityGroup {
     return new SecurityGroup(BASTION_SECURITY_GROUP_PULUMI_NAME, {
         name: BASTION_SECURITY_GROUP_NAME,
+        vpcId: vpc.id,
         ingress: [{
             cidrBlocks: ['0.0.0.0/0'],
             protocol: 'tcp',
@@ -35,10 +37,10 @@ export function createBastionSecurityGroup(vpc: Vpc): SecurityGroup {
             toPort: 22
         }],
         egress: [{
-            cidrBlocks: [vpc.cidrBlock],
-            protocol: 'all',
+            cidrBlocks: ['0.0.0.0/0'],
+            protocol: '-1', // -1 means ALL protocols
             fromPort: 0,
-            toPort: 65535
+            toPort: 0
         }],
         tags:{
             environment: env
@@ -64,6 +66,7 @@ export function createBastion(subnet: Subnet, securityGroup: SecurityGroup, keyP
         keyName: keyPair.keyName,
         vpcSecurityGroupIds: [securityGroup.id],
         subnetId: subnet.id,
+        userData: fs.readFileSync('src/bastion_user_data.sh', 'utf8'),
         tags: {
             Name: BASTION_NAME,
             environment: env

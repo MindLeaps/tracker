@@ -9,7 +9,7 @@ const bucket = createS3PhotoBucket(loggingBucket);
 const zone = createHostedZone();
 const zoneRecords = createZoneRecords(zone);
 
-export const vpc = createFullVpc();
+const vpc = createFullVpc();
 
 // const rdsSubnetGroup = createRdsSubnetGroup(vpc.subnets.privateSubnets)
 // export const rdsInstance = createTrackerDatabase(rdsSubnetGroup);
