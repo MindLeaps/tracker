@@ -1,5 +1,5 @@
 import {rds} from "@pulumi/aws";
-import {Subnet, Vpc} from "@pulumi/aws/ec2";
+import {SecurityGroup, Subnet, Vpc} from "@pulumi/aws/ec2";
 import * as pulumi from "@pulumi/pulumi";
 import {Instance, SubnetGroup} from "@pulumi/aws/rds";
 
@@ -7,12 +7,16 @@ const config = new pulumi.Config();
 
 const env = config.require('environment');
 const pgVersion = config.require('postgres_version');
-const rdsInstanceClass = config.requireSecret('rds_instance_class');
+const rdsInstanceClass = config.require('rds_instance_class');
 const rdsUsername = config.requireSecret('rds_username');
 const rdsPassword = config.requireSecret('rds_password');
+const databaseName = config.require('rds_db_name');
 
 const DB_SUBNET_GROUP_PULUMI_NAME = 'SUBNET_GROUP_FOR_MINDLEAPS_TRACKER_RDS_DATABASE';
 const DB_SUBNET_GROUP_NAME = `subnet-group-${env}-mindleaps-tracker`
+
+const RDS_SECURITY_GROUP_PULUMI_NAME = 'RDS_SECURITY_GROUP';
+const RDS_SECURITY_GROUP_NAME = `security-group-rds-${env}-mindleaps-tracker`;
 
 const RDS_DB_MINDLEAPS_TRACKER_NAME = `rds-${env}-mindleaps-tracker`;
 
@@ -27,14 +31,30 @@ export function createRdsSubnetGroup(subnets: Subnet[]): SubnetGroup {
     })
 }
 
-export function createTrackerDatabase(subnetGroup: SubnetGroup): Instance {
+export function createRdsSecurityGroup(vpc: Vpc, bastionSecurityGroup: SecurityGroup): SecurityGroup {
+    return new SecurityGroup(RDS_SECURITY_GROUP_PULUMI_NAME, {
+        name: RDS_SECURITY_GROUP_NAME,
+        description: 'Security Group for RDS should only allow tcp traffic over PG 5432 port for bastion and web app',
+        vpcId: vpc.id,
+        ingress:[{
+            securityGroups: [bastionSecurityGroup.id],
+            protocol: 'tcp',
+            fromPort: 5432,
+            toPort: 5432
+        }]
+    });
+}
+
+export function createTrackerDatabase(subnetGroup: SubnetGroup, securityGroup: SecurityGroup): Instance {
     return new rds.Instance(RDS_DB_MINDLEAPS_TRACKER_NAME, {
         allocatedStorage: 20,
         engine: 'postgres',
         engineVersion: pgVersion,
         dbSubnetGroupName: subnetGroup.name,
+        vpcSecurityGroupIds: [securityGroup.id],
         instanceClass: rdsInstanceClass,
         password: rdsPassword,
+        name: databaseName,
         publiclyAccessible: false,
         storageType: 'gp2',
         username: rdsUsername,

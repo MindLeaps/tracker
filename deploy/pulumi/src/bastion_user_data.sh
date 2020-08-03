@@ -1,4 +1,3 @@
 #!/bin/bash
 
-yum update -y
-yum install -y postgresql
+amazon-linux-extras install -y postgresql11

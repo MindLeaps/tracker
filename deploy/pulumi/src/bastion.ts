@@ -58,7 +58,7 @@ export function createBastionSSHKey():KeyPair {
     })
 }
 
-export function createBastion(subnet: Subnet, securityGroup: SecurityGroup, keyPair: KeyPair) {
+export function createBastion(subnet: Subnet, securityGroup: SecurityGroup, keyPair: KeyPair): ec2.Instance {
     return new ec2.Instance(BASTION_PULUMI_NAME, {
         ami: BASTION_AMI.id,
         associatePublicIpAddress: true,
