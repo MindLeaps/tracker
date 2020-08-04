@@ -1,7 +1,10 @@
+import * as fs from 'fs';
 import {rds} from "@pulumi/aws";
 import {SecurityGroup, Subnet, Vpc} from "@pulumi/aws/ec2";
 import * as pulumi from "@pulumi/pulumi";
 import {Instance, SubnetGroup} from "@pulumi/aws/rds";
+import {getPolicyDocument, PolicyAttachment, Role} from "@pulumi/aws/iam";
+import {GetPolicyDocumentResult} from "@pulumi/aws/iam/getPolicyDocument";
 
 const config = new pulumi.Config();
 
@@ -19,6 +22,11 @@ const RDS_SECURITY_GROUP_PULUMI_NAME = 'RDS_SECURITY_GROUP';
 const RDS_SECURITY_GROUP_NAME = `security-group-rds-${env}-mindleaps-tracker`;
 
 const RDS_DB_MINDLEAPS_TRACKER_NAME = `rds-${env}-mindleaps-tracker`;
+
+const RDS_ENHANCED_MONITORING_ROLE_PULUMI_NAME = 'RDS_ENHANCED_MONITORING_ROLE';
+const RDS_ENHANCED_MONITORING_ROLE_NAME = `role-${env}-rds-enhanced-monitoring`;
+const RDS_ENHANCED_MONITORING_ROLE_ATTACHMENT_PULUMI_NAME = 'RDS_ENHANCED_MONITORING_ROLE_ATTACHMENT';
+
 
 export function createRdsSubnetGroup(subnets: Subnet[]): SubnetGroup {
     return new rds.SubnetGroup(DB_SUBNET_GROUP_PULUMI_NAME, {
@@ -45,9 +53,47 @@ export function createRdsSecurityGroup(vpc: Vpc, bastionSecurityGroup: SecurityG
     });
 }
 
+function getMonitoringRolePolicy() {
+    return pulumi.output(getPolicyDocument({
+        statements: [{
+            actions: ['sts:AssumeRole'],
+            principals:[{
+                identifiers: ['monitoring.rds.amazonaws.com'],
+                type: 'Service'
+            }]
+        }]
+    }));
+}
+
+function createEnhancedMonitoringRole(): Role {
+    const role = new Role(RDS_ENHANCED_MONITORING_ROLE_PULUMI_NAME, {
+        assumeRolePolicy: getMonitoringRolePolicy().json,
+        name: RDS_ENHANCED_MONITORING_ROLE_NAME,
+        tags: {
+            environment: env
+        }
+    });
+
+    new PolicyAttachment(RDS_ENHANCED_MONITORING_ROLE_ATTACHMENT_PULUMI_NAME, {
+        policyArn: 'arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole',
+        roles: [role]
+    })
+
+    return role;
+}
+
 export function createTrackerDatabase(subnetGroup: SubnetGroup, securityGroup: SecurityGroup): Instance {
     return new rds.Instance(RDS_DB_MINDLEAPS_TRACKER_NAME, {
         allocatedStorage: 20,
+        allowMajorVersionUpgrade: true,
+        autoMinorVersionUpgrade: true,
+        maintenanceWindow: 'Sun:01:00-Sun:04:00',
+        backupRetentionPeriod: 35,
+        monitoringInterval: 60,
+        monitoringRoleArn: createEnhancedMonitoringRole().arn,
+        performanceInsightsEnabled: true,
+        enabledCloudwatchLogsExports: ['postgresql', 'upgrade'],
+        performanceInsightsRetentionPeriod: 7,
         engine: 'postgres',
         engineVersion: pgVersion,
         dbSubnetGroupName: subnetGroup.name,
