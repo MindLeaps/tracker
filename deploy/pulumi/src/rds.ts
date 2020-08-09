@@ -1,10 +1,8 @@
-import * as fs from 'fs';
 import {rds} from "@pulumi/aws";
 import {SecurityGroup, Subnet, Vpc} from "@pulumi/aws/ec2";
 import * as pulumi from "@pulumi/pulumi";
 import {Instance, SubnetGroup} from "@pulumi/aws/rds";
 import {getPolicyDocument, PolicyAttachment, Role} from "@pulumi/aws/iam";
-import {GetPolicyDocumentResult} from "@pulumi/aws/iam/getPolicyDocument";
 
 const config = new pulumi.Config();
 

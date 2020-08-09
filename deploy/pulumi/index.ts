@@ -1,6 +1,6 @@
 import {createS3LogsBucket, createS3PhotoBucket} from "./src/s3";
 import {createFullVpc} from "./src/vpc";
-import {createHostedZone, createZoneRecords} from "./src/dns";
+import {createCertificate, createHostedZone, createZoneRecords} from "./src/dns";
 import {createRdsSecurityGroup, createRdsSubnetGroup, createTrackerDatabase} from "./src/rds";
 import {createBastion, createBastionSecurityGroup, createBastionSSHKey} from "./src/bastion";
 
@@ -17,5 +17,7 @@ const rdsSubnetGroup = createRdsSubnetGroup(vpc.subnets.privateSubnets)
 const rdsSecurityGroup = createRdsSecurityGroup(vpc.vpc, bastionSecurityGroup)
 export const rdsInstance = createTrackerDatabase(rdsSubnetGroup, rdsSecurityGroup);
 
+const certificate = createCertificate();
+
 const zone = createHostedZone();
-const zoneRecords = createZoneRecords(zone, bastion);
+const zoneRecords = createZoneRecords(zone, bastion, certificate);
