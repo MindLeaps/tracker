@@ -69,6 +69,9 @@ export function createZoneRecords(zone: Zone, bastionInstance: Instance, certifi
 export function createCertificate(): Certificate {
     return new Certificate(TRACKER_SSL_CERTIFICATE_PULUMI_NAME, {
         domainName: getFQDN(),
-        validationMethod: 'DNS'
+        validationMethod: 'DNS',
+        tags: {
+            environment: env
+        }
     });
 }

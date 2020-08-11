@@ -4,6 +4,7 @@ config:
   aws:region: us-east-1
   mindleaps-tracker:domain_name:
     secure: v1:Tcip3k6w5GPY4zcO:C/cT9qWHZixiZeLkuVvRvY94W3ovzb9DPuvu8jO0eA==
+  mindleaps-tracker:elb_account_id: "127311923021"
   mindleaps-tracker:environment: staging
   mindleaps-tracker:main_vpc_availability_zones:
   - us-east-1a
