@@ -2,14 +2,24 @@ secretsprovider: awskms://6155d7ef-3531-47d2-a3e1-469ee1c83305?region=us-east-1
 encryptedkey: AQICAHh0ioDbLD6nhMlKcdSEfGE7/piYHqOA+7FQziQxkgaiBQFLSTeRcNv0txXQW91Y61T3AAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMx+loWJeNDzr+ltpxAgEQgDvxY2mumPQ27TvHYj5OgWmaxj9IPtg5ZEsZpNtJ+EjV0sxf0O35DP2wSsYjxwc9guQPhVHZjx0KNqCoGA==
 config:
   aws:region: us-east-1
+  mindleaps-tracker:devise_secret_key:
+    secure: v1:BCQc60okT1QdTb8w:0zUmMoLKme8XzBgGfBjChqXp/hycwt870bZ5a8+BJNFU8NhhlErnR8lwBC0YMwaGIRLOXEi09bQwsCIbo6ty7Ozydh/v6z0/7KlSMCz3lPakGBjGZng9MI8+iVaT5JI9/YOk3M3yMQpOXpMBLrMc7D7YNpU4C4oXFhuakjOmKToYgmye39N/SL4qq4jpggww
   mindleaps-tracker:domain_name:
     secure: v1:Tcip3k6w5GPY4zcO:C/cT9qWHZixiZeLkuVvRvY94W3ovzb9DPuvu8jO0eA==
   mindleaps-tracker:elb_account_id: "127311923021"
   mindleaps-tracker:environment: staging
+  mindleaps-tracker:google_client_id:
+    secure: v1:0OG4arVLI/R2fvof:DpnGWqEDTG4qgJUAz9XYCCis5go2q1EwjjKL4gcmnQmbJks8dFNTDlq2MDYQaKyBCYU3F9YxW/KMLTqVkhWltxl7FiGCGUoMfW1io7p47vuWa2GsKyQ8Nws=
+  mindleaps-tracker:google_client_secret:
+    secure: v1:X5fefJed+j60gc7Q:rrfZTW3C8ARUgvjy3O4ys70N+1UWsC5ENtCcdOR6thuLgWguMH6Dlg==
   mindleaps-tracker:main_vpc_availability_zones:
   - us-east-1a
   - us-east-1b
   - us-east-1c
+  mindleaps-tracker:new_relic_app_name:
+    secure: v1:3qMp4mpQLKxSWo1S:m0H7o7gkU+0QJ+L+dg6oKjRjWQ9trZyQYCzTRLcmM72HZA4Uc+Pi7HM=
+  mindleaps-tracker:new_relic_license_key:
+    secure: v1:CAcePbjqAKCgIR/g:0WKT2teuj9SU41fvWepRSUapxf4v352KVq7wihVepIE2dZPOo8ZToqlJXjJtPXoKqgI6Tbj6TsM=
   mindleaps-tracker:postgres_version: "12.3"
   mindleaps-tracker:publicSSH:
     secure: v1:OIVF9TWOT9SLWACt:0Sgk2xuryeDBAM6BMYtEMYmeZms0KhAmo10e6CZi8h4Hfy6t9WE7y5IWYlOXnbQjjy9/LBhW0aJwLx5k/RH2Eu0PIXjzLVBUqCXj2rlOeZhcRItkjROS7nOOtxNMaL5N5zPWnk7+nW0n2iA9XGk1XH+P3ywxigBjKqzQUK+eQVmGEepBJUp2T4ESA2aEkGgYEcOOIqer9RZY1bcUoUIOytwq3uDe8TVm4tBU5FTo0vItlZhqlxQYWG2OZOifR48Y2BTQdPLGlY5e64xlthvznQgc5j78Fy0uBvD8TW6MGmgExpCMJioqEd174Mn4vC6f5ZX87D6+TaXj0q0PKnld96vo15La2h/wUOyigaZ/mTaGPyaUZLqH3CFkE/BI4i5oR4THiaIPxbFPWVplAc3ul1gwFnh2IsbHBWTmRdTo09ZigKNvBkG/DsZ6idX/p8JgeVj7ssbBCG4PDvyGfWqGy44BCD1l1r0I4vMeNU5BxV5sABj7Zcd0CIMRPQBRzJT8gwKLLC10HG5qD7eOoeALTC0R7KL/8NosjFTvADNiILSLekVQ/2U7p/JAtGO9o9AH2xwo4MoAA4KznLJktSuEuUI8km8XB3zQVFi9OVQ0Ez/iKlvZ7iEg4ncpTkrQ51y+r/JF17OyhT0TElAN5WEuP5oXrS8qyvwWyGLEsWPRajWJIp31vWFMgb5pUlkyjQKLWVcNHj3LTO79Ch6laiOTRlUqbVkWNFJQbjdeDDK72wuFRHo6rHL/tCYsqMsyEv7W9n5Ze55DfHQ6HJlWyMyTBs3Awmi4SRtkCAHosW4FOQd17DUEMGE87Z6xyX7lXh/SWgl3ImNge2AbmyS9vFlLIInB+5uWCVykskuR5kvMpZ/+8gB6nH//GOE5OYenTdjv65J4dkrXYa3gzvA94JxVKQvV9L9EmaF5Xq13jF/XWEy0P3BX+xRsL/1zrmUkROXyU6q1UlVB1x6foKjUAeWrU1jjXaeILjd7sxqlAJ6EPqkxId41mjv41EE=
@@ -22,6 +32,10 @@ config:
   mindleaps-tracker:region: us-east-1
   mindleaps-tracker:s3_logs_bucket_name: mindleaps-tracker-staging-logs
   mindleaps-tracker:s3_photo_bucket_name: mindleaps-tracker-staging-photos
+  mindleaps-tracker:secret_key_base:
+    secure: v1:wtL0f5I09b2WEVhx:rx7/RiFiMGzCDHFatOncIAmPYoNU7NulDXa8MA+hXAukI/601EkP2hwtk2o8kitWF4hHIOwz2XUVmJkpmLf+znBrM6E9FxY1a/y58hVIjhPFqGkUU2md4NlhVXvBpViqGqzqvCq9u84byDlrI0Wy7CRzAJhLfKgtWvl7hsKCuf8XAFT7rQc460LtICDn9+1u
+  mindleaps-tracker:skylight_authentication:
+    secure: v1:jzMeCCCZX4ESxMhe:XNPrUvpZRMsqNR10m4pfgT1SuXudqnA4k2VOmNuNmyZp4GP5ncyFmuoBkik7AM2WBNALRtUe/vFETNU=
   mindleaps-tracker:tracker_app_destination:
     secure: v1:yA3MyJpTmkgnQ/M8:A0M55ZqzGYsKpT3pC8HUZrVmBy1UOouJDUR61bEr
   mindleaps-tracker:tracker_app_subdomain:

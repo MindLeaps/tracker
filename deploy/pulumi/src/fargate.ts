@@ -2,6 +2,17 @@ import {SecurityGroup, Subnet, Vpc} from "@pulumi/aws/ec2";
 import {Cluster, Service, TaskDefinition} from "@pulumi/aws/ecs";
 import * as pulumi from "@pulumi/pulumi";
 import {LoadBalancerConfiguration} from "./lb";
+import {
+    createDeployDomainSsmParameter,
+    createDeviseSecretKey,
+    createGoogleClientIdSsnParameter,
+    createGoogleClientSecretSsnParameter,
+    createNewRelicAppNameSsmParameter,
+    createNewRelicLicenseKeySsmParameter,
+    createSecretKeyBaseSsnParameter,
+    createSkylightAuthenticationSsnParameter
+} from "./parameters";
+import {Output} from "@pulumi/pulumi";
 
 const config = new pulumi.Config();
 
@@ -78,8 +89,8 @@ export function createTrackerEcsConfiguration(subnets: Subnet[], lb: LoadBalance
 }
 
 
-function createContainerDefinitions(): string {
-    return `[{
+function createContainerDefinitions(): Output<string> {
+    return pulumi.interpolate `[{
         "name": "mindleaps-tracker",
         "image": "mindleaps/tracker",
         "portMappings": [
@@ -87,7 +98,35 @@ function createContainerDefinitions(): string {
                 "protocol": "tcp",
                 "containerPort": 3000
             }
-        ]
+        ],
+        "secrets": [{
+            "name": "DOMAIN",
+            "valueFrom": "${createDeployDomainSsmParameter().arn}"
+        }, {
+            "name": "SECRET_KEY_BASE",
+            "valueFrom": "${createSecretKeyBaseSsnParameter().arn}"
+        }, {
+            "name": "DEVISE_SECRET_KEY",
+            "valueFrom": "${createDeviseSecretKey().arn}"
+        }, {
+            "name": "GOOGLE_CLIENT_ID",
+            "valueFrom": "${createGoogleClientIdSsnParameter().arn}"
+        }, {
+            "name": "GOOGLE_CLIENT_SECRET",
+            "valueFrom": "${createGoogleClientSecretSsnParameter().arn}"
+        }, {
+            "name": "SKYLIGHT_AUTHENTICATION",
+            "valueFrom": "${createSkylightAuthenticationSsnParameter().arn}"
+        }, {
+            "name": "NEW_RELIC_LICENSE_KEY",
+            "valueFrom": "${createNewRelicLicenseKeySsmParameter().arn}"
+        }, {
+            "name": "NEW_RELIC_APP_NAME",
+            "valueFrom": "${createNewRelicAppNameSsmParameter().arn}"
+        }, {
+            "name": "RAILS_ENV",
+            "valueFrom": "production"
+        }]
     }]`;
 }
 

@@ -6,5 +6,13 @@ const domain = config.requireSecret('domain_name');
 const subdomain = config.getSecret('tracker_app_subdomain');
 
 export function getFQDN() {
-    return pulumi.interpolate `${subdomain}.${domain}`;
+    if (!subdomain) {
+        return domain;
+    }
+    return subdomain.apply(sub => {
+       if (!sub || sub.length === 0) {
+           return domain;
+       }
+        return pulumi.interpolate `${sub}.${domain}`;
+    });
 }
