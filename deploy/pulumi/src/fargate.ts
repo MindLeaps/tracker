@@ -3,6 +3,8 @@ import {Cluster, Service, TaskDefinition} from "@pulumi/aws/ecs";
 import * as pulumi from "@pulumi/pulumi";
 import {LoadBalancerConfiguration} from "./lb";
 import {
+    createDatabasePasswordParameter,
+    createDatabaseUserNameParameter,
     createDeployDomainSsmParameter,
     createDeviseSecretKey,
     createGoogleClientIdSsnParameter,
@@ -13,6 +15,8 @@ import {
     createSkylightAuthenticationSsnParameter
 } from "./parameters";
 import {Output} from "@pulumi/pulumi";
+import {Role} from "@pulumi/aws/iam";
+import {getDatabaseFQDN} from "./util";
 
 const config = new pulumi.Config();
 
@@ -20,6 +24,9 @@ const env = config.require('environment');
 
 const MINDLEAPS_TRACKER_TASK_PULUMI_NAME = 'MINDLEAPS_TRACKER_TASK';
 const MINDLEAPS_TRACKER_TASK_NAME = pulumi.interpolate `task-${env}-mindleaps-tracker`;
+
+const TASK_EXECUTION_ROLE_PULUMI_NAME = 'TASK_EXECUTION_ROLE';
+const TASK_EXECUTION_ROLE_NAME = pulumi.interpolate `role-${env}-mindleaps-tracker`;
 
 const MINDLEAPS_TRACKER_ECS_CLUSTER_PULUMI_NAME = 'MINDLEAPS_TRACKER_ECS_CLUSTER';
 const MINDLEAPS_TRACKER_ECS_CLUSTER_NAME = pulumi.interpolate `cluster-${env}-mindleaps-tracker`;
@@ -39,6 +46,7 @@ export interface EcsConfiguration {
 export function createTrackerTask(): TaskDefinition {
     return new TaskDefinition(MINDLEAPS_TRACKER_TASK_PULUMI_NAME, {
         containerDefinitions: createContainerDefinitions(),
+        executionRoleArn: createTaskExecutionRole().arn,
         family: MINDLEAPS_TRACKER_TASK_NAME,
         networkMode: 'awsvpc',
         requiresCompatibilities: ['FARGATE'],
@@ -48,6 +56,28 @@ export function createTrackerTask(): TaskDefinition {
             environment: env
         }
     });
+}
+
+function createTaskExecutionRole(): Role {
+    return new Role(TASK_EXECUTION_ROLE_PULUMI_NAME, {
+        assumeRolePolicy: {
+            Version: '2012-10-17',
+            Statement: [{
+                Action: 'sts:AssumeRole',
+                Principal: {
+                    Service: [
+                        'ecs.amazonaws.com',
+                        'ecs-tasks.amazonaws.com'
+                  ]},
+                Effect: 'Allow',
+                Sid: ''
+            }]
+        },
+        name: TASK_EXECUTION_ROLE_NAME,
+        tags: {
+            environment: env
+        }
+    })
 }
 
 export function createEcsCluster(): Cluster {
@@ -69,7 +99,7 @@ export function createTrackerEcsConfiguration(subnets: Subnet[], lb: LoadBalance
         name: MINDLEAPS_TRACKER_SERVICE_NAME,
         launchType: 'FARGATE',
         taskDefinition: taskDefinition.arn,
-        desiredCount: 0,
+        desiredCount: 2,
         networkConfiguration: {
             assignPublicIp: true,
             subnets: subnets.map(s => s.id),
@@ -99,6 +129,10 @@ function createContainerDefinitions(): Output<string> {
                 "containerPort": 3000
             }
         ],
+        "environment": [{
+            "name": "DATABASE_HOST",
+            "value": "${getDatabaseFQDN()}"
+        }],
         "secrets": [{
             "name": "DOMAIN",
             "valueFrom": "${createDeployDomainSsmParameter().arn}"
@@ -126,6 +160,12 @@ function createContainerDefinitions(): Output<string> {
         }, {
             "name": "RAILS_ENV",
             "valueFrom": "production"
+        }, {
+            "name": "DATABASE_USER",
+            "valueFrom": "${createDatabaseUserNameParameter().arn}"
+        }, {
+            "name": "DATABASE_PASSWORD",
+            "valueFrom": "${createDatabasePasswordParameter().arn}"
         }]
     }]`;
 }

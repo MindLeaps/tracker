@@ -31,6 +31,12 @@ const NEW_RELIC_LICENSE_KEY_PARAM_NAME = `${PARAMETER_PREFIX}/new_relic_license_
 const NEW_RELIC_APP_NAME_PARAM_PULUMI_NAME = 'NEW_RELIC_APP_NAME';
 const NEW_RELIC_APP_NAME_PARAM_NAME = `${PARAMETER_PREFIX}/new_relic_app_name`;
 
+const RDS_USERNAME_PARAM_PULUMI_NAME = 'RDS_USERNAME';
+const RDS_USERNAME_PARAM_NAME = `${PARAMETER_PREFIX}/rds_username`;
+
+const RDS_PASSWORD_PARAM_PULUMI_NAME = 'RDS_PASSWORD';
+const RDS_PASSWORD_PARAM_NAME = `${PARAMETER_PREFIX}/rds_password`;
+
 export function createDeployDomainSsmParameter(): Parameter {
     return new Parameter(DEPLOY_DOMAIN_PARAM_PULUMI_NAME, {
         type: StringParameter,
@@ -92,5 +98,21 @@ export function createNewRelicAppNameSsmParameter(): Parameter {
         type: SecureStringParameter,
         name: NEW_RELIC_APP_NAME_PARAM_NAME,
         value: config.requireSecret('new_relic_app_name')
+    });
+}
+
+export function createDatabaseUserNameParameter(): Parameter {
+    return new Parameter(RDS_USERNAME_PARAM_PULUMI_NAME, {
+        type: SecureStringParameter,
+        name: RDS_USERNAME_PARAM_NAME,
+        value: config.requireSecret('rds_username')
+    });
+}
+
+export function createDatabasePasswordParameter(): Parameter {
+    return new Parameter(RDS_PASSWORD_PARAM_PULUMI_NAME, {
+        type: SecureStringParameter,
+        name: RDS_PASSWORD_PARAM_NAME,
+        value: config.requireSecret('rds_password')
     });
 }
