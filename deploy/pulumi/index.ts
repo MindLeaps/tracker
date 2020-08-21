@@ -5,6 +5,7 @@ import {createRdsSecurityGroup, createRdsSubnetGroup, createTrackerDatabase} fro
 import {createBastion, createBastionSecurityGroup, createBastionSSHKey} from "./src/bastion";
 import {createApplicationLoadBalancer} from "./src/lb";
 import {createEcsCluster, createTrackerEcsConfiguration} from "./src/fargate";
+import {SsmParameters} from "./src/parameters";
 
 const loggingBucket = createS3LogsBucket();
 const bucket = createS3PhotoBucket(loggingBucket.bucket);
@@ -23,7 +24,9 @@ const certificate = createCertificate();
 
 const alb = createApplicationLoadBalancer(vpc.vpc, vpc.subnets.publicSubnets, loggingBucket.bucket, certificate);
 
-const ecsCluster = createTrackerEcsConfiguration(vpc.subnets.publicSubnets, alb);
+const ssmParameters = new SsmParameters();
+
+const ecsCluster = createTrackerEcsConfiguration(vpc.subnets.publicSubnets, alb, ssmParameters);
 
 const zone = createHostedZone();
 const zoneRecords = createZoneRecords(zone, bastion, certificate);

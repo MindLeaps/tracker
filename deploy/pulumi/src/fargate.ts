@@ -2,20 +2,9 @@ import {SecurityGroup, Subnet, Vpc} from "@pulumi/aws/ec2";
 import {Cluster, Service, TaskDefinition} from "@pulumi/aws/ecs";
 import * as pulumi from "@pulumi/pulumi";
 import {LoadBalancerConfiguration} from "./lb";
-import {
-    createDatabasePasswordParameter,
-    createDatabaseUserNameParameter,
-    createDeployDomainSsmParameter,
-    createDeviseSecretKey,
-    createGoogleClientIdSsnParameter,
-    createGoogleClientSecretSsnParameter,
-    createNewRelicAppNameSsmParameter,
-    createNewRelicLicenseKeySsmParameter,
-    createSecretKeyBaseSsnParameter,
-    createSkylightAuthenticationSsnParameter
-} from "./parameters";
+import {SsmParameters} from "./parameters";
 import {Output} from "@pulumi/pulumi";
-import {Role} from "@pulumi/aws/iam";
+import {Role, RolePolicy} from "@pulumi/aws/iam";
 import {getDatabaseFQDN} from "./util";
 
 const config = new pulumi.Config();
@@ -27,6 +16,8 @@ const MINDLEAPS_TRACKER_TASK_NAME = pulumi.interpolate `task-${env}-mindleaps-tr
 
 const TASK_EXECUTION_ROLE_PULUMI_NAME = 'TASK_EXECUTION_ROLE';
 const TASK_EXECUTION_ROLE_NAME = pulumi.interpolate `role-${env}-mindleaps-tracker`;
+
+const TASK_ROLE_POLICY_PULUMI_NAME = 'TASK_ROLE_POLICY';
 
 const MINDLEAPS_TRACKER_ECS_CLUSTER_PULUMI_NAME = 'MINDLEAPS_TRACKER_ECS_CLUSTER';
 const MINDLEAPS_TRACKER_ECS_CLUSTER_NAME = pulumi.interpolate `cluster-${env}-mindleaps-tracker`;
@@ -43,10 +34,10 @@ export interface EcsConfiguration {
     taskDefinition: TaskDefinition;
 }
 
-export function createTrackerTask(): TaskDefinition {
+export function createTrackerTask(parameters: SsmParameters): TaskDefinition {
     return new TaskDefinition(MINDLEAPS_TRACKER_TASK_PULUMI_NAME, {
-        containerDefinitions: createContainerDefinitions(),
-        executionRoleArn: createTaskExecutionRole().arn,
+        containerDefinitions: createContainerDefinitions(parameters),
+        executionRoleArn: createTaskExecutionRole(parameters).arn,
         family: MINDLEAPS_TRACKER_TASK_NAME,
         networkMode: 'awsvpc',
         requiresCompatibilities: ['FARGATE'],
@@ -58,8 +49,8 @@ export function createTrackerTask(): TaskDefinition {
     });
 }
 
-function createTaskExecutionRole(): Role {
-    return new Role(TASK_EXECUTION_ROLE_PULUMI_NAME, {
+function createTaskExecutionRole(parameters: SsmParameters): Role {
+    const role = new Role(TASK_EXECUTION_ROLE_PULUMI_NAME, {
         assumeRolePolicy: {
             Version: '2012-10-17',
             Statement: [{
@@ -77,7 +68,20 @@ function createTaskExecutionRole(): Role {
         tags: {
             environment: env
         }
-    })
+    });
+    new RolePolicy(TASK_ROLE_POLICY_PULUMI_NAME, {
+        name: TASK_EXECUTION_ROLE_NAME,
+        role: role,
+        policy: {
+            Version: '2012-10-17',
+            Statement: parameters.toArray().map(p => ({
+                Action: 'ssm:GetParameters',
+                Effect: 'Allow',
+                Resource: p.arn
+            }))
+        }
+    });
+    return role;
 }
 
 export function createEcsCluster(): Cluster {
@@ -90,9 +94,9 @@ export function createEcsCluster(): Cluster {
     })
 }
 
-export function createTrackerEcsConfiguration(subnets: Subnet[], lb: LoadBalancerConfiguration): EcsConfiguration {
+export function createTrackerEcsConfiguration(subnets: Subnet[], lb: LoadBalancerConfiguration, parameters: SsmParameters): EcsConfiguration {
     const cluster = createEcsCluster();
-    const taskDefinition = createTrackerTask();
+    const taskDefinition = createTrackerTask(parameters);
     const securityGroup = createServiceSecurityGroup(lb.securityGroup);
     const service = new Service(MINDLEAPS_TRACKER_SERVICE_PULUMI_NAME, {
         cluster: cluster.arn,
@@ -119,7 +123,7 @@ export function createTrackerEcsConfiguration(subnets: Subnet[], lb: LoadBalance
 }
 
 
-function createContainerDefinitions(): Output<string> {
+function createContainerDefinitions(parameters: SsmParameters): Output<string> {
     return pulumi.interpolate `[{
         "name": "mindleaps-tracker",
         "image": "mindleaps/tracker",
@@ -132,40 +136,40 @@ function createContainerDefinitions(): Output<string> {
         "environment": [{
             "name": "DATABASE_HOST",
             "value": "${getDatabaseFQDN()}"
+        }, {
+            "name": "RAILS_ENV",
+            "value": "production"
         }],
         "secrets": [{
             "name": "DOMAIN",
-            "valueFrom": "${createDeployDomainSsmParameter().arn}"
+            "valueFrom": "${parameters.deployDomain.arn}"
         }, {
             "name": "SECRET_KEY_BASE",
-            "valueFrom": "${createSecretKeyBaseSsnParameter().arn}"
+            "valueFrom": "${parameters.secretKeyBase.arn}"
         }, {
             "name": "DEVISE_SECRET_KEY",
-            "valueFrom": "${createDeviseSecretKey().arn}"
+            "valueFrom": "${parameters.deviseSecretKey.arn}"
         }, {
             "name": "GOOGLE_CLIENT_ID",
-            "valueFrom": "${createGoogleClientIdSsnParameter().arn}"
+            "valueFrom": "${parameters.googleClientId.arn}"
         }, {
             "name": "GOOGLE_CLIENT_SECRET",
-            "valueFrom": "${createGoogleClientSecretSsnParameter().arn}"
+            "valueFrom": "${parameters.googleClientSecret.arn}"
         }, {
             "name": "SKYLIGHT_AUTHENTICATION",
-            "valueFrom": "${createSkylightAuthenticationSsnParameter().arn}"
+            "valueFrom": "${parameters.skylightAuthentication.arn}"
         }, {
             "name": "NEW_RELIC_LICENSE_KEY",
-            "valueFrom": "${createNewRelicLicenseKeySsmParameter().arn}"
+            "valueFrom": "${parameters.newRelicLicenseKey.arn}"
         }, {
             "name": "NEW_RELIC_APP_NAME",
-            "valueFrom": "${createNewRelicAppNameSsmParameter().arn}"
-        }, {
-            "name": "RAILS_ENV",
-            "valueFrom": "production"
+            "valueFrom": "${parameters.newRelicAppName.arn}"
         }, {
             "name": "DATABASE_USER",
-            "valueFrom": "${createDatabaseUserNameParameter().arn}"
+            "valueFrom": "${parameters.databaseUsername.arn}"
         }, {
             "name": "DATABASE_PASSWORD",
-            "valueFrom": "${createDatabasePasswordParameter().arn}"
+            "valueFrom": "${parameters.databasePassword.arn}"
         }]
     }]`;
 }
