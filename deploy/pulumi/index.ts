@@ -29,4 +29,4 @@ const ssmParameters = new SsmParameters();
 const ecsCluster = createTrackerEcsConfiguration(vpc.subnets.publicSubnets, alb, ssmParameters);
 
 const zone = createHostedZone();
-const zoneRecords = createZoneRecords(zone, bastion, certificate);
+const zoneRecords = createZoneRecords(zone, bastion, certificate, rdsInstance, alb.loadBalancer);

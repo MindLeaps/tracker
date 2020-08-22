@@ -1,6 +1,7 @@
 import * as pulumi from "@pulumi/pulumi";
 import {getFQDN} from "./util";
 import {Parameter, SecureStringParameter, StringParameter} from "@pulumi/aws/ssm";
+import {PolicyStatement} from "@pulumi/aws/iam";
 
 const config = new pulumi.Config();
 const env = config.require('environment');
@@ -37,6 +38,12 @@ const RDS_USERNAME_PARAM_NAME = `${PARAMETER_PREFIX}/rds_username`;
 const RDS_PASSWORD_PARAM_PULUMI_NAME = 'RDS_PASSWORD';
 const RDS_PASSWORD_PARAM_NAME = `${PARAMETER_PREFIX}/rds_password`;
 
+const AWS_ACCESS_KEY_ID_PULUMI_NAME = 'ACCESS_KEY_ID';
+const AWS_ACCESS_KEY_ID_NAME = `${PARAMETER_PREFIX}/aws_access_key_id`;
+
+const AWS_SECRET_ACCESS_KEY_PULUMI_NAME = 'SECRET_ACCESS_KEY';
+const AWS_SECRET_ACCESS_KEY_NAME = `${PARAMETER_PREFIX}/aws_secret_access_key`;
+
 export class SsmParameters {
     deployDomain: Parameter;
     secretKeyBase: Parameter;
@@ -48,6 +55,8 @@ export class SsmParameters {
     newRelicAppName: Parameter;
     databaseUsername: Parameter;
     databasePassword: Parameter;
+    awsAccessKeyId: Parameter;
+    awsSecretAccessKey: Parameter;
 
     constructor() {
         this.deployDomain = this.createDeployDomainSsmParameter()
@@ -60,10 +69,21 @@ export class SsmParameters {
         this.newRelicAppName = this.createNewRelicAppNameSsmParameter()
         this.databaseUsername = this.createDatabaseUserNameParameter()
         this.databasePassword = this.createDatabasePasswordParameter()
+        this.awsAccessKeyId = this.createAwsAccessKeyId();
+        this.awsSecretAccessKey = this.createAwsSecretAccessKey();
     }
 
     toArray(): Parameter[] {
-        return [this.deployDomain, this.secretKeyBase, this.deviseSecretKey, this.googleClientId, this.googleClientSecret, this.skylightAuthentication, this.newRelicLicenseKey, this.newRelicAppName, this.databaseUsername, this.databasePassword];
+        return [this.deployDomain, this.secretKeyBase, this.deviseSecretKey, this.googleClientId, this.googleClientSecret, this.skylightAuthentication, this.newRelicLicenseKey,
+            this.newRelicAppName, this.databaseUsername, this.databasePassword, this.awsAccessKeyId, this.awsSecretAccessKey];
+    }
+
+    toPolicyStatements(): PolicyStatement[] {
+        return this.toArray().map(p => ({
+            Action: 'ssm:GetParameters',
+            Effect: 'Allow',
+            Resource: p.arn
+        }));
     }
 
     private createDeployDomainSsmParameter(): Parameter {
@@ -134,6 +154,20 @@ export class SsmParameters {
             type: SecureStringParameter,
             name: RDS_PASSWORD_PARAM_NAME,
             value: config.requireSecret('rds_password')
+        });
+    }
+    private createAwsAccessKeyId(): Parameter {
+        return new Parameter(AWS_ACCESS_KEY_ID_PULUMI_NAME, {
+            type: SecureStringParameter,
+            name: AWS_ACCESS_KEY_ID_NAME,
+            value: config.requireSecret('aws_access_key_id')
+        });
+    }
+    private createAwsSecretAccessKey(): Parameter {
+        return new Parameter(AWS_SECRET_ACCESS_KEY_PULUMI_NAME, {
+            type: SecureStringParameter,
+            name: AWS_SECRET_ACCESS_KEY_NAME,
+            value: config.requireSecret('aws_secret_access_key')
         });
     }
 }

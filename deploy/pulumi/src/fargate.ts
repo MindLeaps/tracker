@@ -6,6 +6,7 @@ import {SsmParameters} from "./parameters";
 import {Output} from "@pulumi/pulumi";
 import {Role, RolePolicy} from "@pulumi/aws/iam";
 import {getDatabaseFQDN} from "./util";
+import {LogGroup} from "@pulumi/aws/cloudwatch";
 
 const config = new pulumi.Config();
 
@@ -28,16 +29,19 @@ const MINDLEAPS_TRACKER_SERVICE_NAME = pulumi.interpolate `service-${env}-mindle
 const SERVICE_SECURITY_GROUP_PULUMI_NAME = 'MINDLEAPS_TRACKER_SERVICE_SECURITY_GROUP';
 const SERVICE_SECURITY_GROUP_NAME = pulumi.interpolate `security-group-service-${env}`;
 
+const TASK_LOG_GROUP_PULUMI_NAME = 'TASK_LOG_GROUP';
+const TASK_LOG_GROUP_NAME = pulumi.interpolate `tracker-task-logs-${env}`;
+
 export interface EcsConfiguration {
     cluster: Cluster;
     service: Service;
     taskDefinition: TaskDefinition;
 }
 
-export function createTrackerTask(parameters: SsmParameters): TaskDefinition {
+export function createTrackerTask(parameters: SsmParameters, logGroup: LogGroup): TaskDefinition {
     return new TaskDefinition(MINDLEAPS_TRACKER_TASK_PULUMI_NAME, {
-        containerDefinitions: createContainerDefinitions(parameters),
-        executionRoleArn: createTaskExecutionRole(parameters).arn,
+        containerDefinitions: createContainerDefinitions(parameters, logGroup),
+        executionRoleArn: createTaskExecutionRole(parameters, logGroup).arn,
         family: MINDLEAPS_TRACKER_TASK_NAME,
         networkMode: 'awsvpc',
         requiresCompatibilities: ['FARGATE'],
@@ -49,7 +53,17 @@ export function createTrackerTask(parameters: SsmParameters): TaskDefinition {
     });
 }
 
-function createTaskExecutionRole(parameters: SsmParameters): Role {
+function createLogGroup():LogGroup {
+    return new LogGroup(TASK_LOG_GROUP_PULUMI_NAME, {
+        name: TASK_LOG_GROUP_NAME,
+        retentionInDays: 14,
+        tags: {
+            environment: env
+        }
+    });
+}
+
+function createTaskExecutionRole(parameters: SsmParameters, logGroup: LogGroup): Role {
     const role = new Role(TASK_EXECUTION_ROLE_PULUMI_NAME, {
         assumeRolePolicy: {
             Version: '2012-10-17',
@@ -69,16 +83,17 @@ function createTaskExecutionRole(parameters: SsmParameters): Role {
             environment: env
         }
     });
+
     new RolePolicy(TASK_ROLE_POLICY_PULUMI_NAME, {
         name: TASK_EXECUTION_ROLE_NAME,
         role: role,
         policy: {
             Version: '2012-10-17',
-            Statement: parameters.toArray().map(p => ({
-                Action: 'ssm:GetParameters',
+            Statement: [{
+                Action: 'logs:*',
                 Effect: 'Allow',
-                Resource: p.arn
-            }))
+                Resource: pulumi.interpolate `${logGroup.arn}/*`
+            }, ...parameters.toPolicyStatements()]
         }
     });
     return role;
@@ -96,7 +111,8 @@ export function createEcsCluster(): Cluster {
 
 export function createTrackerEcsConfiguration(subnets: Subnet[], lb: LoadBalancerConfiguration, parameters: SsmParameters): EcsConfiguration {
     const cluster = createEcsCluster();
-    const taskDefinition = createTrackerTask(parameters);
+    const logGroup = createLogGroup();
+    const taskDefinition = createTrackerTask(parameters, logGroup);
     const securityGroup = createServiceSecurityGroup(lb.securityGroup);
     const service = new Service(MINDLEAPS_TRACKER_SERVICE_PULUMI_NAME, {
         cluster: cluster.arn,
@@ -123,10 +139,11 @@ export function createTrackerEcsConfiguration(subnets: Subnet[], lb: LoadBalance
 }
 
 
-function createContainerDefinitions(parameters: SsmParameters): Output<string> {
+function createContainerDefinitions(parameters: SsmParameters, logGroup: LogGroup): Output<string> {
     return pulumi.interpolate `[{
         "name": "mindleaps-tracker",
         "image": "mindleaps/tracker",
+        "command": ["bundle", "exec", "rails", "server"],
         "portMappings": [
             {
                 "protocol": "tcp",
@@ -170,7 +187,21 @@ function createContainerDefinitions(parameters: SsmParameters): Output<string> {
         }, {
             "name": "DATABASE_PASSWORD",
             "valueFrom": "${parameters.databasePassword.arn}"
-        }]
+        }, {
+            "name": "AWS_ACCESS_KEY_ID",
+            "valueFrom": "${parameters.awsAccessKeyId.arn}"
+        }, {
+            "name": "AWS_SECRET_ACCESS_KEY",
+            "valueFrom": "${parameters.awsSecretAccessKey.arn}"
+        }],
+        "logConfiguration": {
+            "logDriver": "awslogs",
+            "options": {
+                "awslogs-group": "${logGroup.name}",
+                "awslogs-region": "${config.require('region')}",
+                "awslogs-stream-prefix": "tracker-logs-${env}"
+            }
+        }
     }]`;
 }
 
@@ -182,14 +213,17 @@ function createServiceSecurityGroup(albSecurityGroup: SecurityGroup) {
         ingress: [{
             securityGroups: [albSecurityGroup.id],
             protocol: 'tcp',
-            fromPort: 3000,
-            toPort: 3000
+            fromPort: 0,
+            toPort: 65535
         }],
         egress: [{
             cidrBlocks: ['0.0.0.0/0'],
             protocol: 'tcp',
             fromPort: 0,
             toPort: 65535
-        }]
+        }],
+        tags: {
+            environment: env
+        }
     })
 }

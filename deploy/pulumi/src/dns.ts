@@ -4,6 +4,7 @@ import {RecordTypes, Zone} from "@pulumi/aws/route53";
 import {Instance} from "@pulumi/aws/ec2";
 import {Certificate} from "@pulumi/aws/acm";
 import {getFQDN} from "./util";
+import {LoadBalancer} from "@pulumi/aws/lb";
 
 const config = new pulumi.Config();
 const env = config.require('environment');
@@ -13,11 +14,9 @@ const domainName = config.requireSecret('domain_name');
 
 const TRACKER_APP_A_RECORD_PULUMI_NAME = 'TRACKER_APP_A_RECORD_PULUMI_NAME';
 const trackerAppSubdomain = config.requireSecret('tracker_app_subdomain');
-const trackerAppDestination = config.requireSecret('tracker_app_destination')
 
 const TRACKER_DB_RECORD_PULUMI_NAME = 'TRACKER_DB_RECORD_PULUMI_NAME';
 const trackerDbSubdomain = config.requireSecret('tracker_db_subdomain');
-const trackerDbDestination = config.requireSecret('tracker_db_destination')
 
 const TRACKER_BASTION_RECORD_PULUMI_NAME = 'TRACKER_BASTION_RECORD_PULUMI_NAME';
 
@@ -33,18 +32,21 @@ export function createHostedZone(): Zone {
     });
 }
 
-export function createZoneRecords(zone: Zone, bastionInstance: Instance, certificate: Certificate): aws.route53.Record[] {
+export function createZoneRecords(zone: Zone, bastionInstance: Instance, certificate: Certificate, rdsInstance: aws.rds.Instance, alb: LoadBalancer): aws.route53.Record[] {
     return [
         new aws.route53.Record(TRACKER_APP_A_RECORD_PULUMI_NAME, {
             name: trackerAppSubdomain,
-            records: [trackerAppDestination],
-            ttl: 3600,
             type: RecordTypes.A,
             zoneId: zone.zoneId,
+            aliases: [{
+                evaluateTargetHealth: false,
+                name: alb.dnsName,
+                zoneId: alb.zoneId
+            }]
         }),
         new aws.route53.Record(TRACKER_DB_RECORD_PULUMI_NAME, {
             name: trackerDbSubdomain,
-            records: [trackerDbDestination],
+            records: [rdsInstance.address],
             ttl: 3600,
             type: RecordTypes.CNAME,
             zoneId: zone.zoneId,
