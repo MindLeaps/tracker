@@ -37,13 +37,13 @@ export function createRdsSubnetGroup(subnets: Subnet[]): SubnetGroup {
     })
 }
 
-export function createRdsSecurityGroup(vpc: Vpc, bastionSecurityGroup: SecurityGroup): SecurityGroup {
+export function createRdsSecurityGroup(vpc: Vpc, bastionSecurityGroup: SecurityGroup, ecsServiceSecurityGroup: SecurityGroup): SecurityGroup {
     return new SecurityGroup(RDS_SECURITY_GROUP_PULUMI_NAME, {
         name: RDS_SECURITY_GROUP_NAME,
         description: 'Security Group for RDS should only allow tcp traffic over PG 5432 port for bastion and web app',
         vpcId: vpc.id,
         ingress:[{
-            securityGroups: [bastionSecurityGroup.id],
+            securityGroups: [bastionSecurityGroup.id, ecsServiceSecurityGroup.id],
             protocol: 'tcp',
             fromPort: 5432,
             toPort: 5432

@@ -33,7 +33,7 @@ export function createApplicationLoadBalancer(vpc: Vpc, subnets: Subnet[], logBu
         name: MINDLEAPS_TRACKER_TARGET_GROUP_NAME,
         protocol: 'HTTP',
         healthCheck: {
-            path: '/',
+            path: '/health',
         },
         port: 3000,
         vpcId: vpc.id,

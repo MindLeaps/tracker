@@ -16,17 +16,14 @@ const bastionSecurityGroup = createBastionSecurityGroup(vpc.vpc);
 const bastionSSHKey = createBastionSSHKey();
 const bastion = createBastion(vpc.subnets.publicSubnets[0], bastionSecurityGroup, bastionSSHKey);
 
-const rdsSubnetGroup = createRdsSubnetGroup(vpc.subnets.privateSubnets)
-const rdsSecurityGroup = createRdsSecurityGroup(vpc.vpc, bastionSecurityGroup)
-const rdsInstance = createTrackerDatabase(rdsSubnetGroup, rdsSecurityGroup);
-
 const certificate = createCertificate();
-
 const alb = createApplicationLoadBalancer(vpc.vpc, vpc.subnets.publicSubnets, loggingBucket.bucket, certificate);
-
 const ssmParameters = new SsmParameters();
-
 const ecsCluster = createTrackerEcsConfiguration(vpc.subnets.publicSubnets, alb, ssmParameters);
+
+const rdsSubnetGroup = createRdsSubnetGroup(vpc.subnets.privateSubnets);
+const rdsSecurityGroup = createRdsSecurityGroup(vpc.vpc, bastionSecurityGroup, ecsCluster.serviceSecurityGroup);
+const rdsInstance = createTrackerDatabase(rdsSubnetGroup, rdsSecurityGroup);
 
 const zone = createHostedZone();
 const zoneRecords = createZoneRecords(zone, bastion, certificate, rdsInstance, alb.loadBalancer);

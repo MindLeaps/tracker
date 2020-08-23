@@ -36,6 +36,7 @@ export interface EcsConfiguration {
     cluster: Cluster;
     service: Service;
     taskDefinition: TaskDefinition;
+    serviceSecurityGroup: SecurityGroup;
 }
 
 export function createTrackerTask(parameters: SsmParameters, logGroup: LogGroup): TaskDefinition {
@@ -113,7 +114,7 @@ export function createTrackerEcsConfiguration(subnets: Subnet[], lb: LoadBalance
     const cluster = createEcsCluster();
     const logGroup = createLogGroup();
     const taskDefinition = createTrackerTask(parameters, logGroup);
-    const securityGroup = createServiceSecurityGroup(lb.securityGroup);
+    const serviceSecurityGroup = createServiceSecurityGroup(lb.securityGroup);
     const service = new Service(MINDLEAPS_TRACKER_SERVICE_PULUMI_NAME, {
         cluster: cluster.arn,
         name: MINDLEAPS_TRACKER_SERVICE_NAME,
@@ -123,7 +124,7 @@ export function createTrackerEcsConfiguration(subnets: Subnet[], lb: LoadBalance
         networkConfiguration: {
             assignPublicIp: true,
             subnets: subnets.map(s => s.id),
-            securityGroups: [securityGroup.id]
+            securityGroups: [serviceSecurityGroup.id]
         },
         loadBalancers: [{
             containerName: 'mindleaps-tracker',
@@ -135,7 +136,7 @@ export function createTrackerEcsConfiguration(subnets: Subnet[], lb: LoadBalance
         }
     });
 
-    return {cluster, service, taskDefinition};
+    return {cluster, service, taskDefinition, serviceSecurityGroup};
 }
 
 
@@ -156,6 +157,9 @@ function createContainerDefinitions(parameters: SsmParameters, logGroup: LogGrou
         }, {
             "name": "RAILS_ENV",
             "value": "production"
+        }, {
+            "name": "RAILS_SERVE_STATIC_FILES",
+            "value": "1"
         }],
         "secrets": [{
             "name": "DOMAIN",
