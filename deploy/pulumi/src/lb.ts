@@ -34,6 +34,7 @@ export function createApplicationLoadBalancer(vpc: Vpc, subnets: Subnet[], logBu
         protocol: 'HTTP',
         healthCheck: {
             path: '/health',
+            interval: 15
         },
         port: 3000,
         vpcId: vpc.id,
