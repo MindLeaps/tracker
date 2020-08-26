@@ -10,6 +10,8 @@ import {LogGroup} from "@pulumi/aws/cloudwatch";
 
 const config = new pulumi.Config();
 
+const image = config.get('image') || 'mindleaps/tracker:latest';
+
 const env = config.require('environment');
 
 const MINDLEAPS_TRACKER_TASK_PULUMI_NAME = 'MINDLEAPS_TRACKER_TASK';
@@ -143,7 +145,7 @@ export function createTrackerEcsConfiguration(subnets: Subnet[], lb: LoadBalance
 function createContainerDefinitions(parameters: SsmParameters, logGroup: LogGroup): Output<string> {
     return pulumi.interpolate `[{
         "name": "mindleaps-tracker",
-        "image": "mindleaps/tracker",
+        "image": "${image}",
         "command": ["bundle", "exec", "rails", "server"],
         "portMappings": [
             {
