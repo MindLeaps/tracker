@@ -14,9 +14,11 @@ services:
       - DATABASE_HOST=db
     env_file:
       - .env
-    build: .
+    build:
+      context: .
+      args:
+        APP_ENV: dev # dev|prod
     image: tracker:dev
-    command: bash -c "rake db:create && rake db:migrate && bundle exec bin/rails server -b 0.0.0.0"
     ports:
       - "3000:3000"
     links:
