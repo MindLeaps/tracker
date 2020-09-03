@@ -22,7 +22,7 @@ RSpec.describe 'User interacts with Student Tags' do
 
       expect(page).to have_content 'Tag "My Test Tag" created.'
       expect(page).to have_content 'Tag Name: My Test Tag'
-      expect(page).to have_content 'Organization: ' + @org.organization_name
+      expect(page).to have_content "Organization: #{@org.organization_name}"
 
       find(:css, '#back-button').click
 

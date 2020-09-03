@@ -32,6 +32,7 @@ class GroupLessonSummary < ApplicationRecord
     ]
   end
 
+  # rubocop:disable Lint/UnreachableLoop
   def self.find_closest_index(lessons, lesson)
     previous_diff = nil
     lessons.each_with_index.reduce(nil) do |previous_closest_i, (l, i)|
@@ -43,4 +44,5 @@ class GroupLessonSummary < ApplicationRecord
       return previous_closest_i
     end
   end
+  # rubocop:enable Lint/UnreachableLoop
 end
