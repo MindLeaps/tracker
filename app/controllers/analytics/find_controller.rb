@@ -14,7 +14,6 @@ module Analytics
     end
 
     # rubocop:disable Metrics/AbcSize
-    # rubocop:disable Metrics/PerceivedComplexity
     def update_groups
       groups = if params[:chapter_id] && (params[:chapter_id] != '') && (params[:chapter_id] != 'All')
                  policy_scope Group.where(chapter_id: params[:chapter_id])
@@ -29,7 +28,6 @@ module Analytics
     end
 
     # rubocop:enable Metrics/AbcSize
-    # rubocop:enable Metrics/PerceivedComplexity
 
     # rubocop:disable Metrics/PerceivedComplexity
     # rubocop:disable Metrics/MethodLength
