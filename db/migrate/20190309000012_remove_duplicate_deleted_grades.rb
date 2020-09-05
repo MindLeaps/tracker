@@ -2,7 +2,7 @@
 
 class RemoveDuplicateDeletedGrades < ActiveRecord::Migration[5.2]
   def up
-    execute <<~SQL
+    execute <<~SQL.squish
       with all_grades AS (
         select g.id as existing_id, * from grades g join grade_descriptors gd on g.grade_descriptor_id = gd.id
       ), deleted AS (

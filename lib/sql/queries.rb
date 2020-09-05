@@ -2,7 +2,7 @@
 
 module SQL
   def performance_per_skill_in_lessons_per_student_query(student_ids)
-    <<~SQL
+    <<~SQL.squish
       select rank() over(PARTITION BY stu.id, s.id order by date) - 1 as rank, round(avg(mark), 2)::FLOAT, l.id, date, s.skill_name, stu.id::INT from
           lessons as l
           join groups as gr on gr.id = l.group_id
@@ -16,7 +16,7 @@ module SQL
   end
 
   def performance_per_skill_in_lessons_query(lessons)
-    <<~SQL
+    <<~SQL.squish
       select rank() over(PARTITION BY gr.id, s.id order by date) - 1 as rank, round(avg(mark), 2)::FLOAT, l.id, date, s.skill_name, gr.id::INT from
           lessons as l
           join groups as gr on gr.id = l.group_id
@@ -29,7 +29,7 @@ module SQL
   end
 
   def student_performance_query(students)
-    <<~SQL
+    <<~SQL.squish
       select COALESCE(rounded, 0)::INT as mark, count(*) * 100 / (sum(count(*)) over ())::FLOAT as percentage
         from (select s.id, round(avg(mark)) as rounded
               from students as s
@@ -44,7 +44,7 @@ module SQL
   end
 
   def performance_change_query(students)
-    <<~SQL
+    <<~SQL.squish
       with w1 AS (
           SELECT
             s.id as student_id,
@@ -81,7 +81,7 @@ module SQL
   end
 
   def average_mark_in_group_lessons(group)
-    <<~SQL
+    <<~SQL.squish
       select row_number() over (ORDER BY date) - 1, round(avg(mark), 2)::FLOAT from lessons as l
         join grades as g on g.lesson_id = l.id
       where group_id = #{group.id} AND g.deleted_at IS NULL

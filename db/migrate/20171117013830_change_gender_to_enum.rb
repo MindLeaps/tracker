@@ -2,8 +2,14 @@
 
 class ChangeGenderToEnum < ActiveRecord::Migration[5.1]
   def up
-    execute <<-SQL
-      CREATE TYPE gender AS ENUM ('male', 'female');
+    execute <<~SQL.squish
+      DO $$
+        BEGIN
+            IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'gender') THEN
+                CREATE TYPE gender AS ENUM ('male', 'female');
+            END IF;
+        END
+      $$;
       ALTER TABLE students ALTER COLUMN gender DROP DEFAULT;
       ALTER TABLE students
         ALTER COLUMN gender SET DATA TYPE gender USING (
@@ -16,7 +22,7 @@ class ChangeGenderToEnum < ActiveRecord::Migration[5.1]
   end
 
   def down
-    execute <<-SQL
+    execute <<~SQL.squish
       ALTER TABLE students
         ALTER COLUMN gender SET DATA TYPE integer USING (
           CASE gender::gender

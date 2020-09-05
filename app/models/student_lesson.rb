@@ -70,14 +70,14 @@ class StudentLesson < ApplicationRecord
     Grade.find_by_sql [FORMATTED_GRADES_WITH_DELETED_SQL, { student_id: student_id, lesson_id: lesson_id, subject_id: subject.id }]
   end
 
-  FORMATTED_GRADES_WITH_DELETED_SQL = <<~SQL
+  FORMATTED_GRADES_WITH_DELETED_SQL = <<~SQL.squish
     SELECT g.id, student_id, lesson_id, grade_descriptor_id, g.created_at, g.updated_at, g.deleted_at, lesson_uid, s.id as skill_id, mark FROM skills s
       LEFT JOIN grades g ON s.id = g.skill_id AND student_id = :student_id AND lesson_id = :lesson_id
       JOIN assignments a ON s.id = a.skill_id
       WHERE subject_id = :subject_id;
   SQL
 
-  FORMATTED_GRADES_SQL = <<~SQL
+  FORMATTED_GRADES_SQL = <<~SQL.squish
     SELECT g.id, student_id, lesson_id, grade_descriptor_id, g.created_at, g.updated_at, g.deleted_at, lesson_uid, s.id as skill_id, mark FROM skills s
       LEFT JOIN grades g ON s.id = g.skill_id AND student_id = :student_id AND lesson_id = :lesson_id AND g.deleted_at IS NULL
       JOIN assignments a ON s.id = a.skill_id

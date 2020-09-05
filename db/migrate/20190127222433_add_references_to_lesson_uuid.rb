@@ -6,7 +6,7 @@ class AddReferencesToLessonUuid < ActiveRecord::Migration[5.2]
     add_index :grades, :lesson_uid
     add_foreign_key :grades, :lessons, column: :lesson_uid, primary_key: :uid, name: 'grades_lesson_uid_fk'
 
-    execute <<~SQL
+    execute <<~SQL.squish
       UPDATE grades SET lesson_uid = l.uid FROM lessons l WHERE lesson_id = l.id;
     SQL
 

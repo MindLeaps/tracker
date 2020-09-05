@@ -2,7 +2,7 @@
 
 class ChangeUserRoleToResearcher < ActiveRecord::Migration[5.1]
   def up
-    execute <<-SQL
+    execute <<~SQL.squish
       UPDATE roles
       SET name = 'researcher'
       WHERE name = 'user'
@@ -10,7 +10,7 @@ class ChangeUserRoleToResearcher < ActiveRecord::Migration[5.1]
   end
 
   def down
-    execute <<-SQL
+    execute <<~SQL.squish
       UPDATE roles
       SET name = 'user'
       WHERE name = 'researcher'
