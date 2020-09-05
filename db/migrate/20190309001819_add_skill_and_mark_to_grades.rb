@@ -10,7 +10,7 @@ class AddSkillAndMarkToGrades < ActiveRecord::Migration[5.2]
     remove_index :grade_descriptors, name: :index_grade_descriptors_on_skill_id
     add_index :grade_descriptors, %i[skill_id mark], unique: true
 
-    execute <<~SQL
+    execute <<~SQL.squish
       UPDATE grades
         SET skill_id = gd.skill_id, mark = gd.mark
         FROM grade_descriptors gd

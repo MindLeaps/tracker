@@ -2,7 +2,7 @@
 
 class ChangeAdminToGlobalAdmin < ActiveRecord::Migration[5.1]
   def up
-    execute <<-SQL
+    execute <<~SQL.squish
       UPDATE roles
       SET name = 'global_admin'
       WHERE name = 'admin'
@@ -10,7 +10,7 @@ class ChangeAdminToGlobalAdmin < ActiveRecord::Migration[5.1]
   end
 
   def down
-    execute <<-SQL
+    execute <<~SQL.squish
       UPDATE roles
       SET name = 'admin'
       WHERE name = 'global_admin'

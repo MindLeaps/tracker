@@ -5,5 +5,5 @@ class StudentLessonDetail < ApplicationRecord
     skill_marks.values.reduce({}) { |acc, v| acc.update(v['skill_name'] => v['mark']) }
   end
 
-  scope :exclude_empty, -> { where 'average_mark IS NOT NULL' }
+  scope :exclude_empty, -> { where.not(average_mark: nil) }
 end
