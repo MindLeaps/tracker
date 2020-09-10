@@ -3,7 +3,7 @@ import * as aws from "@pulumi/aws";
 import {RecordTypes, Zone} from "@pulumi/aws/route53";
 import {Instance} from "@pulumi/aws/ec2";
 import {Certificate} from "@pulumi/aws/acm";
-import {getFQDN} from "./util";
+import {getFQDN, getTrackerSubdomain} from "./util";
 import {LoadBalancer} from "@pulumi/aws/lb";
 
 const config = new pulumi.Config();
@@ -13,7 +13,6 @@ const DOMAIN_PULUMI_NAME = 'MINDLEAPS_TRACKER_DOMAIN_NAME';
 const domainName = config.requireSecret('domain_name');
 
 const TRACKER_APP_A_RECORD_PULUMI_NAME = 'TRACKER_APP_A_RECORD_PULUMI_NAME';
-const trackerAppSubdomain = config.requireSecret('tracker_app_subdomain');
 
 const TRACKER_DB_RECORD_PULUMI_NAME = 'TRACKER_DB_RECORD_PULUMI_NAME';
 const trackerDbSubdomain = config.requireSecret('tracker_db_subdomain');
@@ -35,7 +34,7 @@ export function createHostedZone(): Zone {
 export function createZoneRecords(zone: Zone, bastionInstance: Instance, certificate: Certificate, rdsInstance: aws.rds.Instance, alb: LoadBalancer): aws.route53.Record[] {
     return [
         new aws.route53.Record(TRACKER_APP_A_RECORD_PULUMI_NAME, {
-            name: trackerAppSubdomain,
+            name: getTrackerSubdomain(),
             type: RecordTypes.A,
             zoneId: zone.zoneId,
             aliases: [{
