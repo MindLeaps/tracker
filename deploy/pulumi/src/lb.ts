@@ -117,5 +117,5 @@ function createALBListeners(lb: LoadBalancer, certificate: Certificate, targetGr
             protocol: 'HTTPS',
             port: 443
         })
-    }
+    };
 }

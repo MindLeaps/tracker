@@ -31,18 +31,28 @@ export function createHostedZone(): Zone {
     });
 }
 
-export function createZoneRecords(zone: Zone, bastionInstance: Instance, certificate: Certificate, rdsInstance: aws.rds.Instance, alb: LoadBalancer): aws.route53.Record[] {
+export function createZoneCertificateValidation(zone: Zone, certificate: Certificate): aws.route53.Record {
+    return new aws.route53.Record(TRACKER_SSL_CERTIFICATE_VALIDATION_PULUMI_NAME, {
+        name: certificate.domainValidationOptions.apply(validations => validations[0].resourceRecordName),
+        records: [certificate.domainValidationOptions.apply(validations => validations[0].resourceRecordValue)],
+        type: certificate.domainValidationOptions.apply(validations => validations[0].resourceRecordType),
+        ttl: 3600,
+        zoneId: zone.zoneId
+    });
+}
+
+export function createZoneRecords(zone: Zone, bastionInstance: Instance, rdsInstance: aws.rds.Instance, alb: LoadBalancer): aws.route53.Record[] {
     return [
-        new aws.route53.Record(TRACKER_APP_A_RECORD_PULUMI_NAME, {
-            name: getTrackerSubdomain(),
-            type: RecordTypes.A,
-            zoneId: zone.zoneId,
-            aliases: [{
-                evaluateTargetHealth: false,
-                name: alb.dnsName,
-                zoneId: alb.zoneId
-            }]
-        }),
+        // new aws.route53.Record(TRACKER_APP_A_RECORD_PULUMI_NAME, {
+        //     name: getTrackerSubdomain(),
+        //     type: RecordTypes.A,
+        //     zoneId: zone.zoneId,
+        //     aliases: [{
+        //         evaluateTargetHealth: false,
+        //         name: alb.dnsName,
+        //         zoneId: alb.zoneId
+        //     }]
+        // }),
         new aws.route53.Record(TRACKER_DB_RECORD_PULUMI_NAME, {
             name: trackerDbSubdomain,
             records: [rdsInstance.address],
@@ -56,13 +66,6 @@ export function createZoneRecords(zone: Zone, bastionInstance: Instance, certifi
             ttl: 3600,
             type: RecordTypes.A,
             zoneId: zone.zoneId,
-        }),
-        new aws.route53.Record(TRACKER_SSL_CERTIFICATE_VALIDATION_PULUMI_NAME, {
-            name: certificate.domainValidationOptions.apply(validations => validations[0].resourceRecordName),
-            records: [certificate.domainValidationOptions.apply(validations => validations[0].resourceRecordValue)],
-            type: certificate.domainValidationOptions.apply(validations => validations[0].resourceRecordType),
-            ttl: 3600,
-            zoneId: zone.zoneId
         })
     ];
 }

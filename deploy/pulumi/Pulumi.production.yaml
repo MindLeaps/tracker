@@ -29,7 +29,7 @@ config:
   mindleaps-tracker:rds_db_name: tracker
   mindleaps-tracker:rds_instance_class: db.t2.micro
   mindleaps-tracker:rds_password:
-    secure: v1:A3ESPsjMbIuIvTDv:Fij3Hg1qBU8rJ3qijrkXO9mjapF8Zj5j2Qeqsa02ejEXf3aOeHng7RqfALT09z3WQiz1lyyVGmHQ9vYITQ0gq5Y=
+    secure: v1:DyyH+AqDHWu0dI7D:OtPnDExGK1DWNxIgnWAAV6TL+nbbM6Nq8AeHb44EfieJwlBwdC6jDpgRQpLLDHg2DfIfu4kMCXQLatFuH80rsMxd
   mindleaps-tracker:rds_username:
     secure: v1:t1Cnk+Qfj5q8nHgG:e1JunUAcfmQKpb27hrxYWynOsA3STYc=
   mindleaps-tracker:region: eu-central-1
