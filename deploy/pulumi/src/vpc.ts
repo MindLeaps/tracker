@@ -48,6 +48,7 @@ export function createFullVpc(): VpcConfig {
 function createVpc(): Vpc {
     return new aws.ec2.Vpc(VPC_NAME_PULUMI_NAME, {
         cidrBlock: '172.31.0.0/16',
+        enableDnsHostnames: true,
         tags: {
             environment: env,
             Name: VPC_NAME

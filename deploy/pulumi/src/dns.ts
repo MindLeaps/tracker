@@ -14,9 +14,6 @@ const domainName = config.requireSecret('domain_name');
 
 const TRACKER_APP_A_RECORD_PULUMI_NAME = 'TRACKER_APP_A_RECORD_PULUMI_NAME';
 
-const TRACKER_DB_RECORD_PULUMI_NAME = 'TRACKER_DB_RECORD_PULUMI_NAME';
-const trackerDbSubdomain = config.requireSecret('tracker_db_subdomain');
-
 const TRACKER_BASTION_RECORD_PULUMI_NAME = 'TRACKER_BASTION_RECORD_PULUMI_NAME';
 
 const TRACKER_SSL_CERTIFICATE_PULUMI_NAME = 'TRACKER_SSL_CERTIFICATE';
@@ -41,7 +38,7 @@ export function createZoneCertificateValidation(zone: Zone, certificate: Certifi
     });
 }
 
-export function createZoneRecords(zone: Zone, bastionInstance: Instance, rdsInstance: aws.rds.Instance, alb: LoadBalancer): aws.route53.Record[] {
+export function createZoneRecords(zone: Zone, bastionInstance: Instance, alb: LoadBalancer): aws.route53.Record[] {
     return [
         // new aws.route53.Record(TRACKER_APP_A_RECORD_PULUMI_NAME, {
         //     name: getTrackerSubdomain(),
@@ -53,13 +50,6 @@ export function createZoneRecords(zone: Zone, bastionInstance: Instance, rdsInst
         //         zoneId: alb.zoneId
         //     }]
         // }),
-        new aws.route53.Record(TRACKER_DB_RECORD_PULUMI_NAME, {
-            name: trackerDbSubdomain,
-            records: [rdsInstance.address],
-            ttl: 3600,
-            type: RecordTypes.CNAME,
-            zoneId: zone.zoneId,
-        }),
         new aws.route53.Record(TRACKER_BASTION_RECORD_PULUMI_NAME, {
             name: 'bastion',
             records: [bastionInstance.publicIp],
