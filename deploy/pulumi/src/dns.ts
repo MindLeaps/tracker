@@ -40,16 +40,16 @@ export function createZoneCertificateValidation(zone: Zone, certificate: Certifi
 
 export function createZoneRecords(zone: Zone, bastionInstance: Instance, alb: LoadBalancer): aws.route53.Record[] {
     return [
-        // new aws.route53.Record(TRACKER_APP_A_RECORD_PULUMI_NAME, {
-        //     name: getTrackerSubdomain(),
-        //     type: RecordTypes.A,
-        //     zoneId: zone.zoneId,
-        //     aliases: [{
-        //         evaluateTargetHealth: false,
-        //         name: alb.dnsName,
-        //         zoneId: alb.zoneId
-        //     }]
-        // }),
+        new aws.route53.Record(TRACKER_APP_A_RECORD_PULUMI_NAME, {
+            name: getTrackerSubdomain(),
+            type: RecordTypes.A,
+            zoneId: zone.zoneId,
+            aliases: [{
+                evaluateTargetHealth: false,
+                name: alb.dnsName,
+                zoneId: alb.zoneId
+            }]
+        }),
         new aws.route53.Record(TRACKER_BASTION_RECORD_PULUMI_NAME, {
             name: 'bastion',
             records: [bastionInstance.publicIp],
