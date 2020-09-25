@@ -3,6 +3,8 @@ import {SecurityGroup, Subnet, Vpc} from "@pulumi/aws/ec2";
 import * as pulumi from "@pulumi/pulumi";
 import {Instance, SubnetGroup} from "@pulumi/aws/rds";
 import {getPolicyDocument, PolicyAttachment, Role} from "@pulumi/aws/iam";
+import {RecordTypes, Zone} from "@pulumi/aws/route53";
+import * as aws from "@pulumi/aws";
 
 const config = new pulumi.Config();
 
@@ -16,15 +18,23 @@ const databaseName = config.require('rds_db_name');
 const DB_SUBNET_GROUP_PULUMI_NAME = 'SUBNET_GROUP_FOR_MINDLEAPS_TRACKER_RDS_DATABASE';
 const DB_SUBNET_GROUP_NAME = `subnet-group-${env}-mindleaps-tracker`
 
+const DB_REPLICA_SUBNET_GROUP_PULUMI_NAME = 'SUBNET_GROUP_FOR_MINDLEAPS_TRACKER_RDS_REPLICA_DATABASE';
+const DB_REPLICA_SUBNET_GROUP_NAME = `subnet-group-${env}-mindleaps-tracker-replica`
+
 const RDS_SECURITY_GROUP_PULUMI_NAME = 'RDS_SECURITY_GROUP';
 const RDS_SECURITY_GROUP_NAME = `security-group-rds-${env}-mindleaps-tracker`;
 
 const RDS_DB_MINDLEAPS_TRACKER_NAME = `rds-${env}-mindleaps-tracker`;
+const RDS_DB_REPLICA_MINDLEAPS_TRACKER_NAME = `rds-${env}-replica-mindleaps-tracker`;
 
 const RDS_ENHANCED_MONITORING_ROLE_PULUMI_NAME = 'RDS_ENHANCED_MONITORING_ROLE';
 const RDS_ENHANCED_MONITORING_ROLE_NAME = `role-${env}-rds-enhanced-monitoring`;
 const RDS_ENHANCED_MONITORING_ROLE_ATTACHMENT_PULUMI_NAME = 'RDS_ENHANCED_MONITORING_ROLE_ATTACHMENT';
 
+const TRACKER_DB_RECORD_PULUMI_NAME = 'TRACKER_DB_RECORD_PULUMI_NAME';
+const trackerDbSubdomain = config.requireSecret('tracker_db_subdomain');
+
+const TRACKER_DB_REPLICA_RECORD_PULUMI_NAME = 'TRACKER_DB_REPLICA_RECORD_PULUMI_NAME';
 
 export function createRdsSubnetGroup(subnets: Subnet[]): SubnetGroup {
     return new rds.SubnetGroup(DB_SUBNET_GROUP_PULUMI_NAME, {
@@ -80,8 +90,9 @@ function createEnhancedMonitoringRole(): Role {
     return role;
 }
 
-export function createTrackerDatabase(subnetGroup: SubnetGroup, securityGroup: SecurityGroup): Instance {
-    return new rds.Instance(RDS_DB_MINDLEAPS_TRACKER_NAME, {
+export function createTrackerDatabase(subnetGroup: SubnetGroup, securityGroup: SecurityGroup, zone: Zone): Instance {
+    const multiAz = config.getBoolean('rds_multi_az') as boolean;
+    const instance = new rds.Instance(RDS_DB_MINDLEAPS_TRACKER_NAME, {
         allocatedStorage: 20,
         allowMajorVersionUpgrade: true,
         autoMinorVersionUpgrade: true,
@@ -94,6 +105,7 @@ export function createTrackerDatabase(subnetGroup: SubnetGroup, securityGroup: S
         performanceInsightsRetentionPeriod: 7,
         engine: 'postgres',
         engineVersion: pgVersion,
+        multiAz: multiAz,
         dbSubnetGroupName: subnetGroup.name,
         vpcSecurityGroupIds: [securityGroup.id],
         instanceClass: rdsInstanceClass,
@@ -106,4 +118,42 @@ export function createTrackerDatabase(subnetGroup: SubnetGroup, securityGroup: S
             environment: env
         }
     });
+
+    new aws.route53.Record(TRACKER_DB_RECORD_PULUMI_NAME, {
+        name: trackerDbSubdomain,
+        records: [instance.address],
+        ttl: 3600,
+        type: RecordTypes.CNAME,
+        zoneId: zone.zoneId,
+    });
+
+    return instance;
+}
+
+export function createTrackerDatabaseReplica(sourceDb: Instance, zone: Zone): Instance {
+    const trackerReplicaDbSubdomain = config.requireSecret('tracker_db_replica_subdomain');
+
+    const instance = new rds.Instance(RDS_DB_REPLICA_MINDLEAPS_TRACKER_NAME, {
+        allocatedStorage: 20,
+        allowMajorVersionUpgrade: true,
+        autoMinorVersionUpgrade: true,
+        maintenanceWindow: 'Sun:01:00-Sun:04:00',
+        enabledCloudwatchLogsExports: ['postgresql', 'upgrade'],
+        publiclyAccessible: true,
+        instanceClass: 'db.t2.micro',
+        replicateSourceDb: sourceDb.identifier,
+        tags: {
+            environment: env
+        }
+    });
+
+    new aws.route53.Record(TRACKER_DB_REPLICA_RECORD_PULUMI_NAME, {
+        name: trackerReplicaDbSubdomain,
+        records: [instance.address],
+        ttl: 3600,
+        type: RecordTypes.CNAME,
+        zoneId: zone.zoneId,
+    });
+
+    return instance;
 }

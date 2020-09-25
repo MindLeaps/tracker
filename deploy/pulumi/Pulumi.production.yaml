@@ -1,0 +1,47 @@
+secretsprovider: awskms://a8be00b0-6e66-4db2-8c17-90fab70cf951?region=us-east-1
+encryptedkey: AQICAHiCqCf1tzxt7+3K2gktxUJgRn7S+B6Hhhlf19lmxmKvTwE3+LzMtvzg0almgWbiIJ+sAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMGWeiAsEzR7T8ssj9AgEQgDsmMGIKncc5SwJshFHQPGbhHNdtpbqymKY7mLLdHtP2NUN9XT4BqJogsibQsMnEhFb1LDa4fWlpRNFfuA==
+config:
+  aws:region: eu-central-1
+  mindleaps-tracker:aws_access_key_id:
+    secure: v1:dxhsLMld68L2VD/3:REPvLu+Dlcmx3VNmS9GBd3GoUDpmsluR9ZWA4+LQwZivfCuv
+  mindleaps-tracker:aws_secret_access_key:
+    secure: v1:CHj4FxrPFddR811I:FVW/anRO7hwOB+DLJuYEsiUQzs7Z9BNidl98xmVHOidXtAmPN1DfF+o2DVJT4ks0JubhxxWxQt4=
+  mindleaps-tracker:devise_secret_key:
+    secure: v1:XUQGuDk6xudJHWnE:+jVoxiG+1iy9q9Qfc2OwFFT5mt732mE6YnVbLcrPfuG19KqMzjVf2LnS/fmGQOLq2KEeOr4nUETH6oupjmHYpu6lkAmyJYLOTjIGbunocfTXSFSgt//CUPcOKWUdGLAEuH3SWhkz7DyWX/pPhBnDcmJG0ii+TiBISV81Pr1kV09kMGGfV/3/yUsOOL3Nv4Y3
+  mindleaps-tracker:domain_name:
+    secure: v1:LGPFTylixtSmM6WN:mzE3A9+PZJ3w2X1s0Z7pIgOVRwNfSRAyYn4ocORhJPxipBPd
+  mindleaps-tracker:elb_account_id: "054676820928"
+  mindleaps-tracker:environment: production
+  mindleaps-tracker:google_client_id:
+    secure: v1:1kXrFELPTlheRL8M:jAWkeLGSRwLRQ+nyJO1nh3ZHaU95zsPK1BqT5GWE936VLzo2e+WWJ2YKjsYevo7lHcs2V0eiEeqyOyr6zwnUiGh3/F/hj/cSzhp36AEZ7THFzH46XaFNVZw=
+  mindleaps-tracker:google_client_secret:
+    secure: v1:WEyRtsEqHR+cKMbO:MGTIC5cY/CZV3fh6VpblrI8NPaS/ALyUfUmnllK1R3Wuf7e+XV+vxw==
+  mindleaps-tracker:main_vpc_availability_zones:
+  - eu-central-1a
+  - eu-central-1b
+  mindleaps-tracker:new_relic_app_name:
+    secure: v1:FNnVQd178R1dJFy9:vr048i9b3k1G1iFO9M16BiGx1Y5Z5vhpqWavEritMQCePxD2yBjQ1N3wlyY=
+  mindleaps-tracker:new_relic_license_key:
+    secure: v1:x8CtZmFJWL/gaVqV:pNLs2MUfScjfpqR3SuXaR3NnAXDDcaot9cYjTq1g5N7QDP9H+GoaaUZbQ/JJhMt/zkG/PnlkepI=
+  mindleaps-tracker:postgres_version: "12.3"
+  mindleaps-tracker:publicSSH:
+    secure: v1:SBwkRSH68ZFg2qUc:NnnrMKco1iXb5zbjJp1YSesfm/AnGTu5R+Gpc0Nh4BSlljcoDgd9ZBROBFqrBaDJrH4Nwc1FOVUaGBEpeVoY2S8HhI0M/EGpRXk8VhI4PKX88prTOA0dwavH0Xhx+BhECpr0O9d5q64lDVPgQ1DJSMSFPt2wZP3/xqADGsRytFCvxTJhXP47N2ORZc8dQql8LgFmROJ7KtexJwTzf5RqfulOUKrfsoAmBdzbAJS45BIQmllWA1m67QaqUccJucRro8ZCacyOWIKuaG9hynj1GsKWJcnX2Zt4V1dzrMbTh4emY6brORYn0/AAqpmEcb9RBmEq5p0AhxbNVyGFEvC94Q6E/UtBuq3/VQoSlf8mKHHyVKgFdLUY1DChSatk46Mmt1Czjjwt34kwdqrbBkTykQVkMovlWBRnwlJacrqglkybwpRJOv71uMW8z4fNr3UMa0Pl40tAAc2L55a+ljQrsyPvgE8v5N1EyUt7LGXQSdLf7LJVDrQFoaY/U2K5CnqKdxrLkk7cnBa3pZHyN1Ax5uzzM+qoKmbnkFrOyjoaWn29fnixwbL09y3HkjoAqSDbQHYskfutevnIEZbDYP1gb/02WR8WKApkpQCnoKzO5DJMoE2lKFCGnx7PHoyemqybkUPPlbGz+h70zTFuvWMF0K85wIDA8SdET8+TMa3kv8VqbLjdiKvNPoMdrwH718CFlO/BNUgNyeT0y67+uueSL9NgNuFY5E4OcLo0gBUIM8FIwiqU0QrO4cRr1oM8Rf5BET8/EgOb5c/NOOknaR6u922C931apxrHmDY26xDeL/NGF3jSnir0qa45xzPd/Egfty2dkbmJnafZd5+5qTVDOM0CaQ7d7yd6JCYkvqq65vzlWVI0jGU3fkR1JBrntw+UeVo36PRDLoCSnUDdN49hhcBwODyc8SWYHp6N9TFfyfRGuphuSfbFWjn9NW8j7Asn4VSbDh7lV5D5llmxDuJ1USpqS5lE34UYyIbd4Ey4XqoEfy/kbtrf6cE=
+  mindleaps-tracker:rds_db_name: tracker
+  mindleaps-tracker:rds_instance_class: db.t2.micro
+  mindleaps-tracker:rds_multi_az: "true"
+  mindleaps-tracker:rds_password:
+    secure: v1:DyyH+AqDHWu0dI7D:OtPnDExGK1DWNxIgnWAAV6TL+nbbM6Nq8AeHb44EfieJwlBwdC6jDpgRQpLLDHg2DfIfu4kMCXQLatFuH80rsMxd
+  mindleaps-tracker:rds_replica: "false"
+  mindleaps-tracker:rds_username:
+    secure: v1:t1Cnk+Qfj5q8nHgG:e1JunUAcfmQKpb27hrxYWynOsA3STYc=
+  mindleaps-tracker:region: eu-central-1
+  mindleaps-tracker:s3_logs_bucket_name: mindleaps-tracker-production-logs
+  mindleaps-tracker:s3_photo_bucket_name: mindleaps-tracker-production-photos
+  mindleaps-tracker:secret_key_base:
+    secure: v1:0Z3dBdy1h1fijGt6:/h7q5W8adzt1bsQ8ezM+s5T2HkV8pFB2c0wasNGzoW7ulJpfg2ZkEzBWriQ7bqImZkgGBI2CqoEuMsw7KE85da3vie3El4fjoMx+1GJIZS/R9/71Xp5esle8whF5FAig1YPx8BhcnyfkB1ymUYugVeWd5Ig3qD2B13KL3RauhKXGOHezC5ZsASXDRaOujIgP
+  mindleaps-tracker:skylight_authentication:
+    secure: v1:GdsYVAxuHBsAb3Ix:a7TVykWzapq+fJNZdv2f7I/2O+rbbfXa+q9rWaX5781qgT0m0nGU//NT2NNSKDEiJfBGQtunonNLBow=
+  mindleaps-tracker:tracker_db_replica_subdomain:
+    secure: v1:lkUpFvBLJguqgZZa:pFHHMEBFwqWi4za+xo7SRXsNuYGzyHw=
+  mindleaps-tracker:tracker_db_subdomain:
+    secure: v1:FydQaa0ZS+TdeteO:m1acjoaerpeGUVcCfW3veBMhSXTS5ODdpQM=

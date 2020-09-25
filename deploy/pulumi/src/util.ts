@@ -22,3 +22,16 @@ export function getFQDN() {
 export function getDatabaseFQDN(): Output<string> {
     return trackerDbSubdomain.apply(sub => pulumi.interpolate `${sub}.${domain}`);
 }
+
+export function getTrackerSubdomain(): string {
+    if (!subdomain) {
+        return '';
+    }
+    let result = '';
+    subdomain.apply(sub => {
+        if (sub && sub.length > 0) {
+            result = sub;
+        }
+    });
+    return result;
+}
