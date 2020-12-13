@@ -7,7 +7,7 @@ module Api
     has_scope :after_timestamp
     has_scope :exclude_deleted, type: :boolean
     has_scope :include_deleted_students, type: :boolean, default: false, allow_blank: true do |_, scope, value|
-      !value ? scope.exclude_deleted_students : scope
+      value ? scope : scope.exclude_deleted_students
     end
 
     def index
