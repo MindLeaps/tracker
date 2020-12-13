@@ -1,4 +1,4 @@
-FROM ruby:2.7.1 as base
+FROM ruby:2.7.2 as base
 ARG APP_ENV=prod
 ARG MINDLEAPS_HOME=/mindleaps
 ARG TRACKER_HOME=$MINDLEAPS_HOME/tracker
