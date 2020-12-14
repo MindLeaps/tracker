@@ -293,7 +293,7 @@ GEM
     rails-i18n (6.0.0)
       i18n (>= 0.7, < 2)
       railties (>= 6.0.0, < 7)
-    rails_semantic_logger (4.4.4)
+    rails_semantic_logger (4.4.6)
       rack
       railties (>= 3.2)
       semantic_logger (~> 4.4)
@@ -372,7 +372,7 @@ GEM
     selenium-webdriver (3.142.7)
       childprocess (>= 0.5, < 4.0)
       rubyzip (>= 1.2.2)
-    semantic_logger (4.7.1)
+    semantic_logger (4.7.4)
       concurrent-ruby (~> 1.0)
     shoulda-matchers (4.4.1)
       activesupport (>= 4.2.0)
