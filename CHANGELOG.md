@@ -5,6 +5,7 @@
 - Organizations in the single user screen can now be searched
 - Added a health endpoint
 - Upgraded Ruby to 2.7.2
+- Implemented search for chapters
 
 ## 0.24.0 - Student Tags
 - Upgraded Rails to 6.0.3.2
