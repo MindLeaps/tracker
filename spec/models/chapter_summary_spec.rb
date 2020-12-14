@@ -39,4 +39,31 @@ RSpec.describe ChapterSummary, type: :model do
       expect(ChapterSummary.find(chapters[2].id).student_count).to eq 0
     end
   end
+
+  describe 'search' do
+    before :each do
+      @chapter1 = create :chapter, chapter_name: 'Abisamol'
+      @chapter2 = create :chapter, chapter_name: 'Abisouena'
+      @chapter3 = create :chapter, chapter_name: 'Milatava'
+      @chapter4 = create :chapter, chapter_name: 'Zombara', organization: create(:organization, organization_name: 'Xibalba')
+    end
+
+    it 'finds the chapter by exact chapter name match' do
+      result = ChapterSummary.search('Abisamol')
+      expect(result.length).to eq 1
+      expect(result.first).to eq ChapterSummary.find(@chapter1.id)
+    end
+
+    it 'finds chapters by partial chapter name match' do
+      result = ChapterSummary.search('Abi')
+      expect(result.length).to eq 2
+      expect(result).to include ChapterSummary.find(@chapter1.id), ChapterSummary.find(@chapter2.id)
+    end
+
+    it 'finds a chapter by organization name' do
+      result = ChapterSummary.search('Xiba')
+      expect(result.length).to eq 1
+      expect(result).to include ChapterSummary.find(@chapter4.id)
+    end
+  end
 end

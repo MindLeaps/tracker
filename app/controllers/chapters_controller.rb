@@ -3,6 +3,7 @@
 class ChaptersController < HtmlController
   include Pagy::Backend
   has_scope :table_order, type: :hash
+  has_scope :search, only: [:index]
 
   def index
     authorize Chapter
