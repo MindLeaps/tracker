@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 class ChapterSummary < ApplicationRecord
+  include PgSearch::Model
   self.primary_key = :id
+
+  pg_search_scope :search, against: [:chapter_name, :organization_name], using: { tsearch: { prefix: true } }
 
   def readonly?
     true
