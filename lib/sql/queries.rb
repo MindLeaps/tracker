@@ -82,7 +82,7 @@ module SQL
 
   def average_mark_in_group_lessons(group)
     <<~SQL.squish
-      select row_number() over (ORDER BY date) - 1, round(avg(mark), 2)::FLOAT from lessons as l
+      select row_number() over (ORDER BY date) - 1, round(avg(mark), 2)::FLOAT, l.id, date from lessons as l
         join grades as g on g.lesson_id = l.id
       where group_id = #{group.id} AND g.deleted_at IS NULL
       group by l.id;

@@ -6,6 +6,7 @@
 - Added a health endpoint
 - Upgraded Ruby to 2.7.2
 - Implemented search for chapters
+- Added more information in the General Analytics Performance Graph tooltip and the ability to click on point to go to lesson
 
 ## 0.24.0 - Student Tags
 - Upgraded Rails to 6.0.3.2
