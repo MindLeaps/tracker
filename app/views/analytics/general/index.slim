@@ -314,7 +314,12 @@ javascript:
               enabled: false
           },
           tooltip: {
-              valueDecimals: 2
+            formatter: function () {
+              return '<span style="color:' + this.point.color + '">\u25CF</span> ' + this.series.name +
+                '<br/><span>x: <span style="font-weight: bold">' + this.point.x + '</span></span>' +
+                '<br/><span>y: <span style="font-weight: bold">' + this.point.y + '</span></span>' +
+                (this.point.date ? '<br/><span>#{t(:lesson_date)}: ' + this.point.date + '</span>' : '');
+            }
           },
           exporting: {
             filename: 'average-performance-chart',
@@ -344,11 +349,19 @@ javascript:
               }
           },
           plotOptions: {
-              series: {
-                  marker: {
-                      radius: 2
+            series: {
+              events: {
+                click: function (e, a1, a2) {
+                  if (e.point.lesson_url) {
+                    window.open(e.point.lesson_url, '_blank');
                   }
+                }
+              },
+              cursor: 'pointer',
+              marker: {
+                radius: 2
               }
+            }
           },
           series: #{{ @series10.html_safe }}
       });

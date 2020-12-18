@@ -116,7 +116,21 @@ module Analytics
       conn = ActiveRecord::Base.connection.raw_connection
       groups.map do |group|
         result = conn.exec(average_mark_in_group_lessons(group)).values
-        { name: "#{t(:group)} #{group.group_chapter_name}", data: result }
+        {
+          name: "#{t(:group)} #{group.group_chapter_name}",
+          data: format_point_data(result)
+        }
+      end
+    end
+
+    def format_point_data(data)
+      data.map do |e|
+        {
+          x: e[0],
+          y: e[1],
+          lesson_url: lesson_path(e[2]),
+          date: e[3]
+        }
       end
     end
 
