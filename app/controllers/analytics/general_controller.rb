@@ -4,36 +4,14 @@ require 'sql/queries'
 include SQL # rubocop:disable Style/MixinUsage
 
 module Analytics
-  class GeneralController < AnalyticsController # rubocop:disable Metrics/ClassLength
-    # rubocop:disable Metrics/PerceivedComplexity
+  class GeneralController < AnalyticsController
     # rubocop:disable Metrics/MethodLength
-    # rubocop:disable Metrics/CyclomaticComplexity
     # rubocop:disable Metrics/AbcSize
     def index
-      @organizations = policy_scope Organization
-      @chapters = if !@selected_organization_id.nil? && (@selected_organization_id != '') && (@selected_organization_id != 'All')
-                    Chapter.where(organization_id: @selected_organization_id)
-                  else
-                    policy_scope Chapter
-                  end
-
-      @groups = if !@selected_chapter_id.nil? && (@selected_chapter_id != '') && (@selected_chapter_id != 'All')
-                  Group.where(chapter_id: @selected_chapter_id)
-                elsif !@selected_organization_id.nil? && (@selected_organization_id != '') && (@selected_organization_id != 'All')
-                  Group.includes(:chapter).where(chapters: { organization_id: @selected_organization_id })
-                else
-                  policy_scope Group
-                end
-
-      @students = if !@selected_group_id.nil? && (@selected_group_id != '') && (@selected_group_id != 'All')
-                    Student.where(group_id: @selected_group_id).order(:last_name, :first_name).all
-                  elsif !@selected_chapter_id.nil? && (@selected_chapter_id != '') && (@selected_chapter_id != 'All')
-                    Student.includes(:group).where(groups: { chapter_id: @selected_chapter_id }).order(:last_name, :first_name).all
-                  elsif !@selected_organization_id.nil? && (@selected_organization_id != '') && (@selected_organization_id != 'All')
-                    Student.includes(group: :chapter).where(chapters: { organization_id: @selected_organization_id }).order(:last_name, :first_name).all
-                  else
-                    policy_scope Student.order(:last_name, :first_name)
-                  end
+      selected_organizations = find_resource_by_id_param @selected_organization_id, Organization
+      selected_chapters = find_resource_by_id_param(@selected_chapter_id, Chapter) { |c| c.where(organization: selected_organizations) }
+      selected_groups = find_resource_by_id_param(@selected_group_id, Group) { |g| g.where(chapter: selected_chapters) }
+      @selected_students = find_resource_by_id_param(@selected_student_id, Student) { |s| s.where(group: selected_groups, deleted_at: nil) }
 
       res2 = assesments_per_month
       @categories2 = res2[:categories].to_json
@@ -43,9 +21,7 @@ module Analytics
       @series6 = histogram_of_student_performance_change_by_gender.to_json
       @series10 = average_performance_per_group_by_lesson.to_json
     end
-    # rubocop:enable Metrics/PerceivedComplexity
     # rubocop:enable Metrics/MethodLength
-    # rubocop:enable Metrics/CyclomaticComplexity
     # rubocop:enable Metrics/AbcSize
 
     private
@@ -135,23 +111,21 @@ module Analytics
     end
 
     # rubocop:disable Naming/AccessorMethodName
-    # rubocop:disable Metrics/PerceivedComplexity
     # rubocop:disable Metrics/MethodLength
-    def get_groups_for_average_performance # rubocop:disable Metrics/CyclomaticComplexity
-      if @selected_student_id.present? && @selected_student_id != 'All'
+    def get_groups_for_average_performance
+      if selected_param_present_but_not_all?(@selected_student_id)
         Student.find(@selected_student_id).group
-      elsif @selected_group_id.present? && @selected_group_id != 'All'
+      elsif selected_param_present_but_not_all?(@selected_group_id)
         Group.includes(:chapter).find(@selected_group_id)
-      elsif @selected_chapter_id.present? && @selected_chapter_id != 'All'
+      elsif selected_param_present_but_not_all?(@selected_chapter_id)
         Group.includes(:chapter).where(chapter_id: @selected_chapter_id)
-      elsif @selected_organization_id.present? && @selected_organization_id != 'All'
+      elsif selected_param_present_but_not_all?(@selected_organization_id)
         Group.includes(:chapter).joins(:chapter).where(chapters: { organization_id: @selected_organization_id })
       else
-        @groups.includes(:chapter)
+        policy_scope(Group.includes(:chapter))
       end
     end
     # rubocop:enable Metrics/MethodLength
-    # rubocop:enable Metrics/PerceivedComplexity
     # rubocop:enable Naming/AccessorMethodName
   end
 end

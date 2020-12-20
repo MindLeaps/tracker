@@ -6,15 +6,17 @@ module Analytics
     skip_after_action :verify_authorized
 
     before_action do
-      @selected_organization_id = params[:organization_select]
+      @available_organizations = policy_scope Organization.where(deleted_at: nil)
+      @available_chapters = policy_scope Chapter.where(deleted_at: nil)
+      @available_groups = policy_scope Group.where(deleted_at: nil)
+      @available_students = policy_scope Student.where(deleted_at: nil)
+      @available_subjects = policy_scope Subject.where(deleted_at: nil)
+
+      @selected_organization_id = @available_organizations.first.id unless params[:organization_select]
       @selected_chapter_id = params[:chapter_select]
+      @subject = @available_subjects.first.id unless params[:subject_select]
       @selected_group_id = params[:group_select]
       @selected_student_id = params[:student_select]
-
-      @selected_organizations = find_resource_by_id_param @selected_organization_id, Organization
-      @selected_chapters = find_resource_by_id_param(@selected_chapter_id, Chapter) { |c| c.where(organization: @selected_organizations) }
-      @selected_groups = find_resource_by_id_param(@selected_group_id, Group) { |g| g.where(chapter: @selected_chapters) }
-      @selected_students = find_resource_by_id_param(@selected_student_id, Student) { |s| s.where(group: @selected_groups) }
     end
 
     def find_resource_by_id_param(id, resource_class)
@@ -34,6 +36,10 @@ module Analytics
 
     def get_color(index)
       colors[index % colors.length]
+    end
+
+    def selected_param_present_but_not_all?(selected_param)
+      selected_param.present? && (selected_param != 'All')
     end
   end
 end

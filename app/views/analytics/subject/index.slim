@@ -14,19 +14,19 @@
     tr
       td style="padding-right: 20px;"
         = label_tag :organization_label, "Organization"
-        = select_tag :organization_select, options_from_collection_for_select(@organizations, :id, :organization_name, @selected_organization_id), :prompt => 'All'
+        = select_tag :organization_select, options_from_collection_for_select(@available_organizations, :id, :organization_name, @selected_organization_id), :prompt => 'All'
       td style="padding-right: 20px;"
         = label_tag :chapter_label, "Chapter"
-        = select_tag :chapter_select, options_from_collection_for_select(@chapters, :id, :chapter_name, @selected_chapter_id), :prompt => 'All'
+        = select_tag :chapter_select, options_from_collection_for_select(@available_chapters, :id, :chapter_name, @selected_chapter_id), :prompt => 'All'
       td style="padding-right: 20px;"
         = label_tag :group_label, "Group"
-        = select_tag :group_select, options_from_collection_for_select(@groups, :id, :group_name, @selected_group_id), :prompt => 'All'
+        = select_tag :group_select, options_from_collection_for_select(@available_groups, :id, :group_name, @selected_group_id), :prompt => 'All'
       td style="padding-right: 20px;"
         = label_tag :subject_label, "Subject"
-        = select_tag :subject_select, options_from_collection_for_select(@subjects, :id, :subject_name, @subject)
+        = select_tag :subject_select, options_from_collection_for_select(@available_subjects, :id, :subject_name, @subject)
       td style="padding-right: 20px;"
         = label_tag :student_label, "Student"
-        = select_tag :student_select, options_from_collection_for_select(@students, :id, :proper_name, @selected_student_id), :prompt => 'All'
+        = select_tag :student_select, options_from_collection_for_select(@available_students, :id, :proper_name, @selected_student_id), :prompt => 'All'
       td style="padding-right: 20px;"
         = submit_tag "Submit"
 
@@ -37,108 +37,41 @@ table id="trellis" style="width: 100%; table-layout: fixed;"
       td
       td
 
+= render '/shared/analytics_common'
+
 javascript:
+  updateDropdown($('#chapter_select'), filteredChapters().map(function (c) {
+    return {label: c.chapter_name, value: c.id};
+  }));
+  updateDropdown($('#subject_select'), filteredSubjects().map(function (c) {
+    return {label: c.subject_name, value: c.id};
+  }));
+  updateDropdown($('#group_select'), filteredGroups().map(function (g) {
+    return {label: g.group_name, value: g.id};
+  }));
+  updateDropdown($('#student_select'), filteredStudents().map(function (s) {
+    return {label: s.proper_name, value: s.id};
+  }));
+
   $('#organization_select').change(function () {
-    var selectedOrganization = $('#organization_select :selected').val();
-    pegasus('#{{find_update_chapters_path}}?organization_id=' + selectedOrganization)
-        .then(function (data) {
-          var chapters = data.chapters;
-
-          $('#chapter_select').empty();
-          var opt = document.createElement('option');
-          opt.text = 'All';
-          $('#chapter_select').append(opt, null);
-
-          for (i = 0; i < chapters.length; i++) {
-            var chapter = chapters[i];
-
-            var opt = document.createElement('option');
-            opt.text = chapter.chapter_name;
-            opt.value = chapter.id;
-
-            $('#chapter_select').append(opt, null);
-          }
-          $('#chapter_select').select(0);
-          $('#chapter_select').change();
-        },function (data) {
-        }
-    );
-
-    pegasus('#{{find_update_subjects_path}}?organization_id=' + selectedOrganization)
-        .then(function (data) {
-          var subjects = data.subjects;
-
-          $('#subject_select').empty();
-
-          for (i = 0; i < subjects.length; i++) {
-            var subject = subjects[i];
-
-            var opt = document.createElement('option');
-            opt.text = subject.subject_name;
-            opt.value = subject.id;
-
-            $('#subject_select').append(opt, null);
-          }
-          $('#subject_select').select(0);
-        }, function() {
-        }
-    );
+    updateDropdown($('#chapter_select'), filteredChapters().map(function (c) {
+      return {label: c.chapter_name, value: c.id};
+    }));
+    updateDropdown($('#subject_select'), filteredSubjects().map(function (c) {
+      return {label: c.subject_name, value: c.id};
+    }));
   });
+
   $('#chapter_select').change(function () {
-    var selectedOrganization = $('#organization_select :selected').val();
-    var selectedChapter = $('#chapter_select :selected').val();
-
-    pegasus('#{{find_update_groups_path}}?organization_id=' + selectedOrganization + '&chapter_id=' + selectedChapter)
-        .then(function (data) {
-            var groups = data.groups;
-
-            $('#group_select').empty();
-            var opt = document.createElement('option');
-            opt.text = 'All';
-
-            $('#group_select').append(opt, null);
-            for (i = 0; i < groups.length; i++) {
-              var group = groups[i];
-
-              var opt = document.createElement('option');
-              opt.text = group.group_name;
-              opt.value = group.id;
-
-              $('#group_select').append(opt, null);
-            }
-            $('#group_select').select(0);
-            $('#group_select').change();
-          }, function (data) {
-          }
-        );
+    updateDropdown($('#group_select'), filteredGroups().map(function (g) {
+      return {label: g.group_name, value: g.id};
+    }));
   });
 
   $('#group_select').change(function () {
-    var selectedOrganization = $('#organization_select :selected').val();
-    var selectedChapter = $('#chapter_select :selected').val();
-    var selectedGroup = $('#group_select :selected').val();
-
-    pegasus('#{{find_update_students_path}}?organization_id=' + selectedOrganization + '&chapter_id=' + selectedChapter + '&group_id=' + selectedGroup)
-        .then(function (data) {
-            var students = data.students;
-
-            $('#student_select').empty();
-            var opt = document.createElement('option');
-            opt.text = 'All';
-
-            $('#student_select').append(opt, null);
-            for (i = 0; i < students.length; i++) {
-              var student = students[i];
-
-              var opt = document.createElement('option');
-              opt.text = student.last_name + ', ' + student.first_name;
-              opt.value = student.id;
-
-              $('#student_select').append(opt, null);
-            }
-          }, function (data) {
-          }
-        );
+    updateDropdown($('#student_select'), filteredStudents().map(function (s) {
+      return {label: s.proper_name, value: s.id};
+    }));
   });
 
   function startAnalytics() {

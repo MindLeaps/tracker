@@ -21,6 +21,7 @@ module SQL
           lessons as l
           join groups as gr on gr.id = l.group_id
           join grades as g on l.id = g.lesson_id
+          join students as st on st.deleted_at is null and st.id = g.student_id
           join skills as s on s.id = g.skill_id
         WHERE l.id IN (#{lessons.ids.join(', ')})
         GROUP BY gr.id, l.id, s.id
