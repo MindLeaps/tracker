@@ -11,7 +11,7 @@ module Analytics
       selected_organizations = find_resource_by_id_param @selected_organization_id, Organization
       selected_chapters = find_resource_by_id_param(@selected_chapter_id, Chapter) { |c| c.where(organization: selected_organizations) }
       selected_groups = find_resource_by_id_param(@selected_group_id, Group) { |g| g.where(chapter: selected_chapters) }
-      @selected_students = find_resource_by_id_param(@selected_student_id, Student) { |s| s.where(group: selected_groups) }
+      @selected_students = find_resource_by_id_param(@selected_student_id, Student) { |s| s.where(group: selected_groups, deleted_at: nil) }
 
       res2 = assesments_per_month
       @categories2 = res2[:categories].to_json

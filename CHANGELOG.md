@@ -9,6 +9,7 @@
 - Added more information in the General Analytics Performance Graph tooltip and the ability to click on point to go to lesson
 - Improved performance of Analytics dropdowns
 - Defaults Analytics to first organization
+- Remove deleted resources from analytics
 
 ## 0.24.0 - Student Tags
 - Upgraded Rails to 6.0.3.2

@@ -6,11 +6,11 @@ module Analytics
     skip_after_action :verify_authorized
 
     before_action do
-      @available_organizations = policy_scope Organization
-      @available_chapters = policy_scope Chapter
-      @available_groups = policy_scope Group
-      @available_students = policy_scope Student
-      @available_subjects = policy_scope Subject
+      @available_organizations = policy_scope Organization.where(deleted_at: nil)
+      @available_chapters = policy_scope Chapter.where(deleted_at: nil)
+      @available_groups = policy_scope Group.where(deleted_at: nil)
+      @available_students = policy_scope Student.where(deleted_at: nil)
+      @available_subjects = policy_scope Subject.where(deleted_at: nil)
 
       @selected_organization_id = @available_organizations.first.id unless params[:organization_select]
       @selected_chapter_id = params[:chapter_select]
