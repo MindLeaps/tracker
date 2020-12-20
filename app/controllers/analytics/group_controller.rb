@@ -5,18 +5,7 @@ include SQL # rubocop:disable Style/MixinUsage
 
 module Analytics
   class GroupController < AnalyticsController
-    def index # rubocop:disable Metrics/MethodLength
-      @subject = params[:subject_select]
-
-      @organizations = policy_scope Organization
-      @chapters = if !@selected_organization_id.nil? && (@selected_organization_id != '') && (@selected_organization_id != 'All')
-                    Chapter.where(organization_id: @selected_organization_id)
-                  else
-                    Chapter.where(organization: @organizations)
-                  end
-
-      @selected_organization_id = @organizations.first.id unless params[:organization_select]
-
+    def index
       # figure 8: Average performance per group by days in program
       # Rebecca requested a Trellis per Group
       series8 = performance_per_group
@@ -26,10 +15,8 @@ module Analytics
 
     # rubocop:disable Metrics/AbcSize
     # rubocop:disable Metrics/MethodLength
-    # rubocop:disable Metrics/CyclomaticComplexity
-    # rubocop:disable Metrics/PerceivedComplexity
     def performance_per_group
-      groups_lesson_summaries = if !@selected_chapter_id.nil? && (@selected_chapter_id != '') && (@selected_chapter_id != 'All')
+      groups_lesson_summaries = if selected_param_present_but_not_all?(@selected_chapter_id)
                                   GroupLessonSummary.where(chapter_id: @selected_chapter_id)
                                 else
                                   GroupLessonSummary.joins(:chapter).where(chapters: { organization_id: @selected_organization_id })
@@ -58,7 +45,5 @@ module Analytics
     end
     # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/MethodLength
-    # rubocop:enable Metrics/CyclomaticComplexity
-    # rubocop:enable Metrics/PerceivedComplexity
   end
 end

@@ -1,0 +1,84 @@
+javascript:
+  var availableOrganizations = #{{ @available_organizations.map { |o| o.slice(:id, :organization_name) }.to_json }};
+  var availableChapters = #{{ @available_chapters.map { |c| c.slice(:id, :organization_id, :chapter_name) }.to_json }};
+  var availableSubjects = #{{ @available_subjects.map { |s| s.slice(:id, :organization_id, :subject_name) }.to_json }};
+  var availableGroups = #{{ @available_groups.map { |g| g.slice(:id, :chapter_id, :group_name) }.to_json }};
+  var availableStudents = #{{ @available_students.map { |s| s.slice(:id, :group_id, :proper_name) }.to_json }};
+
+  function filteredChapters() {
+    var selectedOrganization = Number($('#organization_select :selected').val());
+    if (selectedOrganization) {
+      return availableChapters.filter(function(c) {
+        return c.organization_id === selectedOrganization;
+      });
+    }
+    return availableChapters;
+  }
+
+  function filteredSubjects() {
+    var selectedOrganization = Number($('#organization_select :selected').val());
+    if (selectedOrganization) {
+      return availableSubjects.filter(function (c) {
+        return c.organization_id === selectedOrganization;
+      });
+    }
+    return availableSubjects;
+  }
+
+  function filteredGroups() {
+    var selectedChapter = Number($('#chapter_select :selected').val());
+    if (selectedChapter) {
+      return availableGroups.filter(function(g) {
+        return g.chapter_id === selectedChapter;
+      });
+    }
+
+    var chapterIds = filteredChapters().map(function(c) {return c.id});
+    return availableGroups.filter(function(g) {
+      return chapterIds.includes(g.chapter_id);
+    });
+  }
+
+  function filteredStudents() {
+    var selectedGroup = Number($('#group_select :selected').val());
+    if (selectedGroup) {
+      return availableStudents.filter(function (s) {
+        return s.group_id === selectedGroup;
+      });
+    }
+
+    var groupIds = filteredGroups().map(function(g) {return g.id});
+    return availableStudents.filter(function (s) {
+      return groupIds.includes(s.group_id);
+    });
+  }
+
+  function createOption(label, value) {
+    var opt = document.createElement('option');
+    opt.text = label;
+    if (value !== undefined) {
+      opt.value = value;
+    }
+
+    return opt;
+  }
+
+  function updateDropdown($dropDown, values) {
+    var currentValue = Number($dropDown.val());
+    $dropDown.empty();
+    $dropDown.append(createOption('All'));
+
+    var valueExists = false;
+    values.forEach(function(v) {
+      if (currentValue === v.value) {
+        valueExists = true;
+      }
+      $dropDown.append(createOption(v.label, v.value));
+    });
+
+
+    if (valueExists) {
+      $dropDown.val(currentValue);
+    }
+    $dropDown.change();
+  }
