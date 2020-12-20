@@ -1,4 +1,5 @@
-## Unreleased
+## 0.25.0 - Optimizations, Deployment, Analytics
+- Deployment for AWS
 - Optimized a few eager database queries
 - Fixed clicking Update Role when no role is selected crashing the app on the single user screen
 - Organizations in the single user screen are now paged
