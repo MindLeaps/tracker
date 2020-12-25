@@ -12,7 +12,7 @@ module Analytics
       @available_students = policy_scope Student.where(deleted_at: nil)
       @available_subjects = policy_scope Subject.where(deleted_at: nil)
 
-      @selected_organization_id = @available_organizations.first.id unless params[:organization_select]
+      @selected_organization_id = params[:organization_select] || @available_organizations.first.id
       @selected_chapter_id = params[:chapter_select]
       @subject = @available_subjects.first.id unless params[:subject_select]
       @selected_group_id = params[:group_select]

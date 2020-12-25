@@ -1,3 +1,7 @@
+## Unreleased
+- Fixed Analytics dropdown defaulting to All Organizations
+- Fixed Analytics Subjects not displaying individual organizations
+
 ## 0.25.0 - Optimizations, Deployment, Analytics
 - Deployment for AWS
 - Optimized a few eager database queries
