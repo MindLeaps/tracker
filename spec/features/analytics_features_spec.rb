@@ -10,11 +10,13 @@ RSpec.describe 'User interacts with Analytics' do
       @chapter = create :chapter
       @group = create :group, chapter: @chapter
       create :graded_student, group: @group, grades: { 'Memorization' => [3, 4, 5, 6, 7], 'Grit' => [2, 3, 2, 4, 5] }
+      @organization = @chapter.organization
     end
 
     it 'displays general, subject, and group analytics', js: true do
       visit '/'
       click_link 'Analytics'
+      select @organization.organization_name, from: 'organization_select'
       expect(page).to have_content('General Analytics')
       expect(page).to have_link('Subject')
       expect(page).to have_link('Group')
@@ -28,10 +30,12 @@ RSpec.describe 'User interacts with Analytics' do
 
       click_link 'Subject'
       expect(page).to have_content 'Subject Analytics'
+      select @organization.organization_name, from: 'organization_select'
       expect(page).to have_content 'Memorization'
       expect(page).to have_content 'Grit'
 
       click_link 'Group'
+      select @organization.organization_name, from: 'organization_select'
       expect(page).to have_content('Group Analytics')
       expect(page).to have_content(@group.group_chapter_name)
     end
