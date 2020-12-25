@@ -1,6 +1,7 @@
-## Unreleased
+## 0.25.1. - Analytics UX Improvements
 - Fixed Analytics dropdown defaulting to All Organizations
 - Fixed Analytics Subjects not displaying individual organizations
+- Alphabetized all Analytics dropdowns
 
 ## 0.25.0 - Optimizations, Deployment, Analytics
 - Deployment for AWS
