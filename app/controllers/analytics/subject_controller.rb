@@ -55,7 +55,7 @@ module Analytics
                 elsif @selected_organization_id.present? && @selected_organization_id != 'All'
                   Lesson.includes(group: :chapter).where(chapters: { organization_id: @selected_organization_id })
                 else
-                  Lesson.where(group: @groups)
+                  Lesson.where(group: policy_scope(Group))
                 end
 
       return [] if lessons.empty?
