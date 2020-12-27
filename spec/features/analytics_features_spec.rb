@@ -17,6 +17,7 @@ RSpec.describe 'User interacts with Analytics' do
       visit '/'
       click_link 'Analytics'
       select @organization.organization_name, from: 'organization_select'
+      click_button 'Submit'
       expect(page).to have_content('General Analytics')
       expect(page).to have_link('Subject')
       expect(page).to have_link('Group')
@@ -31,11 +32,14 @@ RSpec.describe 'User interacts with Analytics' do
       click_link 'Subject'
       expect(page).to have_content 'Subject Analytics'
       select @organization.organization_name, from: 'organization_select'
+      click_button 'Submit'
       expect(page).to have_content 'Memorization'
       expect(page).to have_content 'Grit'
 
       click_link 'Group'
+      expect(page).to have_content 'Group Analytics'
       select @organization.organization_name, from: 'organization_select'
+      click_button 'Submit'
       expect(page).to have_content('Group Analytics')
       expect(page).to have_content(@group.group_chapter_name)
     end
