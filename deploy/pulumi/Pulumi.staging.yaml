@@ -2,7 +2,6 @@ secretsprovider: awskms://6155d7ef-3531-47d2-a3e1-469ee1c83305?region=us-east-1
 encryptedkey: AQICAHh0ioDbLD6nhMlKcdSEfGE7/piYHqOA+7FQziQxkgaiBQFLSTeRcNv0txXQW91Y61T3AAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMx+loWJeNDzr+ltpxAgEQgDvxY2mumPQ27TvHYj5OgWmaxj9IPtg5ZEsZpNtJ+EjV0sxf0O35DP2wSsYjxwc9guQPhVHZjx0KNqCoGA==
 config:
   aws:region: us-east-1
-  mindleaps-tracker:region: us-east-1
   mindleaps-tracker:aws_access_key_id:
     secure: v1:RpMe2ROhQd2Wp59d:ejSSZRt1FFKZg2Fh8WGEvC3KHT7zR7hxunWu5JKK3EPh6kzC
   mindleaps-tracker:aws_secret_access_key:
@@ -17,6 +16,7 @@ config:
     secure: v1:0OG4arVLI/R2fvof:DpnGWqEDTG4qgJUAz9XYCCis5go2q1EwjjKL4gcmnQmbJks8dFNTDlq2MDYQaKyBCYU3F9YxW/KMLTqVkhWltxl7FiGCGUoMfW1io7p47vuWa2GsKyQ8Nws=
   mindleaps-tracker:google_client_secret:
     secure: v1:X5fefJed+j60gc7Q:rrfZTW3C8ARUgvjy3O4ys70N+1UWsC5ENtCcdOR6thuLgWguMH6Dlg==
+  mindleaps-tracker:image: mindleaps/tracker@sha256:8425db52e14b03a4f335c29aca5251380c252e38c52991157b6dabf810af0bfd
   mindleaps-tracker:main_vpc_availability_zones:
   - us-east-1a
   - us-east-1b
@@ -34,6 +34,7 @@ config:
     secure: v1:TQj2ssxUdt/p4bxM:chgrXpfNtjiM8CrJuNrXZ5EUEEzZxYAl6Did/OSJY8kjPP5mAVs=
   mindleaps-tracker:rds_username:
     secure: v1:QPNrRFlGsZcyIW9I:TOiRXvnFxHesvhm8GJ19htx+n9IvEYM=
+  mindleaps-tracker:region: us-east-1
   mindleaps-tracker:s3_logs_bucket_name: mindleaps-tracker-staging-logs
   mindleaps-tracker:s3_photo_bucket_name: mindleaps-tracker-staging-photos
   mindleaps-tracker:secret_key_base:
