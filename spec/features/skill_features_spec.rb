@@ -56,8 +56,11 @@ RSpec.describe 'User interacts with skills', js: true do
       org = create :organization, organization_name: 'Skill Feature Show Organization'
       desc1 = create :grade_descriptor, mark: 1, grade_description: 'Show Skill Feature Test Grade One'
       desc2 = create :grade_descriptor, mark: 2, grade_description: 'Show Skill Feature Test Grade Two'
-      create :skill, skill_name: 'Skill Feature Show Skill', skill_description: 'This is a skill for feature testing',
-                     organization: org, grade_descriptors: [desc1, desc2]
+      skill = create :skill_in_subject, skill_name: 'Skill Feature Show Skill', skill_description: 'This is a skill for feature testing',
+                                        organization: org, grade_descriptors: [desc1, desc2]
+      additional_subject = create :subject, organization: org
+      skill.subjects << additional_subject
+      skill.save!
 
       visit '/'
       click_link 'Skills'
@@ -70,6 +73,9 @@ RSpec.describe 'User interacts with skills', js: true do
       expect(page).to have_content 'Grades'
       expect(page).to have_content 'Show Skill Feature Test Grade One'
       expect(page).to have_content 'Show Skill Feature Test Grade Two'
+      expect(page).to have_content 'Subjects With This Skill'
+      expect(page).to have_content skill.subjects[0].subject_name
+      expect(page).to have_content skill.subjects[1].subject_name
     end
 
     describe 'Skill Deletion' do

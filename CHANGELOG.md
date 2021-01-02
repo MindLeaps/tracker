@@ -1,3 +1,6 @@
+## Unreleased
+- Added subjects the skill belongs to in single skill view
+
 ## 0.25.1. - Analytics UX Improvements
 - Fixed Analytics dropdown defaulting to All Organizations
 - Fixed Analytics Subjects not displaying individual organizations

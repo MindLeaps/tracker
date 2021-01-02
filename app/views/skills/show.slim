@@ -20,11 +20,24 @@
         = inline_svg_tag 'restore.svg'
 
 .mdl-cell.mdl-cell--4-col
-  .mdl-card.mdl-shadow--2dp.full-width
+  .mdl-card.mdl-shadow--2dp.full-width.card-bottom-margin
     .mdl-card__title.primary
       h2.mdl-card__title-text = t(:skill_description)
     .mdl-card__supporting-text
       = @skill.skill_description
+  .mdl-card.mdl-shadow--2dp.full-width
+    .mdl-card__title.primary
+      h2.mdl-card__title-text = t(:subjects_with_skill)
+    table.mdl-data-table.mdl-js-data-table.resource-table.wrap
+      thead
+        tr
+          th.mdl-data-table__cell--non-numeric
+            = t(:subject)
+      tbody
+        -@skill.subjects.each do |subject|
+          tr
+            td.mdl-data-table__cell--non-numeric
+              = link_to subject.subject_name, subject
 
 .mdl-cell.mdl-cell--8-col
   .mdl-card.mdl-shadow--2dp.full-width

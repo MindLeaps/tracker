@@ -134,6 +134,7 @@ en:
   skills: Skills
   new_skill: New Skill
   skill_description: Skill Description
+  subjects_with_skill: Subjects With This Skill
   delete_skill: Delete Skill
   delete_skill_confirmation_text: Are you sure you want to delete this skill?
   skill_deleted: Skill "%{skill_name}" deleted.
