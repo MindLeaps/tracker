@@ -67,6 +67,10 @@
   @extend .mdl-cell--12-col;
 }
 
+.card-bottom-margin {
+  margin-bottom: 8px;
+}
+
 .single-content-card {
   @extend .content-card;
   padding: 0 !important;
