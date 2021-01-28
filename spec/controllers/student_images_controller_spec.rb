@@ -70,7 +70,7 @@ RSpec.describe StudentImagesController, type: :controller do
         before :each do
           @student = create :student
 
-          allow_any_instance_of(StudentImage).to receive(:save).and_return false
+          allow_any_instance_of(StudentImage).to receive(:save!).and_raise ActiveRecord::StatementInvalid
           post :create, params: { student_id: @student.id, student_image: { image: [test_image] } }
         end
 

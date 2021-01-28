@@ -67,7 +67,6 @@ group :development, :test do
   gem 'factory_bot_rails'
   gem 'faker'
   gem 'json_matchers'
-  gem 'meta_request'
   gem 'pundit-matchers'
   gem 'rspec-rails'
   gem 'selenium-webdriver'

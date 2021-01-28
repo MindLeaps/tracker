@@ -8,7 +8,6 @@ class Student < ApplicationRecord
 
   validates :mlid, :first_name, :last_name, :dob, :gender, :group, presence: true
   validates :mlid, uniqueness: true
-  validate :profile_image_belongs_to_student, if: proc { |student| !student.profile_image.nil? }
 
   enum gender: { M: 'male', F: 'female' }
 
@@ -42,11 +41,5 @@ class Student < ApplicationRecord
      :guardian_name, :guardian_occupation, :guardian_contact, :family_members, :health_insurance,
      :health_issues, :hiv_tested, :name_of_school, :school_level_completed, :year_of_dropout,
      :reason_for_leaving, :notes, :organization_id, :profile_image_id, { student_images_attributes: [:image], student_tags_attributes: [:tag_id, :student_id, :_destroy] }]
-  end
-
-  private
-
-  def profile_image_belongs_to_student
-    errors.add(:profile_image, I18n.t(:wrong_image, student: proper_name, other_student: profile_image.student.proper_name)) if profile_image.student.id != id
   end
 end
