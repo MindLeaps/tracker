@@ -4,27 +4,43 @@ require 'rails_helper'
 
 RSpec.describe Organization, type: :model do
   before :each do
-    create :organization, organization_name: 'Already Existing Organization'
+    create :organization, organization_name: 'Already Existing Organization', mlid: '001'
   end
 
   it { should have_many :chapters }
 
   describe 'is valid' do
-    it 'with a valid, unique name' do
-      org = Organization.new organization_name: 'Totally valid org'
+    it 'with a valid, unique name and a unique MLID' do
+      org = Organization.new organization_name: 'Totally valid org', mlid:'uni'
       expect(org).to be_valid
       expect(org.organization_name).to eql 'Totally valid org'
+      expect(org.mlid).to eql 'uni'
     end
   end
 
   describe 'is not valid' do
     it 'without organization name' do
-      org = Organization.new organization_name: nil
+      org = Organization.new organization_name: nil, mlid: 'ABC'
+      expect(org).to_not be_valid
+    end
+
+    it 'without an MLID' do
+      org = Organization.new organization_name: 'Some org', mlid: nil
       expect(org).to_not be_valid
     end
 
     it 'with a duplicated name' do
-      org = Organization.new organization_name: 'Already Existing Organization'
+      org = Organization.new organization_name: 'Already Existing Organization', mlid: '1J4'
+      expect(org).to_not be_valid
+    end
+
+    it 'with a duplicated MLID' do
+      org = Organization.new organization_name: 'Some other org', mlid: '001'
+      expect(org).to_not be_valid
+    end
+
+    it 'with an MLID containing special characters' do
+      org = Organization.new organization_name: 'Another org', mlid: 'AV?'
       expect(org).to_not be_valid
     end
   end
