@@ -17,7 +17,7 @@ class OrganizationsController < HtmlController
   def create
     authorize Organization
     @organization = Organization.new(params.require(:organization).permit(:organization_name, :mlid))
-    @organization.mlid = @organization.mlid.upcase
+    @organization.mlid = @organization.mlid&.upcase
     @organization.save
     redirect_to organizations_url
   end

@@ -40,6 +40,9 @@ Rails:
 Rails/BulkChangeTable:
   Enabled: false
 
+Rails/SquishedSQLHeredocs:
+  Enabled: false
+
 Style/SymbolArray:
   Enabled: false
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddMlidGeneratingProcedure < ActiveRecord::Migration[6.0]
   def up
     execute <<~SQL

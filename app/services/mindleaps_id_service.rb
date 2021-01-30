@@ -2,7 +2,7 @@
 
 class MindleapsIdService
   class << self
-    def generate_organization_mlid()
+    def generate_organization_mlid
       generated_mlid = nil
       loop do
         generated_mlid = generate_mlid(3)
