@@ -104,7 +104,7 @@ DECLARE
     rec RECORD;
     new_mlid TEXT;
 BEGIN
-    EXECUTE format('ALTER TABLE %I ADD COLUMN mlid TEXT UNIQUE CONSTRAINT uppercase CHECK(mlid = UPPER(mlid));', table_name);
+    EXECUTE format('ALTER TABLE %I ADD COLUMN mlid VARCHAR(%s) UNIQUE CONSTRAINT uppercase CHECK(mlid = UPPER(mlid));', table_name, mlid_length);
     FOR rec IN EXECUTE format('SELECT * FROM %I', table_name) LOOP
         LOOP
             IF rec.mlid IS NOT NULL THEN
@@ -519,7 +519,9 @@ CREATE TABLE public.organizations (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     image character varying DEFAULT 'https://placeholdit.imgix.net/~text?txtsize=23&txt=200%C3%97200&w=200&h=200'::character varying,
-    deleted_at timestamp without time zone
+    deleted_at timestamp without time zone,
+    mlid character varying(3) NOT NULL,
+    CONSTRAINT uppercase CHECK (((mlid)::text = upper((mlid)::text)))
 );
 
 
@@ -1059,6 +1061,14 @@ ALTER TABLE ONLY public.lessons
 
 ALTER TABLE ONLY public.lessons
     ADD CONSTRAINT lessons_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: organizations organizations_mlid_key; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.organizations
+    ADD CONSTRAINT organizations_mlid_key UNIQUE (mlid);
 
 
 --
@@ -1894,6 +1904,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200222045456'),
 ('20200619222042'),
 ('20200626021523'),
-('20210130185750');
+('20210130185750'),
+('20210130190336');
 
 

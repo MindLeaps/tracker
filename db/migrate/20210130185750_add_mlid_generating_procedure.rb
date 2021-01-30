@@ -7,7 +7,7 @@ class AddMlidGeneratingProcedure < ActiveRecord::Migration[6.0]
           rec RECORD;
           new_mlid TEXT;
       BEGIN
-          EXECUTE format('ALTER TABLE %I ADD COLUMN mlid TEXT UNIQUE CONSTRAINT uppercase CHECK(mlid = UPPER(mlid));', table_name);
+          EXECUTE format('ALTER TABLE %I ADD COLUMN mlid VARCHAR(%s) UNIQUE CONSTRAINT uppercase CHECK(mlid = UPPER(mlid));', table_name, mlid_length);
           FOR rec IN EXECUTE format('SELECT * FROM %I', table_name) LOOP
               LOOP
                   IF rec.mlid IS NOT NULL THEN
