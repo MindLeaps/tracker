@@ -124,6 +124,42 @@ END;
 $$;
 
 
+--
+-- Name: update_records_with_unique_mlids(text, integer, text); Type: PROCEDURE; Schema: public; Owner: -
+--
+
+CREATE PROCEDURE public.update_records_with_unique_mlids(table_name text, mlid_length integer, unique_scope text DEFAULT NULL::text)
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    rec RECORD;
+    new_mlid TEXT;
+BEGIN
+    IF unique_scope IS NULL THEN
+        EXECUTE format('ALTER TABLE %I ADD COLUMN mlid VARCHAR(%s) UNIQUE CONSTRAINT uppercase CHECK(mlid = UPPER(mlid));', table_name, mlid_length);
+    ELSE
+        EXECUTE format('ALTER TABLE %I ADD COLUMN mlid VARCHAR(%s) CONSTRAINT uppercase CHECK(mlid = UPPER(mlid));', table_name, mlid_length);
+        EXECUTE format('ALTER TABLE %I ADD CONSTRAINT unique_mlid_per_scope UNIQUE(mlid, organization_id);', table_name, mlid_length);
+    END IF;
+    FOR rec IN EXECUTE format('SELECT * FROM %I', table_name) LOOP
+            LOOP
+                IF rec.mlid IS NOT NULL THEN
+                    EXIT;
+                END IF;
+                new_mlid := SUBSTRING(UPPER(MD5(''||NOW()::TEXT||RANDOM()::TEXT)) FOR mlid_length);
+                BEGIN
+                    EXECUTE format('UPDATE %I SET mlid = %L WHERE id = %s', table_name, new_mlid, rec.id);
+                    EXIT; -- we successfully updated the record so we can exit this iteration and continue to the next one
+                EXCEPTION WHEN unique_violation THEN
+                -- we catch the exception and let this loop iteration run again
+                END;
+            END LOOP;
+        END LOOP;
+    EXECUTE format('ALTER TABLE %I ALTER COLUMN mlid SET NOT NULL;', table_name);
+END;
+$$;
+
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -266,7 +302,9 @@ CREATE TABLE public.chapters (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     organization_id integer,
-    deleted_at timestamp without time zone
+    deleted_at timestamp without time zone,
+    mlid character varying(2) NOT NULL,
+    CONSTRAINT uppercase CHECK (((mlid)::text = upper((mlid)::text)))
 );
 
 
@@ -1136,6 +1174,14 @@ ALTER TABLE ONLY public.tags
 
 
 --
+-- Name: chapters unique_mlid_per_scope; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.chapters
+    ADD CONSTRAINT unique_mlid_per_scope UNIQUE (mlid, organization_id);
+
+
+--
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1905,6 +1951,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200619222042'),
 ('20200626021523'),
 ('20210130185750'),
-('20210130190336');
+('20210130190336'),
+('20210201004530'),
+('20210201011615');
 
 
