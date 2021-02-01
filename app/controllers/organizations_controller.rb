@@ -11,12 +11,13 @@ class OrganizationsController < HtmlController
 
   def new
     authorize Organization
-    @organization = Organization.new
+    @organization = Organization.new params.permit :organization_name
   end
 
   def create
     authorize Organization
-    @organization = Organization.new(params.require(:organization).permit(:organization_name))
+    @organization = Organization.new(params.require(:organization).permit(:organization_name, :mlid))
+    @organization.mlid = @organization.mlid&.upcase
     @organization.save
     redirect_to organizations_url
   end

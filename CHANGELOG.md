@@ -1,5 +1,6 @@
 ## Unreleased
 - Added subjects the skill belongs to in single skill view
+- Added MLIDs to Organizations
 
 ## 0.25.1. - Analytics UX Improvements
 - Fixed Analytics dropdown defaulting to All Organizations
