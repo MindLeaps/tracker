@@ -1,6 +1,7 @@
 ## Unreleased
 - Added subjects the skill belongs to in single skill view
 - Added MLIDs to Organizations
+- Fixed non-global users being unable to see the lessons page
 
 ## 0.25.1. - Analytics UX Improvements
 - Fixed Analytics dropdown defaulting to All Organizations
