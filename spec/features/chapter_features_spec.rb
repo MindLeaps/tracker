@@ -49,6 +49,7 @@ RSpec.describe 'User interacts with Chapters' do
       visit '/chapters'
       click_link 'Add Chapter'
       fill_in 'Chapter name', with: 'Chapter One'
+      fill_in 'MLID', with: 'M0'
       select 'New Org', from: 'chapter_organization_id'
       click_button 'Create'
 

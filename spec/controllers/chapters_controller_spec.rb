@@ -37,11 +37,12 @@ RSpec.describe ChaptersController, type: :controller do
   describe '#create' do
     context 'supplied valid params' do
       it 'creates a chapter' do
-        post :create, params: { chapter: { chapter_name: 'Rugerero', organization_id: test_organization.id } }
+        post :create, params: { chapter: { chapter_name: 'Rugerero', organization_id: test_organization.id, mlid: 'Z9' } }
         expect(response).to redirect_to controller: :chapters, action: :index
 
         chapter = Chapter.last
         expect(chapter.chapter_name).to eql 'Rugerero'
+        expect(chapter.mlid).to eql 'Z9'
         expect(chapter.organization_id).to eql test_organization.id
         expect(chapter.organization.organization_name).to eql 'Newly Created Test Org'
       end
