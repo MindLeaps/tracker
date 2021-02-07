@@ -283,6 +283,9 @@ CREATE VIEW public.chapter_summaries AS
 SELECT
     NULL::integer AS id,
     NULL::character varying AS chapter_name,
+    NULL::character varying(2) AS chapter_mlid,
+    NULL::character varying(3) AS organization_mlid,
+    NULL::text AS full_mlid,
     NULL::integer AS organization_id,
     NULL::character varying AS organization_name,
     NULL::timestamp without time zone AS deleted_at,
@@ -1407,41 +1410,6 @@ CREATE INDEX index_users_roles_on_user_id_and_role_id ON public.users_roles USIN
 
 
 --
--- Name: chapter_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.chapter_summaries AS
- WITH group_student_count AS (
-         SELECT g.id AS group_id,
-            g.group_name,
-            g.deleted_at,
-            g.chapter_id,
-            sum(
-                CASE
-                    WHEN ((s.id IS NOT NULL) AND (s.deleted_at IS NULL)) THEN 1
-                    ELSE 0
-                END) AS student_count
-           FROM (public.groups g
-             LEFT JOIN public.students s ON ((g.id = s.group_id)))
-          WHERE (g.deleted_at IS NULL)
-          GROUP BY g.id
-        )
- SELECT c.id,
-    c.chapter_name,
-    c.organization_id,
-    o.organization_name,
-    c.deleted_at,
-    count(group_student_count.group_id) AS group_count,
-    (COALESCE(sum(group_student_count.student_count), (0)::numeric))::integer AS student_count,
-    c.created_at,
-    c.updated_at
-   FROM ((public.chapters c
-     LEFT JOIN group_student_count ON ((group_student_count.chapter_id = c.id)))
-     LEFT JOIN public.organizations o ON ((c.organization_id = o.id)))
-  GROUP BY c.id, o.id;
-
-
---
 -- Name: group_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
@@ -1660,6 +1628,44 @@ CREATE OR REPLACE VIEW public.student_tag_table_rows AS
      JOIN public.organizations o ON ((t.organization_id = o.id)))
      LEFT JOIN public.student_tags st ON ((t.id = st.tag_id)))
   GROUP BY t.id, t.organization_id, o.organization_name;
+
+
+--
+-- Name: chapter_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.chapter_summaries AS
+ WITH group_student_count AS (
+         SELECT g.id AS group_id,
+            g.group_name,
+            g.deleted_at,
+            g.chapter_id,
+            sum(
+                CASE
+                    WHEN ((s.id IS NOT NULL) AND (s.deleted_at IS NULL)) THEN 1
+                    ELSE 0
+                END) AS student_count
+           FROM (public.groups g
+             LEFT JOIN public.students s ON ((g.id = s.group_id)))
+          WHERE (g.deleted_at IS NULL)
+          GROUP BY g.id
+        )
+ SELECT c.id,
+    c.chapter_name,
+    c.mlid AS chapter_mlid,
+    o.mlid AS organization_mlid,
+    concat(o.mlid, '-', c.mlid) AS full_mlid,
+    c.organization_id,
+    o.organization_name,
+    c.deleted_at,
+    count(group_student_count.group_id) AS group_count,
+    (COALESCE(sum(group_student_count.student_count), (0)::numeric))::integer AS student_count,
+    c.created_at,
+    c.updated_at
+   FROM ((public.chapters c
+     LEFT JOIN group_student_count ON ((group_student_count.chapter_id = c.id)))
+     LEFT JOIN public.organizations o ON ((c.organization_id = o.id)))
+  GROUP BY c.id, o.id;
 
 
 --
@@ -1953,6 +1959,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210130185750'),
 ('20210130190336'),
 ('20210201004530'),
-('20210201011615');
+('20210201011615'),
+('20210207190942');
 
 
