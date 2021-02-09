@@ -62,7 +62,7 @@ group :development, :test do
 
   # Rspec requires capybara > 2.1
   gem 'capybara', '> 2.1'
-  gem 'coveralls', require: false
+  gem 'coveralls_reborn', '~> 0.20.0', require: false
   gem 'database_cleaner'
   gem 'factory_bot_rails'
   gem 'faker'
