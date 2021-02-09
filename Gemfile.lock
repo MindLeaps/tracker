@@ -398,7 +398,7 @@ GEM
     slim (4.1.0)
       temple (>= 0.7.6, < 0.9)
       tilt (>= 2.0.6, < 2.1)
-    smarter_csv (1.2.6)
+    smarter_csv (1.2.8)
     sort_alphabetical (1.1.0)
       unicode_utils (>= 1.2.2)
     spring (2.1.1)
