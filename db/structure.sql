@@ -778,6 +778,45 @@ CREATE VIEW public.student_lessons AS
 
 
 --
+-- Name: student_table_rows; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.student_table_rows AS
+ SELECT s.id,
+    s.first_name,
+    s.last_name,
+    s.dob,
+    s.created_at,
+    s.updated_at,
+    s.estimated_dob,
+    s.group_id,
+    s.gender,
+    s.quartier,
+    s.health_insurance,
+    s.health_issues,
+    s.hiv_tested,
+    s.name_of_school,
+    s.school_level_completed,
+    s.year_of_dropout,
+    s.reason_for_leaving,
+    s.notes,
+    s.guardian_name,
+    s.guardian_occupation,
+    s.guardian_contact,
+    s.family_members,
+    s.mlid,
+    s.deleted_at,
+    s.profile_image_id,
+    s.country_of_nationality,
+    g.group_name,
+    concat(o.mlid, '-', c.mlid, '-', s.mlid) AS full_mlid
+   FROM (((public.students s
+     JOIN public.groups g ON ((s.group_id = g.id)))
+     JOIN public.chapters c ON ((g.chapter_id = c.id)))
+     JOIN public.organizations o ON ((c.organization_id = o.id)));
+
+
+--
 -- Name: student_tag_table_rows; Type: VIEW; Schema: public; Owner: -
 --
 
@@ -1960,6 +1999,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210130190336'),
 ('20210201004530'),
 ('20210201011615'),
-('20210207190942');
+('20210207190942'),
+('20210209020704');
 
 

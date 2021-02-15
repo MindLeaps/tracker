@@ -59,7 +59,7 @@ RSpec.describe Student, type: :model do
           new_student = build :student, group: @group, mlid: 'AA1'
           expect(new_student).to be_invalid
           expect(new_student.errors.messages[:mlid])
-            .to include "MLID already exists in chapter."
+            .to include 'MLID already exists in chapter.'
         end
 
         it 'when it is duplicated with someone in a different group but same chapter' do
@@ -95,7 +95,6 @@ RSpec.describe Student, type: :model do
     it { should validate_presence_of :first_name }
     it { should validate_presence_of :last_name }
     it { should validate_presence_of :dob }
-    it { should validate_uniqueness_of(:mlid) }
 
     after :all do
       Bullet.enable = true
@@ -132,22 +131,9 @@ RSpec.describe Student, type: :model do
       end
     end
 
-    describe 'order_by_group_name' do
-      it 'returns students sorted by Group Name' do
-        expect(Student.order_by_group_name('asc').map(&:first_name)[0..2]).to include 'Emberto', 'Amberto', 'Omberto'
-        expect(Student.order_by_group_name('asc').map(&:first_name)[3..4]).to include 'Ambuba', 'Ombuba'
-        expect(Student.order_by_group_name('desc').map(&:first_name)[0..1]).to include 'Ambuba', 'Ombuba'
-        expect(Student.order_by_group_name('desc').map(&:first_name)[2..4]).to include 'Emberto', 'Amberto', 'Omberto'
-      end
-    end
-
     describe 'table_order' do
       it 'returns students sorted by first name' do
         expect(Student.table_order(key: :first_name, order: 'ASC').map(&:first_name)).to eq %w[Amberto Ambuba Emberto Omberto Ombuba]
-      end
-
-      it 'returns students sorted by group name' do
-        expect(Student.table_order(key: :order_by_group_name, order: 'ASC', custom_scope_order: 'true')).to eq Student.order_by_group_name('asc')
       end
     end
 

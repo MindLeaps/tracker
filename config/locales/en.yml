@@ -93,6 +93,7 @@ en:
   student_has_no_images: This student has no images
   images_uploaded: Images uploaded.
   no_image_submitted: No image submitted.
+  no_valid_mlid_without_group: MLID cannot be valid without existing group.
   duplicate_mlid: MLID already exists in chapter.
   wrong_image: Image of %{other_student} cannot be a profile image for %{student}
   membership: Membership
