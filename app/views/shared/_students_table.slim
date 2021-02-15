@@ -6,14 +6,14 @@ table class='mdl-data-table mdl-js-data-table resource-table'
     tr
       th.mdl-data-table__cell--non-numeric
         | #
-      == render partial: 'shared/ordered_column', locals: { order_key: :mlid, column_name: t(:mlid) }
+      == render partial: 'shared/ordered_column', locals: { order_key: :full_mlid, column_name: t(:mlid) }
       == render partial: 'shared/ordered_column', locals: { order_key: :last_name, column_name: t(:last_name) }
       == render partial: 'shared/ordered_column', locals: { order_key: :first_name, column_name: t(:first_name) }
       == render partial: 'shared/ordered_column', locals: { order_key: :gender, column_name: t(:gender) }
       == render partial: 'shared/ordered_column', locals: { order_key: :dob, column_name: t(:date_of_birth), numeric: true }
       th.mdl-data-table__cell--non-numeric
         = t(:tags)
-      == render partial: 'shared/ordered_column', locals: { order_key: :order_by_group_name, column_name: t(:group), custom_order?: true }
+      == render partial: 'shared/ordered_column', locals: { order_key: :group_name, column_name: t(:group) }
       th
         = t(:actions)
   tbody
@@ -23,7 +23,7 @@ table class='mdl-data-table mdl-js-data-table resource-table'
       td.mdl-data-table__cell--non-numeric
         = link_to pagy.from + i, student_path(student)
       td.mdl-data-table__cell--non-numeric
-        = link_to student.mlid, student_path(student)
+        = link_to student.full_mlid, student_path(student)
       td.mdl-data-table__cell--non-numeric
         = link_to student.last_name, student_path(student)
       td.mdl-data-table__cell--non-numeric

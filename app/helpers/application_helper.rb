@@ -21,8 +21,8 @@ module ApplicationHelper
     nil
   end
 
-  def order_parameters(order_key, custom_scope_order)
-    request.query_parameters.merge(table_order: { key: order_key, order: order_for(order_key).to_s == 'asc' ? :desc : :asc, custom_scope_order: custom_scope_order })
+  def order_parameters(order_key)
+    request.query_parameters.merge(table_order: { key: order_key, order: order_for(order_key).to_s == 'asc' ? :desc : :asc })
   end
 
   def order_icon(order_key)

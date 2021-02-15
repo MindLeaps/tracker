@@ -7,7 +7,7 @@ class Student < ApplicationRecord
   }, using: { tsearch: { prefix: true } }
 
   validates :mlid, :first_name, :last_name, :dob, :gender, :group, presence: true
-  validates :mlid, uniqueness: true
+  validate :unique_mlid_in_chapter
   validate :profile_image_belongs_to_student, if: proc { |student| !student.profile_image.nil? }
 
   enum gender: { M: 'male', F: 'female' }
@@ -27,8 +27,6 @@ class Student < ApplicationRecord
 
   scope :by_group, ->(group_id) { where group_id: group_id }
 
-  scope :order_by_group_name, ->(sorting) { joins(:group).order("groups.group_name #{sorting == 'desc' ? 'DESC' : 'ASC'}") }
-
   def proper_name
     "#{last_name}, #{first_name}"
   end
@@ -45,6 +43,19 @@ class Student < ApplicationRecord
   end
 
   private
+
+  def unique_mlid_in_chapter
+    if group.nil?
+      errors.add(:mlid, I18n.t(:no_valid_mlid_without_group))
+      return
+    end
+    existing_mlid_students = Student.joins(:group)
+                                    .where(mlid: mlid, groups: { chapter_id: group.chapter_id })
+                                    .where.not(id: id).count
+    return if existing_mlid_students.zero?
+
+    errors.add(:mlid, I18n.t(:duplicate_mlid))
+  end
 
   def profile_image_belongs_to_student
     errors.add(:profile_image, I18n.t(:wrong_image, student: proper_name, other_student: profile_image.student.proper_name)) if profile_image.student.id != id

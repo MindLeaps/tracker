@@ -147,12 +147,11 @@ RSpec.describe StudentsController, type: :controller do
         it { should respond_with 200 }
 
         it 'gets a list of students' do
-          expect(assigns(:students)).to include @student1
-          expect(assigns(:students)).to include @student2
+          expect(assigns(:students).map(&:id)).to include @student1.id, @student2.id
         end
 
         it 'does not display deleted students' do
-          expect(assigns(:students)).not_to include @deleted_student
+          expect(assigns(:students).map(&:id)).not_to include @deleted_student.id
         end
       end
 
@@ -165,7 +164,7 @@ RSpec.describe StudentsController, type: :controller do
 
         it 'responds with a listed of searched students' do
           expect(assigns(:students).length).to eq 1
-          expect(assigns(:students)).to include @student1
+          expect(assigns(:students)[0].first_name).to eq @student1.first_name
         end
       end
     end

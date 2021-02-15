@@ -2,6 +2,7 @@
 - Added subjects the skill belongs to in single skill view
 - Added MLIDs to Organizations
 - Added MLIDs to Chapters
+- Scoped Student MLIDs by Chapter and Organization
 - Fixed non-global users being unable to see the lessons page
 
 ## 0.25.1. - Analytics UX Improvements
