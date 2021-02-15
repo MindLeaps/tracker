@@ -44,7 +44,7 @@ RSpec.describe ChapterSummary, type: :model do
     before :each do
       @chapter1 = create :chapter, chapter_name: 'Abisamol'
       @chapter2 = create :chapter, chapter_name: 'Abisouena'
-      @chapter3 = create :chapter, chapter_name: 'Milatava'
+      @chapter3 = create :chapter, chapter_name: 'Milatava', mlid: 'MI'
       @chapter4 = create :chapter, chapter_name: 'Zombara', organization: create(:organization, organization_name: 'Xibalba')
     end
 
@@ -64,6 +64,12 @@ RSpec.describe ChapterSummary, type: :model do
       result = ChapterSummary.search('Xiba')
       expect(result.length).to eq 1
       expect(result).to include ChapterSummary.find(@chapter4.id)
+    end
+
+    it 'finds a chapter by MLID' do
+      result = ChapterSummary.search('MI')
+      expect(result.length).to eq 1
+      expect(result).to include ChapterSummary.find(@chapter3.id)
     end
   end
 end

@@ -7,7 +7,7 @@ class Student < ApplicationRecord
   }, using: { tsearch: { prefix: true } }
 
   validates :mlid, :first_name, :last_name, :dob, :gender, :group, presence: true
-  validates :mlid, uniqueness: true
+  validate :unique_mlid_in_chapter
 
   enum gender: { M: 'male', F: 'female' }
 
@@ -26,8 +26,6 @@ class Student < ApplicationRecord
 
   scope :by_group, ->(group_id) { where group_id: group_id }
 
-  scope :order_by_group_name, ->(sorting) { joins(:group).order("groups.group_name #{sorting == 'desc' ? 'DESC' : 'ASC'}") }
-
   def proper_name
     "#{last_name}, #{first_name}"
   end
@@ -41,5 +39,20 @@ class Student < ApplicationRecord
      :guardian_name, :guardian_occupation, :guardian_contact, :family_members, :health_insurance,
      :health_issues, :hiv_tested, :name_of_school, :school_level_completed, :year_of_dropout,
      :reason_for_leaving, :notes, :organization_id, :profile_image_id, { student_images_attributes: [:image], student_tags_attributes: [:tag_id, :student_id, :_destroy] }]
+  end
+
+  private
+
+  def unique_mlid_in_chapter
+    if group.nil?
+      errors.add(:mlid, I18n.t(:no_valid_mlid_without_group))
+      return
+    end
+    existing_mlid_students = Student.joins(:group)
+                                    .where(mlid: mlid, groups: { chapter_id: group.chapter_id })
+                                    .where.not(id: id).count
+    return if existing_mlid_students.zero?
+
+    errors.add(:mlid, I18n.t(:duplicate_mlid))
   end
 end

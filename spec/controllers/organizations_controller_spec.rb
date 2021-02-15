@@ -35,8 +35,8 @@ RSpec.describe OrganizationsController, type: :controller do
   end
 
   describe '#create' do
-    it 'creates a new organization when supplied a valid name' do
-      post :create, params: { organization: { organization_name: 'New Test Organization' } }
+    it 'creates a new organization when supplied a valid name and MLID' do
+      post :create, params: { organization: { organization_name: 'New Test Organization', mlid: 'ABC' } }
 
       expect(response).to redirect_to controller: :organizations, action: :index
       organization = Organization.last

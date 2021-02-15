@@ -9,6 +9,7 @@ class Chapter < ApplicationRecord
       "Chapter \"#{data[:value]}\" already exists in #{chapter.organization_name} organization"
     end
   }
+  validates :mlid, presence: true, uniqueness: { scope: :organization_id }, format: { with: /\A[A-Za-z0-9]+\Z/ }
 
   belongs_to :organization
   has_many :groups, dependent: :restrict_with_error

@@ -18,6 +18,7 @@ class ChaptersController < HtmlController
   def create
     @chapter = Chapter.new chapter_params
     authorize @chapter
+    @chapter.mlid = @chapter.mlid&.upcase
     return notice_and_redirect t(:chapter_created, chapter: @chapter.chapter_name), chapters_url if @chapter.save
 
     @chapters = Chapter.includes(:organization, groups: [:students]).all
@@ -46,6 +47,6 @@ class ChaptersController < HtmlController
   private
 
   def chapter_params
-    params.require(:chapter).permit :chapter_name, :organization_id
+    params.require(:chapter).permit :chapter_name, :organization_id, :mlid
   end
 end
