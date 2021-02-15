@@ -81,13 +81,6 @@ RSpec.describe Student, type: :model do
         @student.profile_image = @image
         expect(@student).to be_valid
       end
-
-      it 'student is invalid if profile image belongs to other student' do
-        @student.profile_image = @other_image
-        expect(@student).to be_invalid
-        expect(@student.errors.messages[:profile_image])
-          .to include "Image of #{@other_image.student.proper_name} cannot be a profile image for #{@student.proper_name}"
-      end
     end
 
     it { should validate_presence_of :mlid }

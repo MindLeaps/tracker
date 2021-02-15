@@ -31,10 +31,10 @@ class StudentImagesController < HtmlController
 
   def save_images(student_images)
     StudentImage.transaction do
-      student_images.each { |i| raise ActiveRecord::Rollback unless i.save }
-
-      return true
+      student_images.each(&:save!)
     end
+    true
+  rescue ActiveRecord::StatementInvalid, ActiveRecord::RecordInvalid
     false
   end
 

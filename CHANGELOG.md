@@ -4,6 +4,7 @@
 - Added MLIDs to Chapters
 - Scoped Student MLIDs by Chapter and Organization
 - Fixed non-global users being unable to see the lessons page
+- Upgraded to Rails 6.1.2
 
 ## 0.25.1. - Analytics UX Improvements
 - Fixed Analytics dropdown defaulting to All Organizations
