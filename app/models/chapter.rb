@@ -18,4 +18,8 @@ class Chapter < ApplicationRecord
   delegate :organization_name, to: :organization, allow_nil: true
 
   scope :by_organization, ->(organization_id) { where organization_id: organization_id }
+
+  def full_mlid
+    "#{organization.mlid}-#{mlid}"
+  end
 end
