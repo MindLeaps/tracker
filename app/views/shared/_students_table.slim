@@ -4,9 +4,9 @@ table class='mdl-data-table mdl-js-data-table resource-table'
       {name: t(:show_deleted), href: show_deleted_url, checked: !excluding_deleted?, tooltip: excluding_deleted? ? t(:show_deleted_students_tooltip) : t(:hide_deleted_students_tooltip) } \
     ] }
     tr
-      th.mdl-data-table__cell--non-numeric
+      th.mdl-data-table__cell
         | #
-      == render partial: 'shared/ordered_column', locals: { order_key: :full_mlid, column_name: t(:mlid) }
+      == render partial: 'shared/ordered_column', locals: { order_key: :full_mlid, column_name: t(:mlid), numeric: true }
       == render partial: 'shared/ordered_column', locals: { order_key: :last_name, column_name: t(:last_name) }
       == render partial: 'shared/ordered_column', locals: { order_key: :first_name, column_name: t(:first_name) }
       == render partial: 'shared/ordered_column', locals: { order_key: :gender, column_name: t(:gender) }
@@ -20,10 +20,13 @@ table class='mdl-data-table mdl-js-data-table resource-table'
   - students.each_with_index do |student, i|
 
     tr class=(['resource-row', student.deleted_at ? 'deleted-row' : nil])
-      td.mdl-data-table__cell--non-numeric
+      td.mdl-data-table__cell
         = link_to pagy.from + i, student_path(student)
-      td.mdl-data-table__cell--non-numeric
-        = link_to student.full_mlid, student_path(student)
+      td.mdl-data-table__cell
+        a href=student_path(student)
+          span.faded
+            = "#{student.organization_mlid}-#{student.chapter_mlid}-"
+          = student.mlid
       td.mdl-data-table__cell--non-numeric
         = link_to student.last_name, student_path(student)
       td.mdl-data-table__cell--non-numeric
