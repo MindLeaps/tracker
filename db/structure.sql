@@ -809,6 +809,8 @@ CREATE VIEW public.student_table_rows AS
     s.profile_image_id,
     s.country_of_nationality,
     g.group_name,
+    o.mlid AS organization_mlid,
+    c.mlid AS chapter_mlid,
     concat(o.mlid, '-', c.mlid, '-', s.mlid) AS full_mlid
    FROM (((public.students s
      JOIN public.groups g ON ((s.group_id = g.id)))
@@ -2000,6 +2002,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210201004530'),
 ('20210201011615'),
 ('20210207190942'),
-('20210209020704');
+('20210209020704'),
+('20210217042855');
 
 
