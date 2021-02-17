@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'json_limit_backtrace'
 Rails.application.configure do
   OpenSSL::SSL.send(:remove_const, :VERIFY_PEER)
   OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
@@ -66,5 +67,6 @@ Rails.application.configure do
 
   # Enabling Skylight.io in development - must have auth token in environment to work properly
   config.skylight.environments += %w[development]
+  config.semantic_logger.add_appender(io: $stdout, level: config.log_level, formatter: JsonLimitBacktrace.new)
   config.log_level = :debug
 end
