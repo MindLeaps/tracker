@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'json_limit_backtrace'
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
