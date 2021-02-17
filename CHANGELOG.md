@@ -1,4 +1,4 @@
-## Unreleased
+## 0.26.0 - Organization and Chapter MLIDs
 - Added subjects the skill belongs to in single skill view
 - Added MLIDs to Organizations
 - Added MLIDs to Chapters
