@@ -61,7 +61,7 @@ class GroupsController < HtmlController
   private
 
   def group_params
-    params.require(:group).permit :group_name, :chapter_id
+    params.require(:group).permit :group_name, :mlid, :chapter_id
   end
 
   def populate_new_group

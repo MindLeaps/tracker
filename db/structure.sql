@@ -94,37 +94,6 @@ $$;
 
 
 --
--- Name: update_records_with_unique_mlids(text, integer); Type: PROCEDURE; Schema: public; Owner: -
---
-
-CREATE PROCEDURE public.update_records_with_unique_mlids(table_name text, mlid_length integer)
-    LANGUAGE plpgsql
-    AS $$
-DECLARE
-    rec RECORD;
-    new_mlid TEXT;
-BEGIN
-    EXECUTE format('ALTER TABLE %I ADD COLUMN mlid VARCHAR(%s) UNIQUE CONSTRAINT uppercase CHECK(mlid = UPPER(mlid));', table_name, mlid_length);
-    FOR rec IN EXECUTE format('SELECT * FROM %I', table_name) LOOP
-        LOOP
-            IF rec.mlid IS NOT NULL THEN
-                EXIT;
-            END IF;
-            new_mlid := SUBSTRING(UPPER(MD5(''||NOW()::TEXT||RANDOM()::TEXT)) FOR mlid_length);
-            BEGIN
-               UPDATE organizations SET mlid = new_mlid WHERE id = rec.id;
-               EXIT; -- we successfully updated the record so we can exit this iteration and continue to the next one
-            EXCEPTION WHEN unique_violation THEN
-                -- we catch the exception and let this loop iteration run again
-            END;
-        END LOOP;
-    END LOOP;
-    EXECUTE format('ALTER TABLE %I ALTER COLUMN mlid SET NOT NULL;', table_name);
-END;
-$$;
-
-
---
 -- Name: update_records_with_unique_mlids(text, integer, text); Type: PROCEDURE; Schema: public; Owner: -
 --
 
@@ -139,7 +108,7 @@ BEGIN
         EXECUTE format('ALTER TABLE %I ADD COLUMN mlid VARCHAR(%s) UNIQUE CONSTRAINT uppercase CHECK(mlid = UPPER(mlid));', table_name, mlid_length);
     ELSE
         EXECUTE format('ALTER TABLE %I ADD COLUMN mlid VARCHAR(%s) CONSTRAINT uppercase CHECK(mlid = UPPER(mlid));', table_name, mlid_length);
-        EXECUTE format('ALTER TABLE %I ADD CONSTRAINT unique_mlid_per_scope UNIQUE(mlid, organization_id);', table_name, mlid_length);
+        EXECUTE format('ALTER TABLE %I ADD CONSTRAINT unique_mlid_per_%I UNIQUE(mlid, %I);', table_name, unique_scope, unique_scope);
     END IF;
     FOR rec IN EXECUTE format('SELECT * FROM %I', table_name) LOOP
             LOOP
@@ -430,6 +399,10 @@ SELECT
     NULL::integer AS chapter_id,
     NULL::character varying AS chapter_name,
     NULL::integer AS organization_id,
+    NULL::character varying(3) AS organization_mlid,
+    NULL::character varying(2) AS chapter_mlid,
+    NULL::character varying(2) AS mlid,
+    NULL::text AS full_mlid,
     NULL::character varying AS organization_name,
     NULL::bigint AS student_count;
 
@@ -444,7 +417,9 @@ CREATE TABLE public.groups (
     updated_at timestamp without time zone NOT NULL,
     group_name character varying DEFAULT ''::character varying NOT NULL,
     chapter_id integer,
-    deleted_at timestamp without time zone
+    deleted_at timestamp without time zone,
+    mlid character varying(2) NOT NULL,
+    CONSTRAINT uppercase CHECK (((mlid)::text = upper((mlid)::text)))
 );
 
 
@@ -811,7 +786,8 @@ CREATE VIEW public.student_table_rows AS
     g.group_name,
     o.mlid AS organization_mlid,
     c.mlid AS chapter_mlid,
-    concat(o.mlid, '-', c.mlid, '-', s.mlid) AS full_mlid
+    g.mlid AS group_mlid,
+    concat(o.mlid, '-', c.mlid, '-', g.mlid, '-', s.mlid) AS full_mlid
    FROM (((public.students s
      JOIN public.groups g ON ((s.group_id = g.id)))
      JOIN public.chapters c ON ((g.chapter_id = c.id)))
@@ -1218,6 +1194,14 @@ ALTER TABLE ONLY public.tags
 
 
 --
+-- Name: groups unique_mlid_per_chapter_id; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.groups
+    ADD CONSTRAINT unique_mlid_per_chapter_id UNIQUE (mlid, chapter_id);
+
+
+--
 -- Name: chapters unique_mlid_per_scope; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1475,30 +1459,6 @@ CREATE OR REPLACE VIEW public.group_lesson_summaries AS
 
 
 --
--- Name: group_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.group_summaries AS
- SELECT g.id,
-    g.group_name,
-    g.deleted_at,
-    g.chapter_id,
-    c.chapter_name,
-    o.id AS organization_id,
-    o.organization_name,
-    sum(
-        CASE
-            WHEN ((s.id IS NOT NULL) AND (s.deleted_at IS NULL)) THEN 1
-            ELSE 0
-        END) AS student_count
-   FROM (((public.groups g
-     LEFT JOIN public.students s ON ((g.id = s.group_id)))
-     LEFT JOIN public.chapters c ON ((g.chapter_id = c.id)))
-     LEFT JOIN public.organizations o ON ((c.organization_id = o.id)))
-  GROUP BY g.id, c.id, o.id;
-
-
---
 -- Name: lesson_skill_summaries _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
@@ -1707,6 +1667,34 @@ CREATE OR REPLACE VIEW public.chapter_summaries AS
      LEFT JOIN group_student_count ON ((group_student_count.chapter_id = c.id)))
      LEFT JOIN public.organizations o ON ((c.organization_id = o.id)))
   GROUP BY c.id, o.id;
+
+
+--
+-- Name: group_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.group_summaries AS
+ SELECT g.id,
+    g.group_name,
+    g.deleted_at,
+    g.chapter_id,
+    c.chapter_name,
+    o.id AS organization_id,
+    o.mlid AS organization_mlid,
+    c.mlid AS chapter_mlid,
+    g.mlid,
+    concat(o.mlid, '-', c.mlid, '-', g.mlid) AS full_mlid,
+    o.organization_name,
+    sum(
+        CASE
+            WHEN ((s.id IS NOT NULL) AND (s.deleted_at IS NULL)) THEN 1
+            ELSE 0
+        END) AS student_count
+   FROM (((public.groups g
+     LEFT JOIN public.students s ON ((g.id = s.group_id)))
+     LEFT JOIN public.chapters c ON ((g.chapter_id = c.id)))
+     LEFT JOIN public.organizations o ON ((c.organization_id = o.id)))
+  GROUP BY g.id, c.id, o.id;
 
 
 --
@@ -2003,6 +1991,10 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210201011615'),
 ('20210207190942'),
 ('20210209020704'),
-('20210217042855');
+('20210217042855'),
+('20210221222126'),
+('20210221222255'),
+('20210221224324'),
+('20210221224751');
 
 
