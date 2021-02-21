@@ -15,7 +15,7 @@ class MindleapsIdService
     def generate_chapter_mlid(organization_id)
       generated_mlid = nil
       loop do
-        generated_mlid = generate_mlid(3)
+        generated_mlid = generate_mlid(2)
         mlid_exists = Chapter.exists?(organization_id: organization_id, mlid: generated_mlid)
         break unless mlid_exists
       end
