@@ -786,7 +786,8 @@ CREATE VIEW public.student_table_rows AS
     g.group_name,
     o.mlid AS organization_mlid,
     c.mlid AS chapter_mlid,
-    concat(o.mlid, '-', c.mlid, '-', s.mlid) AS full_mlid
+    g.mlid AS group_mlid,
+    concat(o.mlid, '-', c.mlid, '-', g.mlid, '-', s.mlid) AS full_mlid
    FROM (((public.students s
      JOIN public.groups g ON ((s.group_id = g.id)))
      JOIN public.chapters c ON ((g.chapter_id = c.id)))
@@ -1993,6 +1994,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210217042855'),
 ('20210221222126'),
 ('20210221222255'),
-('20210221224324');
+('20210221224324'),
+('20210221224751');
 
 

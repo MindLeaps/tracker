@@ -35,6 +35,7 @@ RSpec.describe 'User interacts with Groups' do
       click_link 'Add Group'
       fill_in 'Group name', with: 'Feature Test Group'
       select 'Chapter One', from: 'group_chapter_id'
+      fill_in 'MLID', with: 'G0'
       click_button 'Create'
 
       expect(page).to have_content 'Feature Test Group'

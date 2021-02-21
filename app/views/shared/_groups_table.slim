@@ -18,7 +18,10 @@ table class="mdl-data-table mdl-js-data-table resource-table"
       td.mdl-data-table__cell--non-numeric
         = link_to group_summary.group_name, path
       td.mdl-data-table__cell--non-numeric
-        = link_to group_summary.full_mlid, path
+        a href=path
+          span.faded
+            = "#{group_summary.organization_mlid}-#{group_summary.chapter_mlid}-"
+          = group_summary.mlid
       td.mdl-data-table__cell--non-numeric
         = link_to group_summary_chapter_organization_name(group_summary), path
       td

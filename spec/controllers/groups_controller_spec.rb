@@ -34,7 +34,9 @@ RSpec.describe GroupsController, type: :controller do
     context 'valid group data' do
       before :each do
         post :create, params: { group: { group_name: 'New Test Group',
-                                         chapter_id: kigali_chapter.id } }
+          mlid: 'G0',
+          chapter_id: kigali_chapter.id
+        } }
       end
 
       it 'creates a new group' do

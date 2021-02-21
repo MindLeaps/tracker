@@ -25,7 +25,7 @@ table class='mdl-data-table mdl-js-data-table resource-table'
       td.mdl-data-table__cell
         a href=student_path(student)
           span.faded
-            = "#{student.organization_mlid}-#{student.chapter_mlid}-"
+            = "#{student.organization_mlid}-#{student.chapter_mlid}-#{student.group_mlid}-"
           = student.mlid
       td.mdl-data-table__cell--non-numeric
         = link_to student.last_name, student_path(student)

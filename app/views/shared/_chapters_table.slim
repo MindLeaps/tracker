@@ -17,7 +17,10 @@ table class='mdl-data-table mdl-js-data-table resource-table'
       td class="mdl-data-table__cell--non-numeric"
         = link_to chapter_summary.chapter_name, path
       td class="mdl-data-table__cell--non-numeric"
-        = link_to chapter_summary.full_mlid, path
+        a href=path
+          span.faded
+            = "#{chapter_summary.organization_mlid}-"
+          = chapter_summary.chapter_mlid
       td class="mdl-data-table__cell--non-numeric"
         = link_to chapter_summary.organization_name, path
       td
