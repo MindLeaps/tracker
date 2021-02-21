@@ -399,6 +399,10 @@ SELECT
     NULL::integer AS chapter_id,
     NULL::character varying AS chapter_name,
     NULL::integer AS organization_id,
+    NULL::character varying(3) AS organization_mlid,
+    NULL::character varying(2) AS chapter_mlid,
+    NULL::character varying(2) AS mlid,
+    NULL::text AS full_mlid,
     NULL::character varying AS organization_name,
     NULL::bigint AS student_count;
 
@@ -1454,30 +1458,6 @@ CREATE OR REPLACE VIEW public.group_lesson_summaries AS
 
 
 --
--- Name: group_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.group_summaries AS
- SELECT g.id,
-    g.group_name,
-    g.deleted_at,
-    g.chapter_id,
-    c.chapter_name,
-    o.id AS organization_id,
-    o.organization_name,
-    sum(
-        CASE
-            WHEN ((s.id IS NOT NULL) AND (s.deleted_at IS NULL)) THEN 1
-            ELSE 0
-        END) AS student_count
-   FROM (((public.groups g
-     LEFT JOIN public.students s ON ((g.id = s.group_id)))
-     LEFT JOIN public.chapters c ON ((g.chapter_id = c.id)))
-     LEFT JOIN public.organizations o ON ((c.organization_id = o.id)))
-  GROUP BY g.id, c.id, o.id;
-
-
---
 -- Name: lesson_skill_summaries _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
@@ -1686,6 +1666,34 @@ CREATE OR REPLACE VIEW public.chapter_summaries AS
      LEFT JOIN group_student_count ON ((group_student_count.chapter_id = c.id)))
      LEFT JOIN public.organizations o ON ((c.organization_id = o.id)))
   GROUP BY c.id, o.id;
+
+
+--
+-- Name: group_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.group_summaries AS
+ SELECT g.id,
+    g.group_name,
+    g.deleted_at,
+    g.chapter_id,
+    c.chapter_name,
+    o.id AS organization_id,
+    o.mlid AS organization_mlid,
+    c.mlid AS chapter_mlid,
+    g.mlid,
+    concat(o.mlid, '-', c.mlid, '-', g.mlid) AS full_mlid,
+    o.organization_name,
+    sum(
+        CASE
+            WHEN ((s.id IS NOT NULL) AND (s.deleted_at IS NULL)) THEN 1
+            ELSE 0
+        END) AS student_count
+   FROM (((public.groups g
+     LEFT JOIN public.students s ON ((g.id = s.group_id)))
+     LEFT JOIN public.chapters c ON ((g.chapter_id = c.id)))
+     LEFT JOIN public.organizations o ON ((c.organization_id = o.id)))
+  GROUP BY g.id, c.id, o.id;
 
 
 --
@@ -1984,6 +1992,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210209020704'),
 ('20210217042855'),
 ('20210221222126'),
-('20210221222255');
+('20210221222255'),
+('20210221224324');
 
 
