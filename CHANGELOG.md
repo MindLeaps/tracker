@@ -1,4 +1,4 @@
-## Unreleased
+## 0.27.0 - Group MLIDs
 - Added MLID to Groups 
 
 ## 0.26.0 - Organization and Chapter MLIDs
