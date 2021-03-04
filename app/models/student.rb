@@ -48,9 +48,7 @@ class Student < ApplicationRecord
       errors.add(:mlid, I18n.t(:no_valid_mlid_without_group))
       return
     end
-    existing_mlid_students = Student.joins(:group)
-                                    .where(mlid: mlid, groups: { chapter_id: group.chapter_id })
-                                    .where.not(id: id).count
+    existing_mlid_students = Student.where(mlid: mlid, group_id: group_id).where.not(id: id).count
     return if existing_mlid_students.zero?
 
     errors.add(:mlid, I18n.t(:duplicate_mlid))

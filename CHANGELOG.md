@@ -1,3 +1,6 @@
+## Unreleased
+- Fixed Student MLID scoping by group instead of by chapter
+
 ## 0.27.0 - Group MLIDs
 - Added MLID to Groups 
 
