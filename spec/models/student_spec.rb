@@ -39,16 +39,17 @@ RSpec.describe Student, type: :model do
       before :each do
         @chapter = create :chapter
         @group = create :group, chapter: @chapter
+        @group2 = create :group, chapter: @chapter
         @existing_student = create :student, group: @group, mlid: 'AA1'
       end
 
       describe 'is valid' do
-        it 'when a student is the only student in their chapter' do
-          new_student = create :student, mlid: 'AA1'
+        it 'when a student is the only student in their group' do
+          new_student = create :student, group: @group2, mlid: 'AA1'
           expect(new_student).to be_valid
         end
 
-        it 'when it is unique in a chapter' do
+        it 'when it is unique in a group' do
           new_student = create :student, group: @group, mlid: 'BB1'
           expect(new_student).to be_valid
         end
@@ -59,13 +60,7 @@ RSpec.describe Student, type: :model do
           new_student = build :student, group: @group, mlid: 'AA1'
           expect(new_student).to be_invalid
           expect(new_student.errors.messages[:mlid])
-            .to include 'MLID already exists in chapter.'
-        end
-
-        it 'when it is duplicated with someone in a different group but same chapter' do
-          other_group = create :group, chapter: @group.chapter
-          new_student = build :student, group: other_group, mlid: 'AA1'
-          expect(new_student).to be_invalid
+            .to include 'MLID already exists in group.'
         end
       end
     end
