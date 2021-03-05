@@ -16,7 +16,7 @@ config:
     secure: v1:0OG4arVLI/R2fvof:DpnGWqEDTG4qgJUAz9XYCCis5go2q1EwjjKL4gcmnQmbJks8dFNTDlq2MDYQaKyBCYU3F9YxW/KMLTqVkhWltxl7FiGCGUoMfW1io7p47vuWa2GsKyQ8Nws=
   mindleaps-tracker:google_client_secret:
     secure: v1:X5fefJed+j60gc7Q:rrfZTW3C8ARUgvjy3O4ys70N+1UWsC5ENtCcdOR6thuLgWguMH6Dlg==
-  mindleaps-tracker:image: mindleaps/tracker@sha256:2e1dd5e54954cf302528c612c996deb8666c60052b0c2c637f3dc77d1604f628
+  mindleaps-tracker:image: mindleaps/tracker@sha256:c05c2ab546cfd7a4cb184e5bff37350411e745e9d5536ee77dc4dbbb79ae4b82
   mindleaps-tracker:main_vpc_availability_zones:
   - us-east-1a
   - us-east-1b
