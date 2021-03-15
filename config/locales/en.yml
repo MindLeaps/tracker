@@ -33,6 +33,7 @@ en:
   student_details: Student Details
   student_deleted_at: Student deleted at
   date_of_birth: Date of Birth
+  dob_estimated: DOB Estimated
   circa: "c. "
   country_of_nationality: Country of Nationality
   last_name: Last Name

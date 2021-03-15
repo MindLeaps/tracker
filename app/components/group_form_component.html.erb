@@ -1,0 +1,7 @@
+<%= simple_form_for @group, url: {action: @action} do |f| %>
+  <%= render partial: 'shared/errors', locals: {subject: @group} %>
+  <%= f.input :group_name, input_html: { autofocus: true } %>
+  <%= f.association :chapter, collection: @permitted_chapters, label_method: :chapter_name, include_blank: false %>
+  <%= f.input :mlid, label: 'MLID', input_html: { pattern: '[0-9a-zA-Z]{1,2}', title: t(:group_mlid_error_message), maxlength: 2, size: 2, class: 'uppercase' } %>
+  <%= f.button :submit, class: 'mdl-button--raised mdl-button--accent mdl-js-ripple-effect' %>
+<% end %>

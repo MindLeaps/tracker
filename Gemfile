@@ -42,6 +42,7 @@ gem 'skylight'
 gem 'slim'
 gem 'sort_alphabetical'
 gem 'turbolinks'
+gem 'view_component', require: 'view_component/engine'
 
 group :production do
   gem 'newrelic_rpm'
