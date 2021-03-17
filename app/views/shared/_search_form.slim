@@ -1,7 +1,0 @@
-= form_tag('', method: :get, remote: true) do
-  / we remove the previous search and utf param so we don't repeat them, and remove page so that the search brings us back to the first page
-  - request.query_parameters.except(:search, :utf8, :page).each do |key, value|
-    = hidden_field_tag key, value
-  .mdl-textfield.mdl-js-textfield
-    = text_field_tag :search, search[:term], autofocus: true, onfocus: 'this.setSelectionRange(this.value.length,this.value.length)', class: 'mdl-textfield__input', id: 'search-field'
-    label.mdl-textfield__label for='search-field' Search

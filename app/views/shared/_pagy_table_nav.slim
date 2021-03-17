@@ -3,7 +3,7 @@ tr.table-meta-header
     .flex
       .left-section
         - unless local_assigns[:search].nil?
-          == render partial: 'shared/search_form', locals: { search: search }
+          == render SearchFormComponent.new(search: search, query_parameters: request.query_parameters)
 
       .right-section
         - local_assigns.fetch(:options, []).each_with_index do |option, i|

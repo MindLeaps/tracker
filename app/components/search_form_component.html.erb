@@ -1,0 +1,9 @@
+<%= form_tag('', method: :get, remote: true) do %>
+  <% @fields.each do |name, value| %>
+    <%= hidden_field_tag name, value %>
+  <% end %>
+  <div class="mdl-textfield mdl-js-textfield">
+    <%= text_field_tag :search, @search[:term], autofocus: true, onfocus: 'this.setSelectionRange(this.value.length,this.value.length)', class: 'mdl-textfield__input', id: 'search-field' %>
+    <label class="mdl-textfield__label" for="search-field">Search</label>
+  </div>
+<% end %>

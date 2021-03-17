@@ -6,6 +6,7 @@ require File.expand_path('../config/environment', __dir__)
 # Prevent database truncation if the environment is production
 abort('The Rails environment is running in production mode!') if Rails.env.production?
 require 'spec_helper'
+require 'view_component/test_helpers'
 require 'rspec/rails'
 require 'pundit/rspec'
 require 'webmock/rspec'
@@ -39,6 +40,7 @@ ActiveRecord::Migration.maintain_test_schema!
 RSpec.configure do |config|
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::ControllerHelpers, type: :view
+  config.include ViewComponent::TestHelpers, type: :component
   config.include FactoryBot::Syntax::Methods
   config.include Helpers
   config.include ApplicationHelper
