@@ -4,4 +4,4 @@
   = render partial: '/shared/header_content', locals: { back_button_url: organizations_path, back_tooltip: 'Back to Organizations', title: t(:new_organization) }
 
 .content-card--most.center
-  = render partial: 'shared/organization_form', locals: {organization: @organization, action: 'create'}
+  = render OrganizationFormComponent.new(organization: @organization, action: :create)

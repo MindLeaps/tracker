@@ -4,4 +4,4 @@
   = render partial: '/shared/header_content', locals: { back_button_url: chapters_path, back_tooltip: 'Back to Chapters', title: 'New Chapter' }
 
 .content-card--most.center
-  = render partial: 'shared/chapter_form', locals: {chapter: @chapter, action: 'create'}
+  = render ChapterFormComponent.new(chapter: @chapter, action: 'create', current_user: current_user)

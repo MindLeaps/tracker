@@ -62,7 +62,7 @@ javascript:
           .right-section
             == render partial: 'shared/pagy_nav', locals: { pagy: @pagy }
       .mdl-card__supporting-text
-        == render partial: 'shared/search_form', locals: { search: { term: params[:search] } }
+        == render SearchFormComponent.new(search: { term: params[:search] }, query_parameters: request.query_parameters)
       - @organizations.each do |org|
         - can_update = policy(Membership.new(user: @user, org: org)).update?
         = simple_form_for @membership, url: user_membership_path(@user, org), method: :put, html: { id: "user-roles-for[#{org.id}]" } do |f|
