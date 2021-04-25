@@ -22,23 +22,28 @@ module Helpers
   end
 
   def get_with_token(*args)
-    get(*merge_auth_headers(args))
+    merged_args = merge_auth_headers args
+    get(merged_args[0], **merged_args[1])
   end
 
   def post_with_token(*args)
-    post(*merge_auth_headers(args))
+    merged_args = merge_auth_headers args
+    post(merged_args[0], **merged_args[1])
   end
 
   def put_with_token(*args)
-    put(*merge_auth_headers(args))
+    merged_args = merge_auth_headers args
+    put(merged_args[0], **merged_args[1])
   end
 
   def patch_with_token(*args)
-    patch(*merge_auth_headers(args))
+    merged_args = merge_auth_headers args
+    patch(merged_args[0], **merged_args[1])
   end
 
   def delete_with_token(*args)
-    delete(*merge_auth_headers(args))
+    merged_args = merge_auth_headers args
+    delete(merged_args[0], **merged_args[1])
   end
 
   def merge_auth_headers(args)

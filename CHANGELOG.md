@@ -1,3 +1,6 @@
+## Unreleased
+- Upgraded to Ruby 3
+
 ## 0.27.1 - Group/Student MLID fix
 - Fixed Student MLID scoping by group instead of by chapter
 - Alphabetized Chapters in New Group form
