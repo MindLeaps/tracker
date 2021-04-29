@@ -1,0 +1,58 @@
+version: 2
+updates:
+- package-ecosystem: bundler
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "10:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: sass-rails
+    versions:
+    - ">= 6.a, < 7"
+  - dependency-name: view_component
+    versions:
+    - 2.31.0
+  - dependency-name: rubocop
+    versions:
+    - 1.12.0
+    - 1.13.0
+  - dependency-name: pagy
+    versions:
+    - 3.13.0
+  - dependency-name: pg_query
+    versions:
+    - 2.0.1
+    - 2.0.2
+  - dependency-name: omniauth
+    versions:
+    - 2.0.1
+    - 2.0.2
+    - 2.0.3
+  - dependency-name: rspec-rails
+    versions:
+    - 4.1.0
+  - dependency-name: fog-aws
+    versions:
+    - 3.9.0
+  - dependency-name: rubocop-performance
+    versions:
+    - 1.10.0
+  - dependency-name: webmock
+    versions:
+    - 3.11.3
+  - dependency-name: rails
+    versions:
+    - 6.1.1
+    - 6.1.2
+    - 6.1.2.1
+  - dependency-name: bootsnap
+    versions:
+    - 1.7.0
+    - 1.7.1
+  - dependency-name: smarter_csv
+    versions:
+    - 1.2.7
+  - dependency-name: database_cleaner
+    versions:
+    - 2.0.0
