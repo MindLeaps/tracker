@@ -16,9 +16,7 @@ html
         .mdl-card__supporting-text
           | Welcome to MindLeaps Tracker. Please sign in with your Google Account.
         .mdl-card__actions.mdl-card--border
-          a.mdl-button.mdl-js-button.mdl-button--raised.mdl-js-ripple-effect.google-button href=omniauth_authorize_path(User, :google_oauth2)
-            = inline_svg_tag'google_logo.svg', class: 'button-icon'
-            span Sign in with Google
+          = button_to 'Sign in with Google', omniauth_authorize_path(User, :google_oauth2), { class: 'mdl-button js-button.mdl-button mdl-button--raised google-button' }
           .mdl-layout-spacer
           a.mdl-button.mdl-js-button.mdl-js-ripple-effect.mdl-button--colored href='https://releases.mindleaps.app/latest'
             = inline_svg_tag'tablet.svg', class: 'button-icon'

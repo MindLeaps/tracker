@@ -10,6 +10,7 @@ gem 'sass-rails', '~> 5.0'
 
 gem 'devise'
 gem 'omniauth-google-oauth2'
+gem 'omniauth-rails_csrf_protection'
 gem 'pundit'
 gem 'rolify'
 gem 'tiddle'

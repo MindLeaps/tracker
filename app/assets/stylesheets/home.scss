@@ -54,11 +54,11 @@ $endColor: $accent-color;
     span {
       vertical-align: middle;
     }
-
-    &.google-button:not(:hover) {
-      background: white;
-    }
   }
 }
 
-
+.google-button {
+  &:not(:hover) {
+    background-color: white;
+  }
+}
