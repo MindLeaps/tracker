@@ -94,14 +94,14 @@ javascript:
               title: {
                   text: '#{{ t(:month) }}'
               },
-              categories: #{{ @categories2.html_safe }}
+              categories: #{{ @assessments_per_month[:categories].to_json.html_safe }}
           },
           yAxis: {
               title: {
                   text: '#{{ t(:nr_of_assessments) }}'
               }
           },
-          series: #{{ @series2.html_safe }}
+          series: #{{ @assessments_per_month[:series].to_json.html_safe }}
       });
 
       var Chart4 = Highcharts.chart('chart4', {
@@ -144,7 +144,7 @@ javascript:
                   text: '#{{ t(:frequency_perc) }}'
               }
           },
-          series: #{{ @series4.html_safe }}
+          series: #{{ @student_performance.html_safe }}
       });
 
       var Chart5 = Highcharts.chart('chart5', {
@@ -187,7 +187,7 @@ javascript:
                   text: '#{{ t(:frequency_perc) }}'
               }
           },
-          series: #{{ @series5.html_safe }}
+          series: #{{ @student_performance_change.html_safe }}
       });
 
       var Chart6 = Highcharts.chart('chart6', {
@@ -230,7 +230,7 @@ javascript:
                   text: '#{{ t(:frequency_perc) }}'
               }
           },
-          series: #{{ @series6.html_safe }}
+          series: #{{ @gender_performance_change.html_safe }}
       });
 
       var Chart10 = Highcharts.chart('chart10', {
@@ -294,7 +294,7 @@ javascript:
               }
             }
           },
-          series: #{{ @series10.html_safe }}
+          series: #{{ @average_group_performance.html_safe }}
       });
   }
 
