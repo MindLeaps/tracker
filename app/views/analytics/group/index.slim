@@ -21,7 +21,7 @@
         = select_tag :chapter_select, options_from_collection_for_select(@available_chapters, :id, :chapter_name, @selected_chapter_id), :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#generateUrl', 'data-name' => 'chapter_id'
       td style="padding-right: 20px;"
         a.mdl-button.mdl-js-button.mdl-button--raised.mdl-button--accent.mdl-js-ripple-effect data-analytics-filter-target="anchor"
-          | Filter
+          = t(:filter)
 
 table id="trellis" style="width: 100%; table-layout: fixed;"
   - rows = (@count + 1)/2

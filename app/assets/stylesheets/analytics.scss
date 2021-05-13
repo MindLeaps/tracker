@@ -1,0 +1,19 @@
+.analytics-counter {
+  background: white;
+}
+
+.analytics-counter-title {
+  text-align: center;
+  padding: 10px;
+  font-size: 18px;
+}
+
+.analytics-count {
+  position: relative;
+  top: 40%;
+  transform: translateY(-50%);
+  font-size: 62px;
+  line-height: 62px;
+  color: black;
+  text-align: center;
+}

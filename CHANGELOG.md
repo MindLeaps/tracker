@@ -2,6 +2,7 @@
 - Upgraded to Ruby 3
 - Upgraded Omniauth to v2
 - Analytics filters are now stored in the URL making them shareable
+- Added Number of Datapoints to General Analytics
 
 ## 0.27.1 - Group/Student MLID fix
 - Fixed Student MLID scoping by group instead of by chapter

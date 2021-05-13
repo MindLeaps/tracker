@@ -161,6 +161,7 @@ en:
   title_chart_6: Performance change throughout the program separated by boys and girls
   title_chart_8: Average performance per group versus time in program
   title_chart_9: Performance data for each student versus time in program
+  number_of_datapoints: Number of Data Points
 
   performance_change: Performance change
   nr_of_lessons: Nr. of Lessons
@@ -169,6 +170,7 @@ en:
   above_regression: Above average performance
   below_regression: Below average performance
   regression_curve: Historical ML Regression
+  filter: Filter
 
   student: Student
   group: Group

@@ -30,7 +30,7 @@
         = select_tag :student_select, options_from_collection_for_select(@available_students, :id, :proper_name, @selected_student_id), :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#generateUrl', 'data-name' => 'student_id'
       td style="padding-right: 20px;"
         a.mdl-button.mdl-js-button.mdl-button--raised.mdl-button--accent.mdl-js-ripple-effect data-analytics-filter-target="anchor"
-          | Filter
+          = t(:filter)
 
 table id="trellis" style="width: 100%; table-layout: fixed;"
   - rows = (@count + 1)/2

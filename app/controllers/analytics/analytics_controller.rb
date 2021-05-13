@@ -14,7 +14,7 @@ module Analytics
 
       @selected_organization_id = params[:organization_id] || @available_organizations.first.id
       @selected_chapter_id = params[:chapter_id]
-      @subject = params[:subject_id] || @available_subjects.first.id
+      @subject = params[:subject_id] || @available_subjects.first&.id
       @selected_group_id = params[:group_id]
       @selected_student_id = params[:student_id]
     end

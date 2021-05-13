@@ -27,7 +27,7 @@
         = select_tag :student_select, options_from_collection_for_select(@available_students, :id, :proper_name, @selected_student_id), :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#generateUrl', 'data-name' => 'student_id'
       td style="padding-right: 20px;"
         a.mdl-button.mdl-js-button.mdl-button--raised.mdl-button--accent.mdl-js-ripple-effect data-analytics-filter-target="anchor"
-          | Filter
+          = t(:filter)
 
 table style="width: 100%; table-layout: fixed;"
   tr
@@ -43,6 +43,12 @@ table style="width: 100%; table-layout: fixed;"
   tr
     td style="width: 50%;"
       div id="average-performance-per-group" style="width:100%; height:400px;"
+    td style="width: 50%;"
+      div id="datapoint-count" class="analytics-counter" style="width:100%; height:400px;"
+        .analytics-counter-title = t(:number_of_datapoints)
+        div.analytics-count
+          span
+            = number_with_delimiter Grade.where(student: @selected_students.select(:id)).count
 
 = render '/shared/analytics_common'
 

@@ -81,7 +81,7 @@ module Analytics
     end
 
     def average_performance_per_group_by_lesson
-      groups = Array(get_groups_for_average_performance)
+      groups = Array(groups_for_average_performance)
 
       conn = ActiveRecord::Base.connection.raw_connection
       groups.map do |group|
@@ -104,22 +104,8 @@ module Analytics
       end
     end
 
-    # rubocop:disable Naming/AccessorMethodName
-    # rubocop:disable Metrics/MethodLength
-    def get_groups_for_average_performance
-      if selected_param_present_but_not_all?(@selected_student_id)
-        Student.find(@selected_student_id).group
-      elsif selected_param_present_but_not_all?(@selected_group_id)
-        Group.includes(:chapter).find(@selected_group_id)
-      elsif selected_param_present_but_not_all?(@selected_chapter_id)
-        Group.includes(:chapter).where(chapter_id: @selected_chapter_id)
-      elsif selected_param_present_but_not_all?(@selected_organization_id)
-        Group.includes(:chapter).joins(:chapter).where(chapters: { organization_id: @selected_organization_id })
-      else
-        policy_scope(Group.includes(:chapter))
-      end
+    def groups_for_average_performance
+      Group.where(id: @selected_students.select(:group_id))
     end
-    # rubocop:enable Metrics/MethodLength
-    # rubocop:enable Naming/AccessorMethodName
   end
 end
