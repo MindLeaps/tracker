@@ -21,12 +21,9 @@
 
 require 'capybara/apparition'
 require 'omniauth'
-require 'coveralls'
 require 'json_matchers/rspec'
 
 JsonMatchers.schema_root = 'spec/schemas'
-
-Coveralls.wear!
 
 Capybara.register_driver :apparition do |app|
   Capybara::Apparition::Driver.new(app, window_size: [1920, 1024])
