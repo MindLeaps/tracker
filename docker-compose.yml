@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   db:
-    image: postgres:9.6.15
+    image: postgres:12.3
     restart: always
     environment:
       - POSTGRES_USER=tracker
@@ -20,7 +20,7 @@ services:
     build:
       context: .
       args:
-        APP_ENV: dev # dev|prod
+        APP_ENV: prod # dev|prod
     image: tracker:dev
     ports:
       - "3000:3000"

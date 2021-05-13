@@ -30,9 +30,10 @@ Rails.application.routes.draw do
   end
 
   scope module: :analytics, path: :analytics do
-    match '' => 'general#index', via: [:get, :post], as: :general_analytics
-    match 'subject' => 'subject#index', via: [:get, :post], as: :subject_analytics
-    match 'group' => 'group#index', via: [:get, :post], as: :group_analytics
+    get '' => redirect('analytics/general')
+    get 'general' => 'general#index', as: :general_analytics
+    get 'subject' => 'subject#index', as: :subject_analytics
+    get 'group' => 'group#index', as: :group_analytics
   end
 
   resources :users, only: %i[index new create destroy show] do

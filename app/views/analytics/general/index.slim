@@ -3,44 +3,52 @@
 = content_for :head_content
   meta name="turbolinks-cache-control" content="no-cache"
   = javascript_include_tag 'analytics'
+  = javascript_pack_tag 'analytics'
 
 = content_for :header_content do
   = render partial: '/shared/header_content', locals: { title: 'General Analytics' }
 
 = render '/shared/analytics_tabs'
 
-= form_tag do
+.filter-wrap data-controller="analytics-filter"
   table
     tr
       td style="padding-right: 20px;"
         = label_tag :organization_label, "Organization"
-        = select_tag :organization_select, options_from_collection_for_select(@available_organizations, :id, :organization_name, @selected_organization_id), :prompt => 'All'
+        = select_tag :organization_select, options_from_collection_for_select(@available_organizations, :id, :organization_name, @selected_organization_id), :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#generateUrl', 'data-name' => 'organization_id'
       td style="padding-right: 20px;"
         = label_tag :chapter_label, "Chapter"
-        = select_tag :chapter_select, options_from_collection_for_select(@available_chapters, :id, :chapter_name, @selected_chapter_id), :prompt => 'All'
+        = select_tag :chapter_select, options_from_collection_for_select(@available_chapters, :id, :chapter_name, @selected_chapter_id), :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#generateUrl', 'data-name' => 'chapter_id'
       td style="padding-right: 20px;"
         = label_tag :group_label, "Group"
-        = select_tag :group_select, options_from_collection_for_select(@available_groups, :id, :group_name, @selected_group_id), :prompt => 'All'
+        = select_tag :group_select, options_from_collection_for_select(@available_groups, :id, :group_name, @selected_group_id), :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#generateUrl', 'data-name' => 'group_id'
       td style="padding-right: 20px;"
         = label_tag :student_label, "Student"
-        = select_tag :student_select, options_from_collection_for_select(@available_students, :id, :proper_name, @selected_student_id), :prompt => 'All'
+        = select_tag :student_select, options_from_collection_for_select(@available_students, :id, :proper_name, @selected_student_id), :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#generateUrl', 'data-name' => 'student_id'
       td style="padding-right: 20px;"
-        = submit_tag "Submit"
+        a.mdl-button.mdl-js-button.mdl-button--raised.mdl-button--accent.mdl-js-ripple-effect data-analytics-filter-target="anchor"
+          = t(:filter)
 
 table style="width: 100%; table-layout: fixed;"
   tr
     td style="width: 50%;"
-      div id="chart2" style="width:100%; height:400px;"
+      div id="quantity-of-data-per-month" style="width:100%; height:400px;"
     td style="width: 50%;"
-      div id="chart4" style="width:100%; height:400px;"
+      div id="histogram-of-student-performance" style="width:100%; height:400px;"
   tr
     td style="width: 50%;"
-      div id="chart5" style="width:100%; height:400px;"
+      div id="performance-change-by-student" style="width:100%; height:400px;"
     td style="width: 50%;"
-      div id="chart6" style="width:100%; height:400px;"
+      div id="performance-change-by-gender" style="width:100%; height:400px;"
   tr
     td style="width: 50%;"
-      div id="chart10" style="width:100%; height:400px;"
+      div id="average-performance-per-group" style="width:100%; height:400px;"
+    td style="width: 50%;"
+      div id="datapoint-count" class="analytics-counter" style="width:100%; height:400px;"
+        .analytics-counter-title = t(:number_of_datapoints)
+        div.analytics-count
+          span
+            = number_with_delimiter Grade.where(student: @selected_students.select(:id)).count
 
 = render '/shared/analytics_common'
 
@@ -62,7 +70,7 @@ javascript:
   });
 
   function startAnalytics() {
-      var Chart2 = Highcharts.chart('chart2', {
+      Highcharts.chart('quantity-of-data-per-month', {
           chart: {
               type: 'column',
               zoomType: 'x'
@@ -94,17 +102,17 @@ javascript:
               title: {
                   text: '#{{ t(:month) }}'
               },
-              categories: #{{ @categories2.html_safe }}
+              categories: #{{ @assessments_per_month[:categories].to_json.html_safe }}
           },
           yAxis: {
               title: {
                   text: '#{{ t(:nr_of_assessments) }}'
               }
           },
-          series: #{{ @series2.html_safe }}
+          series: #{{ @assessments_per_month[:series].to_json.html_safe }}
       });
 
-      var Chart4 = Highcharts.chart('chart4', {
+      Highcharts.chart('histogram-of-student-performance', {
           chart: {
               type: 'column'
           },
@@ -144,10 +152,10 @@ javascript:
                   text: '#{{ t(:frequency_perc) }}'
               }
           },
-          series: #{{ @series4.html_safe }}
+          series: #{{ @student_performance.html_safe }}
       });
 
-      var Chart5 = Highcharts.chart('chart5', {
+      Highcharts.chart('performance-change-by-student', {
           chart: {
               type: 'column'
           },
@@ -187,10 +195,10 @@ javascript:
                   text: '#{{ t(:frequency_perc) }}'
               }
           },
-          series: #{{ @series5.html_safe }}
+          series: #{{ @student_performance_change.html_safe }}
       });
 
-      var Chart6 = Highcharts.chart('chart6', {
+      Highcharts.chart('performance-change-by-gender', {
           chart: {
               type: 'column'
           },
@@ -230,10 +238,10 @@ javascript:
                   text: '#{{ t(:frequency_perc) }}'
               }
           },
-          series: #{{ @series6.html_safe }}
+          series: #{{ @gender_performance_change.html_safe }}
       });
 
-      var Chart10 = Highcharts.chart('chart10', {
+      Highcharts.chart('average-performance-per-group', {
           chart: {
               type: 'scatter',
               zoomType: 'x'
@@ -294,7 +302,7 @@ javascript:
               }
             }
           },
-          series: #{{ @series10.html_safe }}
+          series: #{{ @average_group_performance.html_safe }}
       });
   }
 

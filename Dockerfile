@@ -6,9 +6,10 @@ ARG TRACKER_HOME=$MINDLEAPS_HOME/tracker
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates curl \
     && gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
-    && curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/download/1.4/gosu-$(dpkg --print-architecture)" \
-    && curl -o /usr/local/bin/gosu.asc -SL "https://github.com/tianon/gosu/releases/download/1.4/gosu-$(dpkg --print-architecture).asc" \
-    && gpg --verify /usr/local/bin/gosu.asc \
+    && curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/download/1.12/gosu-$(dpkg --print-architecture)" \
+    && curl -o /usr/local/bin/gosu.asc -SL "https://github.com/tianon/gosu/releases/download/1.12/gosu-$(dpkg --print-architecture).asc" \
+    && gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
+    && gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu \
     && rm /usr/local/bin/gosu.asc \
     && chmod +x /usr/local/bin/gosu \
     && apt-get install -y --no-install-recommends \
@@ -20,20 +21,14 @@ RUN apt-get update \
         libqt4-dev \
         xvfb \
         postgresql-client-11 \
+        nodejs \
+        npm \
     && mkdir -p $TRACKER_HOME
+
+RUN npm install --global yarn
 
 WORKDIR $TRACKER_HOME
 ADD . $TRACKER_HOME
 
-RUN if [ "$APP_ENV" = "dev" ]; then \
-    wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | tee /etc/apt/sources.list.d/google-chrome.list \
-    && apt-get update \
-    && apt-get -y install google-chrome-stable \
-    && bundle \
-; elif [ "$APP_ENV" = "prod" ]; then \
-    bundle install --deployment \
-    && bundle exec rake assets:precompile \
-; fi
-
-ENTRYPOINT ["./ENTRYPOINT.sh"]
+RUN bundle install
+CMD bundle exec rake assets:precompile && bundle exec bin/rails db:create && bundle exec bin/rails db:migrate && bundle exec bin/rails server -b 0.0.0.0
