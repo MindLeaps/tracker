@@ -16,7 +16,7 @@ RSpec.describe 'User interacts with Analytics' do
     it 'displays general, subject, and group analytics', js: true do
       visit '/'
       click_link 'Analytics'
-      select @organization.organization_name, from: 'organization_select'
+      select @organization.organization_name, from: 'organization_select', wait: 10
       click_link 'Filter'
       expect(page).to have_content('General Analytics')
       expect(page).to have_link('Subject')
