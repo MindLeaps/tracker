@@ -12,11 +12,11 @@ module Analytics
       @available_students = policy_scope Student.where(deleted_at: nil).order(:last_name, :first_name)
       @available_subjects = policy_scope Subject.where(deleted_at: nil)
 
-      @selected_organization_id = params[:organization_select] || @available_organizations.first.id
-      @selected_chapter_id = params[:chapter_select]
-      @subject = @available_subjects.first.id unless params[:subject_select]
-      @selected_group_id = params[:group_select]
-      @selected_student_id = params[:student_select]
+      @selected_organization_id = params[:organization_id] || @available_organizations.first.id
+      @selected_chapter_id = params[:chapter_id]
+      @subject = params[:subject_id] || @available_subjects.first.id
+      @selected_group_id = params[:group_id]
+      @selected_student_id = params[:student_id]
     end
 
     def find_resource_by_id_param(id, resource_class)

@@ -44,6 +44,7 @@ gem 'slim'
 gem 'sort_alphabetical'
 gem 'turbolinks'
 gem 'view_component', require: 'view_component/engine'
+gem 'webpacker'
 
 group :production do
   gem 'newrelic_rpm'

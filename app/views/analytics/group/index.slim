@@ -3,23 +3,25 @@
 = content_for :head_content
   meta name="turbolinks-cache-control" content="no-cache"
   = javascript_include_tag 'analytics'
+  = javascript_pack_tag 'analytics'
 
 = content_for :header_content do
   = render partial: '/shared/header_content', locals: { title: 'Group Analytics' }
 
 = render '/shared/analytics_tabs'
 
-= form_tag do
+.filter-wrap data-controller="analytics-filter"
   table
     tr
       td style="padding-right: 20px;"
         = label_tag :organization_label, "Organization"
-        = select_tag :organization_select, options_from_collection_for_select(@available_organizations, :id, :organization_name, @selected_organization_id), :prompt => 'All'
+        = select_tag :organization_select, options_from_collection_for_select(@available_organizations, :id, :organization_name, @selected_organization_id), :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#generateUrl', 'data-name' => 'organization_id'
       td style="padding-right: 20px;"
         = label_tag :chapter_label, "Chapter"
-        = select_tag :chapter_select, options_from_collection_for_select(@available_chapters, :id, :chapter_name, @selected_chapter_id), :prompt => 'All'
+        = select_tag :chapter_select, options_from_collection_for_select(@available_chapters, :id, :chapter_name, @selected_chapter_id), :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#generateUrl', 'data-name' => 'chapter_id'
       td style="padding-right: 20px;"
-        = submit_tag "Submit"
+        a.mdl-button.mdl-js-button.mdl-button--raised.mdl-button--accent.mdl-js-ripple-effect data-analytics-filter-target="anchor"
+          | Filter
 
 table id="trellis" style="width: 100%; table-layout: fixed;"
   - rows = (@count + 1)/2
