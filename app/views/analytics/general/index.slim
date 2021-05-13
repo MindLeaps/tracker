@@ -32,17 +32,17 @@
 table style="width: 100%; table-layout: fixed;"
   tr
     td style="width: 50%;"
-      div id="chart2" style="width:100%; height:400px;"
+      div id="quantity-of-data-per-month" style="width:100%; height:400px;"
     td style="width: 50%;"
-      div id="chart4" style="width:100%; height:400px;"
+      div id="histogram-of-student-performance" style="width:100%; height:400px;"
   tr
     td style="width: 50%;"
-      div id="chart5" style="width:100%; height:400px;"
+      div id="performance-change-by-student" style="width:100%; height:400px;"
     td style="width: 50%;"
-      div id="chart6" style="width:100%; height:400px;"
+      div id="performance-change-by-gender" style="width:100%; height:400px;"
   tr
     td style="width: 50%;"
-      div id="chart10" style="width:100%; height:400px;"
+      div id="average-performance-per-group" style="width:100%; height:400px;"
 
 = render '/shared/analytics_common'
 
@@ -64,7 +64,7 @@ javascript:
   });
 
   function startAnalytics() {
-      var Chart2 = Highcharts.chart('chart2', {
+      Highcharts.chart('quantity-of-data-per-month', {
           chart: {
               type: 'column',
               zoomType: 'x'
@@ -106,7 +106,7 @@ javascript:
           series: #{{ @assessments_per_month[:series].to_json.html_safe }}
       });
 
-      var Chart4 = Highcharts.chart('chart4', {
+      Highcharts.chart('histogram-of-student-performance', {
           chart: {
               type: 'column'
           },
@@ -149,7 +149,7 @@ javascript:
           series: #{{ @student_performance.html_safe }}
       });
 
-      var Chart5 = Highcharts.chart('chart5', {
+      Highcharts.chart('performance-change-by-student', {
           chart: {
               type: 'column'
           },
@@ -192,7 +192,7 @@ javascript:
           series: #{{ @student_performance_change.html_safe }}
       });
 
-      var Chart6 = Highcharts.chart('chart6', {
+      Highcharts.chart('performance-change-by-gender', {
           chart: {
               type: 'column'
           },
@@ -235,7 +235,7 @@ javascript:
           series: #{{ @gender_performance_change.html_safe }}
       });
 
-      var Chart10 = Highcharts.chart('chart10', {
+      Highcharts.chart('average-performance-per-group', {
           chart: {
               type: 'scatter',
               zoomType: 'x'
