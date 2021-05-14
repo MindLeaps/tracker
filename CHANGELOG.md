@@ -1,4 +1,4 @@
-## Unreleased
+## 0.28.0 - Datapoints
 - Upgraded to Ruby 3
 - Upgraded Omniauth to v2
 - Analytics filters are now stored in the URL making them shareable
