@@ -10,20 +10,6 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: pg_stat_statements; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS pg_stat_statements WITH SCHEMA public;
-
-
---
--- Name: EXTENSION pg_stat_statements; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION pg_stat_statements IS 'track execution statistics of all SQL statements executed';
-
-
---
 -- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -35,20 +21,6 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 --
 
 COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
-
-
---
--- Name: tablefunc; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS tablefunc WITH SCHEMA public;
-
-
---
--- Name: EXTENSION tablefunc; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION tablefunc IS 'functions that manipulate whole tables, including crosstab';
 
 
 --
@@ -76,20 +48,33 @@ CREATE TYPE public.gender AS ENUM (
 
 
 --
--- Name: json_grades_scoped_by_organization_ids(integer[]); Type: FUNCTION; Schema: public; Owner: -
+-- Name: update_records_with_unique_mlids(text, integer); Type: PROCEDURE; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.json_grades_scoped_by_organization_ids(organization_ids integer[]) RETURNS json
-    LANGUAGE sql
+CREATE PROCEDURE public.update_records_with_unique_mlids(table_name text, mlid_length integer)
+    LANGUAGE plpgsql
     AS $$
-    select json_agg(scoped_grades) from (
-        SELECT student_id, lesson_uid, g.deleted_at, skill_id, mark
-        FROM grades g
-                 JOIN lessons l ON g.lesson_id = l.id
-                 JOIN groups gr ON l.group_id = gr.id
-                 JOIN chapters c on gr.chapter_id = c.id
-        WHERE c.organization_id = ANY (organization_ids)
-    ) scoped_grades
+DECLARE
+    rec RECORD;
+    new_mlid TEXT;
+BEGIN
+    EXECUTE format('ALTER TABLE %I ADD COLUMN mlid VARCHAR(%s) UNIQUE CONSTRAINT uppercase CHECK(mlid = UPPER(mlid));', table_name, mlid_length);
+    FOR rec IN EXECUTE format('SELECT * FROM %I', table_name) LOOP
+        LOOP
+            IF rec.mlid IS NOT NULL THEN
+                EXIT;
+            END IF;
+            new_mlid := SUBSTRING(UPPER(MD5(''||NOW()::TEXT||RANDOM()::TEXT)) FOR mlid_length);
+            BEGIN
+               UPDATE organizations SET mlid = new_mlid WHERE id = rec.id;
+               EXIT; -- we successfully updated the record so we can exit this iteration and continue to the next one
+            EXCEPTION WHEN unique_violation THEN
+                -- we catch the exception and let this loop iteration run again
+            END;
+        END LOOP;
+    END LOOP;
+    EXECUTE format('ALTER TABLE %I ALTER COLUMN mlid SET NOT NULL;', table_name);
+END;
 $$;
 
 
@@ -149,6 +134,7 @@ CREATE TABLE public.absences (
 --
 
 CREATE SEQUENCE public.absences_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -194,6 +180,7 @@ CREATE TABLE public.assignments (
 --
 
 CREATE SEQUENCE public.assignments_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -230,6 +217,7 @@ CREATE TABLE public.authentication_tokens (
 --
 
 CREATE SEQUENCE public.authentication_tokens_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -285,6 +273,7 @@ CREATE TABLE public.chapters (
 --
 
 CREATE SEQUENCE public.chapters_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -319,6 +308,7 @@ CREATE TABLE public.grade_descriptors (
 --
 
 CREATE SEQUENCE public.grade_descriptors_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -356,6 +346,7 @@ CREATE TABLE public.grades (
 --
 
 CREATE SEQUENCE public.grades_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -428,6 +419,7 @@ CREATE TABLE public.groups (
 --
 
 CREATE SEQUENCE public.groups_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -498,6 +490,7 @@ CREATE TABLE public.lessons (
 --
 
 CREATE SEQUENCE public.lessons_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -546,6 +539,7 @@ CREATE TABLE public.organizations (
 --
 
 CREATE SEQUENCE public.organizations_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -579,6 +573,7 @@ CREATE TABLE public.roles (
 --
 
 CREATE SEQUENCE public.roles_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -622,6 +617,7 @@ CREATE TABLE public.skills (
 --
 
 CREATE SEQUENCE public.skills_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -655,6 +651,7 @@ CREATE TABLE public.student_images (
 --
 
 CREATE SEQUENCE public.student_images_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -825,6 +822,7 @@ CREATE TABLE public.student_tags (
 --
 
 CREATE SEQUENCE public.students_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -858,6 +856,7 @@ CREATE TABLE public.subjects (
 --
 
 CREATE SEQUENCE public.subjects_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -912,6 +911,7 @@ CREATE TABLE public.users (
 --
 
 CREATE SEQUENCE public.users_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1330,6 +1330,13 @@ CREATE INDEX index_lessons_on_subject_id ON public.lessons USING btree (subject_
 
 
 --
+-- Name: index_lessons_on_uid; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_lessons_on_uid ON public.lessons USING btree (uid);
+
+
+--
 -- Name: index_roles_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1344,10 +1351,10 @@ CREATE INDEX index_roles_on_name_and_resource_type_and_resource_id ON public.rol
 
 
 --
--- Name: index_roles_on_resource_type_and_resource_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_roles_on_resource; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_roles_on_resource_type_and_resource_id ON public.roles USING btree (resource_type, resource_id);
+CREATE INDEX index_roles_on_resource ON public.roles USING btree (resource_type, resource_id);
 
 
 --
@@ -1435,6 +1442,55 @@ CREATE INDEX index_users_roles_on_user_id_and_role_id ON public.users_roles USIN
 
 
 --
+-- Name: organization_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.organization_summaries AS
+ SELECT o.id,
+    o.organization_name,
+    sum(
+        CASE
+            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN 1
+            ELSE 0
+        END) AS chapter_count,
+    o.updated_at,
+    o.created_at
+   FROM (public.organizations o
+     LEFT JOIN public.chapters c ON ((c.organization_id = o.id)))
+  GROUP BY o.id;
+
+
+--
+-- Name: student_lesson_details _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.student_lesson_details AS
+ SELECT s.id AS student_id,
+    s.first_name,
+    s.last_name,
+    s.deleted_at AS student_deleted_at,
+    l.id AS lesson_id,
+    l.date,
+    l.deleted_at AS lesson_deleted_at,
+    l.subject_id,
+    round(avg(grades.mark), 2) AS average_mark,
+    count(grades.mark) AS grade_count,
+    COALESCE(jsonb_object_agg(grades.skill_id, jsonb_build_object('mark', grades.mark, 'grade_descriptor_id', grades.grade_descriptor_id, 'skill_name', skills.skill_name)) FILTER (WHERE (skills.skill_name IS NOT NULL)), '{}'::jsonb) AS skill_marks,
+        CASE
+            WHEN (a.id IS NULL) THEN false
+            ELSE true
+        END AS absent
+   FROM (((((public.students s
+     JOIN public.groups g ON ((g.id = s.group_id)))
+     JOIN public.lessons l ON ((g.id = l.group_id)))
+     LEFT JOIN public.grades ON (((grades.student_id = s.id) AND (grades.lesson_id = l.id))))
+     LEFT JOIN public.skills ON ((skills.id = grades.skill_id)))
+     LEFT JOIN public.absences a ON (((a.student_id = s.id) AND (a.lesson_id = l.id))))
+  GROUP BY s.id, l.id, a.id
+  ORDER BY l.subject_id;
+
+
+--
 -- Name: group_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
@@ -1456,6 +1512,59 @@ CREATE OR REPLACE VIEW public.group_lesson_summaries AS
   WHERE (g.deleted_at IS NULL)
   GROUP BY l.id, gr.id, c.id, s.id
   ORDER BY l.date;
+
+
+--
+-- Name: student_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.student_lesson_summaries AS
+ SELECT united.student_id,
+    united.group_id,
+    united.first_name,
+    united.last_name,
+    united.deleted_at,
+    united.lesson_id,
+    united.average_mark,
+    united.grade_count,
+    united.absent
+   FROM ( SELECT s.id AS student_id,
+            s.group_id,
+            s.first_name,
+            s.last_name,
+            s.deleted_at,
+            l.id AS lesson_id,
+            round(avg(grades.mark), 2) AS average_mark,
+            count(grades.mark) AS grade_count,
+                CASE
+                    WHEN (a.id IS NULL) THEN false
+                    ELSE true
+                END AS absent
+           FROM ((((public.students s
+             JOIN public.groups g ON ((g.id = s.group_id)))
+             JOIN public.lessons l ON ((g.id = l.group_id)))
+             LEFT JOIN public.grades ON (((grades.student_id = s.id) AND (grades.lesson_id = l.id) AND (grades.deleted_at IS NULL))))
+             LEFT JOIN public.absences a ON (((a.student_id = s.id) AND (a.lesson_id = l.id))))
+          GROUP BY s.id, l.id, a.id
+        UNION
+         SELECT s.id AS student_id,
+            s.group_id,
+            s.first_name,
+            s.last_name,
+            s.deleted_at,
+            l.id AS lesson_id,
+            round(avg(grades.mark), 2) AS average_mark,
+            count(grades.mark) AS grade_count,
+                CASE
+                    WHEN (a.id IS NULL) THEN false
+                    ELSE true
+                END AS absent
+           FROM ((((public.lessons l
+             JOIN public.groups g ON ((g.id = l.group_id)))
+             JOIN public.grades ON (((grades.lesson_id = l.id) AND (grades.deleted_at IS NULL))))
+             JOIN public.students s ON ((grades.student_id = s.id)))
+             LEFT JOIN public.absences a ON (((a.student_id = s.id) AND (a.lesson_id = l.id))))
+          GROUP BY s.id, l.id, a.id) united;
 
 
 --
@@ -1510,108 +1619,6 @@ CREATE OR REPLACE VIEW public.lesson_table_rows AS
      LEFT JOIN public.grades g ON (((l.id = g.lesson_id) AND (g.deleted_at IS NULL))))
      JOIN group_student_counts sc ON ((l.group_id = sc.group_id)))
   GROUP BY l.id, su.subject_name, sc.student_count, sc.group_name, sc.chapter_name;
-
-
---
--- Name: organization_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.organization_summaries AS
- SELECT o.id,
-    o.organization_name,
-    sum(
-        CASE
-            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN 1
-            ELSE 0
-        END) AS chapter_count,
-    o.updated_at,
-    o.created_at
-   FROM (public.organizations o
-     LEFT JOIN public.chapters c ON ((c.organization_id = o.id)))
-  GROUP BY o.id;
-
-
---
--- Name: student_lesson_details _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.student_lesson_details AS
- SELECT s.id AS student_id,
-    s.first_name,
-    s.last_name,
-    s.deleted_at AS student_deleted_at,
-    l.id AS lesson_id,
-    l.date,
-    l.deleted_at AS lesson_deleted_at,
-    l.subject_id,
-    round(avg(grades.mark), 2) AS average_mark,
-    count(grades.mark) AS grade_count,
-    COALESCE(jsonb_object_agg(grades.skill_id, jsonb_build_object('mark', grades.mark, 'grade_descriptor_id', grades.grade_descriptor_id, 'skill_name', skills.skill_name)) FILTER (WHERE (skills.skill_name IS NOT NULL)), '{}'::jsonb) AS skill_marks,
-        CASE
-            WHEN (a.id IS NULL) THEN false
-            ELSE true
-        END AS absent
-   FROM (((((public.students s
-     JOIN public.groups g ON ((g.id = s.group_id)))
-     JOIN public.lessons l ON ((g.id = l.group_id)))
-     LEFT JOIN public.grades ON (((grades.student_id = s.id) AND (grades.lesson_id = l.id))))
-     LEFT JOIN public.skills ON ((skills.id = grades.skill_id)))
-     LEFT JOIN public.absences a ON (((a.student_id = s.id) AND (a.lesson_id = l.id))))
-  GROUP BY s.id, l.id, a.id
-  ORDER BY l.subject_id;
-
-
---
--- Name: student_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.student_lesson_summaries AS
- SELECT united.student_id,
-    united.group_id,
-    united.first_name,
-    united.last_name,
-    united.deleted_at,
-    united.lesson_id,
-    united.average_mark,
-    united.grade_count,
-    united.absent
-   FROM ( SELECT s.id AS student_id,
-            s.group_id,
-            s.first_name,
-            s.last_name,
-            s.deleted_at,
-            l.id AS lesson_id,
-            round(avg(grades.mark), 2) AS average_mark,
-            count(grades.mark) AS grade_count,
-                CASE
-                    WHEN (a.id IS NULL) THEN false
-                    ELSE true
-                END AS absent
-           FROM ((((public.students s
-             JOIN public.groups g ON ((g.id = s.group_id)))
-             JOIN public.lessons l ON ((g.id = l.group_id)))
-             LEFT JOIN public.grades ON (((grades.student_id = s.id) AND (grades.lesson_id = l.id) AND (grades.deleted_at IS NULL))))
-             LEFT JOIN public.absences a ON (((a.student_id = s.id) AND (a.lesson_id = l.id))))
-          GROUP BY s.id, l.id, a.id
-        UNION
-         SELECT s.id AS student_id,
-            s.group_id,
-            s.first_name,
-            s.last_name,
-            s.deleted_at,
-            l.id AS lesson_id,
-            round(avg(grades.mark), 2) AS average_mark,
-            count(grades.mark) AS grade_count,
-                CASE
-                    WHEN (a.id IS NULL) THEN false
-                    ELSE true
-                END AS absent
-           FROM ((((public.lessons l
-             JOIN public.groups g ON ((g.id = l.group_id)))
-             JOIN public.grades ON (((grades.lesson_id = l.id) AND (grades.deleted_at IS NULL))))
-             JOIN public.students s ON ((grades.student_id = s.id)))
-             LEFT JOIN public.absences a ON (((a.student_id = s.id) AND (a.lesson_id = l.id))))
-          GROUP BY s.id, l.id, a.id) united;
 
 
 --
