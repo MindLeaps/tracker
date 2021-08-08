@@ -8,19 +8,19 @@ ActiveRecord::Base.logger = Logger.new($stdout)
 
 # rubocop:disable Metrics/BlockLength
 Organization.transaction do
-  mindleaps = Organization.create organization_name: 'MindLeaps'
-  mindleaps.chapters.create([
-                              { chapter_name: 'Random' },
-                              { chapter_name: 'Rwanda' },
-                              { chapter_name: 'Uganda' }
-                            ])
+  mindleaps = Organization.create!({ organization_name: 'MindLeaps', mlid: 'ML1' })
+  mindleaps.chapters.create!([
+                               { mlid: 'C1', chapter_name: 'Random' },
+                               { mlid: 'C2', chapter_name: 'Rwanda' },
+                               { mlid: 'C3', chapter_name: 'Uganda' }
+                             ])
 
   kigali_chapter = mindleaps.chapters[0]
 
-  kigali_chapter.groups.create([
-                                 { group_name: 'A' },
-                                 { group_name: 'B' }
-                               ])
+  kigali_chapter.groups.create!([
+                                  { mlid: 'G1', group_name: 'A' },
+                                  { mlid: 'G2', group_name: 'B' }
+                                ])
 
   kigali_chapter.groups[0].students.create!([
                                               { mlid: 'A1', first_name: 'Innocent', last_name: 'Ngabo', gender: 'male', dob: '2003-01-01', estimated_dob: 'true' },
