@@ -48,6 +48,27 @@ CREATE TYPE public.gender AS ENUM (
 
 
 --
+-- Name: update_enrollments(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.update_enrollments() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+declare
+  current_enrollment_group_id int := null;
+BEGIN
+  SELECT group_id into current_enrollment_group_id FROM enrollments e where e.student_id = new.id;
+  if current_enrollment_group_id is null or current_enrollment_group_id != new.group_id then
+    update enrollments set inactive_since = now() where inactive_since is null;
+    insert into enrollments (student_id, group_id, active_since, inactive_since, created_at, updated_at)
+    values (new.id, new.group_id, now(), null, now(), now());
+  end if;
+  return new;
+END;
+$$;
+
+
+--
 -- Name: update_records_with_unique_mlids(text, integer); Type: PROCEDURE; Schema: public; Owner: -
 --
 
@@ -1742,6 +1763,13 @@ CREATE OR REPLACE VIEW public.group_summaries AS
 
 
 --
+-- Name: students update_enrollments_on_student_group_change_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER update_enrollments_on_student_group_change_trigger AFTER INSERT OR UPDATE ON public.students FOR EACH ROW EXECUTE FUNCTION public.update_enrollments();
+
+
+--
 -- Name: assignments assignments_skill_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1763,6 +1791,14 @@ ALTER TABLE ONLY public.assignments
 
 ALTER TABLE ONLY public.chapters
     ADD CONSTRAINT chapters_organization_id_fk FOREIGN KEY (organization_id) REFERENCES public.organizations(id);
+
+
+--
+-- Name: enrollments fk_rails_0ca8ba010f; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.enrollments
+    ADD CONSTRAINT fk_rails_0ca8ba010f FOREIGN KEY (group_id) REFERENCES public.groups(id) ON DELETE CASCADE;
 
 
 --
@@ -1819,6 +1855,14 @@ ALTER TABLE ONLY public.authentication_tokens
 
 ALTER TABLE ONLY public.absences
     ADD CONSTRAINT fk_rails_dc2c1be879 FOREIGN KEY (student_id) REFERENCES public.students(id);
+
+
+--
+-- Name: enrollments fk_rails_f01c555e06; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.enrollments
+    ADD CONSTRAINT fk_rails_f01c555e06 FOREIGN KEY (student_id) REFERENCES public.students(id) ON DELETE CASCADE;
 
 
 --
@@ -2041,6 +2085,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210221224324'),
 ('20210221224751'),
 ('20210810094527'),
-('20210810102949');
+('20210810102949'),
+('20210909104020');
 
 

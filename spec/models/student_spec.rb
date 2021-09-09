@@ -9,6 +9,7 @@ RSpec.describe Student, type: :model do
     it { should belong_to :group }
     it { should have_many :grades }
     it { should have_many :absences }
+    it { should have_many :enrollments }
     it { should have_many :student_images }
     it { should accept_nested_attributes_for :student_images }
     it { should have_many :student_tags }
@@ -86,6 +87,31 @@ RSpec.describe Student, type: :model do
 
     after :all do
       Bullet.enable = true
+    end
+  end
+
+  describe 'when creating or updating' do
+    it 'creates the enrollment if there is an associated group' do
+      @student = create :student
+      expect(@student.enrollments.count).to eq 1
+      expect(@student.enrollments.first.group_id).to eq @student.group_id
+    end
+
+    it 'updates the enrollments after a students group has been changed' do
+      student = create :student
+      old_group = student.group
+      new_group = create :group
+      student.group = new_group
+      student.save!
+      expect(student.enrollments.count).to eq 2
+
+      old_enrollments = student.enrollments.where.not(inactive_since: nil)
+      expect(old_enrollments.count).to eq 1
+      expect(old_enrollments.first.group_id).to eq old_group.id
+
+      new_enrollments = student.enrollments.where(inactive_since: nil)
+      expect(new_enrollments.count).to eq 1
+      expect(new_enrollments.first.group_id).to eq new_group.id
     end
   end
 

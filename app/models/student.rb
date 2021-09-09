@@ -15,6 +15,7 @@ class Student < ApplicationRecord
   has_many :grades, dependent: :restrict_with_error
   has_many :absences, dependent: :restrict_with_error
   has_many :student_images, dependent: :restrict_with_error
+  has_many :enrollments, dependent: :destroy
   belongs_to :profile_image, class_name: 'StudentImage', optional: true, inverse_of: :student
   has_many :student_tags, dependent: :destroy
   has_many :tags, through: :student_tags
