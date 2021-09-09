@@ -289,6 +289,21 @@ ALTER SEQUENCE public.chapters_id_seq OWNED BY public.chapters.id;
 
 
 --
+-- Name: enrollments; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.enrollments (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    student_id bigint NOT NULL,
+    group_id bigint NOT NULL,
+    active_since timestamp without time zone NOT NULL,
+    inactive_since timestamp without time zone,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
 -- Name: grade_descriptors; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1082,6 +1097,14 @@ ALTER TABLE ONLY public.chapters
 
 
 --
+-- Name: enrollments enrollments_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.enrollments
+    ADD CONSTRAINT enrollments_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: grade_descriptors grade_descriptors_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1257,6 +1280,20 @@ CREATE INDEX index_authentication_tokens_on_user_id ON public.authentication_tok
 --
 
 CREATE INDEX index_chapters_on_organization_id ON public.chapters USING btree (organization_id);
+
+
+--
+-- Name: index_enrollments_on_group_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_enrollments_on_group_id ON public.enrollments USING btree (group_id);
+
+
+--
+-- Name: index_enrollments_on_student_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_enrollments_on_student_id ON public.enrollments USING btree (student_id);
 
 
 --
@@ -2002,6 +2039,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210221222126'),
 ('20210221222255'),
 ('20210221224324'),
-('20210221224751');
+('20210221224751'),
+('20210810094527'),
+('20210810102949');
 
 
