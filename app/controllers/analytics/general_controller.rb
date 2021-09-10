@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'sql/queries'
-include SQL # rubocop:disable Style/MixinUsage
-
 module Analytics
   class GeneralController < AnalyticsController
     def index
@@ -25,7 +22,7 @@ module Analytics
       res = if @selected_students.blank?
               []
             else
-              conn.exec(student_performance_query(@selected_students)).values
+              conn.exec(Sql.student_performance_query(@selected_students)).values
             end
 
       [{ name: t(:frequency_perc), data: res }]
@@ -38,9 +35,9 @@ module Analytics
 
       result = []
 
-      result << { name: "#{t(:gender)} M", data: conn.exec(performance_change_query(male_students)).values } if male_students.length.positive?
+      result << { name: "#{t(:gender)} M", data: conn.exec(Sql.performance_change_query(male_students)).values } if male_students.length.positive?
 
-      result << { name: "#{t(:gender)} F", data: conn.exec(performance_change_query(female_students)).values } if female_students.length.positive?
+      result << { name: "#{t(:gender)} F", data: conn.exec(Sql.performance_change_query(female_students)).values } if female_students.length.positive?
 
       result
     end
@@ -51,7 +48,7 @@ module Analytics
       res = if @selected_students.blank?
               []
             else
-              conn.exec(performance_change_query(@selected_students)).values
+              conn.exec(Sql.performance_change_query(@selected_students)).values
             end
       [{ name: t(:frequency_perc), data: res }]
     end
@@ -85,7 +82,7 @@ module Analytics
 
       conn = ActiveRecord::Base.connection.raw_connection
       groups.map do |group|
-        result = conn.exec(average_mark_in_group_lessons(group)).values
+        result = conn.exec(Sql.average_mark_in_group_lessons(group)).values
         {
           name: "#{t(:group)} #{group.group_chapter_name}",
           data: format_point_data(result)

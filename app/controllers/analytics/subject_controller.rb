@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'sql/queries'
-include SQL # rubocop:disable Style/MixinUsage
-
 module Analytics
   class SubjectController < AnalyticsController
     # rubocop:disable Metrics/PerceivedComplexity
@@ -25,7 +22,7 @@ module Analytics
       conn = ActiveRecord::Base.connection.raw_connection
       students = {}
 
-      query_result = conn.exec(performance_per_skill_in_lessons_per_student_query([@selected_student_id])).values
+      query_result = conn.exec(SQL.performance_per_skill_in_lessons_per_student_query([@selected_student_id])).values
       result = query_result.reduce({}) do |acc, e|
         student_id = e[-1]
         student_name = students[student_id] ||= Student.find(student_id).proper_name
@@ -62,7 +59,7 @@ module Analytics
 
       conn = ActiveRecord::Base.connection.raw_connection
       groups = {}
-      query_result = conn.exec(performance_per_skill_in_lessons_query(lessons)).values
+      query_result = conn.exec(SQL.performance_per_skill_in_lessons_query(lessons)).values
       result = query_result.reduce({}) do |acc, e|
         group_id = e[-1]
         group_name = groups[group_id] ||= Group.find(group_id).group_chapter_name
