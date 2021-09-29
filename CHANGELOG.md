@@ -1,3 +1,7 @@
+## Unreleased
+- Enabled students to change groups
+- Created Enrollments to track groups the student was enrolled to over time
+
 ## 0.28.0 - Datapoints
 - Upgraded to Ruby 3
 - Upgraded Omniauth to v2
