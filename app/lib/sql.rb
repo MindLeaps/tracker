@@ -1,35 +1,21 @@
 # frozen_string_literal: true
 
-module SQL
-  def performance_per_skill_in_lessons_per_student_query(student_ids)
+class Sql
+  def self.performance_per_skill_in_lessons_per_student_query(student_ids)
     <<~SQL.squish
       select rank() over(PARTITION BY stu.id, s.id order by date) - 1 as rank, round(avg(mark), 2)::FLOAT, l.id, date, s.skill_name, stu.id::INT from
           lessons as l
-          join groups as gr on gr.id = l.group_id
-          join students as stu on stu.group_id = gr.id
-          join grades as g on l.id = g.lesson_id AND g.student_id IN (#{student_ids.join(', ')})
-          join skills as s on s.id = g.skill_id
-        WHERE stu.id IN (#{student_ids.join(', ')})
-        GROUP BY stu.id, l.id, s.id
-        ORDER BY stu.id, date, s.id;
+              join groups as gr on gr.id = l.group_id
+              join grades as g on l.id = g.lesson_id
+              join students as stu on stu.id = g.student_id
+              join skills as s on s.id = g.skill_id
+      WHERE stu.id IN (#{student_ids.join(', ')})
+      GROUP BY gr.id, stu.id, l.id, s.id
+      ORDER BY stu.id, date, s.id;
     SQL
   end
 
-  def performance_per_skill_in_lessons_query(lessons)
-    <<~SQL.squish
-      select rank() over(PARTITION BY gr.id, s.id order by date) - 1 as rank, round(avg(mark), 2)::FLOAT, l.id, date, s.skill_name, gr.id::INT from
-          lessons as l
-          join groups as gr on gr.id = l.group_id
-          join grades as g on l.id = g.lesson_id
-          join students as st on st.deleted_at is null and st.id = g.student_id
-          join skills as s on s.id = g.skill_id
-        WHERE l.id IN (#{lessons.ids.join(', ')})
-        GROUP BY gr.id, l.id, s.id
-        ORDER BY gr.id, date, s.id;
-    SQL
-  end
-
-  def student_performance_query(students)
+  def self.student_performance_query(students)
     <<~SQL.squish
       select COALESCE(rounded, 0)::INT as mark, count(*) * 100 / (sum(count(*)) over ())::FLOAT as percentage
         from (select s.id, round(avg(mark)) as rounded
@@ -44,7 +30,7 @@ module SQL
     SQL
   end
 
-  def performance_change_query(students)
+  def self.performance_change_query(students)
     <<~SQL.squish
       with w1 AS (
           SELECT
@@ -81,7 +67,7 @@ module SQL
     SQL
   end
 
-  def average_mark_in_group_lessons(group)
+  def self.average_mark_in_group_lessons(group)
     <<~SQL.squish
       select row_number() over (ORDER BY date) - 1, round(avg(mark), 2)::FLOAT, l.id, date from lessons as l
         join grades as g on g.lesson_id = l.id

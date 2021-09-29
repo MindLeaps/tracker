@@ -1,5 +1,12 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: student_lessons
+#
+#  lesson_id  :integer
+#  student_id :integer
+#
 class StudentLesson < ApplicationRecord
   belongs_to :student
   belongs_to :lesson

@@ -1,5 +1,19 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: group_lesson_summaries
+#
+#  average_mark       :float
+#  grade_count        :bigint
+#  group_chapter_name :text
+#  lesson_date        :date
+#  lesson_uid         :uuid             primary key
+#  chapter_id         :integer
+#  group_id           :integer
+#  lesson_id          :integer
+#  subject_id         :integer
+#
 class GroupLessonSummary < ApplicationRecord
   self.primary_key = :lesson_uid
   belongs_to :chapter

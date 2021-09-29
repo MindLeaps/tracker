@@ -11,6 +11,7 @@ AllCops:
     - bin/rake
     - vendor/**/* # Vendor gem dir in Travis CI
     - bin/yarn
+    - lib/tasks/**/*
 
 Metrics/BlockLength:
   Exclude:

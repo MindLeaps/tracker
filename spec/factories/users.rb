@@ -1,5 +1,27 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: users
+#
+#  id                 :integer          not null, primary key
+#  current_sign_in_at :datetime
+#  current_sign_in_ip :string
+#  email              :string           default(""), not null
+#  image              :string
+#  last_sign_in_at    :datetime
+#  last_sign_in_ip    :string
+#  name               :string
+#  provider           :string
+#  sign_in_count      :integer          default(0), not null
+#  uid                :string
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#
+# Indexes
+#
+#  index_users_on_email  (email) UNIQUE
+#
 FactoryBot.define do
   factory :user do
     name { Faker::Name.name }

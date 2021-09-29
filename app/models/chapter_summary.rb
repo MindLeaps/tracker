@@ -1,5 +1,22 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: chapter_summaries
+#
+#  id                :integer          primary key
+#  chapter_mlid      :string(2)
+#  chapter_name      :string
+#  deleted_at        :datetime
+#  full_mlid         :text
+#  group_count       :bigint
+#  organization_mlid :string(3)
+#  organization_name :string
+#  student_count     :integer
+#  created_at        :datetime
+#  updated_at        :datetime
+#  organization_id   :integer
+#
 class ChapterSummary < ApplicationRecord
   include PgSearch::Model
   self.primary_key = :id

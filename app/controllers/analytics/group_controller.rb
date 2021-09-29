@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'sql/queries'
-include SQL # rubocop:disable Style/MixinUsage
-
 module Analytics
   class GroupController < AnalyticsController
     def index

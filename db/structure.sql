@@ -48,6 +48,27 @@ CREATE TYPE public.gender AS ENUM (
 
 
 --
+-- Name: update_enrollments(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.update_enrollments() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+declare
+  current_enrollment_group_id int := null;
+BEGIN
+  SELECT group_id into current_enrollment_group_id FROM enrollments e where e.student_id = new.id;
+  if current_enrollment_group_id is null or current_enrollment_group_id != new.group_id then
+    update enrollments set inactive_since = now() where inactive_since is null;
+    insert into enrollments (student_id, group_id, active_since, inactive_since, created_at, updated_at)
+    values (new.id, new.group_id, now(), null, now(), now());
+  end if;
+  return new;
+END;
+$$;
+
+
+--
 -- Name: update_records_with_unique_mlids(text, integer); Type: PROCEDURE; Schema: public; Owner: -
 --
 
@@ -286,6 +307,21 @@ CREATE SEQUENCE public.chapters_id_seq
 --
 
 ALTER SEQUENCE public.chapters_id_seq OWNED BY public.chapters.id;
+
+
+--
+-- Name: enrollments; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.enrollments (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    student_id bigint NOT NULL,
+    group_id bigint NOT NULL,
+    active_since timestamp without time zone NOT NULL,
+    inactive_since timestamp without time zone,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
 
 
 --
@@ -552,6 +588,23 @@ CREATE SEQUENCE public.organizations_id_seq
 --
 
 ALTER SEQUENCE public.organizations_id_seq OWNED BY public.organizations.id;
+
+
+--
+-- Name: performance_per_group_per_skill_per_lessons; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.performance_per_group_per_skill_per_lessons AS
+SELECT
+    NULL::integer AS group_id,
+    NULL::character varying AS group_name,
+    NULL::text AS group_chapter_name,
+    NULL::integer AS lesson_id,
+    NULL::date AS date,
+    NULL::integer AS skill_id,
+    NULL::character varying AS skill_name,
+    NULL::integer AS subject_id,
+    NULL::double precision AS mark;
 
 
 --
@@ -1082,6 +1135,14 @@ ALTER TABLE ONLY public.chapters
 
 
 --
+-- Name: enrollments enrollments_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.enrollments
+    ADD CONSTRAINT enrollments_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: grade_descriptors grade_descriptors_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1257,6 +1318,20 @@ CREATE INDEX index_authentication_tokens_on_user_id ON public.authentication_tok
 --
 
 CREATE INDEX index_chapters_on_organization_id ON public.chapters USING btree (organization_id);
+
+
+--
+-- Name: index_enrollments_on_group_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_enrollments_on_group_id ON public.enrollments USING btree (group_id);
+
+
+--
+-- Name: index_enrollments_on_student_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_enrollments_on_student_id ON public.enrollments USING btree (student_id);
 
 
 --
@@ -1705,6 +1780,37 @@ CREATE OR REPLACE VIEW public.group_summaries AS
 
 
 --
+-- Name: performance_per_group_per_skill_per_lessons _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.performance_per_group_per_skill_per_lessons AS
+ SELECT gr.id AS group_id,
+    gr.group_name,
+    (((gr.group_name)::text || ' - '::text) || (c.chapter_name)::text) AS group_chapter_name,
+    l.id AS lesson_id,
+    l.date,
+    s.id AS skill_id,
+    s.skill_name,
+    su.id AS subject_id,
+    (round(avg(g.mark), 2))::double precision AS mark
+   FROM (((((public.groups gr
+     JOIN public.chapters c ON ((gr.chapter_id = c.id)))
+     JOIN public.lessons l ON ((gr.id = l.group_id)))
+     JOIN public.subjects su ON ((l.subject_id = su.id)))
+     JOIN public.grades g ON ((l.id = g.lesson_id)))
+     JOIN public.skills s ON ((s.id = g.skill_id)))
+  GROUP BY gr.id, c.id, l.id, s.id, su.id
+  ORDER BY gr.id, l.date, s.id;
+
+
+--
+-- Name: students update_enrollments_on_student_group_change_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER update_enrollments_on_student_group_change_trigger AFTER INSERT OR UPDATE ON public.students FOR EACH ROW EXECUTE FUNCTION public.update_enrollments();
+
+
+--
 -- Name: assignments assignments_skill_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1726,6 +1832,14 @@ ALTER TABLE ONLY public.assignments
 
 ALTER TABLE ONLY public.chapters
     ADD CONSTRAINT chapters_organization_id_fk FOREIGN KEY (organization_id) REFERENCES public.organizations(id);
+
+
+--
+-- Name: enrollments fk_rails_0ca8ba010f; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.enrollments
+    ADD CONSTRAINT fk_rails_0ca8ba010f FOREIGN KEY (group_id) REFERENCES public.groups(id) ON DELETE CASCADE;
 
 
 --
@@ -1782,6 +1896,14 @@ ALTER TABLE ONLY public.authentication_tokens
 
 ALTER TABLE ONLY public.absences
     ADD CONSTRAINT fk_rails_dc2c1be879 FOREIGN KEY (student_id) REFERENCES public.students(id);
+
+
+--
+-- Name: enrollments fk_rails_f01c555e06; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.enrollments
+    ADD CONSTRAINT fk_rails_f01c555e06 FOREIGN KEY (student_id) REFERENCES public.students(id) ON DELETE CASCADE;
 
 
 --
@@ -2002,6 +2124,10 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210221222126'),
 ('20210221222255'),
 ('20210221224324'),
-('20210221224751');
+('20210221224751'),
+('20210810094527'),
+('20210810102949'),
+('20210909104020'),
+('20210910115239');
 
 
