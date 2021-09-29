@@ -1,5 +1,16 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: student_tag_table_rows
+#
+#  id                :uuid             primary key
+#  organization_name :string
+#  shared            :boolean
+#  student_count     :bigint
+#  tag_name          :string
+#  organization_id   :bigint
+#
 class StudentTagTableRow < ApplicationRecord
   belongs_to :organization
 

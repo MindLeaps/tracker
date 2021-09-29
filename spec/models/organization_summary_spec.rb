@@ -1,5 +1,15 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: organization_summaries
+#
+#  id                :integer          primary key
+#  chapter_count     :bigint
+#  organization_name :string
+#  created_at        :datetime
+#  updated_at        :datetime
+#
 require 'rails_helper'
 
 RSpec.describe OrganizationSummary, type: :model do

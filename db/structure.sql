@@ -591,6 +591,23 @@ ALTER SEQUENCE public.organizations_id_seq OWNED BY public.organizations.id;
 
 
 --
+-- Name: performance_per_group_per_skill_per_lessons; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.performance_per_group_per_skill_per_lessons AS
+SELECT
+    NULL::integer AS group_id,
+    NULL::character varying AS group_name,
+    NULL::text AS group_chapter_name,
+    NULL::integer AS lesson_id,
+    NULL::date AS date,
+    NULL::integer AS skill_id,
+    NULL::character varying AS skill_name,
+    NULL::integer AS subject_id,
+    NULL::double precision AS mark;
+
+
+--
 -- Name: roles; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1763,6 +1780,30 @@ CREATE OR REPLACE VIEW public.group_summaries AS
 
 
 --
+-- Name: performance_per_group_per_skill_per_lessons _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.performance_per_group_per_skill_per_lessons AS
+ SELECT gr.id AS group_id,
+    gr.group_name,
+    (((gr.group_name)::text || ' - '::text) || (c.chapter_name)::text) AS group_chapter_name,
+    l.id AS lesson_id,
+    l.date,
+    s.id AS skill_id,
+    s.skill_name,
+    su.id AS subject_id,
+    (round(avg(g.mark), 2))::double precision AS mark
+   FROM (((((public.groups gr
+     JOIN public.chapters c ON ((gr.chapter_id = c.id)))
+     JOIN public.lessons l ON ((gr.id = l.group_id)))
+     JOIN public.subjects su ON ((l.subject_id = su.id)))
+     JOIN public.grades g ON ((l.id = g.lesson_id)))
+     JOIN public.skills s ON ((s.id = g.skill_id)))
+  GROUP BY gr.id, c.id, l.id, s.id, su.id
+  ORDER BY gr.id, l.date, s.id;
+
+
+--
 -- Name: students update_enrollments_on_student_group_change_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -2086,6 +2127,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210221224751'),
 ('20210810094527'),
 ('20210810102949'),
-('20210909104020');
+('20210909104020'),
+('20210910115239');
 
 

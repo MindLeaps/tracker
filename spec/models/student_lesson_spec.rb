@@ -1,5 +1,12 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: student_lessons
+#
+#  lesson_id  :integer
+#  student_id :integer
+#
 require 'rails_helper'
 
 RSpec.describe StudentLesson, type: :model do

@@ -1,5 +1,25 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: skills
+#
+#  id                :integer          not null, primary key
+#  deleted_at        :datetime
+#  skill_description :text
+#  skill_name        :string           not null
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  organization_id   :integer          not null
+#
+# Indexes
+#
+#  index_skills_on_organization_id  (organization_id)
+#
+# Foreign Keys
+#
+#  skills_organization_id_fk  (organization_id => organizations.id)
+#
 class Skill < ApplicationRecord
   include PgSearch::Model
   pg_search_scope :search, against: [:skill_name], using: { tsearch: { prefix: true } }

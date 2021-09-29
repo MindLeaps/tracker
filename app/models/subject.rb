@@ -1,5 +1,24 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: subjects
+#
+#  id              :integer          not null, primary key
+#  deleted_at      :datetime
+#  subject_name    :string           not null
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  organization_id :integer          not null
+#
+# Indexes
+#
+#  index_subjects_on_organization_id  (organization_id)
+#
+# Foreign Keys
+#
+#  subjects_organization_id_fk  (organization_id => organizations.id)
+#
 class Subject < ApplicationRecord
   belongs_to :organization
   has_many :lessons, dependent: :restrict_with_error

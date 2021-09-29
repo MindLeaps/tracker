@@ -15,20 +15,6 @@ class Sql
     SQL
   end
 
-  def self.performance_per_skill_in_lessons_query(lessons)
-    <<~SQL.squish
-      select rank() over(PARTITION BY gr.id, s.id order by date) - 1 as rank, round(avg(mark), 2)::FLOAT, l.id, date, s.skill_name, gr.id::INT from
-          lessons as l
-          join groups as gr on gr.id = l.group_id
-          join grades as g on l.id = g.lesson_id
-          join students as st on st.deleted_at is null and st.id = g.student_id
-          join skills as s on s.id = g.skill_id
-        WHERE l.id IN (#{lessons.ids.join(', ')})
-        GROUP BY gr.id, l.id, s.id
-        ORDER BY gr.id, date, s.id;
-    SQL
-  end
-
   def self.student_performance_query(students)
     <<~SQL.squish
       select COALESCE(rounded, 0)::INT as mark, count(*) * 100 / (sum(count(*)) over ())::FLOAT as percentage

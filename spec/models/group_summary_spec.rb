@@ -1,5 +1,22 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: group_summaries
+#
+#  id                :integer          primary key
+#  chapter_mlid      :string(2)
+#  chapter_name      :string
+#  deleted_at        :datetime
+#  full_mlid         :text
+#  group_name        :string
+#  mlid              :string(2)
+#  organization_mlid :string(3)
+#  organization_name :string
+#  student_count     :bigint
+#  chapter_id        :integer
+#  organization_id   :integer
+#
 require 'rails_helper'
 
 RSpec.describe GroupSummary, type: :model do

@@ -22,7 +22,7 @@ module Analytics
       conn = ActiveRecord::Base.connection.raw_connection
       students = {}
 
-      query_result = conn.exec(SQL.performance_per_skill_in_lessons_per_student_query([@selected_student_id])).values
+      query_result = conn.exec(Sql.performance_per_skill_in_lessons_per_student_query([@selected_student_id])).values
       result = query_result.reduce({}) do |acc, e|
         student_id = e[-1]
         student_name = students[student_id] ||= Student.find(student_id).proper_name
@@ -43,36 +43,30 @@ module Analytics
     end
 
     def performance_per_skill
-      lessons = if @selected_student_id.present? && @selected_student_id != 'All'
-                  Lesson.includes(:grades).where(grades: { student_id: @selected_student_id })
-                elsif @selected_group_id.present? && @selected_group_id != 'All'
-                  Lesson.where(group_id: @selected_group_id)
-                elsif @selected_chapter_id.present? && @selected_chapter_id != 'All'
-                  Lesson.includes(:group).where(groups: { chapter_id: @selected_chapter_id })
-                elsif @selected_organization_id.present? && @selected_organization_id != 'All'
-                  Lesson.includes(group: :chapter).where(chapters: { organization_id: @selected_organization_id })
-                else
-                  Lesson.where(group: policy_scope(Group))
-                end
+      groups = policy_scope(
+        if @selected_group_id.present? && @selected_group_id != 'All'
+          Group.where(id: @selected_group_id)
+        elsif @selected_chapter_id.present? && @selected_chapter_id != 'All'
+          Group.where(chapter_id: @selected_chapter_id)
+        elsif @selected_organization_id.present? && @selected_organization_id != 'All'
+          Group.includes(:chapter).where(chapters: { organization_id: @selected_organization_id })
+        else
+          Group
+        end
+      )
 
-      return [] if lessons.empty?
+      return [] if groups.empty?
 
-      conn = ActiveRecord::Base.connection.raw_connection
-      groups = {}
-      query_result = conn.exec(SQL.performance_per_skill_in_lessons_query(lessons)).values
-      result = query_result.reduce({}) do |acc, e|
-        group_id = e[-1]
-        group_name = groups[group_id] ||= Group.find(group_id).group_chapter_name
-        skill_name = e[-2]
+      result = PerformancePerGroupPerSkillPerLesson.where(group: groups).reduce({}) do |acc, e|
         acc.tap do |a|
-          if a.key?(skill_name)
-            if a[skill_name].key?(group_name)
-              a[skill_name][group_name].push(x: e[0], y: e[1], lesson_url: lesson_path(e[2]), date: e[3])
+          if a.key?(e.skill_name)
+            if a[e.skill_name].key?(e.group_chapter_name)
+              a[e.skill_name][e.group_chapter_name].push(x: a[e.skill_name][e.group_chapter_name].length, y: e.mark, lesson_url: lesson_path(e.lesson_id), date: e.date)
             else
-              a[skill_name][group_name] = [{ x: e[0], y: e[1], lesson_url: lesson_path(e[2]), date: e[3] }]
+              a[e.skill_name][e.group_chapter_name] = [{ x: 0, y: e.mark, lesson_url: lesson_path(e.lesson_id), date: e.date }]
             end
           else
-            a[skill_name] = { group_name => [{ x: e[0], y: e[1], lesson_url: lesson_path(e[2]), date: e[3] }] }
+            a[e.skill_name] = { e.group_chapter_name => [{ x: 0, y: e.mark, lesson_url: lesson_path(e.lesson_id), date: e.date }] }
           end
         end
       end
