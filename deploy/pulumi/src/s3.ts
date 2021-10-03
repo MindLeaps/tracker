@@ -60,7 +60,6 @@ export function createS3LogsBucket(): {bucket: Bucket, policy: BucketPolicy} {
             }
         ],
         serverSideEncryptionConfiguration: { rule: { applyServerSideEncryptionByDefault: { sseAlgorithm: 'AES256' } } },
-        region: region,
         lifecycleRules: [{
             enabled: true,
             transitions: [
@@ -81,7 +80,6 @@ export function createS3LogsBucket(): {bucket: Bucket, policy: BucketPolicy} {
 export function createS3PhotoBucket(logsBucket: Bucket): Bucket {
     return new aws.s3.Bucket(S3_PHOTO_BUCKET_PULUMI_NAME, {
         bucket: S3_PHOTO_BUCKET_NAME,
-        region: region,
         acl: PublicReadAcl,
         serverSideEncryptionConfiguration: { rule: { applyServerSideEncryptionByDefault: { sseAlgorithm: 'AES256' } } },
         loggings: [{
