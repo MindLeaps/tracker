@@ -1,4 +1,4 @@
-## Unreleased
+## 0.29.0 - Changing Groups
 - Enabled students to change groups
 - Created Enrollments to track groups the student was enrolled to over time
 
