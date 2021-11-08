@@ -1,3 +1,12 @@
+GIT
+  remote: https://github.com/twalpole/apparition.git
+  revision: ca86be4d54af835d531dbcd2b86e7b2c77f85f34
+  ref: ca86be4d54af835d531dbcd2b86e7b2c77f85f34
+  specs:
+    apparition (0.6.0)
+      capybara (~> 3.13, < 4)
+      websocket-driver (>= 0.6.5)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -72,9 +81,6 @@ GEM
     annotate (3.1.1)
       activerecord (>= 3.2, < 7.0)
       rake (>= 10.4, < 14.0)
-    apparition (0.6.0)
-      capybara (~> 3.13, < 4)
-      websocket-driver (>= 0.6.5)
     ast (2.4.2)
     bcrypt (3.1.16)
     better_errors (2.9.1)
@@ -264,7 +270,7 @@ GEM
       actionpack (>= 4.2)
       omniauth (~> 2.0)
     orm_adapter (0.5.0)
-    pagy (4.11.0)
+    pagy (5.2.1)
     parallel (1.21.0)
     parser (3.0.2.0)
       ast (~> 2.4.1)
@@ -477,7 +483,7 @@ DEPENDENCIES
   active_model_serializers (~> 0.10.12)
   amazing_print
   annotate
-  apparition
+  apparition!
   better_errors
   binding_of_caller
   bootsnap
