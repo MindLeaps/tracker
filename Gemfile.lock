@@ -82,7 +82,9 @@ GEM
       activerecord (>= 3.2, < 7.0)
       rake (>= 10.4, < 14.0)
     ast (2.4.2)
+    backport (1.2.0)
     bcrypt (3.1.16)
+    benchmark (0.2.0)
     better_errors (2.9.1)
       coderay (>= 1.0.0)
       erubi (>= 1.0.0)
@@ -148,6 +150,7 @@ GEM
     dotenv-rails (2.7.6)
       dotenv (= 2.7.6)
       railties (>= 3.2)
+    e2mmap (0.1.0)
     enum_help (0.0.17)
       activesupport (>= 3.0.0)
     erubi (1.10.0)
@@ -216,11 +219,16 @@ GEM
       activesupport (>= 3.0)
       nokogiri (>= 1.6)
     ipaddress (0.8.3)
+    jaro_winkler (1.5.4)
     json_matchers (0.11.1)
       json_schema
     json_schema (0.21.0)
     jsonapi-renderer (0.2.2)
     jwt (2.2.3)
+    kramdown (2.3.1)
+      rexml
+    kramdown-parser-gfm (1.1.0)
+      kramdown (~> 2.0)
     loofah (2.12.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -346,6 +354,8 @@ GEM
     responders (3.0.1)
       actionpack (>= 5.0)
       railties (>= 5.0)
+    reverse_markdown (2.1.1)
+      nokogiri
     rexml (3.2.5)
     rolify (6.0.0)
     rspec-core (3.10.1)
@@ -420,6 +430,21 @@ GEM
       temple (>= 0.7.6, < 0.9)
       tilt (>= 2.0.6, < 2.1)
     smarter_csv (1.2.8)
+    solargraph (0.44.1)
+      backport (~> 1.2)
+      benchmark
+      bundler (>= 1.17.2)
+      diff-lcs (~> 1.4)
+      e2mmap
+      jaro_winkler (~> 1.5)
+      kramdown (~> 2.3)
+      kramdown-parser-gfm (~> 1.1)
+      parser (~> 3.0)
+      reverse_markdown (>= 1.0.5, < 3)
+      rubocop (>= 0.52)
+      thor (~> 1.0)
+      tilt (~> 2.0)
+      yard (~> 0.9, >= 0.9.24)
     sort_alphabetical (1.1.0)
       unicode_utils (>= 1.2.2)
     spring (3.0.0)
@@ -473,6 +498,7 @@ GEM
     websocket-extensions (0.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
+    yard (0.9.26)
     zeitwerk (2.5.1)
 
 PLATFORMS
@@ -536,6 +562,7 @@ DEPENDENCIES
   skylight
   slim
   smarter_csv
+  solargraph
   sort_alphabetical
   spring
   tiddle
