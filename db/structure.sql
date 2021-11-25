@@ -72,7 +72,7 @@ $$;
 -- Name: update_records_with_unique_mlids(text, integer); Type: PROCEDURE; Schema: public; Owner: -
 --
 
-CREATE PROCEDURE public.update_records_with_unique_mlids(table_name text, mlid_length integer)
+CREATE PROCEDURE public.update_records_with_unique_mlids(IN table_name text, IN mlid_length integer)
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -103,7 +103,7 @@ $$;
 -- Name: update_records_with_unique_mlids(text, integer, text); Type: PROCEDURE; Schema: public; Owner: -
 --
 
-CREATE PROCEDURE public.update_records_with_unique_mlids(table_name text, mlid_length integer, unique_scope text DEFAULT NULL::text)
+CREATE PROCEDURE public.update_records_with_unique_mlids(IN table_name text, IN mlid_length integer, IN unique_scope text DEFAULT NULL::text)
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -314,7 +314,7 @@ ALTER SEQUENCE public.chapters_id_seq OWNED BY public.chapters.id;
 --
 
 CREATE TABLE public.enrollments (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
     student_id bigint NOT NULL,
     group_id bigint NOT NULL,
     active_since timestamp without time zone NOT NULL,
@@ -929,7 +929,7 @@ ALTER SEQUENCE public.subjects_id_seq OWNED BY public.subjects.id;
 --
 
 CREATE TABLE public.tags (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
     tag_name character varying NOT NULL,
     organization_id bigint NOT NULL,
     shared boolean NOT NULL,
