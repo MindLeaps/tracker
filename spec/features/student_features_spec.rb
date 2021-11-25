@@ -66,7 +66,7 @@ RSpec.describe 'User interacts with Students' do
       fill_in 'First name', with: 'Rick'
       fill_in 'Last name', with: 'Sanchez'
       select('Antarctica', from: 'Country of nationality')
-      select(@group.group_chapter_name, from: 'Group')
+      select(@group.chapter_group_name_with_full_mlid, from: 'Group')
       click_button 'Create'
 
       expect(page).to have_content 'Student "Sanchez, Rick" created.'

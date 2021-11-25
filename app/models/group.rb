@@ -34,7 +34,6 @@ class Group < ApplicationRecord
   has_many :lessons, dependent: :restrict_with_error
 
   delegate :chapter_name, to: :chapter, allow_nil: true
-  delegate :full_mlid, to: :chapter, allow_nil: true
 
   scope :by_chapter, ->(chapter_id) { where chapter_id: chapter_id }
 
@@ -42,7 +41,11 @@ class Group < ApplicationRecord
     "#{group_name} - #{chapter_name}"
   end
 
-  def group_chapter_name_with_mlids
-    "#{group_name} - #{chapter_name}: #{full_mlid}"
+  def chapter_group_name_with_full_mlid
+    "#{chapter_name} - #{group_name}: #{full_mlid}"
+  end
+
+  def full_mlid
+    "#{chapter.full_mlid}-#{mlid}"
   end
 end

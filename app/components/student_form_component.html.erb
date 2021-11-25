@@ -6,7 +6,7 @@
 <%= f.input :gender, as: :radio_buttons, item_wrapper_tag: 'label', item_wrapper_class: 'mdl-radio mdl-js-radio mdl-js-ripple-effect', checked: @student.gender || 'M' %>
 <%= f.input :dob, label: t(:date_of_birth), start_year: 1990, end_year: Date.today.year, default: { day: 1, month: 1} %>
 <%= f.input :estimated_dob, label: t(:dob_estimated) %><hr>
-<%= f.association :group, collection: @permitted_groups, label_method: :group_chapter_name_with_mlids %>
+<%= f.association :group, collection: @chapter_groups, as: :grouped_select, group_method: :groups, group_label_method: :chapter_display, label_method: :chapter_group_name_with_full_mlid %>
 <%= f.input :country_of_nationality, collection: I18nData.countries(locale.to_s).map { |k, v| [v, k] }.sort_alphabetical_by(&:first) %>
 <%= f.input :quartier %><hr>
 <%= f.input :guardian_name %>

@@ -1,3 +1,6 @@
+## 0.29.1 - Structured Group Select
+- Implemented structured group select in the student form 
+
 ## 0.29.0 - Changing Groups
 - Enabled students to change groups
 - Created Enrollments to track groups the student was enrolled to over time

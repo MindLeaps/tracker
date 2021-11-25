@@ -22,10 +22,10 @@ RSpec.describe StudentFormComponent, type: :component do
     @user = create :admin_of, organization: @user_org
   end
 
-  describe :permitted_groups do
+  describe :chapter_groups do
     it 'scopes the groups to include only ones that belong to the users organization' do
       expect(
-        StudentFormComponent.new(student: Student.new, action: :create, current_user: @user).permitted_groups.map(&:id)
+        StudentFormComponent.new(student: Student.new, action: :create, current_user: @user).chapter_groups.flat_map(&:groups).map(&:id)
       ).to eq([@user_org_group.id])
     end
   end
