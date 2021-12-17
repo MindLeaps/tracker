@@ -1,4 +1,4 @@
-FROM ruby:3.0.1 as base
+FROM ruby:3.0.3 as base
 ARG MINDLEAPS_HOME=/mindleaps
 ARG TRACKER_HOME=$MINDLEAPS_HOME/tracker
 
