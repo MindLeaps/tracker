@@ -64,7 +64,5 @@ Rails.application.configure do
     Bullet.add_footer = true
   end
 
-  # Enabling Skylight.io in development - must have auth token in environment to work properly
-  config.skylight.environments += %w[development]
   config.log_level = :debug
 end
