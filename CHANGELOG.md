@@ -1,3 +1,6 @@
+## Unreleased
+- Fixed crash when navigating to a student tag that is in use by some students
+
 ## 0.29.1 - Structured Group Select
 - Implemented structured group select in the student form 
 
