@@ -56,3 +56,6 @@ Style/MultilineBlockChain:
 
 Style/FormatStringToken:
   Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false

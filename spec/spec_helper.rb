@@ -100,7 +100,7 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 
   # Change this to :selenium_chrome to see the tests running in the browser
-  Capybara.javascript_driver = :selenium_chrome
+  Capybara.javascript_driver = :apparition
 end
 
 OmniAuth.config.test_mode = true

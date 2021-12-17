@@ -51,7 +51,7 @@
     .mdl-card__supporting-text.full-width.no-padding
       table class='mdl-data-table mdl-js-data-table resource-table'
         thead
-          == render Common::TableNavigation.new(pagy: @pagy, resource: t(:students).downcase, span: 5, options: [ \
+          == render CommonComponents::TableNavigation.new(pagy: @pagy, resource: t(:students).downcase, span: 5, options: [ \
             { name: t(:show_deleted), href: show_deleted_url, checked: !excluding_deleted?, tooltip: excluding_deleted? ? t(:show_deleted_students_tooltip) : t(:hide_deleted_students_tooltip) } \
         ])
           tr

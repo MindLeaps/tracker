@@ -12,7 +12,7 @@ RSpec.describe 'User interacts with Student Tags' do
     end
 
     it 'navigates to tags, creates a new tag and assigns it to the student', js: true do
-      test_student = create :student, first_name: 'Taggy', last_name: 'Studenty', gender: 'F'
+      create :student, first_name: 'Taggy', last_name: 'Studenty', gender: 'F'
 
       visit '/students'
       click_link 'Student Tags'

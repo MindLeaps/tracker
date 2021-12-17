@@ -28,7 +28,7 @@ class GroupsController < HtmlController
   def show
     @group = Group.includes(:chapter).find params[:id]
     authorize @group
-    @student_table_component = Students::StudentTableComponent.new { |students| pagy apply_scopes(students.where(group_id: @group.id)) }
+    @student_table_component = StudentComponents::StudentTable.new { |students| pagy apply_scopes(students.where(group_id: @group.id)) }
   end
 
   def edit

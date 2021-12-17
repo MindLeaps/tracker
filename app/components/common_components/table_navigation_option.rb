@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Common::TableNavigationOption < ViewComponent::Base
+class CommonComponents::TableNavigationOption < ViewComponent::Base
   with_collection_parameter :option
 
   def initialize(option:)

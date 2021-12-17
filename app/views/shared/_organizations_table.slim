@@ -1,6 +1,6 @@
 table class='mdl-data-table mdl-js-data-table resource-table'
   thead
-    == render Common::TableNavigation.new(pagy: pagy, resource: t(:organizations).downcase, span: 3)
+    == render CommonComponents::TableNavigation.new(pagy: pagy, resource: t(:organizations).downcase, span: 3)
     tr
       th
         | #

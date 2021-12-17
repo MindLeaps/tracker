@@ -5,7 +5,7 @@
         <%= render search_component %>
       </div>
       <div class="right-section">
-        <%= render Common::TableNavigationOption.with_collection(@options) %>
+        <%= render CommonComponents::TableNavigationOption.with_collection(@options) %>
         <span class="page-info">Displaying <%= @pagy.from %> - <%= @pagy.to %> <%= @resource %> of <%= @pagy.count %> in total</span>
         <%= render partial: 'shared/pagy_nav', locals: { pagy: @pagy } %>
       </div>

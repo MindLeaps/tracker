@@ -1,6 +1,6 @@
 <table class="mdl-data-table mdl-js-data-table resource-table">
   <thead>
-  <%= render Common::TableNavigation.new(pagy: pagy, resource: t(:students), span: 9, search: { term: params[:search] }, options: [
+  <%= render CommonComponents::TableNavigation.new(pagy: pagy, resource: t(:students), span: 9, search: { term: params[:search] }, options: [
 {name: t(:show_deleted), href: show_deleted_url, checked: !excluding_deleted?, tooltip: excluding_deleted? ? t(:show_deleted_students_tooltip) : t(:hide_deleted_students_tooltip) }
   ]) %>
   <tr>

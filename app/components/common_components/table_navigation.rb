@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Common::TableNavigation < ViewComponent::Base
+class CommonComponents::TableNavigation < ViewComponent::Base
   def initialize(pagy:, resource:, span:, search: nil, options: [])
     @resource = resource
     @options = options

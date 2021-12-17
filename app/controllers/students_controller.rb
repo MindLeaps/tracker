@@ -9,7 +9,7 @@ class StudentsController < HtmlController
 
   def index
     authorize Student
-    @component = Students::StudentTableComponent.new { |students| pagy apply_scopes(policy_scope(students)) }
+    @component = StudentComponents::StudentTable.new { |students| pagy apply_scopes(policy_scope(students)) }
   end
 
   def new
