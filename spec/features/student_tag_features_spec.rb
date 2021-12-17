@@ -11,13 +11,15 @@ RSpec.describe 'User interacts with Student Tags' do
       @tags = create_list :tag, 3, organization: @org
     end
 
-    it 'navigates to tags and creates a new tag' do
+    it 'navigates to tags, creates a new tag and assigns it to the student', js: true do
+      create :student, first_name: 'Taggy', last_name: 'Studenty', gender: 'F'
+
       visit '/students'
       click_link 'Student Tags'
       click_link 'Add Tag'
       fill_in 'Tag name', with: 'My Test Tag'
       select(@org.organization_name, from: 'Organization')
-      check 'Shared'
+      find('label', text: 'Shared').click
       click_button 'Create'
 
       expect(page).to have_content 'Tag "My Test Tag" created.'
@@ -40,6 +42,17 @@ RSpec.describe 'User interacts with Student Tags' do
 
       find(:css, '#back-button').click
       expect(page).to have_content 'My Edited Tag'
+
+      visit '/students'
+      click_link 'Taggy'
+      click_link 'edit-button'
+      fill_in 'tags_autocomplete', with: 'My Edited T'
+      find('#awesomplete_list_1_item_0').click
+      click_button 'Update'
+
+      visit '/students'
+      click_link 'Student Tags'
+      click_link 'My Edited Tag'
     end
   end
 end

@@ -13,4 +13,8 @@ class SearchFormComponent < ViewComponent::Base
       end
     end
   end
+
+  def render?
+    !@search.nil?
+  end
 end

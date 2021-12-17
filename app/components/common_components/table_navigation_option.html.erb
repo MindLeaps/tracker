@@ -1,0 +1,7 @@
+<%= link_to @href, id: "option-link-#{@name}" do %>
+  <label class="mdl-checkbox mdl-js-checkbox table-option" for="checkbox-<%= @name %>}" id="label-<%= @name %>">
+    <input type="checkbox" id="checkbox-<%= @name %>" class="mdl-checkbox__input" <%= @checked %> />
+    <span class="mdl-checkbox__label"><%= @name %></span>
+  </label>
+<% end %>
+<div class="mdl-tooltip" data-mdl-for="option-link-<%= @name %>"><%= @tooltip %></div>

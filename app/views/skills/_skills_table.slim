@@ -1,8 +1,8 @@
 table class='mdl-data-table mdl-js-data-table resource-table'
   thead
-    == render partial: 'shared/pagy_table_nav', locals: { pagy: pagy, resource: 'skills', span: 3, search: { term: params[:search] }, options: [ \
+    == render CommonComponents::TableNavigation.new(pagy: pagy, resource: t(:skills).downcase, span: 3, search: { term: params[:search] }, options: [ \
       {name: t(:show_deleted), href: show_deleted_url, checked: !excluding_deleted?, tooltip: excluding_deleted? ? t(:show_deleted_students_tooltip) : t(:hide_deleted_students_tooltip) } \
-    ] }
+    ])
     tr
       th #
       th class='mdl-data-table__cell--non-numeric' Skill Name

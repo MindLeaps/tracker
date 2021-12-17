@@ -1,0 +1,14 @@
+<tr class="table-meta-header">
+  <th colspan="<%= @span %>">
+    <div class="flex">
+      <div class="left-section">
+        <%= render search_component %>
+      </div>
+      <div class="right-section">
+        <%= render CommonComponents::TableNavigationOption.with_collection(@options) %>
+        <span class="page-info">Displaying <%= @pagy.from %> - <%= @pagy.to %> <%= @resource %> of <%= @pagy.count %> in total</span>
+        <%= render partial: 'shared/pagy_nav', locals: { pagy: @pagy } %>
+      </div>
+    </div>
+  </th>
+</tr>

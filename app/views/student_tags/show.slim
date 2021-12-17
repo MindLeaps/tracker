@@ -9,10 +9,10 @@
       = inline_svg_tag 'edit.svg'
       .mdl-tooltip data-mdl-for='edit-button' #{t(:edit_tag)}
 
-.content-card--most.center
+.single-content-card
   ul class="mdl-list"
     li.mdl-list__item #{t(:tag_name)}: #{@tag.tag_name}
     li.mdl-list__item #{t(:organization)}: #{@tag.organization.organization_name}
     li.mdl-list__item #{t(:shared)}: #{@tag.shared}
 
-  = render partial: "shared/students_table", locals: {students: @students, pagy: @pagy}
+  = render @student_table_component

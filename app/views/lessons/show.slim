@@ -51,9 +51,9 @@
     .mdl-card__supporting-text.full-width.no-padding
       table class='mdl-data-table mdl-js-data-table resource-table'
         thead
-          == render partial: 'shared/pagy_table_nav', locals: { pagy: @pagy, resource: 'students', span: 5, options: [ \
+          == render CommonComponents::TableNavigation.new(pagy: @pagy, resource: t(:students).downcase, span: 5, options: [ \
             { name: t(:show_deleted), href: show_deleted_url, checked: !excluding_deleted?, tooltip: excluding_deleted? ? t(:show_deleted_students_tooltip) : t(:hide_deleted_students_tooltip) } \
-        ] }
+        ])
           tr
             th #
             == render partial: 'shared/ordered_column', locals: { order_key: :last_name, column_name: t(:last_name) }
