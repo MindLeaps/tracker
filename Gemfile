@@ -43,7 +43,7 @@ gem 'skylight'
 gem 'slim'
 gem 'sort_alphabetical'
 gem 'turbolinks'
-gem 'view_component', require: 'view_component/engine'
+gem 'view_component'
 gem 'webpacker'
 
 group :production do

@@ -1,8 +1,8 @@
 table class="mdl-data-table mdl-js-data-table resource-table"
   thead
-    == render partial: 'shared/pagy_table_nav', locals: { pagy: pagy, resource: t(:groups), span: 4, search: { term: params[:search] }, options: [ \
+    == render Common::TableNavigation.new(pagy: pagy, resource: t(:groups), span: 4, search: { term: params[:search] }, options: [ \
       {name: t(:show_deleted), href: show_deleted_url, checked: !excluding_deleted?, tooltip: excluding_deleted? ? t(:show_deleted_groups_tooltip) : t(:hide_deleted_groups_tooltip) } \
-    ] }
+    ])
     tr
       th.mdl-data-table__cell--non-numeric
         | #

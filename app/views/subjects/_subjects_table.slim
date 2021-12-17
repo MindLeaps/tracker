@@ -1,6 +1,6 @@
 table class='mdl-data-table mdl-js-data-table resource-table'
   thead
-    == render partial: 'shared/pagy_table_nav', locals: { pagy: pagy, resource: 'subjects', span: 4 }
+    == render Common::TableNavigation.new(pagy: pagy, resource: t(:subjects).downcase, span: 4)
     tr
       th #
       th class='mdl-data-table__cell--non-numeric' Subject Name
