@@ -128,11 +128,6 @@ RSpec.describe GroupsController, type: :controller do
       it 'exposes current group' do
         expect(assigns(:group)).to eq @group
       end
-
-      it 'exposes non-deleted students in a group' do
-        expect(assigns(:student_table_component).students.map(&:id)).to include @student1.id, @student2.id
-        expect(assigns(:student_table_component).students.map(&:id)).not_to include @deleted_student.id
-      end
     end
 
     context 'search' do
@@ -141,11 +136,6 @@ RSpec.describe GroupsController, type: :controller do
       end
 
       it { should respond_with 200 }
-
-      it 'responds with a listed of searched students' do
-        expect(assigns(:student_table_component).students.length).to eq 1
-        expect(assigns(:student_table_component).students.map(&:id)).to include @student1.id
-      end
     end
   end
 
