@@ -44,19 +44,6 @@ RSpec.describe StudentTagsController, type: :controller do
       it 'displays the requested tag' do
         expect(assigns(:tag)).to eq @tag
       end
-
-      it 'assigns the associated students' do
-        expect(assigns(:student_table_component).students.length).to eq @students_with_tag.length
-        expect(assigns(:student_table_component).students.map(&:id)).to include(*@students_with_tag.map(&:id))
-        expect(assigns(:student_table_component).students.map(&:id)).not_to include(*@students_without_tag.map(&:id))
-      end
-
-      it 'searches students with this tag' do
-        get :show, params: { id: @tag.id, search: @students_with_tag[0].first_name }
-
-        expect(assigns(:student_table_component).students.length).to eq 1
-        expect(assigns(:student_table_component).students[0].id).to eq @students_with_tag[0].id
-      end
     end
 
     describe '#new' do
