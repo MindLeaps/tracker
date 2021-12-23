@@ -452,6 +452,8 @@ GEM
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
     ssrf_filter (1.0.7)
+    tailwindcss-rails (2.0.2)
+      railties (>= 6.0.0)
     temple (0.8.2)
     thor (1.1.0)
     tiddle (1.7.0)
@@ -561,6 +563,7 @@ DEPENDENCIES
   solargraph
   sort_alphabetical
   spring
+  tailwindcss-rails
   tiddle
   turbolinks
   view_component

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= t(:mindleaps_tracker) %></title>
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
+    <%= csrf_meta_tags %>
+  </head>
+
+  <body class="home mdl-grid" data-turbolinks='false'>
+    <div class="mdl-cell mdl-cell--6-col mdl-cell--6-col-tablet main-cell">
+      <div class="login-surface mdl-card mdl-shadow--8dp">
+        <div class="mdl-card__title"><h2 class="mdl-card__title-text">MindLeaps Tracker</h2></div>
+        <div class="logo-container"><%= image_tag 'mindleaps_logo_transparent.png', class: 'home-mindleaps-logo' %></div>
+        <div class="mdl-card__supporting-text">Welcome to MindLeaps Tracker. Please sign in with your Google Account.</div>
+        <div class="mdl-card__actions mdl-card--border">
+          <%= button_to 'Sign in with Google', omniauth_authorize_path(User, :google_oauth2), { class: 'mdl-button js-button.mdl-button mdl-button--raised google-button' } %>
+          <div class="mdl-layout-spacer"></div>
+          <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" href='https://releases.mindleaps.app/latest'>
+            <%= inline_svg_tag'tablet.svg', class: 'button-icon' %>
+            <span>Download Mobile App</span>
+          </a>
+        </div>
+        </div>
+      </div>
+  </body>
+</html>
