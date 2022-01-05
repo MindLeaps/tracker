@@ -2,10 +2,10 @@
   width: 100%;
 }
 
-.student-lesson-card.material-field-wrapper {
+.student-lesson-card .material-field-wrapper {
   width: 100%;
 }
 
-.student-lesson-card.mdl-button {
+.student-lesson-card .mdl-button {
   margin-top: 15px;
 }

@@ -6,7 +6,7 @@
   flex-grow: 1;
 }
 
-.main-nav.nav-link.mdl-js-ripple-effect {
+.main-nav .nav-link.mdl-js-ripple-effect {
   position: relative;
 }
 
@@ -17,6 +17,6 @@
   fill: var(--nav-color);
 }
 
-.nav-icon.mdl-navigation__link--current * {
+.mdl-navigation__link--current .nav-icon {
   fill: var(--active-nav-color);
 }

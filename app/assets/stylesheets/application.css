@@ -11,22 +11,22 @@
  * file per style scope.
  *
 
-*= require 'material.min';
-*= require 'mdl-selectfield.min';
-*= require 'colors';
-*= require 'common';
-*= require 'header';
-*= require 'drawer';
-*= require 'analytics';
-*= require 'students';
-*= require 'lessons';
-*= require 'users';
-*= require 'form';
-*= require 'snackbar';
-*= require 'tables';
-*= require 'awesomplete.base';
-*= require 'awesomplete.theme';
-//
+*= require 'material.min'
+*= require 'mdl-selectfield.min'
+*= require '_colors'
+*= require '_common'
+*= require '_header'
+*= require 'drawer'
+*= require 'analytics'
+*= require 'students'
+*= require 'lessons'
+*= require 'users'
+*= require '_form'
+*= require '_snackbar'
+*= require '_tables'
+*= require 'chartist'
+*= require 'awesomplete.base'
+*= require 'awesomplete.theme'
 */
 
 .card-padding {
