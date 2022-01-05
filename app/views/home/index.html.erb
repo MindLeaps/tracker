@@ -1,28 +1,192 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= t(:mindleaps_tracker) %></title>
-    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
-    <%= csrf_meta_tags %>
-  </head>
+<head>
+  <title><%= t(:mindleaps_tracker) %></title>
+  <%= stylesheet_link_tag 'tailwind.css', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+</head>
 
-  <body class="home mdl-grid" data-turbolinks='false'>
-    <div class="mdl-cell mdl-cell--6-col mdl-cell--6-col-tablet main-cell">
-      <div class="login-surface mdl-card mdl-shadow--8dp">
-        <div class="mdl-card__title"><h2 class="mdl-card__title-text">MindLeaps Tracker</h2></div>
-        <div class="logo-container"><%= image_tag 'mindleaps_logo_transparent.png', class: 'home-mindleaps-logo' %></div>
-        <div class="mdl-card__supporting-text">Welcome to MindLeaps Tracker. Please sign in with your Google Account.</div>
-        <div class="mdl-card__actions mdl-card--border">
-          <%= button_to 'Sign in with Google', omniauth_authorize_path(User, :google_oauth2), { class: 'mdl-button js-button.mdl-button mdl-button--raised google-button' } %>
-          <div class="mdl-layout-spacer"></div>
-          <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored" href='https://releases.mindleaps.app/latest'>
-            <%= inline_svg_tag'tablet.svg', class: 'button-icon' %>
-            <span>Download Mobile App</span>
-          </a>
-        </div>
+<body class="" data-turbolinks='false'>
+<div class="bg-white">
+  <main>
+    <!-- Hero section -->
+    <div class="pt-8 overflow-hidden sm:pt-12 lg:relative lg:py-48">
+      <div class="mx-auto max-w-md px-4 sm:max-w-3xl sm:px-6 lg:px-8 lg:max-w-7xl lg:grid lg:grid-cols-2 lg:gap-24">
+        <div>
+          <div>
+            <h1 class="text-4xl sm:text-5xl font-bold"><span class="text-purple-800">Mind</span><span class="text-green-600">Leaps</span> Tracker</h1>
+          </div>
+          <div class="mt-20">
+            <div class="mt-6 sm:max-w-xl">
+              <h2 class="text-4xl font-extrabold text-gray-900 tracking-tight sm:text-5xl">
+                <span class="block"><span class="text-purple-800">Data Analytics</span> Tool for</span>
+                <span class="block text-green-600">Social Change</span>
+              </h2>
+              <p class="mt-6 text-xl text-gray-500">Intuitive to Use with Sophisticated Impact</p>
+              <p class="mt-6 text-xl text-gray-500">Offline Data-Collection: Inconsistent Internet Access? No problem. Tracker has you covered.</p>
+              <p class="mt-6 text-xl text-gray-500">Analytics in Real Time: Why wait to identify a challenge?  No problem.  Tracker delivers visualizations at a click.
+              </p>
+              <p class="mt-6 text-xl text-gray-500">Impact Reports to Stakeholders: Trying to measure results? No problem.  Tracker improves funder confidence. </p>
+            </div>
+            <div class="mt-12 sm:max-w-lg sm:w-full sm:flex">
+              <div class="mt-4 sm:mt-0 sm:ml-3">
+                <%= button_to 'Log in', omniauth_authorize_path(User, :google_oauth2), { class: 'block w-full rounded-md border border-transparent px-5 py-3 bg-purple-800 text-base font-medium text-white shadow hover:bg-green-600 cursor-pointer focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 sm:px-10' } %>
+              </div>
+              <div class="mt-4 sm:mt-0 sm:ml-3">
+                <a class="block w-full rounded-md border border-transparent px-5 py-3 bg-white text-base font-medium text-purple-800 shadow hover:bg-green-600 hover:text-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 sm:px-10" href='https://releases.mindleaps.app/latest'>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  </svg>
+                   <span>Download Mobile App</span>
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-  </body>
+
+      <div class="sm:mx-auto sm:max-w-3xl sm:px-6">
+        <div class="py-12 sm:relative sm:mt-12 sm:py-16 lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
+          <div class="hidden sm:block">
+            <div class="absolute inset-y-0 left-1/2 w-screen bg-gray-50 rounded-l-3xl lg:left-80 lg:right-0 lg:w-full"></div>
+            <svg class="absolute top-8 right-1/2 -mr-3 lg:m-0 lg:left-0" width="404" height="392" fill="none" viewBox="0 0 404 392">
+              <defs>
+                <pattern id="837c3e70-6c3a-44e6-8854-cc48c737b659" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                  <rect x="0" y="0" width="4" height="4" class="text-gray-200" fill="currentColor" />
+                </pattern>
+              </defs>
+              <rect width="404" height="392" fill="url(#837c3e70-6c3a-44e6-8854-cc48c737b659)" />
+            </svg>
+          </div>
+          <div class="relative pl-4 -mr-40 sm:mx-auto sm:max-w-3xl sm:px-0 lg:max-w-none lg:h-full lg:pl-12">
+            <img class="w-full rounded-md shadow-xl ring-1 ring-black ring-opacity-5 lg:h-full lg:w-auto lg:max-w-none" src="<%= image_url 'tracker-splash.png' %>" alt="Mindleaps Tracker Screenshot">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Testimonial/stats section -->
+    <div class="relative mt-20">
+      <div class="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:gap-24 lg:items-start">
+        <div class="relative sm:py-16 lg:py-0">
+          <div aria-hidden="true" class="hidden sm:block lg:absolute lg:inset-y-0 lg:right-0 lg:w-screen">
+            <div class="absolute inset-y-0 right-1/2 w-full bg-gray-50 rounded-r-3xl lg:right-72"></div>
+            <svg class="absolute top-8 left-1/2 -ml-3 lg:-right-8 lg:left-auto lg:top-12" width="404" height="392" fill="none" viewBox="0 0 404 392">
+              <defs>
+                <pattern id="02f20b47-fd69-4224-a62a-4c9de5c763f7" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                  <rect x="0" y="0" width="4" height="4" class="text-gray-200" fill="currentColor" />
+                </pattern>
+              </defs>
+              <rect width="404" height="392" fill="url(#02f20b47-fd69-4224-a62a-4c9de5c763f7)" />
+            </svg>
+          </div>
+          <div class="relative mx-auto max-w-md px-4 sm:max-w-3xl sm:px-6 lg:px-0 lg:max-w-none lg:py-20">
+            <!-- Testimonial card-->
+            <div class="relative pt-64 pb-10 rounded-2xl shadow-xl overflow-hidden">
+              <img class="absolute inset-0 h-full w-full object-cover" src="<%= image_url 'rebecca_davis.jpg' %>" alt="">
+              <div class="absolute inset-0 bg-gradient-to-t from-purple-800 opacity-40"></div>
+              <div class="relative px-8">
+                <blockquote class="mt-8">
+                  <div class="relative text-lg font-medium text-white md:flex-grow">
+                    <p class="relative">
+                      At MindLeaps, Tracker enables us to collect social-emotional learning data unobtrusively on every student, every class session, on each of 7 life skills
+                    </p>
+                  </div>
+                  <footer class="mt-4">
+                    <p class="text-base font-semibold text-rose-200">Rebecca Davis, Founder and Executive Director, MindLeaps</p>
+                  </footer>
+                </blockquote>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="relative mx-auto max-w-md px-4 sm:max-w-3xl sm:px-6 lg:px-0">
+          <!-- Content area -->
+          <div class="pt-12 sm:pt-16 lg:pt-20">
+            <h2 class="text-3xl text-gray-900 font-extrabold tracking-tight sm:text-4xl">Why MindLeaps Tracker?</h2>
+            <div class="mt-6 text-gray-500 space-y-6">
+              <p class="text-lg">
+                Do you need a learning-outcomes tool with a simple interface producing sophisticated, impactful data?
+              </p>
+              <p class="text-base leading-7">
+                Do you want to motivate your staff by helping them understand the impact of their important work in real-time?
+                What key learning outcomes do you envision for your beneficiaries? How can you be confident they are really “getting it”? How long to you want to wait to know “how things are going”?
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-12">
+      <%= render partial: 'home/features' %>
+    </div>
+
+    <!-- This example requires Tailwind CSS v2.0+ -->
+    <div class="bg-white">
+      <div class="max-w-7xl mx-auto text-center py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
+        <h2 class="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+          <span class="block">I want to use Tracker at my organization.</span>
+          <span class="block">What happens next?</span>
+        </h2>
+        <p class="max-w-xl mt-5 mx-auto text-xl text-gray-500">Contact Tracker via MindLeaps: info@mindleaps.org</p>
+        <p class="max-w-xl mt-5 mx-auto text-xl text-gray-500">Set-up your key questions and the rubric working with your staff and the Tracker research and data team.</p>
+        <p class="max-w-xl mt-5 mx-auto text-xl text-gray-500">Train your staff to use the rubric.</p>
+      </div>
+    </div>
+
+    <div class="pt-12">
+      <%= render partial: 'home/testimonials' %>
+    </div>
+
+    <!-- Logo cloud section -->
+    <div class="mt-32">
+      <div class="mx-auto max-w-md px-4 sm:max-w-3xl sm:px-6 lg:px-8 lg:max-w-7xl">
+        <div class="lg:grid lg:grid-cols-2 lg:gap-24 lg:items-center">
+          <div>
+            <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl">
+              Backed by world-renowned investors
+            </h2>
+            <p class="mt-6 max-w-3xl text-lg leading-7 text-gray-500">
+              Sagittis scelerisque nulla cursus in enim consectetur quam. Dictum urna sed consectetur neque tristique pellentesque. Blandit amet, sed aenean erat arcu morbi. Cursus faucibus nunc nisl netus morbi vel porttitor vitae ut. Amet vitae fames senectus vitae.
+            </p>
+            <div class="mt-6">
+              <a href="#" class="text-base font-medium text-rose-500">
+                Meet our investors and advisors&nbsp&rarr;
+              </a>
+            </div>
+          </div>
+          <div class="mt-12 grid grid-cols-2 gap-0.5 md:grid-cols-3 lg:mt-0 lg:grid-cols-2">
+            <div class="col-span-1 flex justify-center py-8 px-8 bg-gray-50">
+              <img class="max-h-12" src="https://tailwindui.com/img/logos/transistor-logo-gray-400.svg" alt="Transistor">
+            </div>
+
+            <div class="col-span-1 flex justify-center py-8 px-8 bg-gray-50">
+              <img class="max-h-12" src="https://tailwindui.com/img/logos/mirage-logo-gray-400.svg" alt="Mirage">
+            </div>
+
+            <div class="col-span-1 flex justify-center py-8 px-8 bg-gray-50">
+              <img class="max-h-12" src="https://tailwindui.com/img/logos/tuple-logo-gray-400.svg" alt="Tuple">
+            </div>
+
+            <div class="col-span-1 flex justify-center py-8 px-8 bg-gray-50">
+              <img class="max-h-12" src="https://tailwindui.com/img/logos/laravel-logo-gray-400.svg" alt="Laravel">
+            </div>
+
+            <div class="col-span-1 flex justify-center py-8 px-8 bg-gray-50">
+              <img class="max-h-12" src="https://tailwindui.com/img/logos/statickit-logo-gray-400.svg" alt="StaticKit">
+            </div>
+
+            <div class="col-span-1 flex justify-center py-8 px-8 bg-gray-50">
+              <img class="max-h-12" src="https://tailwindui.com/img/logos/workcation-logo-gray-400.svg" alt="Workcation">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
 </html>
