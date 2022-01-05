@@ -10,7 +10,7 @@
 
 - @student_lessons_details_by_subject.each do |subject_id, lessons_details|
   - subject = @subjects.find(subject_id)
-  .mdl-card.mdl-shadow--2dp.content-card--full
+  .mdl-card.mdl-shadow--2dp.content-card.mdl-cell--12-col
     .mdl-card__title.primary
       = "#{subject.subject_name} - #{subject.organization.organization_name}"
     .overflow-container

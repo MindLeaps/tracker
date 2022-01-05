@@ -6,6 +6,6 @@
       = link_notice.try(:html_safe)
     - if undo_notice
       = undo_notice['text']
-      = button_to 'Undo', undo_notice['path'], class: 'snackbar-action-button mdl-js-button'
+      = button_to 'Undo', undo_notice['path'], class: 'snackbar-action-button mdl-button mdl-js-button'
     - if alert
       = alert

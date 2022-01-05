@@ -396,14 +396,6 @@ GEM
       ffi (~> 1.12)
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
-    sassc (2.4.0)
-      ffi (~> 1.9)
-    sassc-rails (2.1.2)
-      railties (>= 4.0.0)
-      sassc (>= 2.0)
-      sprockets (> 3.0)
-      sprockets-rails
-      tilt
     scenic (1.5.5)
       activerecord (>= 4.0.0)
       railties (>= 4.0.0)
@@ -452,6 +444,8 @@ GEM
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
     ssrf_filter (1.0.7)
+    tailwindcss-rails (2.0.2)
+      railties (>= 6.0.0)
     temple (0.8.2)
     thor (1.1.0)
     tiddle (1.7.0)
@@ -550,7 +544,6 @@ DEPENDENCIES
   rubocop
   rubocop-performance
   rubocop-rails
-  sassc-rails
   scenic
   selenium-webdriver
   shoulda-matchers
@@ -561,6 +554,7 @@ DEPENDENCIES
   solargraph
   sort_alphabetical
   spring
+  tailwindcss-rails
   tiddle
   turbolinks
   view_component

@@ -20,8 +20,6 @@
   cursor: pointer;
 }
 
-.role-actions {
-  form {
-    display: inline;
-  }
+.role-actions form {
+  display: inline;
 }

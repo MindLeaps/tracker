@@ -25,6 +25,7 @@ en:
       user:
         create: Add User
 
+  mindleaps_tracker: MindLeaps Tracker
   mlid: MLID
   organization_mlid_error_message: Organization MLID has to be 3 characters long and can only contain numbers and letters. No special characters.
   chapter_mlid_error_message: Chapter MLID has to be up to 2 characters long and can only contain numbers and letters. No special characters.

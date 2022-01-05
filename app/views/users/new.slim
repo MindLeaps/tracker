@@ -3,7 +3,7 @@
 - content_for :header_content do
   = render partial: '/shared/header_content', locals: {back_button_url: users_path, back_tooltip: 'Back to Users', title: t(:new_user)}
 
-.content-card--most.center
+.content-card.mdl-cell--8-col.card-padding.center
   = simple_form_for @user, url: {action: 'create'} do |f|
     = render partial: 'shared/errors', locals: {subject: @user}
     = f.input :email, input_html: { autofocus: true }

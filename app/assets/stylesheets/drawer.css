@@ -1,0 +1,22 @@
+.main-drawer {
+  position: fixed;
+}
+
+.main-nav {
+  flex-grow: 1;
+}
+
+.main-nav .nav-link.mdl-js-ripple-effect {
+  position: relative;
+}
+
+.nav-icon {
+  padding-right: 24px;
+  height: 24px;
+  width: 24px;
+  fill: var(--nav-color);
+}
+
+.mdl-navigation__link--current .nav-icon {
+  fill: var(--active-nav-color);
+}

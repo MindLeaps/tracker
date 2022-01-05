@@ -18,15 +18,11 @@
 }
 
 .unset-color {
-  &:visited, &:hover {
-    color:unset;
-  }
   color: unset;
 }
 
-.delete-button {
-  @extend .mdl-button;
-  @extend .mdl-color-text--red;
+.unset-color:visited, .unset-color:hover {
+  color:unset;
 }
 
 .flex {
@@ -35,18 +31,17 @@
   align-items: baseline;
 }
 
-.card-navigation {
-  [disabled] {
-    opacity: 0.2;
-  }
-  svg {
-    fill: white;
-  }
+.card-navigation [disabled] {
+  opacity: 0.2;
+}
+
+.card-navigation svg {
+  fill: white;
 }
 
 .mdl-badge:after {
   color: white !important;
-  background-color: $primary-color !important;
+  background-color: var(--primary-color) !important;
 }
 
 .hidden {
@@ -56,10 +51,12 @@
 .pagy_nav {
   vertical-align: middle;
   display: inline-block;
-  a {
-    opacity: 0.54;
-    &[disabled] {
-      opacity: 0.2;
-    }
-  }
+}
+
+.pagy_nav a {
+  opacity: 0.54;
+}
+
+.pagy_nav a[disabled] {
+  opacity: 0.2;
 }

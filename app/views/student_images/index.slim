@@ -8,7 +8,7 @@
 
 = render partial: '/shared/student_nav_tabs', locals: { student: @student, active: 'images' }
 
-.content-card--full
+.content-card.mdl-cell--12-col
   - @student.student_images.each do |student_image|
     .card.student-image-card
       = image_tag student_image.image.medium.url, class: 'student-image card-img-top'

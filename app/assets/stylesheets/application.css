@@ -10,62 +10,33 @@
  * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
  * file per style scope.
  *
- */
 
-@import 'material.min';
-@import 'mdl-selectfield.min';
-@import 'colors';
-@import 'common';
-@import 'header';
-@import 'drawer';
-@import 'groups';
-@import 'subjects';
-@import 'analytics';
-@import 'home';
-@import 'students';
-@import 'chapters';
-@import 'lessons';
-@import 'users';
-@import 'form';
-@import 'snackbar';
-@import 'tables';
-@import 'chartist-settings';
-@import 'chartist';
-@import 'awesomplete.base';
-@import 'awesomplete.theme';
-//
-//* {
-//  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-//}
+*= require 'material.min'
+*= require 'mdl-selectfield.min'
+*= require '_colors'
+*= require '_common'
+*= require '_header'
+*= require 'drawer'
+*= require 'analytics'
+*= require 'students'
+*= require 'lessons'
+*= require 'users'
+*= require '_form'
+*= require '_snackbar'
+*= require '_tables'
+*= require 'chartist'
+*= require 'awesomplete.base'
+*= require 'awesomplete.theme'
+*/
 
 .card-padding {
   padding: 16px;
 }
 
 .content-card {
-  @extend .mdl-shadow--2dp;
-  @extend .mdl-color--white;
-}
-
-.content-card--cell {
-  @extend .content-card;
-  @extend .mdl-cell;
-}
-
-.content-card--half {
-  @extend .content-card--cell;
-  @extend .mdl-cell--6-col;
-}
-
-.content-card--most {
-  @extend .content-card--cell;
-  @extend .card-padding;
-  @extend .mdl-cell--8-col;
-}
-
-.content-card--full {
-  @extend .content-card--cell;
-  @extend .mdl-cell--12-col;
+  box-shadow:0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+  background-color:#fff;
+  box-sizing:border-box;
 }
 
 .card-bottom-margin {
@@ -73,7 +44,8 @@
 }
 
 .single-content-card {
-  @extend .content-card;
+  box-shadow:0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+  background-color: #fff !important;
   padding: 0 !important;
   max-width: 100%;
   min-width: 65%;
@@ -82,29 +54,27 @@
 }
 
 .mdl-card__title.primary {
-  background: $dark-primary-color;
-  color: $text-color;
+  background: var(--dark-primary-color);
+  color: var(--text-color);
   display: block;
 }
 
-@keyframes hideBehindHeader{
+@keyframes hideBehindHeader {
   0% {transform: translateY(0px);}
   100% {transform: translateY(-60px);}
 }
 
-.action-buttons {
-  form {
-    display: inline-block
-  }
+.action-buttons form {
+  display: inline-block;
 }
 
 .student-image-card {
   width: 250px;
   display: inline-block;
+}
 
-  .student-image {
-    width: 100%;
-  }
+.student-image-card.student-image {
+  width: 100%;
 }
 
 .center-text {
@@ -142,12 +112,14 @@
 #loading-bar {
   width: 100%;
   visibility: hidden;
-  .progressbar {
-    background-color: $accent-color;
-  }
-  .bar2, .bar3 {
-    display: none;
-  }
+}
+
+#loading-bar.progressbar {
+  background-color: var(--accent-color);
+}
+
+#loading-bar.bar2, #loading-bar.bar3 {
+  display: none;
 }
 
 .full-width {
@@ -164,9 +136,10 @@
 
 .mdl-card__title {
   color: white;
-  svg {
-    fill: white;
-  }
+}
+
+.mdl-card__title svg {
+  fill: white;
 }
 
 .uppercase {

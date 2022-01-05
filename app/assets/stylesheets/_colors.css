@@ -1,0 +1,46 @@
+:root {
+  --primary-color: #9C27B0;
+  --dark-primary-color: #7B1FA2;
+  --light-primary-color: #E1BEE7;
+  --accent-color: #4CAF50;
+  --divider-color: #BDBDBD;
+  --text-color: #FFFFFF;
+  --snackbar-color: #323232;
+  --snackbar-action-color: #ff4081;
+  --nav-color: #757575;
+  --active-nav-color: #424242;
+}
+
+.mdl-button--accent {
+  color: var(--accent-color) !important;
+}
+
+.mdl-button--accent.mdl-button--raised {
+  background-color: var(--accent-color) !important;
+  color: var(--text-color) !important;
+}
+
+.button--neutral {
+  background-color: var(--divider-color) !important;
+}
+
+.button--danger {
+  color: red !important;
+}
+
+.button--danger.mdl-button--raised {
+  background-color: red !important;
+  color: var(--text-color) !important;
+}
+
+.mdl-button--colored svg {
+  fill: var(--primary-color);
+}
+
+.mdl-selectfield__label:after {
+  background-color: var(--primary-color);
+}
+
+.mdl-selectfield--floating-label.is-dirty .mdl-selectfield__label, .mdl-selectfield--floating-label.is-focused .mdl-selectfield__label {
+  color: var(--primary-color);
+}

@@ -1,0 +1,37 @@
+:root {
+  --snackbar-transition-duration: 0.5s;
+  --snackbar-transition-easing: ease-in-out;
+}
+
+.snackbar {
+  display: inline-block;
+  background: var(--snackbar-color);
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  text-align: center;
+  margin-top: 1rem;
+  color: white;
+  padding: 2px 15px;
+  line-height: 40px;
+  transform: translateX(-50%);
+  transition: bottom var(--snackbar-transition-duration);
+  will-change: bottom;
+  animation: snackbar-out var(--snackbar-transition-duration) var(--snackbar-transition-easing) 5s forwards;
+}
+
+.snackbar:hover {
+  animation: snackbar-out var(--snackbar-transition-duration) var(--snackbar-transition-easing) 0s backwards reverse;
+}
+
+.snackbar form {
+  display: inline;
+}
+
+.snackbar-action-button {
+  color: var(--snackbar-action-color);
+}
+
+@keyframes snackbar-out {
+  to {bottom: -30px}
+}

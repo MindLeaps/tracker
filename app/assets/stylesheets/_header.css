@@ -1,0 +1,29 @@
+header {
+  padding: 20px 20px 0 20px;
+}
+
+header .user-image {
+  width: 50px;
+  border-radius: 50px;
+}
+
+header .header-button {
+  margin-left: 15px;
+}
+
+@media(min-width: 1025px) {
+  .main-header {
+    margin-left: 240px;
+    width: calc(100% - 240px);
+  }
+}
+
+.main-header form .mdl-button--icon {
+  line-height: 0;
+}
+
+.main-header svg {
+  fill: var(--text-color);
+  width: 24px;
+  height: 24px;
+}

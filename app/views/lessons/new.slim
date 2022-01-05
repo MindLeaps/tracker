@@ -3,7 +3,7 @@
 - content_for :header_content do
   = render partial: '/shared/header_content', locals: {back_button_url: lessons_path, back_tooltip: 'Back to Lessons', title: 'New Lesson'}
 
-.content-card--most.center
+.content-card.mdl-cell--8-col.card-padding.center
   = simple_form_for @lesson, url: {action: 'create'} do |f|
     = render partial: 'shared/errors', locals: {subject: @lesson}
     = f.association :group, label_method: :group_name, include_blank: false

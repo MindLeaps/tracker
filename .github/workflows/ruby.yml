@@ -50,4 +50,5 @@ jobs:
         DATABASE_PASSWORD: postgres
         DATABASE_URL: postgres://postgres:@localhost:5432
       run: |
+        bundle exec rake assets:precompile
         bundle exec rake test

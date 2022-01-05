@@ -3,5 +3,5 @@
 - content_for :header_content do
   = render partial: '/shared/header_content', locals: { back_button_url: groups_path, back_tooltip: 'Back to Groups', title: 'New Group' }
 
-.content-card--most.center
+.content-card.mdl-cell--8-col.card-padding.center
   = render GroupFormComponent.new(group: @group, action: :create, current_user: current_user)

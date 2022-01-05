@@ -17,6 +17,7 @@ db/*.sqlite*
 log/
 playbook.retry
 public/uploads
+public/assets
 
 ## Specific to RubyMotion:
 .dat*
@@ -49,3 +50,6 @@ build/
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
+
+/app/assets/builds/*
+!/app/assets/builds/.keep

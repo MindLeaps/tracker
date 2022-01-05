@@ -3,5 +3,5 @@
 - content_for :header_content do
   = render partial: '/shared/header_content', locals: { back_button_url: chapters_path, back_tooltip: 'Back to Chapters', title: 'New Chapter' }
 
-.content-card--most.center
+.content-card.mdl-cell--8-col.card-padding.center
   = render ChapterFormComponent.new(chapter: @chapter, action: 'create', current_user: current_user)
