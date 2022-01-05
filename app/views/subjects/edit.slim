@@ -3,5 +3,5 @@
 - content_for :header_content do
   = render partial: '/shared/header_content', locals: { back_button_url: subjects_path, back_tooltip: 'Back to Users', title: @subject.subject_name }
 
-.content-card--most.center
+.content-card.mdl-cell--8-col.card-padding.center
   = render partial: 'shared/subject_form', locals: { subject: @subject, action: :update }

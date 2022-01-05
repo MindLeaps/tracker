@@ -3,11 +3,11 @@
   margin: 10px 5px;
   display: inline-block;
   vertical-align: middle;
+}
 
-  select.date {
-    display: inline;
-    width: 30%;
-  }
+.material-field-wrapper select.date {
+  display: inline;
+  width: 30%;
 }
 
 .mdl-checkbox {
