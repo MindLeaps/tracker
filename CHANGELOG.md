@@ -1,7 +1,8 @@
 ## Unreleased
+- Removed Sass
+- Implemented a marketing landing page
 - Fixed crash when navigating to a student tag that is in use by some students
 - Upgraded Ruby to 3.0.3
-- Switched to sassC for stylesheet
 
 ## 0.29.1 - Structured Group Select
 - Implemented structured group select in the student form 
