@@ -1,4 +1,4 @@
-## Unreleased
+## 0.30.0 - Homepage
 - Removed Sass
 - Implemented a marketing landing page
 - Fixed crash when navigating to a student tag that is in use by some students
