@@ -33,7 +33,6 @@
 #
 class Grade < ApplicationRecord
   before_validation :update_uids
-  validates :lesson, :lesson_uid, :student, :grade_descriptor, :skill, presence: true
   validate :grade_skill_must_be_unique_for_lesson_and_student, if: :all_relations_exist?
 
   belongs_to :lesson

@@ -48,6 +48,20 @@ Rails/BulkChangeTable:
 Rails/SquishedSQLHeredocs:
   Enabled: false
 
+Rails/ReversibleMigration:
+  Exclude:
+    - db/migrate/20160912004942_add_organization_to_students.rb
+    - db/migrate/20160916230442_add_subject_to_lesson.rb
+    - db/migrate/20161008013423_add_mlid_to_students.rb
+    - db/migrate/20161013042217_add_timestamps_to_grades.rb
+    - db/migrate/20161013042217_add_timestamps_to_grades.rb
+    - db/migrate/20161016225911_change_deleted_at_to_datetime_in_grades.rb
+    - db/migrate/20161016230051_change_deleted_at_to_datetime_in_subjects.rb
+    - db/migrate/20161016234425_add_timestamps_to_grade_descriptors.rb
+    - db/migrate/20161016234425_add_timestamps_to_grade_descriptors.rb
+    - db/migrate/20161019013750_add_timestamps_to_assignments.rb
+    - db/migrate/20161019013750_add_timestamps_to_assignments.rb
+
 Style/SymbolArray:
   Enabled: false
 

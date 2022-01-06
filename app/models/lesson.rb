@@ -32,7 +32,6 @@ class Lesson < ApplicationRecord
   has_many :absences, dependent: :restrict_with_error
   has_many :grades, dependent: :restrict_with_error
 
-  validates :group, :date, :subject, presence: true
   scope :by_group, ->(group_id) { where group_id: group_id }
   scope :by_subject, ->(subject_id) { where subject_id: subject_id }
 
