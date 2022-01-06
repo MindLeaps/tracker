@@ -15,10 +15,8 @@ RUN apt-get update \
         libpq-dev \
         libxml2-dev \
         libxslt1-dev \
-        libqtwebkit4 \
-        libqt4-dev \
         xvfb \
-        postgresql-client-11 \
+        postgresql-client \
         nodejs \
         npm \
     && mkdir -p $TRACKER_HOME
