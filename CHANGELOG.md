@@ -1,3 +1,6 @@
+## Unreleased
+- Fixed the student table bug where table row number started at 2
+
 ## 0.30.0 - Homepage
 - Removed Sass
 - Implemented a marketing landing page

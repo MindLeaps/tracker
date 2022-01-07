@@ -1,5 +1,5 @@
 <tr class="resource-row <%= @student.deleted_at ? 'deleted-row' : nil %>">
-  <td class="mdl-data-table__cell"><%= link_to @pagy.from + @student_counter, @student_show %></td>
+  <td class="mdl-data-table__cell"><%= link_to @pagy.from + @student_counter - 1, @student_show %></td>
   <td class="mdl-data-table__cell"><a href="<%= @student_show %>">
     <span class="faded"><%= "#{@student.organization_mlid}-#{@student.chapter_mlid}-#{@student.group_mlid}-" %></span><%= @student.mlid %>
   </a></td>
