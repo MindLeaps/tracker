@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import {InstanceTypes, KeyPair, SecurityGroup, Subnet, Vpc} from "@pulumi/aws/ec2";
-import {ec2, getAmi} from "@pulumi/aws";
+import {ec2} from "@pulumi/aws";
 import * as pulumi from "@pulumi/pulumi";
 import T2_Nano = InstanceTypes.T2_Nano;
 
@@ -14,7 +14,7 @@ const BASTION_PULUMI_NAME = 'BASTION';
 const BASTION_NAME = `BASTION-${env}`;
 
 // Fetch latest
-const BASTION_AMI = pulumi.output(getAmi({
+const BASTION_AMI = pulumi.output(ec2.getAmi({
     filters: [{
         name: "name",
         values: ['amzn2-ami-hvm-*'],
