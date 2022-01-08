@@ -2,7 +2,6 @@
 
 source 'https://rubygems.org'
 
-gem 'rails'
 gem 'active_model_serializers', github: 'rails-api/active_model_serializers', ref: 'fae99ee08ab3292086b3d15c99d297a3ba384b0f'
 gem 'amazing_print'
 gem 'bootsnap'
@@ -28,6 +27,7 @@ gem 'pg_query', '>= 0.9.0'
 gem 'pg_search'
 gem 'puma'
 gem 'pundit'
+gem 'rails'
 gem 'rails-i18n'
 gem 'rails_semantic_logger'
 gem 'rolify'
