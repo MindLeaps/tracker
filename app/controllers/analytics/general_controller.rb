@@ -30,8 +30,8 @@ module Analytics
 
     def histogram_of_student_performance_change_by_gender
       conn = ActiveRecord::Base.connection.raw_connection
-      male_students = @selected_students.where(gender: 'M')
-      female_students = @selected_students.where(gender: 'F')
+      male_students = @selected_students.where(gender: :male)
+      female_students = @selected_students.where(gender: :female)
 
       result = []
 

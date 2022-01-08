@@ -3,8 +3,7 @@
 source 'https://rubygems.org'
 
 gem 'rails'
-# Use postgres as the database for Active Record
-gem 'active_model_serializers', '~> 0.10.12'
+gem 'active_model_serializers', github: 'rails-api/active_model_serializers', ref: 'fae99ee08ab3292086b3d15c99d297a3ba384b0f'
 gem 'amazing_print'
 gem 'bootsnap'
 gem 'carrierwave'
@@ -37,6 +36,7 @@ gem 'simple_form'
 gem 'skylight'
 gem 'slim'
 gem 'sort_alphabetical'
+gem 'sprockets-rails'
 gem 'stimulus-rails'
 gem 'tailwindcss-rails'
 gem 'tiddle'
@@ -51,7 +51,7 @@ end
 group :development, :test do
   gem 'apparition', github: 'twalpole/apparition', ref: 'ca86be4d54af835d531dbcd2b86e7b2c77f85f34'
   gem 'bullet', '!= 6.0.0' # 6.0.0 seems to break with Turbolinks
-  gem 'rails-controller-testing'
+  # gem 'rails-controller-testing'
   gem 'rubocop'
   gem 'rubocop-performance'
   gem 'rubocop-rails'
@@ -74,7 +74,7 @@ group :development, :test do
 end
 
 group :development do
-  gem 'annotate'
+  gem 'annotate', github: 'dabit/annotate_models', branch: 'rails-7'
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'dotenv-rails'
