@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 gem 'rails'
 # Use postgres as the database for Active Record
-gem 'active_model_serializers', '~> 0.10.12'
+gem 'active_model_serializers', '~> 0.10.13'
 gem 'amazing_print'
 gem 'bootsnap'
 gem 'carrierwave'
