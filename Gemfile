@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-gem 'active_model_serializers', github: 'rails-api/active_model_serializers', ref: 'fae99ee08ab3292086b3d15c99d297a3ba384b0f'
+gem 'active_model_serializers'
 gem 'amazing_print'
 gem 'bootsnap'
 gem 'carrierwave'

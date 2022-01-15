@@ -8,17 +8,6 @@ GIT
       rake (>= 10.4, < 14.0)
 
 GIT
-  remote: https://github.com/rails-api/active_model_serializers.git
-  revision: fae99ee08ab3292086b3d15c99d297a3ba384b0f
-  ref: fae99ee08ab3292086b3d15c99d297a3ba384b0f
-  specs:
-    active_model_serializers (0.10.12)
-      actionpack (>= 4.1, < 7.1)
-      activemodel (>= 4.1, < 7.1)
-      case_transform (>= 0.2)
-      jsonapi-renderer (>= 0.1.1.beta1, < 0.3)
-
-GIT
   remote: https://github.com/twalpole/apparition.git
   revision: ca86be4d54af835d531dbcd2b86e7b2c77f85f34
   ref: ca86be4d54af835d531dbcd2b86e7b2c77f85f34
@@ -76,6 +65,11 @@ GEM
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.1, >= 1.2.0)
+    active_model_serializers (0.10.13)
+      actionpack (>= 4.1, < 7.1)
+      activemodel (>= 4.1, < 7.1)
+      case_transform (>= 0.2)
+      jsonapi-renderer (>= 0.1.1.beta1, < 0.3)
     activejob (7.0.1)
       activesupport (= 7.0.1)
       globalid (>= 0.3.6)
@@ -292,7 +286,7 @@ GEM
       timeout
     newrelic_rpm (8.2.0)
     nio4r (2.5.8)
-    nokogiri (1.13.0)
+    nokogiri (1.13.1)
       mini_portile2 (~> 2.7.0)
       racc (~> 1.4)
     oauth2 (1.4.7)
@@ -523,7 +517,7 @@ PLATFORMS
 
 DEPENDENCIES
   SyslogLogger
-  active_model_serializers!
+  active_model_serializers
   amazing_print
   annotate!
   apparition!
