@@ -105,9 +105,6 @@
   pointer-events: none;
 }
 
-.turbolinks-progress-bar {
-  visibility: hidden;
-}
 
 #loading-bar {
   width: 100%;

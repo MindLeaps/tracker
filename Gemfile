@@ -40,7 +40,6 @@ gem 'sprockets-rails'
 gem 'stimulus-rails'
 gem 'tailwindcss-rails'
 gem 'tiddle'
-gem 'turbolinks'
 gem 'view_component'
 
 group :production do
