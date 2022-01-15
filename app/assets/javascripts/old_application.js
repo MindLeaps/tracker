@@ -10,9 +10,5 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require material.min
-//= require mdl-selectfield.min
-//= require jquery-3.2.1.slim.min
 //= require cocoon
-//= require awesomplete
 //= require_tree ./application

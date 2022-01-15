@@ -51,6 +51,7 @@ table style="width: 100%; table-layout: fixed;"
 = render '/shared/analytics_common'
 
 javascript:
+  console.log('here')
   updateDropdown($('#chapter_select'), filteredChapters().map(function(c) {return {label: c.chapter_name, value: c.id}; }));
   updateDropdown($('#group_select'), filteredGroups().map(function(g) {return {label: g.group_name, value: g.id}; }));
   updateDropdown($('#student_select'), filteredStudents().map(function(s) {return {label: s.proper_name, value: s.id}; }));

@@ -1,3 +1,6 @@
+## Unreleased
+- Updated Rails to v7
+
 ## 0.30.1 - Fix student table ordering
 - Fixed the student table bug where table row number started at 2
 
