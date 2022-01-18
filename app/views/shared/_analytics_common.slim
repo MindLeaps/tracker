@@ -1,5 +1,4 @@
 javascript:
-  var availableOrganizations = #{{ @available_organizations.map { |o| o.slice(:id, :organization_name) }.to_json }};
   var availableChapters = #{{ @available_chapters.map { |c| c.slice(:id, :organization_id, :chapter_name) }.to_json }};
   var availableSubjects = #{{ @available_subjects.map { |s| s.slice(:id, :organization_id, :subject_name) }.to_json }};
   var availableGroups = #{{ @available_groups.map { |g| g.slice(:id, :chapter_id, :group_name) }.to_json }};
@@ -51,34 +50,4 @@ javascript:
     return availableStudents.filter(function (s) {
       return groupIds.includes(s.group_id);
     });
-  }
-
-  function createOption(label, value) {
-    var opt = document.createElement('option');
-    opt.text = label;
-    if (value !== undefined) {
-      opt.value = value;
-    }
-
-    return opt;
-  }
-
-  function updateDropdown($dropDown, values) {
-    var currentValue = Number($dropDown.val());
-    $dropDown.empty();
-    $dropDown.append(createOption('All'));
-
-    var valueExists = false;
-    values.forEach(function(v) {
-      if (currentValue === v.value) {
-        valueExists = true;
-      }
-      $dropDown.append(createOption(v.label, v.value));
-    });
-
-
-    if (valueExists) {
-      $dropDown.val(currentValue);
-    }
-    $dropDown.change();
   }

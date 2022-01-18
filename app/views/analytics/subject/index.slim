@@ -13,140 +13,104 @@
     tr
       td style="padding-right: 20px;"
         = label_tag :organization_label, "Organization"
-        = select_tag :organization_select, options_from_collection_for_select(@available_organizations, :id, :organization_name, @selected_organization_id), :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#generateUrl', 'data-name' => 'organization_id'
+        = select_tag :organization_select, options_from_collection_for_select(@available_organizations, :id, :organization_name, @selected_organization_id), :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'organization_id', 'data-dependents' => ['chapter_id', 'subject_id'].to_json, 'data-resources' => @available_organizations.map { |o| { id: o.id, label: o.organization_name } }.to_json
       td style="padding-right: 20px;"
         = label_tag :chapter_label, "Chapter"
-        = select_tag :chapter_select, options_from_collection_for_select(@available_chapters, :id, :chapter_name, @selected_chapter_id), :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#generateUrl', 'data-name' => 'chapter_id'
+        = select_tag :chapter_select, options_from_collection_for_select(@available_chapters, :id, :chapter_name, @selected_chapter_id), :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'chapter_id', 'data-dependents' => ['group_id'].to_json, 'data-resources' => @available_chapters.map { |c| { id: c.id, label: c.chapter_name, depend_id: c.organization_id } }.to_json
       td style="padding-right: 20px;"
         = label_tag :group_label, "Group"
-        = select_tag :group_select, options_from_collection_for_select(@available_groups, :id, :group_name, @selected_group_id), :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#generateUrl', 'data-name' => 'group_id'
+        = select_tag :group_select, options_from_collection_for_select(@available_groups, :id, :group_name, @selected_group_id), :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'group_id', 'data-dependents' => ['group_id'].to_json, 'data-dependents' => ['student_id'].to_json, 'data-resources' => @available_groups.map { |g| { id: g.id, label: g.group_name, depend_id: g.chapter_id } }.to_json
       td style="padding-right: 20px;"
         = label_tag :subject_label, "Subject"
-        = select_tag :subject_select, options_from_collection_for_select(@available_subjects, :id, :subject_name, @subject), 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#generateUrl', 'data-name' => 'subject_id'
+        = select_tag :subject_select, options_from_collection_for_select(@available_subjects, :id, :subject_name, @subject), 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'subject_id', 'data-resources' => @available_subjects.map { |s| { id: s.id, label: s.subject_name, depend_id: s.organization_id } }.to_json
       td style="padding-right: 20px;"
         = label_tag :student_label, "Student"
-        = select_tag :student_select, options_from_collection_for_select(@available_students, :id, :proper_name, @selected_student_id), :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#generateUrl', 'data-name' => 'student_id'
+        = select_tag :student_select, options_from_collection_for_select(@available_students, :id, :proper_name, @selected_student_id), :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'student_id', 'data-resources' => @available_students.map { |s| { id: s.id, label: s.proper_name, depend_id: s.group_id } }.to_json
       td style="padding-right: 20px;"
         a.mdl-button.mdl-js-button.mdl-button--raised.mdl-button--accent.mdl-js-ripple-effect data-analytics-filter-target="anchor"
           = t(:filter)
 
 table id="trellis" style="width: 100%; table-layout: fixed;"
-  - rows = (@count + 1)/2
-  - rows.times do
+  - rows = (@subject_series.count + 1)/2
+  - @subject_series.each_slice(2) do |d1, d2|
     tr
-      td
-      td
+      td id=("skill-#{d1[:skill]}")
+      - if d2
+        td id=("skill-#{d2[:skill]}")
 
 = render '/shared/analytics_common'
 
 javascript:
-  updateDropdown($('#chapter_select'), filteredChapters().map(function (c) {
-    return {label: c.chapter_name, value: c.id};
-  }));
-  updateDropdown($('#subject_select'), filteredSubjects().map(function (c) {
-    return {label: c.subject_name, value: c.id};
-  }));
-  updateDropdown($('#group_select'), filteredGroups().map(function (g) {
-    return {label: g.group_name, value: g.id};
-  }));
-  updateDropdown($('#student_select'), filteredStudents().map(function (s) {
-    return {label: s.proper_name, value: s.id};
-  }));
-
-  $('#organization_select').change(function () {
-    updateDropdown($('#chapter_select'), filteredChapters().map(function (c) {
-      return {label: c.chapter_name, value: c.id};
-    }));
-    updateDropdown($('#subject_select'), filteredSubjects().map(function (c) {
-      return {label: c.subject_name, value: c.id};
-    }));
-  });
-
-  $('#chapter_select').change(function () {
-    updateDropdown($('#group_select'), filteredGroups().map(function (g) {
-      return {label: g.group_name, value: g.id};
-    }));
-  });
-
-  $('#group_select').change(function () {
-    updateDropdown($('#student_select'), filteredStudents().map(function (s) {
-      return {label: s.proper_name, value: s.id};
-    }));
-  });
-
   function startAnalytics() {
-    var charts = [],
-      $containers = $('#trellis td'),
-      datasets = #{{ @series3.html_safe }};
+    var datasets = #{{ @subject_series.to_json.html_safe }};
 
-    $.each(datasets, function (i, dataset) {
-      charts.push(new Highcharts.Chart({
-
-                chart: {
-                    renderTo: $containers[i],
-                    zoomType: 'x',
-                    type: 'scatter'
-                },
-                legend: {
-                    enabled: true,
-                    maxHeight: 120
-                },
-                credits: {
-                    enabled: false
-                },
-                tooltip: {
-                    formatter: function() {
-                      return '<span style="color:' + this.point.color + '">\u25CF</span> ' + this.series.name +
-                             '<br/><span>x: <span style="font-weight: bold">' + this.point.x + '</span></span>' +
-                             '<br/><span>y: <span style="font-weight: bold">' + this.point.y + '</span></span>' +
-                             (this.point.date ? '<br/><span>#{t(:lesson_date)}: ' + this.point.date + '</span>' : '');
-                    }
-                },
-                exporting: {
-                  filename: dataset.skill + '-chart',
-                  buttons: {
-                    contextButton: {
-                      menuItems: [
-                        'downloadPNG',
-                        'downloadJPEG',
-                        'downloadPDF',
-                        'downloadSVG'
-                      ]
-                    }
-                  },
-                  fallbackToExportServer: false
-                },
-                title: {
-                    text: dataset.skill
-                },
-                xAxis: {
-                    title: {
-                        text: '#{{ t(:nr_of_lessons) }}'
-                    }
-                },
-                yAxis: {
-                    allowDecimals: false,
-                    title: {
-                        text: '#{{ t(:performance)}}'
-                    }
-                },
-                plotOptions: {
-                    series: {
-                        events: {
-                            click: function(e, a1, a2) {
-                              if (e.point.lesson_url) {
-                                window.open(e.point.lesson_url, '_blank');
-                              }
-                            }
-                        },
-                        cursor: 'pointer',
-                        marker: {
-                            radius: 2
-                        }
-                    }
-                },
-                series: dataset.series
-      }));
+    datasets.forEach(function(dataset) {
+      new Highcharts.Chart({
+        chart: {
+          renderTo: 'skill-' + dataset.skill,
+          zoomType: 'x',
+          type: 'scatter'
+        },
+        legend: {
+          enabled: true,
+          maxHeight: 120
+        },
+        credits: {
+          enabled: false
+        },
+        tooltip: {
+          formatter: function () {
+            return '<span style="color:' + this.point.color + '">\u25CF</span> ' + this.series.name +
+              '<br/><span>x: <span style="font-weight: bold">' + this.point.x + '</span></span>' +
+              '<br/><span>y: <span style="font-weight: bold">' + this.point.y + '</span></span>' +
+              (this.point.date ? '<br/><span>#{t(:lesson_date)}: ' + this.point.date + '</span>' : '');
+          }
+        },
+        exporting: {
+          filename: dataset.skill + '-chart',
+          buttons: {
+            contextButton: {
+              menuItems: [
+                'downloadPNG',
+                'downloadJPEG',
+                'downloadPDF',
+                'downloadSVG'
+              ]
+            }
+          },
+          fallbackToExportServer: false
+        },
+        title: {
+          text: dataset.skill
+        },
+        xAxis: {
+          title: {
+            text: '#{{ t(:nr_of_lessons) }}'
+          }
+        },
+        yAxis: {
+          allowDecimals: false,
+          title: {
+            text: '#{{ t(:performance)}}'
+          }
+        },
+        plotOptions: {
+          series: {
+            events: {
+              click: function (e, a1, a2) {
+                if (e.point.lesson_url) {
+                  window.open(e.point.lesson_url, '_blank');
+                }
+              }
+            },
+            cursor: 'pointer',
+            marker: {
+              radius: 2
+            }
+          }
+        },
+        series: dataset.series
+      });
     });
   }
 
