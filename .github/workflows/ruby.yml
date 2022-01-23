@@ -31,11 +31,8 @@ jobs:
         sudo apt-get update
         sudo apt-get -yqq install libpq-dev
         sudo apt-get install -y postgresql-client
-        sudo apt-get install -y nodejs
-        sudo npm install --global yarn
         gem install bundler
         bundle install --jobs 4 --retry 3
-        yarn
     - name: Migrate Database
       env:
         RAILS_ENV: test
