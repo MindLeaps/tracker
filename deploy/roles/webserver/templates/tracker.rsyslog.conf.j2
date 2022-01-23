@@ -1,5 +1,0 @@
-$template messageOnly, "%msg%\n"
-
-if ($programname == 'mindleaps-tracker') then {
-    action(name="mindleaps-tracker-log" type="omfile" dirCreateMode="0644" FileCreateMode="0644" File="/var/log/mindleaps-tracker/mindleaps-tracker.log" Template="messageOnly")
-}

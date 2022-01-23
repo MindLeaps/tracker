@@ -24,13 +24,12 @@ jobs:
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: 3.0.3
-    - uses: browser-actions/setup-chrome@latest
     - name: Install Dependencies
       run: |
-        chrome --version
         sudo apt-get update
         sudo apt-get -yqq install libpq-dev
         sudo apt-get install -y postgresql-client
+        sudo apt-get install google-chrome-stable
         gem install bundler
         bundle install --jobs 4 --retry 3
     - name: Migrate Database
