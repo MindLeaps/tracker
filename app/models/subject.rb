@@ -25,7 +25,7 @@ class Subject < ApplicationRecord
   has_many :assignments, -> { exclude_deleted }, inverse_of: :subject, dependent: :destroy
   has_many :skills, through: :assignments, dependent: :destroy, inverse_of: :subjects
 
-  validates :subject_name, :organization, presence: true
+  validates :subject_name, presence: true
 
   scope :by_organization, ->(organization_id) { where organization_id: organization_id }
 

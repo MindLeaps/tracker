@@ -41,10 +41,6 @@ RSpec.describe Grade, type: :model do
   end
 
   describe 'validations' do
-    it { should validate_presence_of :lesson }
-    it { should validate_presence_of :student }
-    it { should validate_presence_of :grade_descriptor }
-
     describe 'uniqueness' do
       before :each do
         group = create :group

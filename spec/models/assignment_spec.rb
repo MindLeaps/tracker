@@ -29,11 +29,6 @@ RSpec.describe Assignment, type: :model do
     it { should belong_to :subject }
   end
 
-  describe 'validations' do
-    it { should validate_presence_of :skill }
-    it { should validate_presence_of :subject }
-  end
-
   describe '#destroy' do
     before :each do
       @assignment = create :assignment

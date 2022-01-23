@@ -47,7 +47,7 @@ class Student < ApplicationRecord
     tags: :tag_name
   }, using: { tsearch: { prefix: true } }
 
-  validates :mlid, :first_name, :last_name, :dob, :gender, :group, presence: true
+  validates :mlid, :first_name, :last_name, :dob, :gender, presence: true
   validate :unique_mlid_in_chapter
 
   enum gender: { M: 'male', F: 'female' }

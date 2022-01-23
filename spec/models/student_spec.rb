@@ -121,7 +121,6 @@ RSpec.describe Student, type: :model do
     end
 
     it { should validate_presence_of :mlid }
-    it { should validate_presence_of :group }
     it { should validate_presence_of :first_name }
     it { should validate_presence_of :last_name }
     it { should validate_presence_of :dob }

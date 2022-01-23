@@ -24,7 +24,7 @@ class Skill < ApplicationRecord
   include PgSearch::Model
   pg_search_scope :search, against: [:skill_name], using: { tsearch: { prefix: true } }
 
-  validates :skill_name, :organization, presence: true
+  validates :skill_name, presence: true
   validate :grade_descriptors_must_have_unique_marks
 
   belongs_to :organization

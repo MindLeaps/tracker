@@ -32,7 +32,6 @@ RSpec.describe Skill, type: :model do
 
   describe 'validations' do
     it { should validate_presence_of :skill_name }
-    it { should validate_presence_of :organization }
 
     describe 'validate grade descriptors' do
       let(:org) { create :organization }
