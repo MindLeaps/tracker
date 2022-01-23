@@ -1,2 +1,0 @@
-# Default to listening on the external address
-database_address: "{{ hostvars[groups['databases'][0]]['ansible_eth0']['ipv4']['address'] }}"

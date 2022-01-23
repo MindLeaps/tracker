@@ -2,9 +2,7 @@
 
 source 'https://rubygems.org'
 
-gem 'rails'
-# Use postgres as the database for Active Record
-gem 'active_model_serializers', '~> 0.10.12'
+gem 'active_model_serializers'
 gem 'amazing_print'
 gem 'bootsnap'
 gem 'carrierwave'
@@ -16,6 +14,7 @@ gem 'enum_help'
 gem 'fog-aws'
 gem 'has_scope'
 gem 'i18n_data'
+gem 'importmap-rails'
 gem 'inline_svg'
 gem 'marginalia'
 gem 'mini_magick'
@@ -28,6 +27,7 @@ gem 'pg_query', '>= 0.9.0'
 gem 'pg_search'
 gem 'puma'
 gem 'pundit'
+gem 'rails'
 gem 'rails-i18n'
 gem 'rails_semantic_logger'
 gem 'rolify'
@@ -36,11 +36,11 @@ gem 'simple_form'
 gem 'skylight'
 gem 'slim'
 gem 'sort_alphabetical'
+gem 'sprockets-rails'
+gem 'stimulus-rails'
 gem 'tailwindcss-rails'
 gem 'tiddle'
-gem 'turbolinks'
 gem 'view_component'
-gem 'webpacker'
 
 group :production do
   gem 'newrelic_rpm'
@@ -48,7 +48,6 @@ group :production do
 end
 
 group :development, :test do
-  gem 'apparition', github: 'twalpole/apparition', ref: 'ca86be4d54af835d531dbcd2b86e7b2c77f85f34'
   gem 'bullet', '!= 6.0.0' # 6.0.0 seems to break with Turbolinks
   gem 'rails-controller-testing'
   gem 'rubocop'
@@ -73,7 +72,7 @@ group :development, :test do
 end
 
 group :development do
-  gem 'annotate'
+  gem 'annotate', github: 'dabit/annotate_models', branch: 'rails-7'
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'dotenv-rails'

@@ -5,9 +5,7 @@ module Analytics
     def index
       # figure 8: Average performance per group by days in program
       # Rebecca requested a Trellis per Group
-      series8 = performance_per_group
-      @count = series8.count
-      @series8 = series8.to_json
+      @group_series = performance_per_group
     end
 
     # rubocop:disable Metrics/AbcSize

@@ -18,5 +18,5 @@
 
   .image-upload
     = simple_form_for @new_image, url: {action: :create}, html: {multipart: true} do |f|
-      = f.input :image, as: :file, input_html: {multiple: true }
+      = f.input :image, as: :file, input_html: {multiple: true, include_hidden: false }
       = f.button :submit, 'Upload', class: 'btn-outline-success'

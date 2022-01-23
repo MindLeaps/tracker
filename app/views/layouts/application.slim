@@ -7,8 +7,8 @@ html
         = " - #{content_for :title}"
     meta name="google" content="notranslate"
     = favicon_link_tag 'favicon.ico'
-    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
-    = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    = stylesheet_link_tag 'application', media: 'all'
+    = javascript_importmap_tags
     = yield :head_content
     link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"
     = csrf_meta_tags
@@ -21,3 +21,4 @@ html
         .mdl-grid.page-content
           = render 'shared/snackbar'
           = yield
+    = javascript_include_tag 'old_application', defer: 'defer'

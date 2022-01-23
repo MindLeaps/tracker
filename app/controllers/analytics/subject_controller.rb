@@ -7,13 +7,11 @@ module Analytics
     # rubocop:disable Metrics/CyclomaticComplexity
     # rubocop:disable Metrics/AbcSize
     def index
-      series3 = if @selected_student_id.present? && @selected_student_id != 'All'
-                  performance_per_skill_single_student
-                else
-                  performance_per_skill
-                end
-      @count = series3.count
-      @series3 = series3.to_json
+      @subject_series = if @selected_student_id.present? && @selected_student_id != 'All'
+                          performance_per_skill_single_student
+                        else
+                          performance_per_skill
+                        end
     end
 
     private

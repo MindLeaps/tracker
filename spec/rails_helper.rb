@@ -12,7 +12,7 @@ require 'pundit/rspec'
 require 'webmock/rspec'
 require 'devise'
 
-WebMock.disable_net_connect!(allow: ['localhost', '127.0.0.1', 'chromedriver.storage.googleapis.com'])
+WebMock.disable_net_connect!(allow: ['localhost', '127.0.0.1', 'chromedriver.storage.googleapis.com'], net_http_connect_on_start: true)
 
 Dir[Rails.root.join('spec/test_helpers/**/*.rb')].each { |f| require f }
 Dir[Rails.root.join('spec/shared/**/*.rb')].each { |f| require f }
@@ -58,6 +58,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do |example|
+    Capybara.raise_server_errors = true
     DatabaseCleaner.strategy = example.metadata[:js] ? :deletion : :transaction
     DatabaseCleaner.start
   end

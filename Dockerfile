@@ -21,8 +21,6 @@ RUN apt-get update \
         npm \
     && mkdir -p $TRACKER_HOME
 
-RUN npm install --global yarn
-
 WORKDIR $TRACKER_HOME
 ADD . $TRACKER_HOME
 

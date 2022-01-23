@@ -19,7 +19,9 @@ RSpec.describe 'User interacts with student images' do
       expect(page).to have_selector 'img.student-image', count: 2
     end
 
-    it 'uploads and displays two new student images' do
+    it 'uploads and displays two new student images', js: true do
+      Capybara.raise_server_errors = false
+      visit '/'
       visit student_path @student
       click_link 'Images'
 
