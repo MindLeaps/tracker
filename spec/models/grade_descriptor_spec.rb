@@ -28,7 +28,6 @@ RSpec.describe GradeDescriptor, type: :model do
   end
 
   describe 'validations' do
-    it { should validate_presence_of :skill }
     it { should validate_presence_of :mark }
 
     describe 'uniqueness' do
