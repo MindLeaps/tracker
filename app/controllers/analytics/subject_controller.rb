@@ -8,10 +8,10 @@ module Analytics
     # rubocop:disable Metrics/AbcSize
     def index
       @subject_series = if @selected_student_id.present? && @selected_student_id != 'All'
-                  performance_per_skill_single_student
-                else
-                  performance_per_skill
-                end
+                          performance_per_skill_single_student
+                        else
+                          performance_per_skill
+                        end
     end
 
     private

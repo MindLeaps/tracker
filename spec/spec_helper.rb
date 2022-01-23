@@ -19,15 +19,12 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
-require 'capybara/apparition'
+require 'webdrivers'
+require 'capybara/rspec'
 require 'omniauth'
 require 'json_matchers/rspec'
 
 JsonMatchers.schema_root = 'spec/schemas'
-
-Capybara.register_driver :apparition do |app|
-  Capybara::Apparition::Driver.new(app, window_size: [1920, 1024])
-end
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
@@ -100,7 +97,7 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 
   # Change this to :selenium_chrome to see the tests running in the browser
-  Capybara.javascript_driver = :selenium_chrome_headless
+  Capybara.javascript_driver = :selenium_chrome
 end
 
 OmniAuth.config.test_mode = true

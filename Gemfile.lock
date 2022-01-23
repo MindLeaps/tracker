@@ -7,15 +7,6 @@ GIT
       activerecord (>= 3.2, < 7.1)
       rake (>= 10.4, < 14.0)
 
-GIT
-  remote: https://github.com/twalpole/apparition.git
-  revision: ca86be4d54af835d531dbcd2b86e7b2c77f85f34
-  ref: ca86be4d54af835d531dbcd2b86e7b2c77f85f34
-  specs:
-    apparition (0.6.0)
-      capybara (~> 3.13, < 4)
-      websocket-driver (>= 0.6.5)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -524,7 +515,6 @@ DEPENDENCIES
   active_model_serializers
   amazing_print
   annotate!
-  apparition!
   better_errors
   binding_of_caller
   bootsnap

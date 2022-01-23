@@ -5,8 +5,6 @@ import jQuery from 'jquery.slim'
 window.$ = jQuery
 window.jQuery = jQuery
 
-console.log($)
-
 import 'material-design-lite'
 import 'mdl-selectfield'
 import 'awesomplete'

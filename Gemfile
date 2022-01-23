@@ -48,7 +48,6 @@ group :production do
 end
 
 group :development, :test do
-  gem 'apparition', github: 'twalpole/apparition', ref: 'ca86be4d54af835d531dbcd2b86e7b2c77f85f34'
   gem 'bullet', '!= 6.0.0' # 6.0.0 seems to break with Turbolinks
   gem 'rails-controller-testing'
   gem 'rubocop'
