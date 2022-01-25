@@ -50,7 +50,7 @@ class Student < ApplicationRecord
   validates :mlid, :first_name, :last_name, :dob, :gender, :group, presence: true
   validate :unique_mlid_in_chapter
 
-  enum gender: { M: 'male', F: 'female' }
+  enum gender: { M: 'male', F: 'female', U: 'undecided', N: 'nonbinary' }
 
   belongs_to :group
   has_many :grades, dependent: :restrict_with_error

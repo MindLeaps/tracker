@@ -204,3 +204,5 @@ en:
       gender:
         M: Male
         F: Female
+        U: Undecided
+        N: Nonbinary
