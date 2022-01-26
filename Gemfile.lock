@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/dabit/annotate_models.git
-  revision: f38741d005052045e4d4c2c26b009d3ade0864f3
+  revision: aa767e19fb3bea5e42304f54802f41924ac4e363
   branch: rails-7
   specs:
     annotate (3.1.1)
