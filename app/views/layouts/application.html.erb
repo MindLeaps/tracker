@@ -1,28 +1,28 @@
 <!DOCTYPE html>
-<html>
+<html class="h-full bg-white">
   <head>
     <title>Tracker<% if content_for? :title %><%= " - #{content_for :title}" %><% end %></title>
     <meta content="notranslate" name="google" />
     <%= favicon_link_tag 'favicon.ico' %>
     <%= stylesheet_link_tag 'tailwind.css', media: 'all' %>
-    <%= stylesheet_link_tag 'application', media: 'all' %>
+    <%#= stylesheet_link_tag 'application', media: 'all' %>
     <%= javascript_importmap_tags %>
     <%= yield :head_content %>
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
     <%= csrf_meta_tags %>
   </head>
-  <body>
-    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
-      <%= render 'shared/header' %>
+  <body class="h-full">
+    <div class="h-full flex">
       <%= render DrawerComponent.new current_user: current_user %>
-      <main class="mdl-layout__content mdl-color--grey-100">
-        <div class="mdl-progress mdl-js-progress mdl-progress__indeterminate" id="loading-bar">
-        </div>
-        <div class="mdl-grid page-content">
-          <%= render 'shared/snackbar' %>
-          <%= yield %>
-        </div>
-      </main>
+      <div class="flex-1 flex flex-col overflow-hidden">
+        <%#= render 'shared/header' %>
+<!--        <div class="flex-1 flex items-stretch overflow-hidden">-->
+<!--          <main class="flex-1 overflow-y-auto">-->
+            <%#= render 'shared/snackbar' %>
+            <%#= yield %>
+<!--          </main>-->
+<!--        </div>-->
+      </div>
     </div>
     <%= javascript_include_tag 'old_application', defer: 'defer' %>
   </body>

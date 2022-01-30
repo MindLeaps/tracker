@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class NavItemComponent < ViewComponent::Base
-  def initialize(name:, svg_icon:, url:)
+  def initialize(name:, url:, svg_icon: nil)
     @name = name
     @svg_icon = svg_icon
     @url = url
@@ -9,10 +9,6 @@ class NavItemComponent < ViewComponent::Base
 
   def before_render
     @is_active = current_page? @url
-  end
-
-  def nav_link_class
-    "mdl-navigation__link nav-link#{@is_active ? ' mdl-navigation__link--current' : ' mdl-js-button mdl-js-ripple-effect'}"
   end
 
   def disabled
