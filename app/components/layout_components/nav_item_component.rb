@@ -11,10 +11,6 @@ class LayoutComponents::NavItemComponent < ViewComponent::Base
     @is_active = current_page? @url
   end
 
-  def disabled
-    @is_active ? 'disabled="disabled"' : ''
-  end
-
   def href
     @is_active ? '' : "href=#{@url}"
   end
