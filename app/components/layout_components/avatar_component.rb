@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DrawerComponent < ViewComponent::Base
+class LayoutComponents::AvatarComponent < ViewComponent::Base
   def initialize(current_user:)
     @current_user = current_user
   end

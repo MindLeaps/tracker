@@ -1,0 +1,23 @@
+<div class="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-white border-b border-gray-200">
+  <button type="button" class="px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-purple-500 lg:hidden" data-action="click->mobile#openSidebar">
+    <span class="sr-only"><%= t(:open_sidebar) %></span>
+    <!-- Heroicon name: outline/menu-alt-1 -->
+    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+    </svg>
+  </button>
+  <div class="border-b border-gray-200 px-4 py-4 flex items-center w-full sm:px-6 lg:px-8">
+    <div class="flex-1 min-w-0">
+      <h1 class="text-lg font-medium leading-6 text-gray-900 sm:truncate"><%= @title %></h1>
+    </div>
+    <div class="mt-4 flex sm:mt-0 sm:ml-4">
+      <button type="button" class="order-1 ml-3 inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:order-0 sm:ml-0">
+        Share
+      </button>
+      <button type="button" class="order-0 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:order-1 sm:ml-3">
+        Create
+      </button>
+    </div>
+    <%= render LayoutComponents::SmallAvatarComponent.new(current_user: @current_user) %>
+  </div>
+</div>
