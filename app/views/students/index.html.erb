@@ -1,6 +1,8 @@
 <%- content_for :title, t(:students).capitalize %>
 
-<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, title: t(:students).capitalize) %>
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, title: t(:students).capitalize, buttons: [
+  (CommonComponents::ButtonComponent.new(label: t(:add_student), href: new_student_path) if policy(Student).new?)
+].compact) %>
 
 <%#- content_for :header_content do %>
   <%#= render layout: '/shared/header_content', locals: { title: t(:students).capitalize } do %>
