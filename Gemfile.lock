@@ -1,10 +1,10 @@
 GIT
   remote: https://github.com/dabit/annotate_models.git
-  revision: aa767e19fb3bea5e42304f54802f41924ac4e363
+  revision: 4582f874790d44a26286a06e052950e15eefddeb
   branch: rails-7
   specs:
     annotate (3.1.1)
-      activerecord (>= 3.2, < 7.1)
+      activerecord (>= 3.2, < 8.0)
       rake (>= 10.4, < 14.0)
 
 GEM
