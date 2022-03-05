@@ -214,7 +214,7 @@ GEM
     hashie (4.1.0)
     i18n (1.9.1)
       concurrent-ruby (~> 1.0)
-    i18n_data (0.15.0)
+    i18n_data (0.16.0)
       simple_po_parser (~> 1.1)
     image_optimizer (1.8.0)
     image_processing (1.12.2)
