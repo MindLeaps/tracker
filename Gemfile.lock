@@ -212,9 +212,9 @@ GEM
       activesupport (>= 5.2)
     hashdiff (1.0.1)
     hashie (4.1.0)
-    i18n (1.9.1)
+    i18n (1.10.0)
       concurrent-ruby (~> 1.0)
-    i18n_data (0.15.0)
+    i18n_data (0.16.0)
       simple_po_parser (~> 1.1)
     image_optimizer (1.8.0)
     image_processing (1.12.2)
@@ -238,7 +238,7 @@ GEM
       rexml
     kramdown-parser-gfm (1.1.0)
       kramdown (~> 2.0)
-    loofah (2.13.0)
+    loofah (2.14.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)
@@ -468,7 +468,7 @@ GEM
     stimulus-rails (1.0.2)
       railties (>= 6.0.0)
     strscan (3.0.1)
-    tailwindcss-rails (2.0.5)
+    tailwindcss-rails (2.0.7)
       railties (>= 6.0.0)
     temple (0.8.2)
     thor (1.2.1)
@@ -508,7 +508,7 @@ GEM
       nokogiri (~> 1.8)
     yard (0.9.27)
       webrick (~> 1.7.0)
-    zeitwerk (2.5.3)
+    zeitwerk (2.5.4)
 
 PLATFORMS
   ruby
