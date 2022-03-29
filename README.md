@@ -12,7 +12,7 @@ This software is responsible for keeping track of Students in the field and thei
     
 3. To seed the database, ssh into the web container and run `rake db:seed`
 
-4. To enable login withou auth, uncomment the following in BaseController to skip auth in development
+4. To enable login without auth, uncomment the following in `application_controller.rb`. This will skip auth in development
 
     ```
     /app/controllers/base_controller.rb

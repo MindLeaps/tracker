@@ -1,4 +1,6 @@
 FROM ruby:3.0.3 as base
+
+ARG APP_ENV=prod
 ARG MINDLEAPS_HOME=/mindleaps
 ARG TRACKER_HOME=$MINDLEAPS_HOME/tracker
 
@@ -24,8 +26,15 @@ RUN apt-get update \
 WORKDIR $TRACKER_HOME
 ADD . $TRACKER_HOME
 
-RUN bundle install
+RUN if [[ APP_ENV = "dev" ]]; then \
+    wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | tee /etc/apt/sources.list.d/google-chrome.list \
+    && apt-get update \
+    && apt-get -y install google-chrome-stable \
+; elif [[ APP_ENV = "prod" ]]; then \
+    RAILS_ENV="production" SECRET_KEY_BASE="secret" bundle exec rake assets:precompile \
+; fi
 
-RUN RAILS_ENV="production" SECRET_KEY_BASE="secret" bundle exec rake assets:precompile
+RUN bundle install
 
 ENTRYPOINT ["./ENTRYPOINT.sh"]

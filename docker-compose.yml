@@ -12,7 +12,7 @@ services:
   web:
     environment:
       - DATABASE_HOST=db
-      - RAILS_ENV=production
+      - RAILS_ENV=development
       - SECRET_KEY_BASE=secret
       - RAILS_SERVE_STATIC_FILES=true
     env_file:
