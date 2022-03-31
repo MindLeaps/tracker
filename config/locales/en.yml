@@ -157,6 +157,7 @@ en:
   actions: Actions
   close_sidebar: Close Sidebar
   open_sidebar: Open sidebar
+  pagination_display: Displaying %{from} - %{to} of %{total} in total
 
   title_chart_2: Quantity of Data Collected By Month
   title_chart_4: Histogram of student performance values

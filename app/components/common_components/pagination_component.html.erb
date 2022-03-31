@@ -1,0 +1,18 @@
+<!-- This example requires Tailwind CSS v2.0+ -->
+<nav class="border-t border-gray-200 px-4 flex items-center justify-between sm:px-0">
+  <div class="-mt-px w-0 flex-1 flex">
+    <a href="<%= previous_url %>" class="border-t-2 border-transparent pt-4 pr-1 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 <%= 'pointer-events-none text-gray-300' unless @pagy.prev %>">
+      <%= inline_svg_tag 'arrow-left.svg' %>
+      Previous
+    </a>
+  </div>
+  <div class="md:-mt-px md:flex">
+    <span class="inline-flex font-medium text-gray-600 pt-4 text-sm"><%= t(:pagination_display, from: @pagy.from, to: @pagy.to, total: @pagy.count) %></span>
+  </div>
+  <div class="-mt-px w-0 flex-1 flex justify-end">
+    <a href="<%= next_url %>" class="border-t-2 border-transparent pt-4 pl-1 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 <%= 'pointer-events-none text-gray-300' unless @pagy.next %>">
+      Next
+      <%= inline_svg_tag 'arrow-right.svg' %>
+    </a>
+  </div>
+</nav>

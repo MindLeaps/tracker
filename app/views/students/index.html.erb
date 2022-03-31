@@ -18,4 +18,6 @@
       <%#= (t :student_tags) %>
 
 <!--.single-content-card-->
-<%= render(@component) %>
+<%= render CommonComponents::PaginationComponent.new(pagy: @pagy) %>
+<%= render StudentComponents::StudentListComponent.new(pagy: @pagy, student_rows: @student_rows) %>
+<%= render StudentComponents::StudentTable.new(pagy: @pagy, student_rows: @student_rows) %>

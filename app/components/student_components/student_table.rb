@@ -3,9 +3,9 @@
 class StudentComponents::StudentTable < ViewComponent::Base
   delegate :excluding_deleted?, :show_deleted_url, :student_group_name, :policy, to: :helpers
 
-  def initialize
-    students = StudentTableRow.includes(:tags, { group: { chapter: :organization } })
-    @pagy, @students = yield(students)
+  def initialize(student_rows:, pagy:)
+    @students = student_rows
+    @pagy = pagy
   end
 
   # rubocop:disable Metrics/MethodLength

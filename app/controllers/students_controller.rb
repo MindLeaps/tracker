@@ -9,7 +9,7 @@ class StudentsController < HtmlController
 
   def index
     authorize Student
-    @component = StudentComponents::StudentTable.new { |students| pagy apply_scopes(policy_scope(students)) }
+    @pagy, @student_rows = pagy apply_scopes(policy_scope(StudentTableRow.includes(:tags, { group: { chapter: :organization } })))
   end
 
   def new
