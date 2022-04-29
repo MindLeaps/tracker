@@ -414,7 +414,7 @@ GEM
     slim (4.1.0)
       temple (>= 0.7.6, < 0.9)
       tilt (>= 2.0.6, < 2.1)
-    smarter_csv (1.4.2)
+    smarter_csv (1.5.2)
     solargraph (0.44.3)
       backport (~> 1.2)
       benchmark
