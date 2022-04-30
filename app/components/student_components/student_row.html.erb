@@ -1,15 +1,15 @@
-<tr class="<%= @student.deleted_at ? 'deleted-row' : nil %>">
-  <td class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-500 "><%= link_to @pagy.from + @student_counter - 1, @student_show %></td>
-  <td class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-500 "><a href="<%= @student_show %>">
+<tr class="<%= @student.deleted_at ? 'deleted-row ' : nil %><%= shaded? ? 'bg-gray-50' : '' %> hover:bg-green-100">
+  <td class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= link_to @pagy.from + @student_counter - 1, @student_show %></td>
+  <td class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><a href="<%= @student_show %>">
     <span class="faded"><%= "#{@student.organization_mlid}-#{@student.chapter_mlid}-#{@student.group_mlid}-" %></span><%= @student.mlid %>
   </a></td>
-  <td class="text-right px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-500 "><%= link_to @student.last_name, @student_show %></td>
-  <td class="text-right px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-500 "><%= link_to @student.first_name, @student_show %></td>
-  <td class="text-right px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-500 "><%= link_to @student.gender_i18n, @student_show %></td>
-  <td class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-500 "><%= link_to "#{@student.estimated_dob ? t(:circa) : ''}#{@student.dob}", @student_show %></td>
-  <td class="text-right px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-500 "><a href="<%= @student_show %>">
+  <td class="text-right px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= link_to @student.last_name, @student_show %></td>
+  <td class="text-right px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= link_to @student.first_name, @student_show %></td>
+  <td class="text-right px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= link_to @student.gender_i18n, @student_show %></td>
+  <td class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= link_to "#{@student.estimated_dob ? t(:circa) : ''}#{@student.dob}", @student_show %></td>
+  <td class="text-right px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><a href="<%= @student_show %>">
     <% @student.tags.each do |tag|%><span class="mdl-chip"><span class="mdl-chip__text"><%= tag.tag_name %></span></span><% end %>
   </a></td>
-  <td class="text-right px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-500 "><%= link_to @student_group_name, @student_show %></td>
+  <td class="text-right px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= link_to @student_group_name, @student_show %></td>
   <td><%= sanitize render_actions %></td>
 </tr>

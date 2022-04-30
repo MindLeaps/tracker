@@ -21,4 +21,8 @@ class StudentComponents::StudentRow < ViewComponent::Base
     "<a id=\"edit-button-#{@student_counter}\" class=\"mdl-button mdl-js-button mdl-button--icon table-action-icon\" href=\"#{@path}\">#{image_tag 'edit.svg'}</a>
     <div class=\"mdl-tooltip\" data-mdl-for=\"edit-button-#{@student_counter}\">#{@tooltip_content}</div>"
   end
+
+  def shaded?
+    @student_counter.odd?
+  end
 end

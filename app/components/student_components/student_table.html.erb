@@ -5,8 +5,8 @@
       <%= render CommonComponents::Column.with_collection(columns) %>
     </tr>
     </thead>
-    <tbody class="bg-white divide-y divide-gray-100">
-      <%= render StudentComponents::StudentRow.with_collection(@students, pagy: @pagy, ) %>
+    <tbody class="bg-white divide-y divide-purple-200">
+      <%= render StudentComponents::StudentRow.with_collection(@students, pagy: @pagy) %>
     </tbody>
   </table>
 </div>
