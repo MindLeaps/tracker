@@ -9,7 +9,7 @@
 #  chapter_name      :string
 #  deleted_at        :datetime
 #  full_mlid         :text
-#  group_count       :bigint
+#  group_count       :integer
 #  organization_mlid :string(3)
 #  organization_name :string
 #  student_count     :integer
