@@ -1,20 +1,19 @@
-<div class="sticky top-0 z-10 flex-shrink-0 flex h-16 bg-white border-b border-gray-200">
-  <button type="button" class="px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-purple-500 lg:hidden" data-action="click->mobile#openSidebar">
-    <span class="sr-only"><%= t(:open_sidebar) %></span>
-    <!-- Heroicon name: outline/menu-alt-1 -->
-    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
-    </svg>
-  </button>
-  <div class="border-b border-gray-200 px-4 py-4 flex items-center w-full sm:px-6 lg:px-8">
-    <div class="flex-1 min-w-0">
-      <h1 class="text-lg font-medium leading-6 text-gray-900 sm:truncate"><%= @title %></h1>
+<div class="sticky top-0 flex-shrink-0 flex h-16 border-b-2 border-purple-800">
+  <div class="flex-1 flex items-center">
+    <div class="pl-10 w-full">
+      <%= render SearchFormComponent.new(search: { term: params[:search] }, query_parameters: request.query_parameters) %>
+<!--      <input id="search" name="search" class="block w-full bg-white border border-gray-300 rounded-md py-2 pl-10 pr-3 text-sm placeholder-gray-500 focus:outline-none focus:text-gray-900 focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Search" type="search">-->
     </div>
-    <div class="mt-4 flex mt-0 sm:ml-4">
-      <% @buttons.each do |button| %>
-        <%= render button %>
-      <% end %>
-    </div>
-    <%= render LayoutComponents::SmallAvatarComponent.new(current_user: @current_user) %>
+  </div>
+  <div class="px-4 flex-1 flex flex-shrink-1 items-center w-full justify-center items-stretch space-x-8">
+    <% @tabs.each do |tab| %>
+      <a <%= "href='#{tab[:href]}'" if tab[:href].present? %> class="<%= if tab[:href] == '' then 'border-green-700 text-gray-800 ' else 'border-transparent hover:border-gray-400 text-gray-500 hover:text-gray-700' end %> border-b-4 inline-flex items-center px-1 pt-1 font-medium"> <%= tab[:title] %> </a>
+    <% end %>
+  </div>
+
+  <div class="px-4 flex-1 flex items-center">
+    <% @buttons.each do |button| %>
+      <%= render button %>
+    <% end %>
   </div>
 </div>

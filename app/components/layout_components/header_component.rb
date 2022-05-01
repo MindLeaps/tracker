@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class LayoutComponents::HeaderComponent < LayoutComponents::SidebarComponent
-  def initialize(current_user:, title:, buttons: [])
+  def initialize(current_user:, tabs:, buttons: [])
     @current_user = current_user
-    @title = title
+    @tabs = tabs
     @buttons = buttons
   end
 end
