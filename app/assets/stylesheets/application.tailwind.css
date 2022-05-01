@@ -2,12 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-/*
+@layer utilities {
+  .table-row-wrapper {
+    display: contents;
+  }
 
-@layer components {
-  .btn-primary {
-    @apply py-2 px-4 bg-blue-200;
+  .table-row-wrapper:hover > div{
+      @apply bg-green-200;
   }
 }
-
-*/

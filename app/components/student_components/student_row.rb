@@ -16,13 +16,14 @@ class StudentComponents::StudentRow < ViewComponent::Base
   end
 
   def render_actions
-    return '' unless policy(@student).update?
-
-    "<a id=\"edit-button-#{@student_counter}\" class=\"mdl-button mdl-js-button mdl-button--icon table-action-icon\" href=\"#{@path}\">#{image_tag 'edit.svg'}</a>
-    <div class=\"mdl-tooltip\" data-mdl-for=\"edit-button-#{@student_counter}\">#{@tooltip_content}</div>"
+    "<a id=\"edit-button-#{@student_counter}\" class=\"mdl-button mdl-js-button mdl-button--icon table-action-icon\" href=\"#{@path}\">#{image_tag 'edit.svg'}</a>"
   end
 
   def shaded?
     @student_counter.odd?
+  end
+
+  def can_update?
+    policy(@student).update?
   end
 end

@@ -1,8 +1,5 @@
-<th class="<%= @numeric ? 'text-left' : 'text-right' %> whitespace-nowrap px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+<div class="<%= @numeric ? 'text-left' : 'text-right' %> whitespace-nowrap px-6 py-3 border-b border-gray-200 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
   <%= link_to order_parameters(@order_key), id: "#{@order_key}-order" do %>
     <%= @column_name %> <%= image_tag order_icon(@order_key), class: 'inline' %>
   <% end %>
-<!--  <div class="mdl-tooltip" data-mdl-for="<%#= @order_key %>-order">-->
-    <%#= "Change order to #{@column_name} #{order_for(@order_key) == 'asc' ? 'Descending' : 'Ascending'}" %>
-<!--  </div>-->
-</th>
+</div>

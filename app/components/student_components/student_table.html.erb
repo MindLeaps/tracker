@@ -1,12 +1,6 @@
 <div class="overflow-x-scroll">
-  <table class="mdl-data-table mdl-js-data-table resource-table min-w-full">
-    <thead>
-    <tr class="border-t border-gray-200">
-      <%= render CommonComponents::Column.with_collection(columns) %>
-    </tr>
-    </thead>
-    <tbody class="bg-white divide-y divide-purple-200">
-      <%= render StudentComponents::StudentRow.with_collection(@students, pagy: @pagy) %>
-    </tbody>
-  </table>
+  <div class="grid divide-y divide-purple-200" style="grid-template-columns: repeat(9, minmax(min-content, auto))">
+    <%= render CommonComponents::Column.with_collection(columns) %>
+    <%= render StudentComponents::StudentRow.with_collection(@students, pagy: @pagy) %>
+  </div>
 </div>
