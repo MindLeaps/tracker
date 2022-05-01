@@ -1,0 +1,9 @@
+<%- content_for :title, t(:groups).capitalize %>
+
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  {title: t(:chapters).capitalize, href: '' },
+], buttons: [
+  (CommonComponents::ButtonComponent.new(label: t(:add_chapter), href: new_chapter_path) if policy(Chapter).new?)
+].compact) %>
+
+<%= render TableComponents::Table.new(pagy: @pagy, rows: @chapters, row_component: TableComponents::ChapterRow) %>

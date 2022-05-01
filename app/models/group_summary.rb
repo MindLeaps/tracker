@@ -28,4 +28,8 @@ class GroupSummary < ApplicationRecord
   def readonly?
     true
   end
+
+  def self.policy_class
+    GroupPolicy
+  end
 end

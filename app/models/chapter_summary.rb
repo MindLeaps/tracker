@@ -23,7 +23,14 @@ class ChapterSummary < ApplicationRecord
 
   pg_search_scope :search, against: [:chapter_name, :organization_name, :chapter_mlid, :organization_mlid, :full_mlid], using: { tsearch: { prefix: true } }
 
+  belongs_to :organization
+  self.primary_key = :id
+
   def readonly?
     true
+  end
+
+  def self.policy_class
+    ChapterPolicy
   end
 end

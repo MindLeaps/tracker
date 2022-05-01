@@ -7,7 +7,11 @@
     display: contents;
   }
 
-  .table-row-wrapper:hover > div{
+  .shaded-row > div {
+    @apply bg-purple-50;
+  }
+
+  .table-row-wrapper:hover > div {
       @apply bg-green-200;
   }
 }

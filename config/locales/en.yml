@@ -58,6 +58,7 @@ en:
   add_student: Add Student
   add_student_to_group: Add Student to Group
   add_group: Add Group
+  add_chapter: Add Chapter
   student_created: Student "%{name}" created.
   create_another: Create another
   delete_student: Delete Student
@@ -66,6 +67,7 @@ en:
   student_deleted: Student "%{name}" deleted.
   student_restored: Student "%{name}" restored.
   number_of_students: Number of Students
+  number_of_groups: Number of Groups
   edit_student: Edit Student
   group_created: Group "%{group}" created.
   group_updated: Group "%{group}" updated.

@@ -1,13 +1,17 @@
-<div class="table-row-wrapper">
-  <a href="<%= @student_show %>" class="table-row-wrapper">
-  <div class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @pagy.from + @student_counter - 1 %></div>
-  <div class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><span class="faded"><%= "#{@student.organization_mlid}-#{@student.chapter_mlid}-#{@student.group_mlid}-" %></span><%= @student.mlid %></div>
-  <div class="text-right px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @student.last_name %></div>
-  <div class="text-right px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @student.first_name %></div>
-  <div class="text-right px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @student.gender_i18n %></div>
-  <div class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= "#{@student.estimated_dob ? t(:circa) : ''}#{@student.dob}" %></div>
-  <div class="text-right px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><% @student.tags.each do |tag|%><span class="mdl-chip"><span class="mdl-chip__text"><%= tag.tag_name %></span></span><% end %></div>
-  <div class="text-right px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @student_group_name %></div>
+<div class="<%= 'shaded-row' if shaded? %> table-row-wrapper">
+  <a href="<%= helpers.student_path @item %>" class="<%= 'shaded-row' if shaded? %> table-row-wrapper">
+  <div class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @pagy.from + @item_counter - 1 %></div>
+  <div class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><span class="faded"><%= "#{@item.organization_mlid}-#{@item.chapter_mlid}-#{@item.group_mlid}-" %></span><%= @item.mlid %></div>
+  <div class="text-right px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @item.last_name %></div>
+  <div class="text-right px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @item.first_name %></div>
+  <div class="text-right px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @item.gender_i18n %></div>
+  <div class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= "#{@item.estimated_dob ? t(:circa) : ''}#{@item.dob}" %></div>
+  <div class="text-right px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><% @item.tags.each do |tag|%><span class="mdl-chip"><span class="mdl-chip__text"><%= tag.tag_name %></span></span><% end %></div>
+  <div class="text-right px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= helpers.student_group_name @item %></div>
   </a>
-  <div><a id="edit-button-<%= @student_counter %>" class="mdl-button mdl-js-button mdl-button--icon table-action-icon" href="<%= @path %>}"><%= image_tag 'edit.svg' %></a></div>
+  <div>
+    <% if can_update? %>
+      <a id="edit-button-<%= @item_counter %>" class="mdl-button mdl-js-button mdl-button--icon table-action-icon" href="<%= helpers.edit_student_path(@item) %>"><%= image_tag 'edit.svg' %></a>
+    <% end %>
+  </div>
 </div>
