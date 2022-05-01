@@ -1,0 +1,10 @@
+<div class="table-row-wrapper">
+  <a href="<%= @group_path %>" class="table-row-wrapper">
+    <div class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @pagy.from + @group_counter - 1 %></div>
+    <div class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><span class="faded"><%= "#{@group.organization_mlid}-#{@group.chapter_mlid}-" %></span><%= @group.mlid %></div>
+    <div class="text-right px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @group.group_name %></div>
+    <div class="text-right px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @group.chapter_name %></div>
+    <div class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @group.student_count %></div>
+  </a>
+  <div><a id="edit-button-<%= @group_counter %>" class="mdl-button mdl-js-button mdl-button--icon table-action-icon" href="<%= @path %>}"><%= image_tag 'edit.svg' %></a></div>
+</div>

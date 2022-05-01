@@ -1,0 +1,9 @@
+<%- content_for :title, t(:groups).capitalize %>
+
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  {title: t(:groups).capitalize, href: '' },
+], buttons: [
+  (CommonComponents::ButtonComponent.new(label: t(:add_student), href: new_student_path) if policy(Student).new?)
+].compact) %>
+
+<%= render TableComponents::Table.new(pagy: @pagy, rows: @groups, row_component: TableComponents::GroupRow) %>

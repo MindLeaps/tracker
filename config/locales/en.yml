@@ -42,7 +42,9 @@ en:
   new_student: New Student
   groups: groups
   new_group: New Group
+  group_name: Group Name
   chapter: Chapter
+  chapter_organization: Chapter - Organization
   group_chapter: Group - Chapter
   new_chapter: New Chapter
   chapters: Chapters

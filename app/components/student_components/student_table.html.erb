@@ -1,6 +1,6 @@
 <div class="overflow-x-scroll">
   <div class="grid divide-y divide-purple-200" style="grid-template-columns: repeat(9, minmax(min-content, auto))">
     <%= render CommonComponents::Column.with_collection(columns) %>
-    <%= render StudentComponents::StudentRow.with_collection(@students, pagy: @pagy) %>
+    <%= render TableComponents::StudentRow.with_collection(@students, pagy: @pagy) %>
   </div>
 </div>

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CommonComponents::Column < ViewComponent::Base
+class TableComponents::Column < ViewComponent::Base
   delegate :order_parameters, :order_icon, :order_for, to: :helpers
   with_collection_parameter :column
 
@@ -14,13 +14,13 @@ class CommonComponents::Column < ViewComponent::Base
   end
 
   def call
-    return render CommonComponents::OrderedColumn.new(column: { column_name: @column_name, order_key: @order_key, numeric: @numeric }) if @order_key
+    return render TableComponents::OrderedColumn.new(column: { column_name: @column_name, order_key: @order_key, numeric: @numeric }) if @order_key
 
-    render CommonComponents::UnorderedColumn.new(column: { column_name: @column_name, numeric: @numeric })
+    render TableComponents::UnorderedColumn.new(column: { column_name: @column_name, numeric: @numeric })
   end
 end
 
-class CommonComponents::OrderedColumn < CommonComponents::Column
+class TableComponents::OrderedColumn < TableComponents::Column
   def initialize(column:)
     @column_name = column[:column_name]
     @order_key = column[:order_key]
@@ -28,7 +28,7 @@ class CommonComponents::OrderedColumn < CommonComponents::Column
   end
 end
 
-class CommonComponents::UnorderedColumn < CommonComponents::Column
+class TableComponents::UnorderedColumn < TableComponents::Column
   def initialize(column:)
     @column_name = column[:column_name]
     @numeric = column[:numeric]

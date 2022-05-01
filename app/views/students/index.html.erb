@@ -7,20 +7,4 @@
   (CommonComponents::ButtonComponent.new(label: t(:add_student), href: new_student_path) if policy(Student).new?)
 ].compact) %>
 
-<%#- content_for :header_content do %>
-  <%#= render layout: '/shared/header_content', locals: { title: t(:students).capitalize } do %>
-    <%#= render partial: '/shared/main_header_button', locals: {href: new_student_path, title: t(:add_student)} if policy(Student).new? %>
-  <%# end %>
-<%# end %>
-
-<!--.mdl-tabs.mdl-js-tabs.mdl-js-ripple-effect-->
-<!--  .mdl-tabs__tab-bar-->
-<!--    a href="" class="mdl-tabs__tab is-active"-->
-      <%#= (t :students) %>
-<!--    a href=(student_tags_url) class="mdl-tabs__tab"-->
-      <%#= (t :student_tags) %>
-
-<!--.single-content-card-->
-<%= render CommonComponents::PaginationComponent.new(pagy: @pagy) %>
-<%= render StudentComponents::StudentListComponent.new(pagy: @pagy, student_rows: @student_rows) %>
-<%= render StudentComponents::StudentTable.new(pagy: @pagy, student_rows: @student_rows) %>
+<%= render TableComponents::Table.new(pagy: @pagy, rows: @student_rows, row_component: TableComponents::StudentRow) %>
