@@ -27,6 +27,7 @@ en:
 
   mindleaps_tracker: MindLeaps Tracker
   mlid: MLID
+  name: Name
   organization_mlid_error_message: Organization MLID has to be 3 characters long and can only contain numbers and letters. No special characters.
   chapter_mlid_error_message: Chapter MLID has to be up to 2 characters long and can only contain numbers and letters. No special characters.
   group_mlid_error_message: Group MLID has to be up to 2 characters long and can only contain numbers and letters. No special characters.
@@ -36,6 +37,7 @@ en:
   date_of_birth: Date of Birth
   dob_estimated: DOB Estimated
   circa: "c. "
+  global_role: Global Role
   country_of_nationality: Country of Nationality
   last_name: Last Name
   first_name: First Name
@@ -50,6 +52,8 @@ en:
   chapters: Chapters
   edit_chapter: Edit Chapter
   organizations: Organizations
+  none: None
+  email: Email
   new_organization: New Organization
   organization: Organization
   users: Users
@@ -60,6 +64,7 @@ en:
   add_group: Add Group
   add_chapter: Add Chapter
   add_organization: Add Organization
+  add_user: Add User
   student_created: Student "%{name}" created.
   create_another: Create another
   delete_student: Delete Student
