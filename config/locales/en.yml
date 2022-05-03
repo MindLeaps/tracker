@@ -154,6 +154,8 @@ en:
   skill: Skill
   skills: Skills
   new_skill: New Skill
+  skill_name: Skill Name
+  add_skill: Add Skill
   skill_description: Skill Description
   subjects_with_skill: Subjects With This Skill
   delete_skill: Delete Skill
