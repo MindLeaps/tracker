@@ -65,6 +65,7 @@ en:
   add_chapter: Add Chapter
   add_organization: Add Organization
   add_user: Add User
+  add_lesson: Add Lesson
   student_created: Student "%{name}" created.
   create_another: Create another
   delete_student: Delete Student

@@ -1,0 +1,9 @@
+<%- content_for :title, t(:lessons).capitalize %>
+
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  {title: t(:lessons).capitalize, href: '' },
+], buttons: [
+  (CommonComponents::ButtonComponent.new(label: t(:add_lesson), href: new_user_path) if policy(Lesson).new?)
+].compact) %>
+
+<%= render TableComponents::Table.new(pagy: @pagy, rows: @lesson_rows, row_component: TableComponents::LessonRow) %>
