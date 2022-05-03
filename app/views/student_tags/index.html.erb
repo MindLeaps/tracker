@@ -1,0 +1,10 @@
+<%- content_for :title, t(:student_tags).capitalize %>
+
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  {title: t(:students).capitalize, href: students_path },
+  {title: t(:student_tags), href: '' }
+], buttons: [
+  (CommonComponents::ButtonComponent.new(label: t(:add_tag), href: new_student_tag_path) if policy(Tag).new?)
+].compact) %>
+
+<%= render TableComponents::Table.new(pagy: @pagy, rows: @tags, row_component: TableComponents::StudentTagRow) %>

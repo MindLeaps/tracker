@@ -2,12 +2,11 @@
   <div class="flex-1 flex items-center">
     <div class="pl-10 w-full">
       <%= render SearchFormComponent.new(search: { term: params[:search] }, query_parameters: request.query_parameters) %>
-<!--      <input id="search" name="search" class="block w-full bg-white border border-gray-300 rounded-md py-2 pl-10 pr-3 text-sm placeholder-gray-500 focus:outline-none focus:text-gray-900 focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Search" type="search">-->
     </div>
   </div>
   <div class="px-4 flex-1 flex flex-shrink-1 items-center w-full justify-center items-stretch space-x-8">
     <% @tabs.each do |tab| %>
-      <a <%= "href='#{tab[:href]}'" if tab[:href].present? %> class="<%= if tab[:href] == '' then 'border-green-700 text-gray-800 ' else 'border-transparent hover:border-gray-400 text-gray-500 hover:text-gray-700' end %> border-b-4 inline-flex items-center px-1 pt-1 font-medium"> <%= tab[:title] %> </a>
+      <a href="<%= tab[:href] if tab[:href].present? %>" class="<%= if tab[:href] == '' then 'border-green-700 text-gray-800 ' else 'border-transparent hover:border-gray-400 text-gray-500 hover:text-gray-700' end %> border-b-4 inline-flex items-center px-1 pt-1 font-medium"> <%= tab[:title] %> </a>
     <% end %>
   </div>
 

@@ -13,7 +13,7 @@ class StudentTagsController < HtmlController
   def show
     @tag = Tag.find params.require(:id)
     authorize @tag
-    @student_table_component = StudentComponents::StudentTable.new { |students| pagy apply_scopes(policy_scope(students.joins("INNER JOIN student_tags ON student_id = student_table_rows.id AND tag_id = '#{@tag.id}'"))) }
+    @pagy, @students = pagy apply_scopes(policy_scope(StudentTableRow.includes(:tags, { group: { chapter: :organization } }).joins("INNER JOIN student_tags ON student_id = student_table_rows.id AND tag_id = '#{@tag.id}'")))
   end
 
   def edit

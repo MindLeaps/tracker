@@ -1,0 +1,12 @@
+<div class="<%= 'shaded-row' if shaded? %> table-row-wrapper">
+  <a href="<%= helpers.student_tag_path @item %>" class="<%= 'shaded-row' if shaded? %> table-row-wrapper">
+    <div class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @pagy.from + @item_counter - 1 %></div>
+    <div class="text-right px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @item.tag_name %></div>
+    <div class="text-right px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @item.organization_name + (tag.shared ? " - #{t(:shared)}" : '') %></div>
+    <div class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @item.student_count %></div>
+  </a>
+<div>
+  <% if can_update? %>
+    <a id="edit-button-<%= @group_counter %>" class="mdl-button mdl-js-button mdl-button--icon table-action-icon" href="<%= helpers.edit_student_tag_path @item %>}"><%= image_tag 'edit.svg' %></a></div>
+  <% end %>
+</div>
