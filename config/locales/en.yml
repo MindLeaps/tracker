@@ -92,6 +92,8 @@ en:
   subjects: Subjects
   subject: Subject
   edit_subject: Edit Subject
+  subject_name: Subject Name
+  add_subject: Add Subject
   subject_created: Subject "%{subject}" created.
   subject_updated: Subject updated.
   lesson_created: Lesson created.
