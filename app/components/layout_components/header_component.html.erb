@@ -3,7 +3,7 @@
     <% if left? %>
       <%= left %>
     <% else %>
-      <div class="pl-10 w-full">
+      <div class="pl-6 w-full">
         <%= render SearchFormComponent.new(search: { term: params[:search] }, query_parameters: request.query_parameters) %>
       </div>
     <% end %>

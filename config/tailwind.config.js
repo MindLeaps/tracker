@@ -13,8 +13,8 @@ module.exports = {
         sans: ['Inter var', ...defaultTheme.fontFamily.sans],
       },
       colors: {
-        'primary': 'purple-800',
-        'focus': 'green-600'
+        'primary': 'rgb(107 33 168/var(--tw-bg-opacity))',
+        'focus': 'rgb(22 163 74/var(--tw-bg-opacity))'
       }
     },
   },
