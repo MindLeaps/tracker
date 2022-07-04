@@ -1,0 +1,10 @@
+<div class="<%= 'shaded-row' if shaded? %> table-row-wrapper">
+  <a class="<%= 'shaded-row' if shaded? %> table-row-wrapper">
+    <div class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @item_counter %></div>
+    <div class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @item.date %></div>
+    <div class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @item.average_mark %></div>
+    <% @skill_ids.each do |skill_id| %>
+      <div class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @item.skill_marks[skill_id].try :[], 'mark' %></div>
+    <% end %>
+  </a>
+</div>

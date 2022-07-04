@@ -4,7 +4,8 @@ class StudentsController < HtmlController
   include Pagy::Backend
   has_scope :exclude_deleted, only: :index, type: :boolean, default: true
   has_scope :exclude_empty, only: :performance, type: :boolean, default: true
-  has_scope :table_order, only: :index, type: :hash
+  has_scope :table_order, only: [:index], type: :hash
+  has_scope :table_order, only: [:performance], type: :hash, default: { key: :date, order: :desc }
   has_scope :search, only: :index
 
   def index
@@ -28,16 +29,14 @@ class StudentsController < HtmlController
   def details
     @student = Student.includes(:profile_image, :group).find params.require(:id)
     authorize @student
-    set_back_url_flash
   end
 
   def performance
     @student = Student.find params.require(:id)
     authorize @student
-    @student_lessons_details_by_subject = apply_scopes(StudentLessonDetail).where(student_id: params[:id]).order(:date).all.group_by(&:subject_id)
+    @student_lessons_details_by_subject = apply_scopes(StudentLessonDetail.where(student_id: params[:id])).all.group_by(&:subject_id)
     redirect_to action: :details if @student_lessons_details_by_subject.empty?
-    @subjects = Subject.includes(:skills, :organization).where(id: @student_lessons_details_by_subject.keys)
-    set_back_url_flash
+    @subjects = policy_scope(Subject).includes(:skills).where(id: @student_lessons_details_by_subject.keys)
   end
 
   def edit

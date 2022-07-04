@@ -12,7 +12,7 @@ class ApplicationRecord < ActiveRecord::Base
   scope :exclude_deleted, -> { where deleted_at: nil }
 
   scope :table_order, lambda { |order_hash|
-    order(order_hash[:key] => order_hash[:order])
+    order(Arel.sql(order_hash[:key].to_s) => Arel.sql(order_hash[:order].to_s))
   }
 
   def log_errors
