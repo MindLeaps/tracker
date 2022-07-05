@@ -5,7 +5,7 @@ class StudentsController < HtmlController
   has_scope :exclude_deleted, only: :index, type: :boolean, default: true
   has_scope :exclude_empty, only: :performance, type: :boolean, default: true
   has_scope :table_order, only: [:index], type: :hash
-  has_scope :table_order, only: [:performance], type: :hash, default: { key: :date, order: :desc }
+  has_scope :table_order, only: [:show], type: :hash, default: { key: :date, order: :desc }
   has_scope :search, only: :index
 
   def index
@@ -26,16 +26,10 @@ class StudentsController < HtmlController
     render :new
   end
 
-  def details
-    @student = Student.includes(:profile_image, :group).find params.require(:id)
-    authorize @student
-  end
-
-  def performance
-    @student = Student.find params.require(:id)
+  def show
+    @student = Student.includes(:profile_image, group: { chapter: [:organization] }).find params.require(:id)
     authorize @student
     @student_lessons_details_by_subject = apply_scopes(StudentLessonDetail.where(student_id: params[:id])).all.group_by(&:subject_id)
-    redirect_to action: :details if @student_lessons_details_by_subject.empty?
     @subjects = policy_scope(Subject).includes(:skills).where(id: @student_lessons_details_by_subject.keys)
   end
 
@@ -48,7 +42,7 @@ class StudentsController < HtmlController
   def update
     @student = Student.find params[:id]
     authorize @student
-    return redirect_to details_student_path(@student) if update_student @student
+    return redirect_to student_path(@student) if update_student @student
 
     render :edit
   end
@@ -58,7 +52,7 @@ class StudentsController < HtmlController
     authorize @student
     @student.deleted_at = Time.zone.now
 
-    undo_notice_and_redirect t(:student_deleted, name: @student.proper_name), undelete_student_path, students_path if @student.save
+    undo_notice_and_redirect t(:student_deleted, name: @student.proper_name), undelete_student_path, student_path(@student) if @student.save
   end
 
   def undelete

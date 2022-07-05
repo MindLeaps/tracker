@@ -33,7 +33,7 @@ en:
   group_mlid_error_message: Group MLID has to be up to 2 characters long and can only contain numbers and letters. No special characters.
   students: students
   student_details: Student Details
-  student_deleted_at: Student deleted at
+  student_deleted_at: Student deleted %{time} ago
   date_of_birth: Date of Birth
   dob_estimated: DOB Estimated
   circa: "c. "
@@ -42,6 +42,7 @@ en:
   last_name: Last Name
   first_name: First Name
   new_student: New Student
+  personal_details: Personal, family, school, and health details
   groups: groups
   new_group: New Group
   group_name: Group Name
@@ -108,11 +109,14 @@ en:
   graded_vs_students_in_group: Graded / Students in Group
   back_to_subjects: Back to All Subjects
   cancel: Cancel
+  delete_image: Delete Image
   student_has_no_images: This student has no images
   images_uploaded: Images uploaded.
   no_image_submitted: No image submitted.
   no_valid_mlid_without_group: MLID cannot be valid without existing group.
   duplicate_mlid: MLID already exists in group.
+  set_as_profile_image: Set Profile
+  remove_as_profile_image: Unset Profile
   wrong_image: Image of %{other_student} cannot be a profile image for %{student}
   membership: Membership
   member_email_missing: Member Email missing
@@ -175,6 +179,18 @@ en:
   close_sidebar: Close Sidebar
   open_sidebar: Open sidebar
   pagination_display: Displaying %{from} - %{to} of %{total} in total
+  quartier: Quartier
+  guardian_name: Guardian Name
+  guardian_occupation: Guardian Occupation
+  guardian_contact: Guardian Contact
+  family_members: Family Members
+  name_of_school: Name of School
+  school_level_completed: School Level Completed
+  year_of_dropout: Year of Dropout
+  reason_for_leaving_school: Reason for Leaving School
+  health_insurance: Health Insurance
+  health_issues: Health Issues
+  hiv_tested: HIV Tested
 
   title_chart_2: Quantity of Data Collected By Month
   title_chart_4: Histogram of student performance values

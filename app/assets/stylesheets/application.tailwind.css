@@ -8,7 +8,7 @@
   }
 
   .shaded-row > div {
-    @apply bg-purple-50;
+    @apply bg-gray-100;
   }
 
   .table-row-wrapper:hover > div {

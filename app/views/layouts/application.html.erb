@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
     <%= csrf_meta_tags %>
   </head>
-  <body class="h-full">
+  <body class="h-full bg-gray-200">
     <div class="h-full flex" data-controller="mobile">
       <%= render LayoutComponents::SidebarComponent.new current_user: current_user %>
       <div class="flex flex-col w-full">

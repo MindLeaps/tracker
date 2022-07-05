@@ -1,14 +1,6 @@
 # frozen_string_literal: true
 
 class StudentImagesController < HtmlController
-  skip_after_action :verify_policy_scoped, only: :index
-
-  def index
-    @student = Student.includes(:student_images).find params.require :student_id
-    authorize @student, :show?
-    @new_image = StudentImage.new
-    flash[:back_from_student] = flash[:back_from_student] || request.referer
-  end
 
   def create
     @student = Student.find params.require(:student_id)
@@ -20,6 +12,11 @@ class StudentImagesController < HtmlController
   rescue ActionController::ParameterMissing, ActiveRecord::RecordNotFound
     skip_authorization
     image_missing
+  end
+
+  def destroy
+    @student = Student.find params.require(:student_id)
+    authorize @student, :update?
   end
 
   private
