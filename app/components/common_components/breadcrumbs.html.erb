@@ -1,0 +1,19 @@
+<nav class="flex ml-6" aria-label="Breadcrumb">
+  <ol role="list" class="flex items-center">
+    <% @crumbs.each do |crumb| %>
+      <li class="ml-0">
+        <div class="flex items-center">
+          <a href="<%= crumb[:href] %>" class="text-sm font-medium text-gray-500 hover:text-gray-700"><%= crumb[:label] %></a>
+          <svg class="flex-shrink-0 h-5 w-5 m-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+          </svg>
+        </div>
+      </li>
+    <% end %>
+    <li>
+      <div class="flex items-center">
+        <a href="" class="pointer-events-none font-medium border-green-700 text-gray-800" aria-current="page"><%= @current %></a>
+      </div>
+    </li>
+  </ol>
+</nav>

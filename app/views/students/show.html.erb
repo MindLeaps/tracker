@@ -7,7 +7,13 @@
   (CommonComponents::FormButtonComponent.new(label: t(:restore_student), path: undelete_student_path(@student), method: :post) if policy(@student).destroy? && @student.deleted_at),
   (CommonComponents::DangerousFormButtonComponent.new(label: t(:delete_student), path: student_path(@student), method: :delete) if policy(@student).destroy? && !@student.deleted_at)
 ].compact) do |h|
-  h.with_left {}
+  h.with_left do
+    render CommonComponents::Breadcrumbs.new(current: @student.proper_name, crumbs: [
+      { label: @student.group.chapter.organization.organization_name, href: organization_path(@student.group.chapter.organization) },
+      { label: @student.group.chapter.chapter_name, href: chapter_path(@student.group.chapter) },
+      { label: @student.group_name, href: group_path(@student.group) }
+    ])
+  end
 end %>
 
 <div class="overflow-auto">
