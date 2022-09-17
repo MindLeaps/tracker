@@ -447,7 +447,7 @@ GEM
     stimulus-rails (1.1.0)
       railties (>= 6.0.0)
     strscan (3.0.3)
-    tailwindcss-rails (2.0.12)
+    tailwindcss-rails (2.0.13)
       railties (>= 6.0.0)
     temple (0.8.2)
     thor (1.2.1)
