@@ -418,7 +418,7 @@ GEM
     snaky_hash (2.0.0)
       hashie
       version_gem (~> 1.1)
-    solargraph (0.45.0)
+    solargraph (0.46.0)
       backport (~> 1.2)
       benchmark
       bundler (>= 1.17.2)
@@ -454,7 +454,7 @@ GEM
     tiddle (1.7.1)
       activerecord (>= 5.2.0)
       devise (>= 4.0.0.rc1, < 5)
-    tilt (2.0.10)
+    tilt (2.0.11)
     timeout (0.3.0)
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
