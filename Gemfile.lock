@@ -184,7 +184,7 @@ GEM
     formatador (1.1.0)
     globalid (1.0.0)
       activesupport (>= 5.0)
-    google-protobuf (3.21.6)
+    google-protobuf (3.21.9)
     has_scope (0.8.0)
       actionpack (>= 5.2)
       activesupport (>= 5.2)
