@@ -249,7 +249,7 @@ GEM
       digest
       net-protocol
       timeout
-    newrelic_rpm (8.10.1)
+    newrelic_rpm (8.12.0)
     nio4r (2.5.8)
     nokogiri (1.13.9)
       mini_portile2 (~> 2.8.0)
