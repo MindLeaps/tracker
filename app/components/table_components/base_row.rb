@@ -10,7 +10,7 @@ class TableComponents::BaseRow < ViewComponent::Base
   end
 
   def shaded?
-    @item_counter.odd?
+    @item_counter.even?
   end
 
   def can_update?

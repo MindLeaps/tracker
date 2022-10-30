@@ -39,8 +39,6 @@ en:
   circa: "c. "
   global_role: Global Role
   country_of_nationality: Country of Nationality
-  last_name: Last Name
-  first_name: First Name
   new_student: New Student
   personal_details: Personal, family, school, and health details
   groups: groups
@@ -78,7 +76,12 @@ en:
   number_of_groups: Number of Groups
   number_of_chapters: Number of Chapters
   edit_student: Edit Student
-  date: Date
+  date:
+    date: Date
+    order:
+      - :year
+      - :month
+      - :day
   group_created: Group "%{group}" created.
   group_updated: Group "%{group}" updated.
   group_deleted: Group "%{group}" deleted.
@@ -191,6 +194,11 @@ en:
   health_insurance: Health Insurance
   health_issues: Health Issues
   hiv_tested: HIV Tested
+
+  personal_information: Personal Information
+  first_name: First Name
+  last_name: Last Name
+  group_and_mlid: Group and MLID
 
   title_chart_2: Quantity of Data Collected By Month
   title_chart_4: Histogram of student performance values
