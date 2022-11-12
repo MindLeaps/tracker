@@ -98,14 +98,28 @@
       <div class="mt-5 md:col-span-3 md:mt-0">
         <div data-controller="student-tag" data-student-tag-delete-image-url-value="<%= image_url "delete_forever.svg" %>">
           <div id="tag-container" data-student-tag-target="container"></div>
-        </div>
-        <div class="grid grid-cols-6 gap-6">
-          <div class="col-span-6 lg:col-span-2">
-            <label for="student_group" class="block text-sm font-medium text-gray-700"><%= t(:group) %></label>
-            <%= f.grouped_collection_select :group, @chapter_groups, :groups, :chapter_display, :id, :chapter_group_name_with_full_mlid, { include_blank: true }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+          <div class="grid grid-cols-6 gap-6">
+            <div class="col-span-6 lg:col-span-2">
+              <label for="student_tags" class="block text-sm font-medium text-gray-700"><%= t(:student_tags) %></label>
+              <%= f.collection_select :tags, @permitted_tags, :id, :tag_name, {}, class: 'hidden', id: 'tags-field', multiple: true, 'data-student-tag-target' => 'tags' %>
+              <%= f.text_field :tags_autocomplete, id: 'tag-autocomplete', 'data-student-tag-target' => 'autocomplete', class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm', role:'combobox', 'aria-controls' => 'options', 'aria-expanded' => false %>
+<!--              <ul class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm" id="options" role="listbox">-->
+<!--                <li class="relative cursor-default select-none py-2 pl-8 pr-4 text-gray-900" id="option-0" role="option" tabindex="-1">-->
+<!--                  <span class="block truncate">Leslie Alexander</span>-->
+<!--                </li>-->
+<!--                <li class="relative cursor-default select-none py-2 pl-8 pr-4 text-gray-900" id="option-0" role="option" tabindex="-1">-->
+<!--                  <span class="block truncate">Something Some</span>-->
+<!--                </li>-->
+<!--                <li class="relative cursor-default select-none py-2 pl-8 pr-4 text-gray-900" id="option-0" role="option" tabindex="-1">-->
+<!--                  <span class="block truncate">Nothing None</span>-->
+<!--                </li>-->
+<!--              </ul>-->
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 <% end %>
+<%#= f.association :tags, collection: @permitted_tags, label_method: :tag_name, value_method: :id, include_hidden: false, wrapper_html: { class: 'hidden' }, input_html: { id: 'tags-field', multiple: true, 'data-student-tag-target' => 'tags'} %>
+<%#= f.input :tags_autocomplete, as: :fake, label: t(:student_tags), input_html: { id: 'tag-autocomplete', 'data-student-tag-target' => 'autocomplete' } %>

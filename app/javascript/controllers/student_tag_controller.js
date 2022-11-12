@@ -47,22 +47,20 @@ export default class extends Controller {
 
     tags.forEach((tag) => {
       const chipSpan = document.createElement('span');
-      chipSpan.className = 'mdl-chip mdl-chip--deletable'
+      chipSpan.className = 'inline-flex rounded-full bg-purple-800 pl-3 mr-2 mb-2 text-sm font-medium text-purple-100'
 
-      const chipText = document.createElement('span');
-      chipText.className = 'mdl-chip__text'
-      const text = document.createTextNode(tag.label);
-      chipText.appendChild(text);
-      chipSpan.appendChild(chipText);
+      const labelSpan = document.createElement('span')
+      labelSpan.className = 'py-0.5 mr-3'
+      labelSpan.innerText = tag.label;
 
-      const chipButton = document.createElement('button');
-      chipButton.className = 'mdl-chip__action'
-      chipButton.type = 'button'
-      console.log(this.deleteImageUrlValue);
-      chipButton.innerHTML = '<img src="' + this.deleteImageUrlValue + '" />';
-      chipButton.addEventListener('click', (_) => this.removeTagWithValue(tag.value));
-      chipSpan.appendChild(chipButton);
+      const deleteButton = document.createElement('span')
+      deleteButton.className = 'rounded-r-full bg-red-800 pr-2 py-0.5 text-sm font-medium text-purple-100'
+      deleteButton.innerHTML = '<svg class="ml-1 h-5 w-5 text-indigo-400 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="white"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>'
 
+      chipSpan.appendChild(labelSpan);
+      chipSpan.appendChild(deleteButton);
+
+      deleteButton.addEventListener('click', (_) => this.removeTagWithValue(tag.value));
       this.containerTarget.appendChild(chipSpan);
     });
 
