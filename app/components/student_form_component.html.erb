@@ -1,41 +1,11 @@
-<%#= simple_form_for @student, url: { action: @action }, html: { multipart: true } do |f| %>
-<%#= render partial: 'shared/errors', locals: {subject: @student} %>
-<%#= f.input :mlid, label: 'MLID', input_html: { autofocus: true } %>
-<%#= f.input :first_name %>
-<%#= f.input :last_name %>
-<%#= f.input :gender, as: :radio_buttons, item_wrapper_tag: 'label', item_wrapper_class: 'mdl-radio mdl-js-radio mdl-js-ripple-effect', checked: @student.gender || 'M' %>
-<%#= f.input :dob, label: t(:date_of_birth), start_year: 1990, end_year: Date.today.year, default: { day: 1, month: 1} %>
-<!--<%#= f.input :estimated_dob, label: t(:dob_estimated) %><hr>-->
-<%#= f.association :group, collection: @chapter_groups, as: :grouped_select, group_method: :groups, group_label_method: :chapter_display, label_method: :chapter_group_name_with_full_mlid %>
-<%#= f.input :country_of_nationality, collection: I18nData.countries(locale.to_s).map { |k, v| [v, k] }.sort_alphabetical_by(&:first) %>
-<!--<%#= f.input :quartier %><hr>-->
-<%#= f.input :guardian_name %>
-<%#= f.input :guardian_occupation %>
-<%#= f.input :guardian_contact %>
-<!--<%#= f.input :family_members %><hr>-->
-<%#= f.input :name_of_school %>
-<%#= f.input :school_level_completed %>
-<%#= f.input :year_of_dropout, input_html: { min: 1980, max: 2030 } %>
-<!--<%#= f.input :reason_for_leaving %><hr>-->
-<%#= f.input :health_insurance %>
-<%#= f.input :health_issues %>
-<!--<%#= f.input :hiv_tested %><hr>-->
-<!--<div data-controller="student-tag" data-student-tag-delete-image-url-value="<%#= image_url "delete_forever.svg" %>">-->
-<!--<div id="tag-container" data-student-tag-target="container"></div>-->
-<%#= f.association :tags, collection: @permitted_tags, label_method: :tag_name, value_method: :id, include_hidden: false, wrapper_html: { class: 'hidden' }, input_html: { id: 'tags-field', multiple: true, 'data-student-tag-target' => 'tags'} %>
-<!--<%#= f.input :tags_autocomplete, as: :fake, label: t(:student_tags), input_html: { id: 'tag-autocomplete', 'data-student-tag-target' => 'autocomplete' } %><hr>-->
-<!--<%#= f.input :notes, input_html: {rows: 5} %><hr>-->
-<%#= f.button :submit, class: 'mdl-button mdl-js-button mdl-button--raised mdl-button--accent mdl-js-ripple-effect' %>
-<%# end %>
-
-<%= form_with model: @student, class: 'space-y-6' do |f| %>
-  <div class="bg-white px-4 py-5 shadow sm:p-6">
+<%= form_with model: @student, class: 'space-y-0.5' do |f| %>
+  <div class="bg-white px-4 py-5 shadow sm:p-4">
     <div class="md:grid md:grid-cols-4 md:gap-6">
       <div class="md:col-span-1">
         <h3 class="text-lg font-medium leading-6 text-gray-900"><%= t(:personal_information) %></h3>
       </div>
       <div class="mt-5 md:col-span-3 md:mt-0">
-        <div class="grid grid-cols-6 gap-6">
+        <div class="grid grid-cols-6 gap-4">
           <div class="col-span-6 lg:col-span-2">
             <label for="student_first_name" class="block text-sm font-medium text-gray-700"><%= t(:first_name) %></label>
             <%= f.text_field :first_name, autofocus: true, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
@@ -44,53 +14,54 @@
             <label for="student_last_name" class="block text-sm font-medium text-gray-700"><%= t(:last_name) %></label>
             <%= f.text_field :last_name, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
           </div>
-          <fieldset class="col-span-6 lg:col-span-2">
+          <fieldset class="col-span-6 lg:col-span-2" name="gender">
             <legend class="text-sm font-medium text-gray-700"><%= t(:gender) %></legend>
             <div class="mt-2 flex justify-start gap-4">
               <div class="flex items-center">
-                <%= f.radio_button :gender, :M, class: 'h-4 w-4 border-purple-500 text-green-600 focus:ring-green-600', checked: @student.gender.nil? %>
-                <label for="student_gender_m" class="ml-3 text-sm font-medium text-gray-700"><%= t(:enums)[:student][:gender][:M] %></label>
+                <% puts @student.gender %>
+                <%= f.radio_button :gender, :M, class: 'h-4 w-4 border-purple-500 text-green-600 focus:ring-green-600 cursor-pointer', checked: @student.gender == 'M' || @student.gender.nil? %>
+                <label for="student_gender_m" class="ml-3 text-sm font-medium text-gray-700 cursor-pointer"><%= t(:enums)[:student][:gender][:M] %></label>
               </div>
               <div class="flex items-center">
-                <%= f.radio_button :gender, :F, class: 'h-4 w-4 border-purple-500 text-green-600 focus:ring-green-600' %>
-                <label for="student_gender_f" class="ml-3 text-sm font-medium text-gray-700"><%= t(:enums)[:student][:gender][:F] %></label>
+                <%= f.radio_button :gender, :F, class: 'h-4 w-4 border-purple-500 text-green-600 focus:ring-green-600 cursor-pointer' %>
+                <label for="student_gender_f" class="ml-3 text-sm font-medium text-gray-700 cursor-pointer"><%= t(:enums)[:student][:gender][:F] %></label>
               </div>
             </div>
           </fieldset>
           <div class="col-span-6 lg:col-span-2">
-            <label for="student_dob_1i" class="block text-sm font-medium text-gray-700"><%= t(:date_of_birth) %></label>
-            <%= f.date_select :dob, {}, class: 'mt-1 rounded-md border-purple-500 text-sm focus:border-green-600 focus:outline-none focus:ring-green-600' %>
-            <%= f.check_box :estimated_dob, class: 'h-4 w-4 ml-4 border-purple-500 text-green-600 focus:ring-green-600', checked: estimated_dob_checked %>
-            <label for="student_estimated_dob" class="ml-3 text-sm font-medium text-gray-700"><%= t(:dob_estimated) %></label>
-          </div>
-          <div class="col-span-6 lg:col-span-2">
             <label for="student_country_of_nationality" class="block text-sm font-medium text-gray-700"><%= t(:country_of_nationality) %></label>
             <%= f.select :country_of_nationality, countries_for_select_box, { include_blank: true }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+          </div>
+          <div class="col-span-6 lg:col-span-4">
+            <label for="student_dob_1i" class="block text-sm font-medium text-gray-700"><%= t(:date_of_birth) %></label>
+            <%= f.date_select :dob, { start_year: 1900, end_year: Date.today.year }, class: 'mt-1 rounded-md border-purple-500 text-sm focus:border-green-600 focus:outline-none focus:ring-green-600' %>
+            <%= f.check_box :estimated_dob, class: 'h-4 w-4 ml-4 border-purple-500 text-green-600 focus:ring-green-600 cursor-pointer', checked: estimated_dob_checked? %>
+            <label for="student_estimated_dob" class="ml-3 text-sm font-medium text-gray-700 cursor-pointer"><%= t(:dob_estimated) %></label>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="bg-white px-4 py-5 shadow sm:p-6">
+  <div class="bg-white px-4 py-5 shadow sm:p-4">
     <div class="md:grid md:grid-cols-4 md:gap-6">
       <div class="md:col-span-1">
         <h3 class="text-lg font-medium leading-6 text-gray-900"><%= t(:group_and_mlid) %></h3>
       </div>
       <div class="mt-5 md:col-span-3 md:mt-0">
-        <div class="grid grid-cols-6 gap-6">
+        <div class="grid grid-cols-6 gap-4">
           <div class="col-span-6 lg:col-span-2">
             <label for="student_group" class="block text-sm font-medium text-gray-700"><%= t(:group) %></label>
-            <%= f.grouped_collection_select :group, @chapter_groups, :groups, :chapter_display, :id, :chapter_group_name_with_full_mlid, { include_blank: true }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            <%= f.grouped_collection_select :group_id, @chapter_groups, :groups, :chapter_display, :id, :chapter_group_name_with_full_mlid, { include_blank: true }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
           </div>
           <div class="col-span-6 lg:col-span-2">
             <label for="mlid" class="block text-sm font-medium text-gray-700"><%= t(:mlid) %></label>
-            <%= f.text_field :mlid, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            <%= f.text_field :mlid, class: 'mt-1 block rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm', maxlength: 3, size: 4 %>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="bg-white px-4 py-5 shadow sm:p-6">
+  <div class="bg-white px-4 py-5 shadow sm:p-4">
     <div class="md:grid md:grid-cols-4 md:gap-6">
       <div class="md:col-span-1">
         <h3 class="text-lg font-medium leading-6 text-gray-900"><%= t(:student_tags) %></h3>
@@ -98,28 +69,110 @@
       <div class="mt-5 md:col-span-3 md:mt-0">
         <div data-controller="student-tag" data-student-tag-delete-image-url-value="<%= image_url "delete_forever.svg" %>">
           <div id="tag-container" data-student-tag-target="container"></div>
-          <div class="grid grid-cols-6 gap-6">
+          <div class="grid grid-cols-6 gap-4">
             <div class="col-span-6 lg:col-span-2">
               <label for="student_tags" class="block text-sm font-medium text-gray-700"><%= t(:student_tags) %></label>
-              <%= f.collection_select :tags, @permitted_tags, :id, :tag_name, {}, class: 'hidden', id: 'tags-field', multiple: true, 'data-student-tag-target' => 'tags' %>
+              <%= f.collection_select :tag_ids, @permitted_tags, :id, :tag_name, { include_hidden: false }, class: 'hidden', id: 'tags-field', multiple: true, 'data-student-tag-target' => 'tags' %>
               <%= f.text_field :tags_autocomplete, id: 'tag-autocomplete', 'data-student-tag-target' => 'autocomplete', class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm', role:'combobox', 'aria-controls' => 'options', 'aria-expanded' => false %>
-<!--              <ul class="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm" id="options" role="listbox">-->
-<!--                <li class="relative cursor-default select-none py-2 pl-8 pr-4 text-gray-900" id="option-0" role="option" tabindex="-1">-->
-<!--                  <span class="block truncate">Leslie Alexander</span>-->
-<!--                </li>-->
-<!--                <li class="relative cursor-default select-none py-2 pl-8 pr-4 text-gray-900" id="option-0" role="option" tabindex="-1">-->
-<!--                  <span class="block truncate">Something Some</span>-->
-<!--                </li>-->
-<!--                <li class="relative cursor-default select-none py-2 pl-8 pr-4 text-gray-900" id="option-0" role="option" tabindex="-1">-->
-<!--                  <span class="block truncate">Nothing None</span>-->
-<!--                </li>-->
-<!--              </ul>-->
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+  <div class="bg-white px-4 py-5 shadow sm:p-4">
+    <div class="md:grid md:grid-cols-4 md:gap-6">
+      <div class="md:col-span-1">
+        <h3 class="text-lg font-medium leading-6 text-gray-900"><%= t(:school_information) %></h3>
+      </div>
+      <div class="mt-5 md:col-span-3 md:mt-0">
+        <div class="grid grid-cols-6 gap-4">
+          <div class="col-span-6 lg:col-span-2">
+            <label for="student_name_of_school" class="block text-sm font-medium text-gray-700"><%= t(:name_of_school) %></label>
+            <%= f.text_field :name_of_school, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+          </div>
+          <div class="col-span-6 lg:col-span-2">
+            <label for="student_school_level_completed" class="block text-sm font-medium text-gray-700"><%= t(:school_level_completed) %></label>
+            <%= f.text_field :school_level_completed, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+          </div>
+          <div class="col-span-6 lg:col-span-2">
+            <label for="student_name_of_school" class="block text-sm font-medium text-gray-700"><%= t(:year_of_dropout) %></label>
+            <%= f.date_select :year_of_dropout, { order: [:year], start_year: 1970, end_year: Date.today.year }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+          </div>
+          <div class="col-span-6 lg:col-span-2">
+            <label for="student_reason_for_leaving" class="block text-sm font-medium text-gray-700"><%= t(:reason_for_leaving_school) %></label>
+            <%= f.text_field :reason_for_leaving, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bg-white px-4 py-5 shadow sm:p-4">
+    <div class="md:grid md:grid-cols-4 md:gap-6">
+      <div class="md:col-span-1">
+        <h3 class="text-lg font-medium leading-6 text-gray-900"><%= t(:health_and_family) %></h3>
+      </div>
+      <div class="mt-5 md:col-span-3 md:mt-0">
+        <div class="grid grid-cols-6 gap-4">
+          <div class="col-span-6 lg:col-span-2">
+            <label for="student_health_insurance" class="block text-sm font-medium text-gray-700"><%= t(:health_insurance) %></label>
+            <%= f.text_field :health_insurance, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+          </div>
+          <div class="col-span-6 lg:col-span-2">
+            <label for="student_health_issues" class="block text-sm font-medium text-gray-700"><%= t(:health_issues) %></label>
+            <%= f.text_field :health_issues, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+          </div>
+          <div class="col-span-6 lg:col-span-2">
+            <label for="student_hiv_tested" class="ml-3 text-sm font-medium text-gray-700 cursor-pointer"><%= t(:hiv_tested) %></label>
+            <div>
+              <%= f.check_box :hiv_tested, class: 'h-4 w-4 ml-4 border-purple-500 text-green-600 focus:ring-green-600 cursor-pointer', checked: hiv_tested_checked? %>
+            </div>
+          </div>
+          <div class="col-span-6 lg:col-span-2">
+            <label for="student_guardian_name" class="block text-sm font-medium text-gray-700"><%= t(:guardian_name) %></label>
+            <%= f.text_field :guardian_name, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+          </div>
+          <div class="col-span-6 lg:col-span-2">
+            <label for="student_guardian_occupation" class="block text-sm font-medium text-gray-700"><%= t(:guardian_occupation) %></label>
+            <%= f.text_field :guardian_occupation, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+          </div>
+          <div class="col-span-6 lg:col-span-2">
+            <label for="student_guardian_contact" class="block text-sm font-medium text-gray-700"><%= t(:guardian_contact) %></label>
+            <%= f.text_field :guardian_contact, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+          </div>
+          <div class="col-span-6 lg:col-span-4">
+            <label for="student_family_members" class="block text-sm font-medium text-gray-700"><%= t(:family_members) %></label>
+            <%= f.text_area :family_members, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bg-white px-4 py-5 shadow sm:p-4">
+    <div class="md:grid md:grid-cols-4 md:gap-6">
+      <div class="md:col-span-1">
+        <h3 class="text-lg font-medium leading-6 text-gray-900"><%= t(:notes) %></h3>
+      </div>
+      <div class="mt-5 md:col-span-3 md:mt-0">
+        <div class="grid grid-cols-6 gap-4">
+          <div class="col-span-6 lg:col-span-4">
+            <label for="student_guardian_name" class="block text-sm font-medium text-gray-700"><%= t(:notes) %></label>
+            <%= f.text_area :guardian_name, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bg-white px-4 py-5 shadow sm:p-4">
+    <div class="md:grid md:grid-cols-4 md:gap-6">
+      <div class="md:col-span-1"></div>
+      <div class="mt-5 md:col-span-3 md:mt-0">
+        <div class="grid grid-cols-6 gap-4">
+          <div class="col-span-6 lg:col-span-4">
+            <%= f.submit class: 'px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 cursor-pointer' %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 <% end %>
-<%#= f.association :tags, collection: @permitted_tags, label_method: :tag_name, value_method: :id, include_hidden: false, wrapper_html: { class: 'hidden' }, input_html: { id: 'tags-field', multiple: true, 'data-student-tag-target' => 'tags'} %>
-<%#= f.input :tags_autocomplete, as: :fake, label: t(:student_tags), input_html: { id: 'tag-autocomplete', 'data-student-tag-target' => 'autocomplete' } %>

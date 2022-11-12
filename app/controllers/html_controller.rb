@@ -22,6 +22,14 @@ class HtmlController < ApplicationController
     new_user_session_path(*args)
   end
 
+  def success_notice_with_link(title, text, link_path, link_text)
+    flash[:success_notice] = { title: title, text: text, link_path: link_path, link_text: link_text }
+  end
+
+  def failure_notice(title, text)
+    flash[:failure_notice] = { title: title, text: text }
+  end
+
   def notice_and_redirect(notice, redirect_url)
     flash[:notice] = notice
     redirect_to redirect_url
@@ -29,12 +37,6 @@ class HtmlController < ApplicationController
 
   def undo_notice_and_redirect(notice, undo_path, redirect_url)
     flash[:undo_notice] = { text: notice, path: undo_path }
-    redirect_to redirect_url
-  end
-
-  def link_notice_and_redirect(notice, link_path, link_text, redirect_url)
-    link = view_context.link_to link_text, link_path, class: 'notice-link alert-link btn-link'
-    flash[:link_notice] = notice + " #{link}"
     redirect_to redirect_url
   end
 

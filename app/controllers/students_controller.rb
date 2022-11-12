@@ -21,8 +21,11 @@ class StudentsController < HtmlController
   def create
     @student = Student.new student_params
     authorize @student
-    return link_notice_and_redirect t(:student_created, name: @student.proper_name), new_student_path(group_id: @student.group_id), I18n.t(:create_another), details_student_path(@student) if @student.save
-
+    if @student.save
+      success_notice_with_link t(:student_added), t(:student_name_added, name: @student.proper_name), new_student_path(group_id: @student.group_id), I18n.t(:create_another)
+      return redirect_to @student
+    end
+    failure_notice t(:student_invalid), t(:student_invalid_text)
     render :new
   end
 

@@ -17,11 +17,15 @@ class StudentFormComponent < ViewComponent::Base
     @action = action
     permitted_groups = GroupPolicy::Scope.new(current_user, Group.includes(chapter: :organization)).resolve
     @chapter_groups = structure_groups(permitted_groups).sort_by(&:chapter_display)
-    @permitted_tags = TagPolicy::Scope.new(current_user, Tag.includes(:organization)).resolve
+    @permitted_tags = TagPolicy::Scope.new(current_user, Tag).resolve
   end
 
-  def estimated_dob_checked
+  def estimated_dob_checked?
     @student.estimated_dob.nil? || @student.estimated_dob
+  end
+
+  def hiv_tested_checked?
+    !@student.hiv_tested.nil? || @student.hiv_tested
   end
 
   def countries_for_select_box

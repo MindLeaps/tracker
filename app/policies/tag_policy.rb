@@ -13,7 +13,7 @@ class TagPolicy < ApplicationPolicy
       if user.global_role?
         scope.all
       else
-        scope.where(organization_id: user.membership_organizations).or(scope.where(shared: true))
+        scope.includes(:organization).where(organization_id: user.membership_organizations).or(scope.where(shared: true))
       end
     end
 

@@ -20,7 +20,10 @@ class GroupsController < HtmlController
   def create
     @group = Group.new group_params
     authorize @group
-    return link_notice_and_redirect t(:group_created, group: @group.group_name), new_group_path(chapter_id: @group.chapter_id), t(:create_another), group_path(@group) if @group.save
+    if @group.save
+      success_notice_with_link t(:group_added), t(:group_with_name_added, group: @group.group_name), new_group_path(chapter_id: @group.chapter_id), t(:create_another)
+      return redirect_to group_path(@group)
+    end
 
     render :new
   end

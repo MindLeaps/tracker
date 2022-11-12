@@ -35,9 +35,12 @@ class StudentTagsController < HtmlController
   end
 
   def create
-    tag = Tag.new tag_params
-    authorize tag
-    return link_notice_and_redirect t(:tag_created, name: tag.tag_name), new_student_tag_path, I18n.t(:create_another), student_tag_path(tag) if tag.save
+    @tag = Tag.new tag_params
+    authorize @tag
+    if @tag.save
+      success_notice_with_link t(:tag_added), t(:tag_with_name_added, name: @tag.tag_name), new_student_tag_path, I18n.t(:create_another)
+      return redirect_to student_tag_path(@tag)
+    end
 
     render :new
   end

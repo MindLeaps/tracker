@@ -14,6 +14,14 @@
   .table-row-wrapper:hover > div {
       @apply bg-green-200;
   }
+
+  .notification-in {
+    @apply translate-y-0 opacity-100 sm:translate-x-0;
+  }
+
+  .notification-out {
+    @apply translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2;
+  }
 }
 
 .awesomplete [hidden] {

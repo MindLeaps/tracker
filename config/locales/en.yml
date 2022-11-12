@@ -65,7 +65,9 @@ en:
   add_organization: Add Organization
   add_user: Add User
   add_lesson: Add Lesson
-  student_created: Student "%{name}" created.
+  student_added: Student Added
+  student_name_added: Student "%{name}" added.
+  create_student: Create Student
   create_another: Create another
   delete_student: Delete Student
   restore_student: Restore Deleted Student
@@ -76,13 +78,16 @@ en:
   number_of_groups: Number of Groups
   number_of_chapters: Number of Chapters
   edit_student: Edit Student
+  student_invalid: Student Invalid
+  student_invalid_text: Please fix the errors in the form.
   date:
     date: Date
     order:
       - :year
       - :month
       - :day
-  group_created: Group "%{group}" created.
+  group_added: Group Added
+  group_with_name_added: Group "%{group}" added.
   group_updated: Group "%{group}" updated.
   group_deleted: Group "%{group}" deleted.
   group_restored: Group "%{group}" restored.
@@ -183,14 +188,18 @@ en:
   open_sidebar: Open sidebar
   pagination_display: Displaying %{from} - %{to} of %{total} in total
   quartier: Quartier
+  guardian: Guardian
   guardian_name: Guardian Name
   guardian_occupation: Guardian Occupation
   guardian_contact: Guardian Contact
   family_members: Family Members
+  notes: Notes
+  school_information: School Information
   name_of_school: Name of School
   school_level_completed: School Level Completed
   year_of_dropout: Year of Dropout
   reason_for_leaving_school: Reason for Leaving School
+  health_and_family: Health & Family
   health_insurance: Health Insurance
   health_issues: Health Issues
   hiv_tested: HIV Tested
@@ -233,7 +242,8 @@ en:
   new_student_tag: New Student Tag
   edit_student_tag: Edit Student Tag
   tag_shared_explanation: Shared tags will be available to all organizations, rather than just the organization the tag belongs to.
-  tag_created: Tag "%{name}" created.
+  tag_added: Tag Added.
+  tag_with_name_added: Tag "%{name}" added.
 
   lesson_date: Lesson Date
 

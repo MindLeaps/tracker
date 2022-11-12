@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html class="h-full bg-gray-100">
+<html class="h-full bg-gray-100 overflow-hidden">
   <head>
     <title>Tracker<% if content_for? :title %><%= " - #{content_for :title}" %><% end %></title>
     <meta content="notranslate" name="google" />
     <%= favicon_link_tag 'favicon.ico' %>
     <%= stylesheet_link_tag 'tailwind.css', media: 'all' %>
-    <%#= stylesheet_link_tag 'application', media: 'all' %>
     <%= javascript_importmap_tags %>
+    <%= javascript_include_tag 'old_application', defer: 'defer' %>
     <%= yield :head_content %>
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
     <%= csrf_meta_tags %>
@@ -14,11 +14,20 @@
   <body class="h-full bg-gray-200">
     <div class="h-full flex" data-controller="mobile">
       <%= render LayoutComponents::SidebarComponent.new current_user: current_user %>
-      <div class="flex flex-col w-full">
+      <div class="flex flex-col w-full overflow-auto">
         <%= yield %>
-        <%= render 'shared/snackbar' %>
       </div>
     </div>
-    <%= javascript_include_tag 'old_application', defer: 'defer' %>
+    <!-- Global notification region -->
+    <div aria-live="assertive" class="pointer-events-none fixed inset-0 flex items-end px-4 py-6 sm:items-start sm:px-6 sm:py-20">
+      <div class="flex w-full flex-col items-center space-y-4 sm:items-end">
+        <% if flash[:success_notice] %>
+          <%= render CommonComponents::SuccessNotificationComponent.new notice: flash[:success_notice].with_indifferent_access %>
+        <% end %>
+        <% if flash[:failure_notice] %>
+          <%= render CommonComponents::FailureNotificationComponent.new notice: flash[:failure_notice].with_indifferent_access %>
+        <% end %>
+      </div>
+    </div>
   </body>
 </html>
