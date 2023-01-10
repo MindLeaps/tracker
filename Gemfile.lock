@@ -414,7 +414,7 @@ GEM
     slim (4.1.0)
       temple (>= 0.7.6, < 0.9)
       tilt (>= 2.0.6, < 2.1)
-    smarter_csv (1.7.2)
+    smarter_csv (1.7.3)
     snaky_hash (2.0.0)
       hashie
       version_gem (~> 1.1)
