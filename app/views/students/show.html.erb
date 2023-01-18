@@ -8,10 +8,10 @@
   (CommonComponents::DangerousFormButtonComponent.new(label: t(:delete_student), path: student_path(@student), method: :delete) if policy(@student).destroy? && !@student.deleted_at)
 ].compact) do |h|
   h.with_left do
-    render CommonComponents::Breadcrumbs.new(current: @student.proper_name, crumbs: [
-      { label: @student.group.chapter.organization.organization_name, href: organization_path(@student.group.chapter.organization) },
-      { label: @student.group.chapter.chapter_name, href: chapter_path(@student.group.chapter) },
-      { label: @student.group_name, href: group_path(@student.group) }
+    render CommonComponents::Breadcrumbs.new(current: { label: @student.proper_name, svg_icon: 'student.svg'}, crumbs: [
+      { label: @student.group.chapter.organization.organization_name, href: organization_path(@student.group.chapter.organization), svg_icon: 'world.svg' },
+      { label: @student.group.chapter.chapter_name, href: chapter_path(@student.group.chapter), svg_icon: 'chapter.svg' },
+      { label: @student.group_name, href: group_path(@student.group), svg_icon: 'group.svg' }
     ])
   end
 end %>
