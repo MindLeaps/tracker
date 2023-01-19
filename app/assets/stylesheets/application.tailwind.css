@@ -11,8 +11,16 @@
     @apply bg-slate-100;
   }
 
-  .table-row-wrapper:hover > div {
-      @apply bg-green-200;
+  .table-row-wrapper:hover div {
+    @apply bg-green-200;
+  }
+
+  .table-action-link {
+    @apply text-purple-800;
+  }
+
+  .table-action-link:hover {
+    @apply text-purple-500;
   }
 
   .notification-in {
