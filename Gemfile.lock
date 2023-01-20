@@ -251,7 +251,7 @@ GEM
       timeout
     newrelic_rpm (8.14.0)
     nio4r (2.5.8)
-    nokogiri (1.13.10)
+    nokogiri (1.14.0)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     oauth2 (2.0.8)
@@ -443,7 +443,7 @@ GEM
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
     ssrf_filter (1.0.7)
-    stimulus-rails (1.1.0)
+    stimulus-rails (1.2.1)
       railties (>= 6.0.0)
     strscan (3.0.3)
     tailwindcss-rails (2.0.14)
