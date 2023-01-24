@@ -122,7 +122,6 @@ GEM
       image_optimizer (~> 1.6)
     case_transform (0.2)
       activesupport
-    childprocess (4.1.0)
     cocoon (1.2.15)
     coderay (1.1.3)
     concurrent-ruby (1.1.10)
@@ -395,8 +394,7 @@ GEM
     scenic (1.7.0)
       activerecord (>= 4.0.0)
       railties (>= 4.0.0)
-    selenium-webdriver (4.4.0)
-      childprocess (>= 0.5, < 5.0)
+    selenium-webdriver (4.8.0)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
