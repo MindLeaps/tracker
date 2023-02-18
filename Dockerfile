@@ -33,6 +33,7 @@ RUN if [[ APP_ENV = "dev" ]]; then \
     && apt-get -y install google-chrome-stable \
 ; elif [[ APP_ENV = "prod" ]]; then \
     RAILS_ENV="production" SECRET_KEY_BASE="secret" bundle exec rake assets:precompile \
+    RAILS_ENV="production" SECRET_KEY_BASE="secret" bundle exec rake tailwindcss:build \
 ; fi
 
 RUN bundle install
