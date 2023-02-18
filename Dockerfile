@@ -31,11 +31,12 @@ RUN if [[ APP_ENV = "dev" ]]; then \
     && echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | tee /etc/apt/sources.list.d/google-chrome.list \
     && apt-get update \
     && apt-get -y install google-chrome-stable \
-; elif [[ APP_ENV = "prod" ]]; then \
-    RAILS_ENV="production" SECRET_KEY_BASE="secret" bundle exec rake assets:precompile \
-    RAILS_ENV="production" SECRET_KEY_BASE="secret" bundle exec rake tailwindcss:build \
 ; fi
 
 RUN bundle install
+
+RUN if [[ APP_ENV = "prod" ]]; then \
+        RAILS_ENV="production" SECRET_KEY_BASE="secret" bundle exec rake assets:precompile \
+; fi
 
 ENTRYPOINT ["./ENTRYPOINT.sh"]
