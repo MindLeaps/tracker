@@ -34,9 +34,6 @@ RUN if [[ APP_ENV = "dev" ]]; then \
 ; fi
 
 RUN bundle install
-
-RUN if [[ APP_ENV = "prod" ]]; then \
-        RAILS_ENV="production" SECRET_KEY_BASE="secret" bundle exec rake assets:precompile \
-; fi
+RUN RAILS_ENV="production" SECRET_KEY_BASE="secret" bundle exec rake assets:precompile
 
 ENTRYPOINT ["./ENTRYPOINT.sh"]
