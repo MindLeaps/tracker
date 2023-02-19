@@ -1,8 +1,8 @@
 <%- content_for :title, t(:students).capitalize %>
 
 <%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
-  {title: t(:students).capitalize, href: '' },
-  {title: t(:student_tags), href: student_tags_url }
+  {title: CommonComponents::TagLabel.new(label: t(:students).capitalize, img_src: 'student.svg'), href: '' },
+  {title: CommonComponents::TagLabel.new(label: t(:student_tags), img_src: 'tag.svg'), href: student_tags_url }
 ], buttons: [
   (CommonComponents::ButtonComponent.new(label: t(:add_student), href: new_student_path) if policy(Student).new?)
 ].compact) %>

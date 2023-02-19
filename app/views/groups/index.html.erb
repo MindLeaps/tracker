@@ -1,7 +1,7 @@
 <%- content_for :title, t(:groups).capitalize %>
 
 <%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
-  {title: t(:groups).capitalize, href: '' },
+  {title: CommonComponents::TagLabel.new(label: t(:groups).capitalize, img_src: 'group.svg'), href: '' },
 ], buttons: [
   (CommonComponents::ButtonComponent.new(label: t(:add_group), href: new_group_path) if policy(Group).new?)
 ].compact) %>

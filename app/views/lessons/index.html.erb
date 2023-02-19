@@ -1,7 +1,7 @@
 <%- content_for :title, t(:lessons).capitalize %>
 
 <%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
-  {title: t(:lessons).capitalize, href: '' },
+  {title: CommonComponents::TagLabel.new(label: t(:lessons).capitalize, img_src: 'clipboard.svg'), href: '' },
 ], buttons: [
   (CommonComponents::ButtonComponent.new(label: t(:add_lesson), href: new_lesson_path) if policy(Lesson).new?)
 ].compact) %>

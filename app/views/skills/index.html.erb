@@ -1,7 +1,7 @@
 <%- content_for :title, t(:skills).capitalize %>
 
 <%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
-  {title: t(:skills).capitalize, href: '' },
+  {title: CommonComponents::TagLabel.new(label: t(:skills).capitalize, img_src: 'lightbulb.svg'), href: '' },
 ], buttons: [
   (CommonComponents::ButtonComponent.new(label: t(:add_skill), href: new_skill_path) if policy(Skill).new?)
 ].compact) %>

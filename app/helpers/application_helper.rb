@@ -114,4 +114,12 @@ module ApplicationHelper
 
     'yellow-marked-row'
   end
+
+  def render_label(label)
+    if label.instance_of?(String)
+      render plain: label
+    else
+      render label
+    end
+  end
 end

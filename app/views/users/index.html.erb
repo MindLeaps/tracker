@@ -1,7 +1,7 @@
 <%- content_for :title, t(:users).capitalize %>
 
 <%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
-  {title: t(:users).capitalize, href: '' },
+  {title: CommonComponents::TagLabel.new(label: t(:users).capitalize, img_src: 'identification.svg'), href: '' },
 ], buttons: [
   (CommonComponents::ButtonComponent.new(label: t(:add_user), href: new_user_path) if policy(User).new?)
 ].compact) %>

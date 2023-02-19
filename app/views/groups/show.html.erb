@@ -1,7 +1,7 @@
 <%- content_for :title, "#{t(:group).capitalize} <%- #{@group.chapter_name}" %>
 
 <%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
-  {title: "#{@group.group_name} - #{@group.chapter_name}", href: '' },
+  {title: CommonComponents::TagLabel.new(label: @group.group_name, img_src: 'group.svg'), href: '' },
 ], buttons: [
   (CommonComponents::ButtonComponent.new(label: t(:add_student_to_group), href: new_student_path(group_id: @group.id)) if policy(@group).update?),
   (CommonComponents::ButtonComponent.new(label: t(:edit_group), href: edit_group_path(@group)) if policy(@group).edit?),
@@ -9,9 +9,9 @@
   (CommonComponents::DangerousFormButtonComponent.new(label: t(:delete_group), path: group_path(@group), method: :delete) if policy(@group).destroy? && !@group.deleted_at)
 ].compact)  do |h|
   h.with_left do
-    render CommonComponents::Breadcrumbs.new(current: { label: @group.group_name, svg_icon: 'group.svg'}, crumbs: [
-      { label: @group.chapter.organization.organization_name, href: organization_path(@group.chapter.organization), svg_icon: 'world.svg' },
-      { label: @group.chapter_name, href: chapter_path(@group.chapter), svg_icon: 'chapter.svg' },
+    render CommonComponents::Breadcrumbs.new(current: { label:CommonComponents::TagLabel.new(label: @group.group_name, img_src: 'group.svg') }, crumbs: [
+      { label: CommonComponents::TagLabel.new(label: @group.chapter.organization.organization_name, img_src: 'world.svg'), href: organization_path(@group.chapter.organization) },
+      { label: CommonComponents::TagLabel.new(label: @group.chapter.chapter_name, img_src: 'chapter.svg'), href: chapter_path(@group.chapter) },
     ])
   end
 end %>
