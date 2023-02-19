@@ -1,0 +1,19 @@
+<%- content_for :title, "#{t(:group).capitalize} <%- #{@group.chapter_name}" %>
+
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  {title: "#{@group.group_name} - #{@group.chapter_name}", href: '' },
+], buttons: [
+  (CommonComponents::ButtonComponent.new(label: t(:add_student_to_group), href: new_student_path(group_id: @group.id)) if policy(@group).update?),
+  (CommonComponents::ButtonComponent.new(label: t(:edit_group), href: edit_group_path(@group)) if policy(@group).edit?),
+  (CommonComponents::FormButtonComponent.new(label: t(:restore_group), path: undelete_group_path(@group), method: :post) if policy(@group).destroy? && @group.deleted_at),
+  (CommonComponents::DangerousFormButtonComponent.new(label: t(:delete_group), path: group_path(@group), method: :delete) if policy(@group).destroy? && !@group.deleted_at)
+].compact)  do |h|
+  h.with_left do
+    render CommonComponents::Breadcrumbs.new(current: { label: @group.group_name, svg_icon: 'group.svg'}, crumbs: [
+      { label: @group.chapter.organization.organization_name, href: organization_path(@group.chapter.organization), svg_icon: 'world.svg' },
+      { label: @group.chapter_name, href: chapter_path(@group.chapter), svg_icon: 'chapter.svg' },
+    ])
+  end
+end %>
+
+<%= render @student_table_component %>
