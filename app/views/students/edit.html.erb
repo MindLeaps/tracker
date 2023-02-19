@@ -1,0 +1,18 @@
+<%-content_for :title, "#{t(:edit_student)} - #{@student.proper_name}" %>
+
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  {title: "#{t(:edit_student)} - #{@student.proper_name}", href: '' },
+], buttons: [].compact) do |h|
+  h.with_left do
+    render CommonComponents::Breadcrumbs.new(current: { label: "#{@student.proper_name}"}, crumbs: if @student.group
+    [
+     { label: @student.group.chapter.organization.organization_name, href: organization_path(@student.group.chapter.organization), svg_icon: 'world.svg' },
+     { label: @student.group.chapter.chapter_name, href: chapter_path(@student.group.chapter), svg_icon: 'chapter.svg' },
+     { label: @student.group_name, href: group_path(@student.group), svg_icon: 'group.svg' }
+    ] else [
+      { label: t(:students).capitalize, href: students_path, svg_icon: 'student.svg' }
+    ]end)
+  end
+end %>
+
+<%= render StudentFormComponent.new(student: @student, action: 'create', current_user: current_user) %>
