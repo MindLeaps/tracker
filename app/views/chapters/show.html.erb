@@ -1,0 +1,15 @@
+<%- content_for :title, "#{t(:chapter).capitalize} <%- #{@chapter.chapter_name}" %>
+
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  {title: "#{@chapter.chapter_name} - #{@chapter.organization_name}", href: '' },
+], buttons: [
+  (CommonComponents::ButtonComponent.new(label: t(:edit_chapter), href: edit_chapter_path(@chapter)) if policy(@chapter).edit?),
+].compact)  do |h|
+  h.with_left do
+    render CommonComponents::Breadcrumbs.new(current: { label: @chapter.chapter_name, svg_icon: 'chapter.svg'}, crumbs: [
+      { label: @chapter.organization.organization_name, href: organization_path(@chapter.organization), svg_icon: 'world.svg' },
+    ])
+  end
+end %>
+
+<%= render TableComponents::Table.new(pagy: @pagy, rows: @groups, row_component: TableComponents::GroupRow) %>
