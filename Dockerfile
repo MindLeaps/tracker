@@ -31,10 +31,9 @@ RUN if [[ APP_ENV = "dev" ]]; then \
     && echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | tee /etc/apt/sources.list.d/google-chrome.list \
     && apt-get update \
     && apt-get -y install google-chrome-stable \
-; elif [[ APP_ENV = "prod" ]]; then \
-    RAILS_ENV="production" SECRET_KEY_BASE="secret" bundle exec rake assets:precompile \
 ; fi
 
 RUN bundle install
+RUN RAILS_ENV="production" SECRET_KEY_BASE="secret" bundle exec rake assets:precompile
 
 ENTRYPOINT ["./ENTRYPOINT.sh"]

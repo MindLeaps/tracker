@@ -2,7 +2,6 @@ import * as aws from "@pulumi/aws";
 import {Bucket, BucketPolicy, PrivateAcl, PublicReadAcl} from "@pulumi/aws/s3";
 import * as pulumi from "@pulumi/pulumi";
 const config = new pulumi.Config();
-const region = config.require('region');
 const env = config.require('environment');
 
 const S3_PHOTO_BUCKET_PULUMI_NAME = 'S3_PHOTO_BUCKET_LOGS';

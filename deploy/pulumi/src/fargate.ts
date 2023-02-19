@@ -104,7 +104,6 @@ function createTaskExecutionRole(parameters: SsmParameters, logGroup: LogGroup):
 
 export function createEcsCluster(): Cluster {
     return new Cluster(MINDLEAPS_TRACKER_ECS_CLUSTER_PULUMI_NAME, {
-        capacityProviders: ['FARGATE'],
         name: MINDLEAPS_TRACKER_ECS_CLUSTER_NAME,
         tags: {
             environment: env

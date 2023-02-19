@@ -1,5 +1,6 @@
-## Unreleased
+## 0.30.2 - Rails 7
 - Updated Rails to v7
+- Removed healthcheck from skylight endpoints
 
 ## 0.30.1 - Fix student table ordering
 - Fixed the student table bug where table row number started at 2
