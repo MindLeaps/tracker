@@ -1,6 +1,6 @@
 import * as pulumi from "@pulumi/pulumi";
 import {getFQDN} from "./util";
-import {Parameter, SecureStringParameter, StringParameter} from "@pulumi/aws/ssm";
+import {Parameter, ParameterType} from "@pulumi/aws/ssm";
 import {PolicyStatement} from "@pulumi/aws/iam";
 
 const config = new pulumi.Config();
@@ -88,84 +88,84 @@ export class SsmParameters {
 
     private createDeployDomainSsmParameter(): Parameter {
         return new Parameter(DEPLOY_DOMAIN_PARAM_PULUMI_NAME, {
-            type: StringParameter,
+            type: ParameterType.String,
             name: DEPLOY_DOMAIN_PARAM_NAME,
             value: getFQDN()
         });
     }
     private createSecretKeyBaseSsnParameter(): Parameter {
         return new Parameter(SECRET_KEY_BASE_PARAM_PULUMI_NAME, {
-            type: SecureStringParameter,
+            type: ParameterType.SecureString,
             name: SECRET_KEY_BASE_PARAM_NAME,
             value: config.requireSecret('secret_key_base')
         });
     }
     private createDeviseSecretKey(): Parameter {
         return new Parameter(DEVISE_SECRET_KEY_PARAM_PULUMI_NAME, {
-            type: SecureStringParameter,
+            type: ParameterType.SecureString,
             name: DEVISE_SECRET_KEY_PARAM_NAME,
             value: config.requireSecret('devise_secret_key')
         });
     }
     private createGoogleClientIdSsnParameter(): Parameter {
         return new Parameter(GOOGLE_CLIENT_ID_PARAM_PULUMI_NAME, {
-            type: SecureStringParameter,
+            type: ParameterType.SecureString,
             name: GOOGLE_CLIENT_ID_PARAM_NAME,
             value: config.requireSecret('google_client_id')
         });
     }
     private createGoogleClientSecretSsnParameter(): Parameter {
         return new Parameter(GOOGLE_CLIENT_SECRET_PARAM_PULUMI_NAME, {
-            type: SecureStringParameter,
+            type: ParameterType.SecureString,
             name: GOOGLE_CLIENT_SECRET_PARAM_NAME,
             value: config.requireSecret('google_client_secret')
         });
     }
     private createSkylightAuthenticationSsnParameter(): Parameter {
         return new Parameter(SKYLIGHT_AUTHENTICATION_PARAM_PULUMI_NAME, {
-            type: SecureStringParameter,
+            type: ParameterType.SecureString,
             name: SKYLIGHT_AUTHENTICATION_PARAM_NAME,
             value: config.requireSecret('skylight_authentication')
         });
     }
     private createNewRelicLicenseKeySsmParameter(): Parameter {
         return new Parameter(NEW_RELIC_LICENSE_KEY_PARAM_PULUMI_NAME, {
-            type: SecureStringParameter,
+            type: ParameterType.SecureString,
             name: NEW_RELIC_LICENSE_KEY_PARAM_NAME,
             value: config.requireSecret('new_relic_license_key')
         });
     }
     private createNewRelicAppNameSsmParameter(): Parameter {
         return new Parameter(NEW_RELIC_APP_NAME_PARAM_PULUMI_NAME, {
-            type: SecureStringParameter,
+            type: ParameterType.SecureString,
             name: NEW_RELIC_APP_NAME_PARAM_NAME,
             value: config.requireSecret('new_relic_app_name')
         });
     }
     private createDatabaseUserNameParameter(): Parameter {
         return new Parameter(RDS_USERNAME_PARAM_PULUMI_NAME, {
-            type: SecureStringParameter,
+            type: ParameterType.SecureString,
             name: RDS_USERNAME_PARAM_NAME,
             value: config.requireSecret('rds_username')
         });
     }
     private createDatabasePasswordParameter(): Parameter {
         return new Parameter(RDS_PASSWORD_PARAM_PULUMI_NAME, {
-            type: SecureStringParameter,
+            type: ParameterType.SecureString,
             name: RDS_PASSWORD_PARAM_NAME,
             value: config.requireSecret('rds_password')
         });
     }
     private createAwsAccessKeyId(): Parameter {
         return new Parameter(AWS_ACCESS_KEY_ID_PULUMI_NAME, {
-            type: SecureStringParameter,
+            type: ParameterType.SecureString,
             name: AWS_ACCESS_KEY_ID_NAME,
             value: config.requireSecret('aws_access_key_id')
         });
     }
     private createAwsSecretAccessKey(): Parameter {
         return new Parameter(AWS_SECRET_ACCESS_KEY_PULUMI_NAME, {
-            type: SecureStringParameter,
+            type: ParameterType.SecureString,
             name: AWS_SECRET_ACCESS_KEY_NAME,
             value: config.requireSecret('aws_secret_access_key')
         });
