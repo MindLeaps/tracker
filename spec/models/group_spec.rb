@@ -24,6 +24,24 @@
 require 'rails_helper'
 
 RSpec.describe Group, type: :model do
+  describe 'validations' do
+    it { should validate_presence_of :group_name }
+    it { should validate_presence_of :mlid }
+
+    describe 'mlid' do
+      before :each do
+        @chapter = create :chapter
+      end
+
+      it 'validates the max length of mlid' do
+        valid_group = Group.new group_name: 'Valid Group', mlid: '1A', chapter_id: @chapter.id
+        invalid_group = Group.new group_name: 'Invalid Group', mlid: '1A2', chapter_id: @chapter.id
+        expect(valid_group).to be_valid
+        expect(invalid_group).to be_invalid
+      end
+    end
+  end
+
   describe 'scopes' do
     before :each do
       @chapter1 = create :chapter

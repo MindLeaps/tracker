@@ -24,7 +24,7 @@ class GroupsController < HtmlController
       success_notice_with_link t(:group_added), t(:group_with_name_added, group: @group.group_name), new_group_path(chapter_id: @group.chapter_id), t(:create_another)
       return redirect_to group_path(@group)
     end
-
+    failure_notice t(:group_invalid), t(:student_invalid_text)
     render :new
   end
 

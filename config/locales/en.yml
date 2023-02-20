@@ -91,6 +91,8 @@ en:
   group_updated: Group "%{group}" updated.
   group_deleted: Group "%{group}" deleted.
   group_restored: Group "%{group}" restored.
+  group_invalid: Group Invalid
+  group_invalid_text: Please fix the errors in the form.
   delete_group: Delete Group
   restore_group: Restore Deleted Group
   edit_group: Edit Group
@@ -205,6 +207,8 @@ en:
   hiv_tested: HIV Tested
 
   personal_information: Personal Information
+  group_information: Group Information
+  display_with_mlid: "%{name} (%{mlid})"
   first_name: First Name
   last_name: Last Name
   group_and_mlid: Group and MLID

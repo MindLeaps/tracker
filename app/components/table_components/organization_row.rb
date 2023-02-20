@@ -13,4 +13,3 @@ class TableComponents::OrganizationRow < TableComponents::BaseRow
     ]
   end
 end
-

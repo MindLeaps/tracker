@@ -5,7 +5,7 @@ class TableComponents::SkillRow < TableComponents::BaseRow
     [
       { column_name: '#', numeric: true },
       { column_name: I18n.t(:skill_name) },
-      { column_name: I18n.t(:organization) },
+      { column_name: I18n.t(:organization) }
     ]
   end
 end

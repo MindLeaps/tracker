@@ -9,7 +9,6 @@ class TableComponents::Column < ViewComponent::Base
     @order_key = column[:order_key]
     @numeric = column[:numeric] || false
 
-
     raise ArgumentError, "Column has to have :column_name. Column: #{column}" unless @column_name
   end
 
