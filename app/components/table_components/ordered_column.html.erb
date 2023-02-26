@@ -1,5 +1,5 @@
 <div class="<%= @numeric ? 'text-left' : 'text-right' %> whitespace-nowrap px-6 py-3 border-b border-gray-200 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
-  <%= link_to order_parameters(@order_key), id: "#{@order_key}-order" do %>
-    <%= @column_name %> <%= image_tag order_icon(@order_key), class: 'inline' %>
+  <%= link_to order_parameters(@order_key, @order_scope_name), id: "#{@order_key}-order" do %>
+    <%= @column_name %> <%= image_tag order_icon(@order_key, @order_scope_name), class: 'inline' %>
   <% end %>
 </div>

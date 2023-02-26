@@ -15,18 +15,18 @@ module ApplicationHelper
     "#{group.chapter_name} - #{group.organization_name}"
   end
 
-  def order_for(order_key)
-    return current_scopes[:table_order][:order] if current_scopes.dig(:table_order, :key).to_s == order_key.to_s
+  def order_for(order_key, order_scope_name)
+    return current_scopes[order_scope_name][:order] if current_scopes.dig(order_scope_name, :key).to_s == order_key.to_s
 
     nil
   end
 
-  def order_parameters(order_key)
-    request.query_parameters.merge(table_order: { key: order_key, order: order_for(order_key).to_s == 'asc' ? :desc : :asc })
+  def order_parameters(order_key, order_scope_name)
+    request.query_parameters.merge({ order_scope_name => { key: order_key, order: order_for(order_key, order_scope_name).to_s == 'asc' ? :desc : :asc } })
   end
 
-  def order_icon(order_key)
-    order = order_for order_key
+  def order_icon(order_key, order_scope_name)
+    order = order_for order_key, order_scope_name
     return 'sortable.svg' unless order
 
     order.to_s == 'desc' ? 'arrow_down.svg' : 'arrow_up.svg'
