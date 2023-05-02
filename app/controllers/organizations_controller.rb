@@ -22,10 +22,16 @@ class OrganizationsController < HtmlController
     redirect_to organizations_url
   end
 
-  def show
-    @organization = Organization.find params[:id]
+  def edit
+    @organization = Organization.find params.require :id
     authorize @organization
-    @pagy, @chapters = pagy ChapterSummary.where organization_id: params[:id]
+  end
+
+  def show
+    id = params.require :id
+    @organization = Organization.find id
+    authorize @organization
+    @pagy, @chapters = pagy ChapterSummary.includes(:organization).where organization_id: id
   end
 
   def add_member

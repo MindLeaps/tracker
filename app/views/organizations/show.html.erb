@@ -1,0 +1,12 @@
+<%- content_for :title, @organization.organization_name %>
+
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  {title: CommonComponents::TagLabel.new(label: @organization.organization_name, img_src: 'world.svg'), href: '' },
+], buttons: [
+  (CommonComponents::ButtonComponent.new(label: t(:edit_organization), href: edit_organization_path(@organization)) if policy(@organization).edit?),
+].compact)  do |h|
+  h.with_left do
+  end
+end %>
+
+<%= render TableComponents::Table.new(pagy: @pagy, rows: @chapters, row_component: TableComponents::ChapterRow) %>
