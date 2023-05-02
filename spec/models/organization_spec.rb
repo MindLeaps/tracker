@@ -19,9 +19,7 @@
 require 'rails_helper'
 
 RSpec.describe Organization, type: :model do
-  before :each do
-    create :organization, organization_name: 'Already Existing Organization', mlid: '001'
-  end
+  let(:existing_org) { create :organization, organization_name: 'Already Existing Organization' }
 
   it { should have_many :chapters }
 
@@ -46,17 +44,22 @@ RSpec.describe Organization, type: :model do
     end
 
     it 'with a duplicated name' do
-      org = Organization.new organization_name: 'Already Existing Organization', mlid: '1J4'
+      org = Organization.new organization_name: existing_org.organization_name, mlid: '1J4'
       expect(org).to_not be_valid
     end
 
     it 'with a duplicated MLID' do
-      org = Organization.new organization_name: 'Some other org', mlid: '001'
+      org = Organization.new organization_name: 'Some other org', mlid: existing_org.mlid
       expect(org).to_not be_valid
     end
 
     it 'with an MLID containing special characters' do
       org = Organization.new organization_name: 'Another org', mlid: 'AV?'
+      expect(org).to_not be_valid
+    end
+
+    it 'with an MLID that is longer than 3 characters' do
+      org = Organization.new organization_name: 'Another org', mlid: 'AVBV'
       expect(org).to_not be_valid
     end
   end

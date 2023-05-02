@@ -21,7 +21,7 @@ class Organization < ApplicationRecord
   pg_search_scope :search, against: [:organization_name], using: { tsearch: { prefix: true } }
   resourcify
   validates :organization_name, presence: true, uniqueness: true
-  validates :mlid, presence: true, uniqueness: true, format: { with: /\A[A-Za-z0-9]+\Z/ }
+  validates :mlid, presence: true, uniqueness: true, format: { with: /\A[A-Za-z0-9]{1,3}\Z/ }
 
   has_many :chapters, dependent: :restrict_with_error
 

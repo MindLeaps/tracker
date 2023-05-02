@@ -11,7 +11,7 @@
             <%= f.text_field :group_name, autofocus: true, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
           </div>
           <div class="col-span-6 lg:col-span-2">
-            <label for="student_group" class="block text-sm font-medium text-gray-700"><%= t(:chapter) %></label>
+            <label for="group_chapter" class="block text-sm font-medium text-gray-700"><%= t(:chapter) %></label>
             <%= f.grouped_collection_select :chapter_id, @org_chapters, :chapters, :org_display, :id, :display_with_mlid, { include_blank: true }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
           </div>
           <div class="col-span-6 lg:col-span-2">
