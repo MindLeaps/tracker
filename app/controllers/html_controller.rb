@@ -27,7 +27,10 @@ class HtmlController < ApplicationController
   end
 
   def flash_redirect(destination)
-    return if destination.nil?
+    if destination.nil?
+      flash[:redirect] = nil
+      return
+    end
 
     uri = URI(destination)
     return unless uri.host == request.host

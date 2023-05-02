@@ -17,8 +17,8 @@ class StudentsController < HtmlController
 
   def new
     authorize Student
-    flash_redirect request.referrer
     @student = populate_new_student
+    flash_redirect request.referer
   end
 
   def create
@@ -43,12 +43,16 @@ class StudentsController < HtmlController
     @student = Student.find params[:id]
     authorize @student
     @student.student_images.build
+    flash_redirect request.referer
   end
 
   def update
     @student = Student.find params[:id]
     authorize @student
-    return redirect_to student_path(@student) if update_student @student
+    if update_student @student
+      success_notice t(:student_updated), t(:student_name_updated, name: @student.proper_name)
+      return redirect_to(flash[:redirect] || student_path(@student))
+    end
 
     render :edit
   end
@@ -66,7 +70,7 @@ class StudentsController < HtmlController
     authorize @student
     @student.deleted_at = nil
 
-    notice_and_redirect t(:student_restored, name: @student.proper_name), request.referer || student_path(@student) if @student.save
+    notice_and_redirect t(:student_restored, name: @student.proper_name), student_path(@student) if @student.save
   end
 
   private

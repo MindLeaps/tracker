@@ -75,7 +75,9 @@ en:
   add_user: Add User
   add_lesson: Add Lesson
   student_added: Student Added
+  student_updated: Student Updated
   student_name_added: Student "%{name}" added.
+  student_name_updated: Student "%{name}" updated.
   create_student: Create Student
   create_another: Create another
   delete_student: Delete Student

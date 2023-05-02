@@ -9,11 +9,6 @@ RSpec.describe HtmlController, type: :controller do
       expect(flash[:redirect]).to eq students_path
     end
 
-    it 'does not save anything if redirect path is nil' do
-      controller.flash_redirect(nil)
-      expect(flash[:redirect]).to be_nil
-    end
-
     it 'saves the redirect path including query to flash[:redirect]' do
       controller.flash_redirect('https://test.host/students?param1=something')
       expect(flash[:redirect]).to eq '/students?param1=something'

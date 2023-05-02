@@ -184,10 +184,25 @@ RSpec.describe StudentsController, type: :controller do
         get :new, params: { group_id: @group.id }
       end
 
+      it { should respond_with :ok }
+      it { should render_template :new }
+      it { should set_flash[:redirect] }
+
       it 'prepopulates the student with the correct group' do
         expect(assigns(:student).group.id).to eq @group.id
         expect(assigns(:student).group.group_name).to eq @group.group_name
       end
+    end
+
+    describe '#edit' do
+      let(:student) { create :student }
+      before :each do
+        get :edit, params: { id: student.id }
+      end
+
+      it { should respond_with :ok }
+      it { should render_template :edit }
+      it { should set_flash[:redirect] }
     end
 
     describe '#performance' do
@@ -226,25 +241,37 @@ RSpec.describe StudentsController, type: :controller do
     end
 
     describe '#update' do
-      before :each do
-        @student = create :student
-        @image = create :student_image, student: @student
+      let(:student) { create :student }
+      let(:image) { create :student_image, student: student}
+
+      context 'redirects after successful update' do
+        it 'redirects to student path if there is no redirect flash' do
+          allow_any_instance_of(StudentsController).to receive(:flash).and_return(redirect: nil)
+          post :update, params: { id: student.id, student: { first_name: 'updated' } }
+          expect(response).to redirect_to(student_path(student))
+        end
+
+        it 'redirects to the path in flash[:redirect]' do
+          allow_any_instance_of(StudentsController).to receive(:flash).and_return(redirect: students_path)
+          post :update, params: { id: student.id, student: { first_name: 'updated' } }
+          expect(response).to redirect_to(students_path)
+        end
       end
 
       it 'updates the student\'s profile image' do
-        post :update, params: { id: @student.id, student: { profile_image_id: @image.id } }
+        post :update, params: { id: student.id, student: { profile_image_id: image.id } }
 
-        expect(@student.reload.profile_image).to eq @image
+        expect(student.reload.profile_image).to eq image
       end
 
       it 'updates the student\'s tags' do
         tag1 = create :tag
         tag2 = create :tag
 
-        post :update, params: { id: @student.id, student: { tag_ids: [tag1.id, tag2.id, @student.tags[0].id] } }
+        post :update, params: { id: student.id, student: { tag_ids: [tag1.id, tag2.id, student.tags[0].id] } }
 
-        expect(@student.reload.tags.map(&:tag_name)).to include(tag1.tag_name, tag2.tag_name, @student.tags[0].tag_name)
-        expect(@student.reload.tags.length).to eq 3
+        expect(student.reload.tags.map(&:tag_name)).to include(tag1.tag_name, tag2.tag_name, student.tags[0].tag_name)
+        expect(student.reload.tags.length).to eq 3
       end
     end
 
