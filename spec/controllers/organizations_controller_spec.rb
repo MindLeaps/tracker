@@ -52,7 +52,7 @@ RSpec.describe OrganizationsController, type: :controller do
     end
     describe 'failed creation' do
       before :each do
-        post :create, params: { organization: { organizations_name: 'Some Name' }}
+        post :create, params: { organization: { organizations_name: 'Some Name' } }
       end
 
       it { should respond_with :bad_request }
@@ -82,7 +82,7 @@ RSpec.describe OrganizationsController, type: :controller do
       end
 
       it { should redirect_to organizations_url }
-      it { should set_flash[:success_notice]}
+      it { should set_flash[:success_notice] }
 
       it 'updates the name and MLID of an existing org' do
         existing_org.reload

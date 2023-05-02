@@ -21,7 +21,7 @@ class OrganizationsController < HtmlController
 
     if @organization.save
       success_notice t(:organization_added), t(:organization_name_added, name: @organization.organization_name)
-      return redirect_to organizations_url if @organization.save
+      return redirect_to organizations_url
     end
 
     failure_notice t(:organization_invalid), t(:fix_form_errors)
