@@ -26,6 +26,15 @@ class HtmlController < ApplicationController
     flash[:success_notice] = { title: title, text: text }
   end
 
+  def flash_redirect(destination)
+    return if destination.nil?
+
+    uri = URI(destination)
+    return unless uri.host == request.host
+
+    flash[:redirect] = uri.path + (uri.query.present? ? "?#{uri.query}" : '')
+  end
+
   def success_notice_with_link(title, text, link_path, link_text)
     flash[:success_notice] = { title: title, text: text, link_path: link_path, link_text: link_text }
   end

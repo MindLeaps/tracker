@@ -24,7 +24,6 @@ RSpec.describe StudentsController, type: :controller do
           quartier: 'He lives somewhere...',
           estimated_dob: true
         } }
-        expect(response).to redirect_to details_student_path(assigns[:student])
 
         student = Student.last
         expect(student.first_name).to eql 'Trevor'
@@ -130,6 +129,29 @@ RSpec.describe StudentsController, type: :controller do
         expect(student.last_name).to eql 'Noted'
         expect(student.notes).to eql 'Prime is showing great promise despite the initial learning difficulties.'
       end
+
+      context 'redirects' do
+        it 'redirects to student page if there is no redirect flash' do
+          allow_any_instance_of(StudentsController).to receive(:flash).and_return(redirect: nil)
+          post :create, params: {
+            student: build(:student).as_json
+          }
+          expect(response).to redirect_to(student_path(Student.last))
+        end
+
+        it 'redirects to redirect flash if exists' do
+          allow_any_instance_of(StudentsController).to receive(:flash).and_return(redirect: students_path)
+          post :create, params: {
+            student: build(:student).as_json
+          }
+          expect(response).to redirect_to(students_path)
+          allow_any_instance_of(StudentsController).to receive(:flash).and_return(redirect: group_path(group_a))
+          post :create, params: {
+            student: build(:student).as_json
+          }
+          expect(response).to redirect_to(group_path(group_a))
+        end
+      end
     end
 
     describe '#index' do
@@ -174,13 +196,13 @@ RSpec.describe StudentsController, type: :controller do
           'Memorization' => [1, 2, 3],
           'Grit' => [3, 5, 6]
         }
-        get :performance, params: { id: @student.id }
+        get :show, params: { id: @student.id }
       end
 
       it { should respond_with 200 }
 
       it 'assigns the correct marks in skills by lesson' do
-        lessons = assigns[:student_lessons_details_by_subject].values.first
+        lessons = assigns[:student_lessons_details_by_subject].values.first.sort_by(&:date)
         expect(lessons[0].skill_marks.values.map { |l| l.slice('skill_name', 'mark') }).to eq [
           { 'skill_name' => 'Memorization', 'mark' => 1 }, { 'skill_name' => 'Grit', 'mark' => 3 }
         ]
@@ -193,33 +215,14 @@ RSpec.describe StudentsController, type: :controller do
       end
 
       it 'calculates the correct average mark for each lesson' do
-        lessons = assigns[:student_lessons_details_by_subject].values.first
-        expect(lessons.map(&:average_mark)).to eq [2.0, 3.5, 4.5]
+        lessons = assigns[:student_lessons_details_by_subject].values.first.sort_by(&:date)
+        expect(lessons.map { |l| l.average_mark.to_s }).to eq %w[2.0 3.5 4.5]
       end
 
       it 'assigns the subjects with the skills' do
         expect(assigns[:subjects].first.skills.map(&:skill_name)).to include 'Memorization', 'Grit'
         expect(assigns[:subjects].first.skills.length).to eq 2
       end
-
-      context 'student has no grades' do
-        before :each do
-          @student = create :student
-
-          get :performance, params: { id: @student.id }
-        end
-
-        it { should redirect_to action: :details }
-      end
-    end
-
-    describe '#details' do
-      before :each do
-        @student = create :student, first_name: 'Studento', last_name: 'Detailso', mlid: 'Det-123'
-        get :details, params: { id: @student.id }
-      end
-
-      it { should respond_with 200 }
     end
 
     describe '#update' do
@@ -252,7 +255,7 @@ RSpec.describe StudentsController, type: :controller do
         post :destroy, params: { id: @student.id }
       end
 
-      it { should redirect_to students_path }
+      it { should redirect_to student_path(@student) }
       it { should set_flash[:undo_notice] }
 
       it 'Marks the student as deleted' do
