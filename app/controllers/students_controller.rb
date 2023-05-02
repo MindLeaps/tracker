@@ -27,7 +27,7 @@ class StudentsController < HtmlController
       success_notice_with_link t(:student_added), t(:student_name_added, name: @student.proper_name), new_student_path(group_id: @student.group_id), I18n.t(:create_another)
       return redirect_to @student
     end
-    failure_notice t(:student_invalid), t(:student_invalid_text)
+    failure_notice t(:student_invalid), t(:fix_form_errors)
     render :new
   end
 

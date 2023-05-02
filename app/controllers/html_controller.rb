@@ -22,6 +22,10 @@ class HtmlController < ApplicationController
     new_user_session_path(*args)
   end
 
+  def success_notice(title, text)
+    flash[:success_notice] = { title: title, text: text }
+  end
+
   def success_notice_with_link(title, text, link_path, link_text)
     flash[:success_notice] = { title: title, text: text, link_path: link_path, link_text: link_text }
   end

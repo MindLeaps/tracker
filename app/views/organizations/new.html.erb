@@ -1,7 +1,11 @@
-- content_for :title, t(:new_organization)
+<%- content_for :title, t(:new_organization) %>
 
-- content_for :header_content do
-  = render partial: '/shared/header_content', locals: { back_button_url: organizations_path, back_tooltip: 'Back to Organizations', title: t(:new_organization) }
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  {title: CommonComponents::TagLabel.new(label: t(:new_organization), img_src: 'world.svg'), href: '' },
+], buttons: [
+].compact)  do |h|
+  h.with_left do
+  end
+end %>
 
-.content-card.mdl-cell--8-col.card-padding.center
-  = render OrganizationFormComponent.new(organization: @organization, action: :create)
+<%= render OrganizationFormComponent.new(organization: @organization, action: :create) %>

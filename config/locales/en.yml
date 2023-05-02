@@ -55,7 +55,15 @@ en:
   email: Email
   new_organization: New Organization
   edit_organization: Edit Organization
+  organization_information: Organization Information
+  organization_name: Organization Name
   organization: Organization
+  organization_invalid: Organization Invalid
+  organization_added: Organization added.
+  organization_updated: Organization updated.
+  organization_name_added: Organization "%{name}" added.
+  organization_name_updated: Organization "%{name}" updated.
+
   users: Users
   new_user: New User
   user: User
@@ -80,7 +88,7 @@ en:
   number_of_chapters: Number of Chapters
   edit_student: Edit Student
   student_invalid: Student Invalid
-  student_invalid_text: Please fix the errors in the form.
+  fix_form_errors: Please fix the errors in the form.
   date:
     date: Date
     order:
