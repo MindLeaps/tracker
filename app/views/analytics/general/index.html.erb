@@ -237,7 +237,7 @@
               return '<span style="color:' + this.point.color + '">\u25CF</span> ' + this.series.name +
                 '<br/><span>x: <span style="font-weight: bold">' + this.point.x + '</span></span>' +
                 '<br/><span>y: <span style="font-weight: bold">' + this.point.y + '</span></span>' +
-                (this.point.date ? '<br/><span>#{t(:lesson_date)}: ' + this.point.date + '</span>' : '');
+                (this.point.date ? '<br/><span><%= t(:lesson_date) %>: ' + this.point.date + '</span>' : '');
             }
           },
           exporting: {
