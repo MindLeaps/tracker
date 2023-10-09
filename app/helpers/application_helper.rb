@@ -122,4 +122,8 @@ module ApplicationHelper
       render label
     end
   end
+
+  def student_label(label)
+    CommonComponents::TagLabel.new(label: label, img_src: 'student.svg')
+  end
 end
