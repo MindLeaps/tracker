@@ -45,6 +45,7 @@ en:
   new_group: New Group
   group_name: Group Name
   chapter: Chapter
+  chapter_name: Chapter Name
   chapter_organization: Chapter - Organization
   group_chapter: Group - Chapter
   new_chapter: New Chapter
@@ -99,7 +100,7 @@ en:
       - :day
   group_added: Group Added
   group_with_name_added: Group "%{group}" added.
-  group_updated: Group updated.
+  group_updated: Group updated
   group_name_updated: Group "%{group}" updated.
   group_deleted: Group "%{group}" deleted.
   group_restored: Group "%{group}" restored.
@@ -110,7 +111,8 @@ en:
   edit_group: Edit Group
   edit: Edit
   chapter_created: Chapter "%{chapter}" created.
-  chapter_updated: Chapter "%{chapter}" updated.
+  chapter_updated: Chapter updated
+  chapter_name_updated: Chapter "%{name}" updated.
   duplicate_lesson: Lesson already exists for group "%{group}" in "%{subject}" on selected date.
   duplicate_grade: "%{name} already scored %{mark} in %{skill} on %{date} in %{subject}."
   new_subject: New Subject
@@ -221,6 +223,7 @@ en:
 
   personal_information: Personal Information
   group_information: Group Information
+  chapter_information: Chapter Information
   display_with_mlid: "%{name} (%{mlid})"
   first_name: First Name
   last_name: Last Name

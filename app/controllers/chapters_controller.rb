@@ -39,8 +39,10 @@ class ChaptersController < HtmlController
   def update
     @chapter = Chapter.includes(:organization).find params.require :id
     authorize @chapter
-    return notice_and_redirect t(:chapter_updated, chapter: @chapter.chapter_name), chapter_url if @chapter.update chapter_params
-
+    if @chapter.update chapter_params
+      success_notice t(:chapter_updated), t(:chapter_name_updated, name: @chapter.chapter_name)
+      return redirect_to(flash[:redirect] || chapter_url)
+    end
     render :edit, status: :unprocessable_entity
   end
 
