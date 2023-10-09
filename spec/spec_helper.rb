@@ -96,8 +96,6 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
   Capybara.register_driver :chrome do |app|
-    version = Capybara::Selenium::Driver.load_selenium
-    options_key = Capybara::Selenium::Driver::CAPS_VERSION.satisfied_by?(version) ? :capabilities : :options
     browser_options = ::Selenium::WebDriver::Chrome::Options.new.tap do |opts|
       opts.add_argument('--headless') # Remove this to see tests running in a browser
       opts.add_argument('--window-size=2500,2500')
@@ -107,7 +105,7 @@ RSpec.configure do |config|
       opts.add_preference(:download, default_directory: Capybara.save_path)
     end
 
-    Capybara::Selenium::Driver.new(app, **{ browser: :chrome, options_key => browser_options })
+    Capybara::Selenium::Driver.new(app, **{ browser: :chrome, options: browser_options })
   end
 
   Capybara.javascript_driver = :chrome

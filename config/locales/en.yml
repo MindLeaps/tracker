@@ -99,7 +99,8 @@ en:
       - :day
   group_added: Group Added
   group_with_name_added: Group "%{group}" added.
-  group_updated: Group "%{group}" updated.
+  group_updated: Group updated.
+  group_name_updated: Group "%{group}" updated.
   group_deleted: Group "%{group}" deleted.
   group_restored: Group "%{group}" restored.
   group_invalid: Group Invalid

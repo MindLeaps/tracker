@@ -57,7 +57,7 @@ Rails.application.routes.draw do
     member do
       post :undelete
     end
-    resources :student_images, only: %i[index create destroy]
+    resources :student_images, only: %i[create destroy]
   end
 
   resources :student_tags, only: %i[index new create show edit update]

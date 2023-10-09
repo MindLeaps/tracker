@@ -43,7 +43,10 @@ class GroupsController < HtmlController
   def update
     @group = Group.find params.require :id
     authorize @group
-    return notice_and_redirect t(:group_updated, group: @group.group_name), group_url if @group.update group_params
+    if @group.update group_params
+      success_notice t(:group_updated), t(:group_name_updated, group: @group.group_name)
+      return redirect_to(flash[:redirect] || group_path(@group))
+    end
 
     render :edit, status: :unprocessable_entity
   end

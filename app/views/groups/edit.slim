@@ -1,7 +1,0 @@
-- content_for :title, "#{t(:edit_group)} - #{@group.group_chapter_name}"
-
-- content_for :header_content do
-  = render partial: '/shared/header_content', locals: { back_button_url: group_path(@group), back_tooltip: "Back to #{@group.group_name}", title: "Edit #{@group.group_name}" }
-
-.content-card.mdl-cell--8-col.card-padding.center
-  = render GroupFormComponent.new(group: @group, action: :update, current_user: current_user)
