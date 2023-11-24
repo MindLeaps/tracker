@@ -10,9 +10,11 @@
 #  first_name   :string
 #  grade_count  :bigint
 #  last_name    :string
+#  skill_count  :bigint
 #  group_id     :integer
 #  lesson_id    :integer
 #  student_id   :integer
+#  subject_id   :integer
 #
 require 'rails_helper'
 

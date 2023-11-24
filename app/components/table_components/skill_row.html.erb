@@ -1,6 +1,6 @@
 <div class="<%= 'shaded-row' if shaded? %> table-row-wrapper">
   <a href="<%= helpers.skill_path @item %>" class="<%= 'shaded-row' if shaded? %> table-row-wrapper">
-    <div class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @pagy.from + @item_counter - 1 %></div>
+    <div class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @pagy.from + @item_counter %></div>
     <div class="text-right px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @item.skill_name %></div>
     <div class="text-right px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @item.organization.organization_name %></div>
   </a>

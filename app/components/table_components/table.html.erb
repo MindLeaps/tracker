@@ -1,7 +1,0 @@
-<%= render CommonComponents::PaginationComponent.new(pagy: @pagy) if @pagy %>
-<div class="overflow-x-scroll bg-white">
-  <div class="grid" style="grid-template-columns: repeat(<%= @row_component::columns(**@column_arguments).count %>, minmax(min-content, auto))">
-    <%= render TableComponents::Column.with_collection(@row_component::columns(**@column_arguments), order_scope_name: @order_scope_name) %>
-    <%= render @row_component.with_collection(@rows, pagy: @pagy, **@row_arguments) %>
-  </div>
-</div>

@@ -266,8 +266,7 @@ en:
   tag_with_name_added: Tag "%{name}" added.
 
   lesson_date: Lesson Date
-
-
+  grades_per_skill: Grades Per Skill
 
   errors:
     messages:

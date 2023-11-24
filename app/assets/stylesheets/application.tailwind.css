@@ -30,6 +30,30 @@
   .notification-out {
     @apply translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2;
   }
+
+  .grading-marker {
+    content: '';
+    width: 5px;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
+  .fully-graded:before {
+    @apply grading-marker;
+    background: green;
+  }
+
+  .partially-graded:before {
+    @apply grading-marker;
+    background: yellow;
+  }
+
+  .not-graded:before {
+    @apply grading-marker;
+    background: red;
+  }
 }
 
 .awesomplete [hidden] {

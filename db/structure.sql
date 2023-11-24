@@ -17,10 +17,24 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 
 
 --
+-- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
+
+
+--
 -- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner: -
 --
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
 
 
 --
@@ -58,7 +72,7 @@ $$;
 -- Name: update_records_with_unique_mlids(text, integer); Type: PROCEDURE; Schema: public; Owner: -
 --
 
-CREATE PROCEDURE public.update_records_with_unique_mlids(IN table_name text, IN mlid_length integer)
+CREATE PROCEDURE public.update_records_with_unique_mlids(table_name text, mlid_length integer)
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -89,7 +103,7 @@ $$;
 -- Name: update_records_with_unique_mlids(text, integer, text); Type: PROCEDURE; Schema: public; Owner: -
 --
 
-CREATE PROCEDURE public.update_records_with_unique_mlids(IN table_name text, IN mlid_length integer, IN unique_scope text DEFAULT NULL::text)
+CREATE PROCEDURE public.update_records_with_unique_mlids(table_name text, mlid_length integer, unique_scope text DEFAULT NULL::text)
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -300,7 +314,7 @@ ALTER SEQUENCE public.chapters_id_seq OWNED BY public.chapters.id;
 --
 
 CREATE TABLE public.enrollments (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     student_id bigint NOT NULL,
     group_id bigint NOT NULL,
     active_since timestamp without time zone NOT NULL,
@@ -740,9 +754,11 @@ SELECT
     NULL::character varying AS last_name,
     NULL::timestamp without time zone AS deleted_at,
     NULL::integer AS lesson_id,
+    NULL::integer AS subject_id,
     NULL::numeric AS average_mark,
     NULL::bigint AS grade_count,
-    NULL::boolean AS absent;
+    NULL::boolean AS absent,
+    NULL::bigint AS skill_count;
 
 
 --
@@ -842,7 +858,7 @@ SELECT
     NULL::uuid AS id,
     NULL::character varying AS tag_name,
     NULL::boolean AS shared,
-    NULL::bigint AS organization_id,
+    NULL::integer AS organization_id,
     NULL::character varying AS organization_name,
     NULL::bigint AS student_count;
 
@@ -852,7 +868,7 @@ SELECT
 --
 
 CREATE TABLE public.student_tags (
-    student_id bigint NOT NULL,
+    student_id integer NOT NULL,
     tag_id uuid NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
@@ -877,6 +893,21 @@ CREATE SEQUENCE public.students_id_seq
 --
 
 ALTER SEQUENCE public.students_id_seq OWNED BY public.students.id;
+
+
+--
+-- Name: subject_summaries; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.subject_summaries AS
+SELECT
+    NULL::integer AS id,
+    NULL::character varying AS subject_name,
+    NULL::integer AS organization_id,
+    NULL::bigint AS skill_count,
+    NULL::timestamp without time zone AS created_at,
+    NULL::timestamp without time zone AS updated_at,
+    NULL::timestamp without time zone AS deleted_at;
 
 
 --
@@ -918,9 +949,9 @@ ALTER SEQUENCE public.subjects_id_seq OWNED BY public.subjects.id;
 --
 
 CREATE TABLE public.tags (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     tag_name character varying NOT NULL,
-    organization_id bigint NOT NULL,
+    organization_id integer NOT NULL,
     shared boolean NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
@@ -1560,59 +1591,6 @@ CREATE OR REPLACE VIEW public.group_lesson_summaries AS
 
 
 --
--- Name: student_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.student_lesson_summaries AS
- SELECT united.student_id,
-    united.group_id,
-    united.first_name,
-    united.last_name,
-    united.deleted_at,
-    united.lesson_id,
-    united.average_mark,
-    united.grade_count,
-    united.absent
-   FROM ( SELECT s.id AS student_id,
-            s.group_id,
-            s.first_name,
-            s.last_name,
-            s.deleted_at,
-            l.id AS lesson_id,
-            round(avg(grades.mark), 2) AS average_mark,
-            count(grades.mark) AS grade_count,
-                CASE
-                    WHEN (a.id IS NULL) THEN false
-                    ELSE true
-                END AS absent
-           FROM ((((public.students s
-             JOIN public.groups g ON ((g.id = s.group_id)))
-             JOIN public.lessons l ON ((g.id = l.group_id)))
-             LEFT JOIN public.grades ON (((grades.student_id = s.id) AND (grades.lesson_id = l.id) AND (grades.deleted_at IS NULL))))
-             LEFT JOIN public.absences a ON (((a.student_id = s.id) AND (a.lesson_id = l.id))))
-          GROUP BY s.id, l.id, a.id
-        UNION
-         SELECT s.id AS student_id,
-            s.group_id,
-            s.first_name,
-            s.last_name,
-            s.deleted_at,
-            l.id AS lesson_id,
-            round(avg(grades.mark), 2) AS average_mark,
-            count(grades.mark) AS grade_count,
-                CASE
-                    WHEN (a.id IS NULL) THEN false
-                    ELSE true
-                END AS absent
-           FROM ((((public.lessons l
-             JOIN public.groups g ON ((g.id = l.group_id)))
-             JOIN public.grades ON (((grades.lesson_id = l.id) AND (grades.deleted_at IS NULL))))
-             JOIN public.students s ON ((grades.student_id = s.id)))
-             LEFT JOIN public.absences a ON (((a.student_id = s.id) AND (a.lesson_id = l.id))))
-          GROUP BY s.id, l.id, a.id) united;
-
-
---
 -- Name: lesson_skill_summaries _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
@@ -1790,6 +1768,83 @@ CREATE OR REPLACE VIEW public.organization_summaries AS
    FROM (public.organizations o
      LEFT JOIN public.chapter_summaries c ON ((c.organization_id = o.id)))
   GROUP BY o.id;
+
+
+--
+-- Name: subject_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.subject_summaries AS
+ SELECT su.id,
+    su.subject_name,
+    su.organization_id,
+    count(*) AS skill_count,
+    su.created_at,
+    su.updated_at,
+    su.deleted_at
+   FROM ((public.subjects su
+     JOIN public.assignments a ON ((su.id = a.subject_id)))
+     JOIN public.skills sk ON ((sk.id = a.skill_id)))
+  WHERE (sk.deleted_at IS NULL)
+  GROUP BY su.id;
+
+
+--
+-- Name: student_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.student_lesson_summaries AS
+ SELECT united.student_id,
+    united.group_id,
+    united.first_name,
+    united.last_name,
+    united.deleted_at,
+    united.lesson_id,
+    united.subject_id,
+    united.average_mark,
+    united.grade_count,
+    united.absent,
+    su.skill_count
+   FROM (( SELECT s.id AS student_id,
+            s.group_id,
+            s.first_name,
+            s.last_name,
+            s.deleted_at,
+            l.id AS lesson_id,
+            l.subject_id,
+            round(avg(grades.mark), 2) AS average_mark,
+            count(grades.mark) AS grade_count,
+                CASE
+                    WHEN (a.id IS NULL) THEN false
+                    ELSE true
+                END AS absent
+           FROM ((((public.students s
+             JOIN public.groups g ON ((g.id = s.group_id)))
+             JOIN public.lessons l ON ((g.id = l.group_id)))
+             LEFT JOIN public.grades ON (((grades.student_id = s.id) AND (grades.lesson_id = l.id) AND (grades.deleted_at IS NULL))))
+             LEFT JOIN public.absences a ON (((a.student_id = s.id) AND (a.lesson_id = l.id))))
+          GROUP BY s.id, l.id, a.id
+        UNION
+         SELECT s.id AS student_id,
+            s.group_id,
+            s.first_name,
+            s.last_name,
+            s.deleted_at,
+            l.id AS lesson_id,
+            l.subject_id,
+            round(avg(grades.mark), 2) AS average_mark,
+            count(grades.mark) AS grade_count,
+                CASE
+                    WHEN (a.id IS NULL) THEN false
+                    ELSE true
+                END AS absent
+           FROM ((((public.lessons l
+             JOIN public.groups g ON ((g.id = l.group_id)))
+             JOIN public.grades ON (((grades.lesson_id = l.id) AND (grades.deleted_at IS NULL))))
+             JOIN public.students s ON ((grades.student_id = s.id)))
+             LEFT JOIN public.absences a ON (((a.student_id = s.id) AND (a.lesson_id = l.id))))
+          GROUP BY s.id, l.id, a.id) united
+     JOIN public.subject_summaries su ON ((united.subject_id = su.id)));
 
 
 --
@@ -2118,9 +2173,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210810102949'),
 ('20210909104020'),
 ('20210910115239'),
-('20211217173701'),
-('20211217173704'),
 ('20220501040818'),
-('20220501041026');
+('20220501041026'),
+('20231015025217'),
+('20231015025855');
 
 
