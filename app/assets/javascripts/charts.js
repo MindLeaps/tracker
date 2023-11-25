@@ -42,7 +42,7 @@ function displayLessonGraph(containerId, lessonUid, data) {
               });
             }
             data.element._node.setAttribute('style', 'cursor: pointer');
-            data.element._node.addEventListener("click", function() {Turbolinks.visit(data.meta.lesson_url + window.location.search);});
+            data.element._node.addEventListener("click", function() {window.location = (data.meta.lesson_url + window.location.search);});
           }
         });
       }

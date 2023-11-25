@@ -13,14 +13,33 @@ end %>
 
 <div class="overflow-auto">
   <div class="flex">
-    <section class="flex-1 shadow my-6 mr-2 divide-y divide-gray-200">
-      <%= render TableComponents::Table.new(pagy: @pagy, rows: @lesson_skill_summary, row_component: TableComponents::SkillLessonRow, options: {no_pagination: true}) %>
+    <section class="flex-1 pr-2">
+      <%= render CommonComponents::Card.new(title: t(:group_history).capitalize) do |card| %>
+        <% card.with_card_content do %>
+          <div class="ct-chart ct-octave bg-white full-width"></div>
+        <% end %>
+      <% end %>
+      <%= render CommonComponents::Card.new(title: t(:skills).capitalize) do |card| %>
+        <% card.with_card_content do %>
+          <%= render TableComponents::Table.new(pagy: @pagy, rows: @lesson_skill_summary, row_component: TableComponents::SkillLessonRow, options: {no_pagination: true}) %>
+        <% end %>
+      <% end %>
     </section>
-    <section class="flex-1 shadow my-6 ml-2">
-      <%= render TableComponents::Table.new(pagy: @pagy, rows: @student_lesson_summaries, row_component: TableComponents::StudentLessonRow) %>
+    <section class="flex-1 pr-2">
+      <%= render CommonComponents::Card.new(title: t(:students).capitalize) do |card| %>
+        <% card.with_card_content do %>
+          <%= render TableComponents::Table.new(pagy: @pagy, rows: @student_lesson_summaries, row_component: TableComponents::StudentLessonRow) %>
+        <% end %>
+      <% end %>
     </section>
   </div>
 </div>
+<%= javascript_tag do %>
+  function onChartsLoad() {
+    displayLessonGraph && displayLessonGraph('.ct-chart', '<%= @lesson.uid %>', <%= @group_lessons_data[:group_lessons].to_json.html_safe%>);
+  }
+<% end %>
+<%= javascript_include_tag "charts", onload: 'onChartsLoad()' %>
 <!--.mdl-cell.mdl-cell--5-col-->
 <!--  .mdl-card.mdl-shadow--2dp.full-width-->
 <!--    .mdl-card__title.primary-->
@@ -98,8 +117,6 @@ end %>
 <!--              = link_to(if summary.absent then 'Absent' else summary.average_mark end || '', lesson_student_path(@lesson.id, summary.student_id))-->
 
 <!--javascript:-->
-<!--  function onChartsLoad() {-->
-<!--    displayLessonGraph && displayLessonGraph('.ct-chart', '#{@lesson.uid}', #{@group_lessons_data[:group_lessons].to_json.html_safe});-->
-<!--  }-->
 
 <!--= javascript_include_tag 'charts', onload: 'onChartsLoad()'-->
+
