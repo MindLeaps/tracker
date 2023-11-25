@@ -1,0 +1,10 @@
+<%- content_for :title, t(:new_user)%>
+
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  {title: CommonComponents::TagLabel.new(label: t(:new_user), img_src: 'identification.svg'), href: '' },
+], buttons: [].compact) do |h|
+  h.with_left do
+  end
+end %>
+
+<%= render UserForm.new(user: @user, action: :create) %>

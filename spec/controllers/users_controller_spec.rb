@@ -78,17 +78,30 @@ RSpec.describe UsersController, type: :controller do
   end
 
   describe '#create' do
-    before :each do
-      post :create, params: {
-        user: { email: 'new_user@example.com' }
-      }
+    describe 'success' do
+      before :each do
+        post :create, params: {
+          user: { email: 'new_user@example.com' }
+        }
+      end
+
+      it { should redirect_to users_path }
+      it { should set_flash[:notice].to 'User with email new_user@example.com added.' }
+
+      it 'creates a new user' do
+        expect(User.last.email).to eq 'new_user@example.com'
+      end
     end
+    describe 'failure' do
+      before :each do
+        post :create, params: {
+          user: { email: '' }
+        }
+      end
 
-    it { should redirect_to users_path }
-    it { should set_flash[:notice].to 'User with email new_user@example.com added.' }
-
-    it 'creates a new user' do
-      expect(User.last.email).to eq 'new_user@example.com'
+      it { should respond_with 422 }
+      it { should render_template :new }
+      it { should set_flash[:failure_notice].to({ title: 'User Invalid', text: 'Email can\'t be blank' }) }
     end
   end
 

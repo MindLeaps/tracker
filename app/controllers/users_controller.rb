@@ -21,9 +21,12 @@ class UsersController < HtmlController
   def create
     @user = User.new params.require(:user).permit(:email)
     authorize @user
-    return notice_and_redirect(t(:user_added, email: params[:user][:email]), users_url) if @user.save
-
-    render :index
+    if @user.save
+      success_notice_with_link t(:user_added), t(:user_with_email_added, email: @user.email), new_user_path, t(:create_another)
+      return redirect_to user_path(@user)
+    end
+    failure_notice t(:user_invalid), @user.errors.full_messages.join('\n')
+    render :new, status: :unprocessable_entity
   end
 
   def destroy

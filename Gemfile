@@ -55,6 +55,7 @@ group :development, :test do
   gem 'rubocop-rails'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
+  gem 'rails_spotlight'
 
   # Rspec requires capybara > 2.1
   gem 'capybara', '> 2.1'
