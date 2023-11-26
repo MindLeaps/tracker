@@ -19,7 +19,6 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
-require 'webdrivers'
 require 'capybara/rspec'
 require 'omniauth'
 require 'json_matchers/rspec'
@@ -95,22 +94,23 @@ RSpec.configure do |config|
   # test failures related to randomization by passing the same `--seed` value
   # as the one that triggered the failure.
   Kernel.srand config.seed
-  Capybara.register_driver :chrome do |app|
-    version = Capybara::Selenium::Driver.load_selenium
-    options_key = Capybara::Selenium::Driver::CAPS_VERSION.satisfied_by?(version) ? :capabilities : :options
-    browser_options = ::Selenium::WebDriver::Chrome::Options.new.tap do |opts|
-      opts.add_argument('--headless') # Remove this to see tests running in a browser
-      opts.add_argument('--window-size=2500,2500')
-      # Workaround https://bugs.chromium.org/p/chromedriver/issues/detail?id=2650&q=load&sort=-id&colspec=ID%20Status%20Pri%20Owner%20Summary
-      opts.add_argument('--disable-site-isolation-trials')
-      opts.add_preference('download.default_directory', Capybara.save_path)
-      opts.add_preference(:download, default_directory: Capybara.save_path)
-    end
+  # Capybara.register_driver :chrome do |app|
+  #   version = Capybara::Selenium::Driver.load_selenium
+  #   options_key = Capybara::Selenium::Driver::CAPS_VERSION.satisfied_by?(version) ? :capabilities : :options
+  #   browser_options = ::Selenium::WebDriver::Chrome::Options.new.tap do |opts|
+  #     opts.add_argument('--headless') # Remove this to see tests running in a browser
+  #     opts.add_argument('--window-size=2500,2500')
+  #     # Workaround https://bugs.chromium.org/p/chromedriver/issues/detail?id=2650&q=load&sort=-id&colspec=ID%20Status%20Pri%20Owner%20Summary
+  #     opts.add_argument('--disable-site-isolation-trials')
+  #     opts.add_preference('download.default_directory', Capybara.save_path)
+  #     opts.add_preference(:download, default_directory: Capybara.save_path)
+  #   end
 
-    Capybara::Selenium::Driver.new(app, **{ browser: :chrome, options_key => browser_options })
-  end
+  #   Capybara::Selenium::Driver.new(app, **{ browser: :chrome, options_key => browser_options })
+  # end
 
-  Capybara.javascript_driver = :chrome
+  # Capybara.javascript_driver = :chrome
+  Capybara.javascript_driver = :selenium
   Capybara.server = :puma, { Silent: true }
 end
 
