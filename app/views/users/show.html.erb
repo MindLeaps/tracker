@@ -1,0 +1,95 @@
+<%- content_for :title, @user.email %>
+
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  {title: CommonComponents::TagLabel.new(label: @user.email, img_src: 'identification.svg'), href: '' },
+], buttons: [
+].compact) do |h|
+  h.with_left do
+    render CommonComponents::Breadcrumbs.new(current: { label: CommonComponents::TagLabel.new(label: @user.email, img_src: 'identification.svg') }, crumbs: [])
+  end
+end %>
+
+<div class="overflow-auto">
+  <div class="flex">
+    <section class="flex-1 pr-2">
+      <%= render CommonComponents::Card.new(title: t(:profile_image).capitalize) do |card| %>
+        <% card.with_card_content do %>
+          <div class="bg-white p-4">
+            <%= image_tag user_image(@user, 300), size: "300x300", class: 'm-auto' %>
+            <ul>
+              <li><%= t(:email) %>: <%= @user.email %></li>
+              <% if policy(@user).create_api_token? %>
+                <li>API Token: <%= @token %> <%= render CommonComponents::DangerousFormButtonComponent.new(label: t(:create_api_token), path: create_api_token_user_path(@user), method: :post) %></li>
+              <% end %>
+            </ul>
+          </div>
+
+        <% end %>
+      <% end %>
+    </section>
+    <section class="flex-1 pr-2">
+      <% if @user.id != current_user.id && policy(@membership).update_global_role? %>
+        <%= render CommonComponents::Card.new(title: t(:global_roles).capitalize) do |card| %>
+          <% card.with_card_content do %>
+            <div class="bg-white p-4">
+              <%= form_with url: update_global_role_user_memberships_path(@user), method: :put do |f| %>
+                <fieldset class="pb-4">
+                  <div class="space-y-5">
+                    <% Role::GLOBAL_ROLES.each do |role_key, role_name| %>
+                      <div class="">
+                        <%= f.radio_button :role, role_key, class: 'h-4 w-4 border-purple-500 text-green-600 focus:ring-green-600 cursor-pointer', checked: user_global_role(@user) == role_key %>
+                        <label for="role_<%= role_key %>" class="ml-3 text-sm font-medium text-gray-700 cursor-pointer"><%= role_name %></label>
+                      </div>
+                    <% end %>
+                  </div>
+                </fieldset>
+                <hr>
+                <div class="pt-4">
+                  <%= f.submit t(:update_global_role_button), class: 'normal-button' %>
+              <% end %>
+              <%= render CommonComponents::DangerousFormButtonComponent.new(label: t(:revoke_global_role_button), path: revoke_global_role_user_memberships_path(@user), method: :delete, options: { disabled: !@user.global_role?}) %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+    </section>
+    <section class="flex-1 pr-2">
+      <% if @user.id != current_user.id  %>
+        <%= render CommonComponents::Card.new(title: t(:membership)) do |card| %>
+          <% card.with_card_content do %>
+            <div class="bg-white p-4">
+              <%= render SearchFormComponent.new(search: { term: params[:search] }, query_parameters: request.query_parameters, autofocus: false) %>
+              <% @organizations.each do |org| %>
+                <% local_membership = Membership.new(user: @user, org: org) %>
+                <% if policy(local_membership).update? %>
+                  <div class="py-6">
+                    <%= form_with model: [org.mlid, local_membership], url: user_membership_path(@user, org), method: :put, namespace: org.mlid do |f| %>
+                      <h4 class="py-2"><%= org.organization_name %></h4>
+                      <fieldset class="pb-4">
+                        <% Role::LOCAL_ROLES.each do |role_value, role_name| %>
+                          <div>
+                            <%= f.radio_button :role, role_value, class: 'h-4 w-4 border-purple-500 text-green-600 focus:ring-green-600 cursor-pointer', checked: @user_roles[org.id] == role_value %>
+                            <label for="<%= org.mlid %>_membership_role_<%= role_value %>" class="ml-3 text-sm font-medium text-gray-700 cursor-pointer"><%= role_name %></label>
+                          </div>
+                        <% end %>
+                        <% can_update = policy(Membership.new(user: @user, org: org)).update? %>
+                        <% if can_update %>
+                          </fieldset>
+                          <hr />
+                          <div class="py-4">
+                            <%= f.submit t(:update_role_button), class: 'normal-button' %>
+                        <% end %>
+                    <% end %>
+                    <%= render CommonComponents::DangerousFormButtonComponent.new(label: t(:revoke_local_role_button, org: org.organization_name), path: user_membership_path(@user, org), method: :delete, options: { disabled: !@user.member_of?(org)}) %>
+                    </div>
+                  </div>
+                <% end %>
+              <% end %>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+    </section>
+  </div>
+</div>

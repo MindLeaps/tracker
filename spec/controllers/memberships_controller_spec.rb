@@ -15,7 +15,7 @@ RSpec.describe MembershipsController, type: :controller do
     let(:user) { create :teacher_in, organization: org }
 
     context 'promotes the user, from teacher to admin, of an organization' do
-      before { put :update, params: { user_id: user.id, id: org.id, role: :admin } }
+      before { put :update, params: { user_id: user.id, id: org.id, membership: { role: :admin } } }
 
       it { should redirect_to user }
 
@@ -30,14 +30,14 @@ RSpec.describe MembershipsController, type: :controller do
 
     context 'giver the user a role in a new organization' do
       it 'grants user a teacher role' do
-        put :update, params: { user_id: user.id, id: org2.id, role: :teacher }
+        put :update, params: { user_id: user.id, id: org2.id, membership: { role: :teacher } }
 
         expect(user.has_role?(:teacher, org2)).to be true
       end
     end
 
     context 'tries to give user an invalid role' do
-      before { put :update, params: { user_id: user.id, id: org.id, role: :nonrole } }
+      before { put :update, params: { user_id: user.id, id: org.id, membership: { role: :nonrole } } }
 
       it { should respond_with :bad_request }
 

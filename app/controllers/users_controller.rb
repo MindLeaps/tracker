@@ -51,5 +51,7 @@ class UsersController < HtmlController
     @pagy, @organizations = pagy apply_scopes(policy_scope(Organization))
     @membership = Membership.new user: @user
     authorize @user
+  rescue Pundit::NotAuthorizedError
+    redirect_to users_path
   end
 end

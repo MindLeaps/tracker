@@ -23,6 +23,39 @@
     @apply text-purple-500;
   }
 
+  .base-button {
+    @apply inline-flex;
+    @apply items-center;
+    @apply mr-2;
+    @apply px-4;
+    @apply py-2;
+    @apply border;
+    @apply border-transparent;
+    @apply shadow-sm;
+    @apply text-sm;
+    @apply font-medium;
+    @apply rounded-md;
+    @apply text-white;
+    @apply focus:outline-none;
+    @apply focus:ring-2;
+    @apply focus:ring-offset-2;
+    @apply focus:ring-purple-500;
+    @apply enabled:cursor-pointer;
+    @apply disabled:bg-slate-300;
+  }
+
+  .normal-button {
+    @apply base-button;
+    @apply bg-green-600;
+    @apply enabled:hover:bg-green-700;
+  }
+
+  .dangerous-button {
+    @apply base-button;
+    @apply bg-red-600;
+    @apply enabled:hover:bg-red-700;
+  }
+
   .notification-in {
     @apply translate-y-0 opacity-100 sm:translate-x-0;
   }

@@ -2,7 +2,7 @@
 
 class SearchFormComponent < ViewComponent::Base
   attr_reader
-  def initialize(search:, query_parameters:)
+  def initialize(search:, query_parameters:, autofocus: true)
     @search = search
     @fields = query_parameters.except(:search, :utf8, :page).reduce({}) do |acc, (key, value)|
       if value.is_a?(Hash)
@@ -12,6 +12,7 @@ class SearchFormComponent < ViewComponent::Base
         acc.update({ key => value })
       end
     end
+    @autofocus = autofocus
   end
 
   def render?

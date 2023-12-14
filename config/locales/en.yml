@@ -38,6 +38,10 @@ en:
   dob_estimated: DOB Estimated
   circa: "c. "
   global_role: Global Role
+  global_roles: Global Roles
+  role_updated: Role Updated
+  global_role_updated_text: User "%{email}" now has global role %{role}
+  global_role_revoked: User "%{email}" global role revoked
   country_of_nationality: Country of Nationality
   new_student: New Student
   personal_details: Personal, family, school, and health details
@@ -157,6 +161,7 @@ en:
   revoke_local_role_button: Revoke Role in %{org}
   unauthorized_logout: You have been loged out for performing unauthorized activity
   user_added: User added
+  profile_image: Profile Image
   delete_user: Delete User
   delete_user_confirmation_text: Are you sure you want to delete this user?
   delete_user_notice: User with e-mail address %{email} deleted.
