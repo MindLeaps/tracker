@@ -20,6 +20,8 @@ class SkillsController < HtmlController
 
   def show
     @skill = Skill.includes(:organization).find params[:id]
+    @pagy, @subjects = pagy SubjectPolicy::Scope.new(current_user, @skill.subjects.includes(:assignments, :skills, :organization)).resolve
+    @pagy_grades, @grade_descriptors = pagy @skill.grade_descriptors
     authorize @skill
   end
 
