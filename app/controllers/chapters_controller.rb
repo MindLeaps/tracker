@@ -7,7 +7,7 @@ class ChaptersController < HtmlController
 
   def index
     authorize Chapter
-    @pagy, @chapters = pagy apply_scopes(policy_scope(ChapterSummary, policy_scope_class: ChapterPolicy::Scope))
+    @pagy, @chapters = pagy apply_scopes(policy_scope(ChapterSummary.includes(:organization), policy_scope_class: ChapterPolicy::Scope))
   end
 
   def new
