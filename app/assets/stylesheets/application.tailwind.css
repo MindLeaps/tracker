@@ -87,6 +87,15 @@
     @apply grading-marker;
     background: red;
   }
+
+  .table-cell {
+    @apply px-4;
+    @apply py-3;
+    @apply whitespace-nowrap;
+    @apply text-sm;
+    @apply font-medium;
+    @apply text-gray-600;
+  }
 }
 
 .awesomplete [hidden] {

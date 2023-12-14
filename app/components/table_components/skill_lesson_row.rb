@@ -5,9 +5,9 @@ class TableComponents::SkillLessonRow < TableComponents::BaseRow
       <div class="<%= 'shaded-row' if shaded? %> table-row-wrapper">
       <a href="<%= helpers.skill_path @item.skill_id %>" class="<%= 'shaded-row' if shaded? %> table-row-wrapper">
       <div class="relative px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @pagy.from + @item_counter %></div>
-        <div class="text-right px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @item.skill_name %></div>
-        <div class="text-right px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @item.average_mark %></div>
-        <div class="text-right px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @item.grade_count %></div>
+        <div class="table-cell "><%= @item.skill_name %></div>
+        <div class="table-cell "><%= @item.average_mark %></div>
+        <div class="table-cell "><%= @item.grade_count %></div>
       </a>
     </div>
 
