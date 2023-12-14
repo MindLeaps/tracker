@@ -68,7 +68,6 @@ group :development, :test do
   gem 'selenium-webdriver'
   gem 'shoulda-matchers'
   gem 'smarter_csv'
-  gem 'webdrivers'
   gem 'webmock'
 end
 
