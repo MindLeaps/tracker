@@ -459,6 +459,10 @@ GEM
       devise (>= 4.0.0.rc1, < 5)
     tilt (2.0.11)
     timeout (0.3.2)
+    turbo-rails (1.5.0)
+      actionpack (>= 6.0.0)
+      activejob (>= 6.0.0)
+      railties (>= 6.0.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.4.2)
@@ -559,6 +563,7 @@ DEPENDENCIES
   stimulus-rails
   tailwindcss-rails
   tiddle
+  turbo-rails
   view_component
   web-console
   webmock
