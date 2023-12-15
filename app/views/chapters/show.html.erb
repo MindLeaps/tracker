@@ -6,7 +6,7 @@
   (CommonComponents::ButtonComponent.new(label: t(:edit_chapter), href: edit_chapter_path(@chapter)) if policy(@chapter).edit?),
 ].compact)  do |h|
   h.with_left do
-    render CommonComponents::Breadcrumbs.new(current: { label:  CommonComponents::TagLabel.new(label: @chapter.chapter_name, img_src: 'chapter.svg')}, crumbs: [
+    render CommonComponents::Breadcrumbs.new(crumbs: [
       { label:  CommonComponents::TagLabel.new(label: @chapter.organization_name, img_src: 'world.svg'), href: organization_path(@chapter.organization), svg_icon: 'world.svg' },
     ])
   end

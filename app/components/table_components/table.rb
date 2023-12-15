@@ -6,7 +6,7 @@ class TableComponents::Table < ViewComponent::Base
   erb_template <<~ERB
     <%= render CommonComponents::PaginationComponent.new(pagy: @pagy) unless @options[:no_pagination] || @pagy.nil? %>
     <div class="overflow-x-scroll bg-white">
-      <div class="grid" style="grid-template-columns: repeat(<%= @row_component::columns(**@column_arguments).count %>, minmax(max-content, auto))">
+      <div class="grid" style="<%= grid_columns %>">
         <%= render TableComponents::Column.with_collection(@row_component::columns(**@column_arguments), order_scope_name: @order_scope_name) %>
         <%= render @row_component.with_collection(@rows, pagy: @pagy, **@row_arguments) %>
       </div>
@@ -24,4 +24,8 @@ class TableComponents::Table < ViewComponent::Base
     @options = options
   end
   # rubocop:enable Metrics/ParameterLists
+
+  def grid_columns
+    "grid-template-columns: repeat(#{@row_component.columns(**@column_arguments).count}, #{@options[:wrap] ? 'minmax(max-content, auto)' : 'auto'})"
+  end
 end
