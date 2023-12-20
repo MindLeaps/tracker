@@ -1,8 +1,8 @@
-javascript:
-  var availableChapters = #{{ @available_chapters.map { |c| c.slice(:id, :organization_id, :chapter_name) }.to_json }};
-  var availableSubjects = #{{ @available_subjects.map { |s| s.slice(:id, :organization_id, :subject_name) }.to_json }};
-  var availableGroups = #{{ @available_groups.map { |g| g.slice(:id, :chapter_id, :group_name) }.to_json }};
-  var availableStudents = #{{ @available_students.map { |s| s.slice(:id, :group_id, :proper_name) }.to_json }};
+<script>
+  var availableChapters = <%= @available_chapters.map { |c| c.slice(:id, :organization_id, :chapter_name) }.to_json %>;
+  var availableSubjects = <%= @available_subjects.map { |s| s.slice(:id, :organization_id, :subject_name) }.to_json %>;
+  var availableGroups = <%= @available_groups.map { |g| g.slice(:id, :chapter_id, :group_name) }.to_json %>;
+  var availableStudents = <%= @available_students.map { |s| s.slice(:id, :group_id, :proper_name) }.to_json %>;
 
   function filteredChapters() {
     var selectedOrganization = Number($('#organization_select :selected').val());
@@ -51,3 +51,4 @@ javascript:
       return groupIds.includes(s.group_id);
     });
   }
+</script>
