@@ -29,7 +29,7 @@ class StudentsController < HtmlController
       return redirect_to(flash[:redirect] || student_path(@student))
     end
     failure_notice t(:student_invalid), t(:fix_form_errors)
-    render :new
+    render :new, status: :unprocessable_entity
   end
 
   def show
@@ -54,7 +54,8 @@ class StudentsController < HtmlController
       return redirect_to(flash[:redirect] || student_path(@student))
     end
 
-    render :edit
+    failure_notice t(:student_invalid), t(:fix_form_errors)
+    render :edit, status: :unprocessable_entity
   end
 
   def destroy

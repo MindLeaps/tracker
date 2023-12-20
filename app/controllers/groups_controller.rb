@@ -19,13 +19,14 @@ class GroupsController < HtmlController
 
   def create
     @group = Group.new group_params
-    authorize @group
-    if @group.save
+    if @group.valid? && @group.save
+      authorize @group
       success_notice_with_link t(:group_added), t(:group_with_name_added, group: @group.group_name), new_group_path(chapter_id: @group.chapter_id), t(:create_another)
       return redirect_to group_path(@group)
     end
-    failure_notice t(:group_invalid), t(:student_invalid_text)
-    render :new
+    skip_authorization
+    failure_notice t(:group_invalid), t(:fix_form_errors)
+    render :new, status: :unprocessable_entity
   end
 
   def show
@@ -42,12 +43,14 @@ class GroupsController < HtmlController
 
   def update
     @group = Group.find params.require :id
-    authorize @group
-    if @group.update group_params
+    if @group.valid? && @group.update(group_params)
+      authorize @group
       success_notice t(:group_updated), t(:group_name_updated, group: @group.group_name)
       return redirect_to(flash[:redirect] || group_path(@group))
     end
+    skip_authorization
 
+    failure_notice t(:group_invalid), t(:fix_form_errors)
     render :edit, status: :unprocessable_entity
   end
 

@@ -22,7 +22,7 @@ class ChaptersController < HtmlController
     return notice_and_redirect t(:chapter_created, chapter: @chapter.chapter_name), chapters_url if @chapter.save
 
     @chapters = Chapter.includes(:organization, groups: [:students]).all
-    render :new
+    render :new, status: :unprocessable_entity
   end
 
   def show

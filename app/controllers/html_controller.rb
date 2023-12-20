@@ -43,7 +43,7 @@ class HtmlController < ApplicationController
   end
 
   def failure_notice(title, text)
-    flash[:failure_notice] = { title: title, text: text }
+    flash.now[:failure_notice] = { title: title, text: text }
   end
 
   def notice_and_redirect(notice, redirect_url)
