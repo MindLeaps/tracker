@@ -11,3 +11,5 @@ import 'mdl-selectfield'
 import 'awesomplete'
 
 import 'controllers'
+// we don't want to enable turbo drive just yet until we finish the redesign
+// Turbo.session.drive = false;

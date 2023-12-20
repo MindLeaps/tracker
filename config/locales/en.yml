@@ -135,6 +135,7 @@ en:
   lesson_created: Lesson created.
   skill_created: Skill "%{skill}" created.
   create_grade_button: Save Student Grades
+  delete_grade: Delete Grade
   invalid_token: Invalid Google id_token
   invalid_user: User does not exist in MindLeaps
   student_graded: Student graded.

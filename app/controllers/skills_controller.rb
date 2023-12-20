@@ -13,7 +13,11 @@ class SkillsController < HtmlController
   def create
     @skill = Skill.new skill_parameters
     authorize @skill
-    return notice_and_redirect t(:skill_created, skill: @skill.skill_name), @skill if @skill.save
+    if params[:add_grade]
+      @skill.grade_descriptors.build
+    elsif @skill.save
+      return notice_and_redirect t(:skill_created, skill: @skill.skill_name), @skill
+    end
 
     render :new
   end

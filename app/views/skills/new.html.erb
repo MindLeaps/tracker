@@ -1,0 +1,14 @@
+<%- content_for :title, t(:new_skill) %>
+
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  {title: CommonComponents::TagLabel.new(label: t(:new_skill), img_src: 'lightbulb.svg'), href: '' },
+], buttons: [
+].compact)  do |h|
+  h.with_left do
+    render CommonComponents::Breadcrumbs.new(crumbs: [
+      { label: CommonComponents::TagLabel.new(label: t(:skills).capitalize, img_src: 'lightbulb.svg'), href: groups_path }
+    ])
+  end
+end %>
+
+<%= render SkillFormComponent.new(skill: @skill, action: 'create', current_user: current_user) %>
