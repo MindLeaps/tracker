@@ -1,0 +1,17 @@
+<%- content_for :title, t(:new_chapter)%>
+
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  {title: t(:new_chapter), href: '' },
+], buttons: [].compact) do |h|
+  h.with_left do
+    render CommonComponents::Breadcrumbs.new(crumbs: if @chapter.organization
+      [
+        { label: CommonComponents::TagLabel.new(label: @chapter.organization.organization_name, img_src: 'world.svg'), href: organization_path(@chapter.organization) },
+      ] else [
+        { label: CommonComponents::TagLabel.new(label: t(:chapters).capitalize, img_src: 'chapter.svg'), href: chapters_path }
+      ]
+   end)
+  end
+end %>
+
+<%= render ChapterFormComponent.new(chapter: @chapter, action: 'create', current_user: current_user) %>
