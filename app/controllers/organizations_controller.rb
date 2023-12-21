@@ -3,7 +3,7 @@
 class OrganizationsController < HtmlController
   include Pagy::Backend
   has_scope :table_order, type: :hash
-
+  has_scope :search, only: :index
   def index
     authorize Organization
     @pagy, @organizations = pagy apply_scopes(policy_scope(OrganizationSummary, policy_scope_class: OrganizationPolicy::Scope))

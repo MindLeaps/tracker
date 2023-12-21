@@ -6,4 +6,15 @@
   (CommonComponents::ButtonComponent.new(label: t(:add_chapter), href: new_chapter_path) if policy(Chapter).new?)
 ].compact) %>
 
-<%= render TableComponents::Table.new(pagy: @pagy, rows: @chapters, row_component: TableComponents::ChapterRow) %>
+<%= render TableComponents::Table.new(pagy: @pagy, rows: @chapters, row_component: TableComponents::ChapterRow) do |t|
+  t.with_left do %>
+    <div class="flex items-center justify-between">
+      <div class="flex-1">
+        <%= render SearchFormComponent.new(search: { term: params[:search] }, query_parameters: request.query_parameters) %>
+      </div>
+      <div class="flex-1 px-4">
+      </div>
+    </div>
+  <% end
+     end
+  %>
