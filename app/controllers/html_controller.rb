@@ -38,10 +38,6 @@ class HtmlController < ApplicationController
     flash[:redirect] = uri.path + (uri.query.present? ? "?#{uri.query}" : '')
   end
 
-  def success_notice_with_link(title, text, link_path, link_text)
-    flash[:success_notice] = { title: title, text: text, link_path: link_path, link_text: link_text }
-  end
-
   def failure_notice(title, text)
     flash.now[:failure_notice] = { title: title, text: text }
   end
@@ -51,10 +47,13 @@ class HtmlController < ApplicationController
     redirect_to redirect_url
   end
 
-  def undo_notice_and_redirect(notice, undo_path, redirect_url)
-    flash[:undo_notice] = { text: notice, path: undo_path }
-    redirect_to redirect_url
+  # rubocop:disable Metrics/ParameterLists
+  def success(title:, text:, link_path: nil, link_text: nil, button_path: nil, button_text: nil, button_method: nil)
+    flash[:success_notice] = {
+      title: title, text: text, link_path: link_path, link_text: link_text, button_path: button_path, button_method: button_method, button_text: button_text
+    }
   end
+  # rubocop:enable Metrics/ParameterLists
 
   def user_not_authorized
     flash[:alert] = I18n.t :unauthorized_logout

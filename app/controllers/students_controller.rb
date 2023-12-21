@@ -25,7 +25,7 @@ class StudentsController < HtmlController
     @student = Student.new student_params
     authorize @student
     if @student.save
-      success_notice_with_link t(:student_added), t(:student_name_added, name: @student.proper_name), new_student_path(group_id: @student.group_id), I18n.t(:create_another)
+      success(title: :student_added, text: t(:student_name_added, name: @student.proper_name), link_text: t(:create_another), link_path: new_student_path(group_id: @student.group_id))
       return redirect_to(flash[:redirect] || student_path(@student))
     end
     failure_notice t(:student_invalid), t(:fix_form_errors)
@@ -63,7 +63,10 @@ class StudentsController < HtmlController
     authorize @student
     @student.deleted_at = Time.zone.now
 
-    undo_notice_and_redirect t(:student_deleted, name: @student.proper_name), undelete_student_path, student_path(@student) if @student.save
+    if @student.save
+      success(title: t(:student_deleted), text: t(:student_deleted_text, student: @student.proper_name), link_text: t(:undo), link_path: undelete_student_path)
+      redirect_to student_path
+    end
   end
 
   def undelete

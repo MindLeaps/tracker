@@ -21,7 +21,7 @@ class GroupsController < HtmlController
     @group = Group.new group_params
     if @group.valid? && @group.save
       authorize @group
-      success_notice_with_link t(:group_added), t(:group_with_name_added, group: @group.group_name), new_group_path(chapter_id: @group.chapter_id), t(:create_another)
+      success(title: t(:group_added), text: t(:group_with_name_added, group: @group.group_name), link_path: new_group_path(chapter_id: @group.chapter_id), link_text: t(:create_another))
       return redirect_to group_path(@group)
     end
     skip_authorization
@@ -32,7 +32,7 @@ class GroupsController < HtmlController
   def show
     @group = Group.includes(:chapter).find params[:id]
     authorize @group
-    @pagy, @student_rows = pagy apply_scopes(StudentTableRow.where(group_id: @group.id))
+    @pagy, @student_rows = pagy apply_scopes(StudentTableRow.where(group_id: @group.id).includes(:tags, :group))
     @student_table_component = TableComponents::Table.new(pagy: @pagy, rows: @student_rows, row_component: TableComponents::StudentRow)
   end
 
@@ -58,14 +58,20 @@ class GroupsController < HtmlController
     group = Group.find params.require :id
     authorize group
     group.deleted_at = Time.zone.now
-    undo_notice_and_redirect t(:group_deleted, group: group.group_name), undelete_group_path, request.referer || groups_path if group.save
+    if group.save
+      success(title: t(:group_deleted), text: t(:group_deleted_text, group: group.group_name), button_path: undelete_group_path, button_method: :post, button_text: t(:undo))
+      redirect_to request.referer || group.path
+    end
   end
 
   def undelete
     group = Group.find params.require :id
     authorize group
     group.deleted_at = nil
-    notice_and_redirect t(:group_restored, group: group.group_name), request.referer || group_path(group) if group.save
+    if group.save
+      success(title: t(:group_restored), text: t(:group_restored_text, group: group.group_name))
+      redirect_to request.referer || group.path
+    end
   end
 
   private

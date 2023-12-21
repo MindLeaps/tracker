@@ -28,6 +28,7 @@ en:
   mindleaps_tracker: MindLeaps Tracker
   mlid: MLID
   name: Name
+  undo: Undo
   organization_mlid_error_message: Organization MLID has to be 3 characters long and can only contain numbers and letters. No special characters.
   chapter_mlid_error_message: Chapter MLID has to be up to 2 characters long and can only contain numbers and letters. No special characters.
   group_mlid_error_message: Group MLID has to be up to 2 characters long and can only contain numbers and letters. No special characters.
@@ -93,7 +94,8 @@ en:
   delete_student: Delete Student
   restore_student: Restore Deleted Student
   student_delete_confirmation: Are you sure you want to delete student "%{name}"?
-  student_deleted: Student "%{name}" deleted.
+  student_deleted: Student Deleted
+  student_deleted_text: Student "%{student}" deleted.
   student_restored: Student "%{name}" restored.
   number_of_students: Number of Students
   number_of_groups: Number of Groups
@@ -111,8 +113,10 @@ en:
   group_with_name_added: Group "%{group}" added.
   group_updated: Group updated
   group_name_updated: Group "%{group}" updated.
-  group_deleted: Group "%{group}" deleted.
-  group_restored: Group "%{group}" restored.
+  group_deleted: Group deleted
+  group_deleted_text: Group "%{group}" deleted.
+  group_restored: Group restored
+  group_restored_text: Group "%{group}" restored.
   group_invalid: Group Invalid
   group_invalid_text: Please fix the errors in the form.
   delete_group: Delete Group

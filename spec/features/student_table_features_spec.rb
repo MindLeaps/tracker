@@ -62,13 +62,14 @@ RSpec.describe 'User searches and navigates through students table', js: true do
       create :student, first_name: 'test_prefix_Amberto', last_name: 'Oce', mlid: 'OCE-123', deleted_at: Time.zone.now
 
       visit '/students'
-      expect(page).to have_selector('.resource-row', count: 50)
-      expect(page).to have_selector '#next-page-button[disabled]'
+      expect(page).to have_selector('.student-row', count: 50)
+      expect(page).to have_selector('.next-page.pointer-events-none')
       click_link_compat('Show Deleted')
-      find('#next-page-button:not([disabled])').click
-      expect(page).to have_selector('.resource-row', count: 4)
+      expect(page).not_to have_selector('.next-page.pointer-events-none')
+      find('.next-page').click
+      expect(page).to have_selector('.student-row', count: 4)
       click_link_compat('Show Deleted')
-      expect(page).to have_selector('.resource-row', count: 50)
+      expect(page).to have_selector('.student-row', count: 50)
     end
   end
 end

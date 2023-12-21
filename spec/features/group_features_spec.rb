@@ -21,7 +21,7 @@ RSpec.describe 'User interacts with Groups' do
       expect(page).to have_content groups[1].group_name
       expect(page).to have_content groups[2].group_name
 
-      expect(page.all('.resource-row td:last-child').map(&:text).sort).to eq %w[3 2 0].sort
+      expect(page.all('.group-row > a:first-child > div:nth-child(5)').map(&:text).sort).to eq %w[3 2 0].sort
     end
   end
 
@@ -33,13 +33,13 @@ RSpec.describe 'User interacts with Groups' do
     it 'creates a new group', js: true do
       visit '/groups'
       click_link 'Add Group'
-      fill_in 'Group name', with: 'Feature Test Group'
+      fill_in 'Group Name', with: 'Feature Test Group'
       select 'Chapter One', from: 'group_chapter_id'
-      fill_in 'MLID', with: 'G0'
+      fill_in 'group_mlid', with: 'G0'
       click_button 'Create'
 
-      expect(page).to have_content 'Feature Test Group'
-      expect(page).to have_content 'Group "Feature Test Group" created.'
+      expect(page).to have_content 'Group Added'
+      expect(page).to have_content 'Group "Feature Test Group" added.'
       expect(page).to have_link 'Create another', href: new_group_path(chapter_id: @chapter.id)
     end
   end
@@ -55,8 +55,8 @@ RSpec.describe 'User interacts with Groups' do
     it 'edits the name and chapter of an existing group' do
       visit '/groups'
       click_link 'Test Group'
-      click_link 'edit-button'
-      fill_in 'Group name', with: 'Edited Group'
+      click_link 'Edit Group'
+      fill_in 'Group Name', with: 'Edited Group'
       select 'New Chapter', from: 'group_chapter_id'
       click_button 'Update'
 
@@ -76,7 +76,7 @@ RSpec.describe 'User interacts with Groups' do
     it 'marks the group as deleted' do
       visit '/groups'
       click_link 'About to be Deleted'
-      click_button 'delete-button'
+      click_button 'Delete Group'
 
       expect(page).to have_content 'Group "About to be Deleted" deleted.'
       expect(@group.reload.deleted_at).to be_within(1.second).of Time.zone.now
@@ -89,7 +89,7 @@ RSpec.describe 'User interacts with Groups' do
 
     it 'restores an already deleted group' do
       visit "/groups/#{@deleted_group.id}"
-      click_button 'undelete-button'
+      click_button 'Restore Deleted Group'
       visit '/groups'
       expect(page).to have_content 'Already Deleted'
       expect(@deleted_group.reload.deleted_at).to be_nil
@@ -106,17 +106,17 @@ RSpec.describe 'User interacts with Groups' do
 
     it 'searches different groups' do
       visit '/groups'
-      expect(page).to have_selector('.resource-row', count: 3)
+      expect(page).to have_selector('.group-row', count: 3)
       click_link_compat 'Show Deleted'
-      expect(page).to have_selector('.resource-row', count: 4)
+      expect(page).to have_selector('.group-row', count: 4)
       find('#search-field').send_keys('Abi', :enter)
-      expect(page).to have_selector('.resource-row', count: 3)
+      expect(page).to have_selector('.group-row', count: 3)
       expect(page).to have_content 'Abisamol'
       expect(page).to have_content 'Abisouena'
       expect(page).to have_content 'Abilatava'
       expect(page).to have_field('search-field', with: 'Abi')
       click_link_compat 'Show Deleted'
-      expect(page).to have_selector('.resource-row', count: 2)
+      expect(page).to have_selector('.group-row', count: 2)
       expect(page).to have_content 'Abisamol'
       expect(page).to have_content 'Abisouena'
     end
