@@ -26,7 +26,7 @@ class MembershipsController < HtmlController
     authorize Membership.new(user: @user, role: role)
 
     if RoleService.update_global_role @user, role
-      success_notice t(:role_updated), t(:global_role_updated_text, email: @user.email, role: params.require(:role))
+      success title: t(:role_updated), text: t(:global_role_updated_text, email: @user.email, role: params.require(:role))
       return redirect_to @user
     end
 

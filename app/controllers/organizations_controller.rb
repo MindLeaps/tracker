@@ -20,11 +20,11 @@ class OrganizationsController < HtmlController
     @organization.mlid = @organization.mlid&.upcase
 
     if @organization.save
-      success_notice t(:organization_added), t(:organization_name_added, name: @organization.organization_name)
+      success title: t(:organization_added), text: t(:organization_name_added, name: @organization.organization_name)
       return redirect_to organizations_url
     end
 
-    failure_notice t(:organization_invalid), t(:fix_form_errors)
+    failure title: t(:organization_invalid), text: t(:fix_form_errors)
     render :new, status: :bad_request
   end
 
@@ -38,11 +38,11 @@ class OrganizationsController < HtmlController
     authorize @organization
 
     if @organization.update params.require(:organization).permit :organization_name, :mlid
-      success_notice t(:organization_updated), t(:organization_name_updated, name: @organization.organization_name)
+      success title:t(:organization_updated), text: t(:organization_name_updated, name: @organization.organization_name)
       return redirect_to organizations_url
     end
 
-    failure_notice t(:organization_invalid), t(:fix_form_errors)
+    failure title: t(:organization_invalid), text: t(:fix_form_errors)
     render :edit, status: :bad_request
   end
 
@@ -50,7 +50,14 @@ class OrganizationsController < HtmlController
     id = params.require :id
     @organization = Organization.find id
     authorize @organization
-    @pagy, @chapters = pagy ChapterSummary.includes(:organization).where organization_id: id
+    initialize_organization id
+  end
+
+  def initialize_organization(id)
+    @pagy_chapters, @chapters = pagy ChapterSummary.where organization_id: id
+    @pagy_users, @members = pagy @organization.members
+    @new_member = User.new
+    @roles = Role::LOCAL_ROLES.keys
   end
 
   def add_member
@@ -59,21 +66,23 @@ class OrganizationsController < HtmlController
     member_params.tap do |p|
       return redirect_to @organization if @organization.add_user_with_role p.require(:email), p.require(:role).to_sym
 
+      initialize_organization @organization.id
       member_conflict_response
     end
   rescue ActionController::ParameterMissing
-    flash[:alert] = t :member_email_missing
+    failure title: t(:invalid_user), text: t(:member_email_missing)
+    initialize_organization @organization.id
     render :show, status: :bad_request
   end
 
   private
 
   def member_params
-    params.require(:member).permit(:email, :role)
+    params.require(:user).permit(:email, :role)
   end
 
   def member_conflict_response
-    flash[:alert] = t :already_member
+    failure title: t(:invalid_user), text: t(:already_member)
     render :show, status: :conflict
   end
 end

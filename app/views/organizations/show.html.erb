@@ -9,4 +9,37 @@
   end
 end %>
 
-<%= render TableComponents::Table.new(pagy: @pagy, rows: @chapters, row_component: TableComponents::ChapterRow) %>
+<div class="overflow-auto">
+  <div class="flex">
+    <section class="flex-1 pr-2">
+      <%= render CommonComponents::Card.new(title: t(:chapters).capitalize) do |card| %>
+        <% card.with_card_content do %>
+            <%= render TableComponents::Table.new(pagy: @pagy_chapters, rows: @chapters, row_component: TableComponents::OrganizationChapterRow) %>
+        <% end %>
+      <% end %>
+    </section>
+    <section class="flex-1 pr-2">
+      <%= render CommonComponents::Card.new(title: t(:members).capitalize) do |card| %>
+        <% card.with_card_content do %>
+          <%= render TableComponents::Table.new(pagy: @pagy_users, rows: @members, row_component: TableComponents::OrganizationMemberRow) %>
+          <%= form_with model: @new_member, url: add_member_organization_path, class: 'space-y-0.5' do |f| %>
+            <div class="bg-white flex p-4 justify-between items-end">
+              <div class="flex-1 mr-4">
+                <%= f.label :email, class: 'block text-sm font-medium text-gray-700' %>
+                <%= f.text_field :email, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+              </div>
+              <div class="flex-1 mr-4">
+                <%= f.label :role, class: 'block text-sm font-medium text-gray-700' %>
+                <%= f.select :role, @roles.map { |r| [t(r.name), r.name] }, {}, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+              </div>
+              <div>
+
+                <%= f.submit class: 'px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 cursor-pointer' %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+    </section>
+  </div>
+</div>

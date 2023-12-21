@@ -106,7 +106,7 @@ RSpec.describe OrganizationsController, type: :controller do
       @org = create :organization
       @existing_user = create :user
 
-      post :add_member, params: { id: @org.id, member: { email: 'new_user@example.com', role: 'admin' } }
+      post :add_member, params: { id: @org.id, user: { email: 'new_user@example.com', role: 'admin' } }
     end
 
     it { should redirect_to organization_path @org }
@@ -118,29 +118,29 @@ RSpec.describe OrganizationsController, type: :controller do
     end
 
     it 'assigns an existing user, outside of the organization, a role in the organization' do
-      post :add_member, params: { id: @org.id, member: { email: @existing_user.email, role: 'admin' } }
+      post :add_member, params: { id: @org.id, user: { email: @existing_user.email, role: 'admin' } }
 
       expect(@existing_user.has_role?(:admin, @org)).to be true
     end
 
     context 'trying to add another role to an existing member of the organization' do
       before :each do
-        post :add_member, params: { id: @org.id, member: { email: 'new_user@example.com', role: 'teacher' } }
+        post :add_member, params: { id: @org.id, user: { email: 'new_user@example.com', role: 'teacher' } }
       end
 
       it { should respond_with :conflict }
       it { should render_template :show }
-      it { should set_flash[:alert].to 'User is already a member of the organization' }
+      it { should set_flash[:failure_notice] }
     end
 
     context 'email is missing' do
       before :each do
-        post :add_member, params: { id: @org.id, member: {} }
+        post :add_member, params: { id: @org.id, user: {} }
       end
 
       it { should respond_with :bad_request }
       it { should render_template :show }
-      it { should set_flash[:alert].to 'Member Email missing' }
+      it { should set_flash[:failure_notice] }
     end
   end
 end

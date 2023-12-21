@@ -72,7 +72,7 @@ $$;
 -- Name: update_records_with_unique_mlids(text, integer); Type: PROCEDURE; Schema: public; Owner: -
 --
 
-CREATE PROCEDURE public.update_records_with_unique_mlids(table_name text, mlid_length integer)
+CREATE PROCEDURE public.update_records_with_unique_mlids(IN table_name text, IN mlid_length integer)
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -103,7 +103,7 @@ $$;
 -- Name: update_records_with_unique_mlids(text, integer, text); Type: PROCEDURE; Schema: public; Owner: -
 --
 
-CREATE PROCEDURE public.update_records_with_unique_mlids(table_name text, mlid_length integer, unique_scope text DEFAULT NULL::text)
+CREATE PROCEDURE public.update_records_with_unique_mlids(IN table_name text, IN mlid_length integer, IN unique_scope text DEFAULT NULL::text)
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -314,7 +314,7 @@ ALTER SEQUENCE public.chapters_id_seq OWNED BY public.chapters.id;
 --
 
 CREATE TABLE public.enrollments (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
     student_id bigint NOT NULL,
     group_id bigint NOT NULL,
     active_since timestamp without time zone NOT NULL,
@@ -542,6 +542,104 @@ ALTER SEQUENCE public.lessons_id_seq OWNED BY public.lessons.id;
 
 
 --
+-- Name: roles; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.roles (
+    id integer NOT NULL,
+    name character varying,
+    resource_type character varying,
+    resource_id integer,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.users (
+    id integer NOT NULL,
+    uid character varying,
+    name character varying,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    email character varying DEFAULT ''::character varying NOT NULL,
+    sign_in_count integer DEFAULT 0 NOT NULL,
+    current_sign_in_at timestamp without time zone,
+    last_sign_in_at timestamp without time zone,
+    current_sign_in_ip character varying,
+    last_sign_in_ip character varying,
+    provider character varying,
+    image character varying
+);
+
+
+--
+-- Name: users_roles; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.users_roles (
+    user_id integer,
+    role_id integer
+);
+
+
+--
+-- Name: organization_members; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.organization_members AS
+ WITH local AS (
+         SELECT u.id,
+            u.uid,
+            u.name,
+            u.created_at,
+            u.updated_at,
+            u.email,
+            u.sign_in_count,
+            u.current_sign_in_at,
+            u.last_sign_in_at,
+            u.current_sign_in_ip,
+            u.last_sign_in_ip,
+            u.provider,
+            u.image,
+            r.name AS local_role,
+            r.resource_id AS organization_id
+           FROM ((public.users u
+             JOIN public.users_roles ur ON ((u.id = ur.user_id)))
+             JOIN public.roles r ON ((r.id = ur.role_id)))
+          WHERE ((r.resource_type)::text = 'Organization'::text)
+        ), global AS (
+         SELECT u.id,
+            r.name AS global_role
+           FROM ((public.users u
+             JOIN public.users_roles ur ON ((u.id = ur.user_id)))
+             JOIN public.roles r ON ((r.id = ur.role_id)))
+          WHERE (r.resource_type IS NULL)
+        )
+ SELECT local.id,
+    local.uid,
+    local.name,
+    local.created_at,
+    local.updated_at,
+    local.email,
+    local.sign_in_count,
+    local.current_sign_in_at,
+    local.last_sign_in_at,
+    local.current_sign_in_ip,
+    local.last_sign_in_ip,
+    local.provider,
+    local.image,
+    local.local_role,
+    local.organization_id,
+    global.global_role
+   FROM (local
+     LEFT JOIN global ON ((local.id = global.id)));
+
+
+--
 -- Name: organization_summaries; Type: VIEW; Schema: public; Owner: -
 --
 
@@ -608,20 +706,6 @@ SELECT
     NULL::character varying AS skill_name,
     NULL::integer AS subject_id,
     NULL::double precision AS mark;
-
-
---
--- Name: roles; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.roles (
-    id integer NOT NULL,
-    name character varying,
-    resource_type character varying,
-    resource_id integer,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
 
 
 --
@@ -858,7 +942,7 @@ SELECT
     NULL::uuid AS id,
     NULL::character varying AS tag_name,
     NULL::boolean AS shared,
-    NULL::integer AS organization_id,
+    NULL::bigint AS organization_id,
     NULL::character varying AS organization_name,
     NULL::bigint AS student_count;
 
@@ -868,7 +952,7 @@ SELECT
 --
 
 CREATE TABLE public.student_tags (
-    student_id integer NOT NULL,
+    student_id bigint NOT NULL,
     tag_id uuid NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
@@ -949,33 +1033,12 @@ ALTER SEQUENCE public.subjects_id_seq OWNED BY public.subjects.id;
 --
 
 CREATE TABLE public.tags (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
     tag_name character varying NOT NULL,
-    organization_id integer NOT NULL,
+    organization_id bigint NOT NULL,
     shared boolean NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
--- Name: users; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.users (
-    id integer NOT NULL,
-    uid character varying,
-    name character varying,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    email character varying DEFAULT ''::character varying NOT NULL,
-    sign_in_count integer DEFAULT 0 NOT NULL,
-    current_sign_in_at timestamp without time zone,
-    last_sign_in_at timestamp without time zone,
-    current_sign_in_ip character varying,
-    last_sign_in_ip character varying,
-    provider character varying,
-    image character varying
 );
 
 
@@ -997,16 +1060,6 @@ CREATE SEQUENCE public.users_id_seq
 --
 
 ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
-
-
---
--- Name: users_roles; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.users_roles (
-    user_id integer,
-    role_id integer
-);
 
 
 --
@@ -2173,9 +2226,12 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210810102949'),
 ('20210909104020'),
 ('20210910115239'),
+('20211217173701'),
+('20211217173704'),
 ('20220501040818'),
 ('20220501041026'),
 ('20231015025217'),
-('20231015025855');
+('20231015025855'),
+('20231221220850');
 
 
