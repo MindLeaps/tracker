@@ -2,10 +2,6 @@
   <div class="flex-1 flex items-center">
     <% if left? %>
       <%= left %>
-    <% else %>
-      <div class="pl-6 w-full">
-        <%= render SearchFormComponent.new(search: { term: params[:search] }, query_parameters: request.query_parameters) %>
-      </div>
     <% end %>
   </div>
   <div class="px-4 flex-1 flex items-center w-full justify-center items-stretch space-x-8">

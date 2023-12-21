@@ -23,6 +23,11 @@
     @apply text-purple-500;
   }
 
+  .deleted-row > div {
+    @apply bg-red-200;
+    @apply line-through;
+  }
+
   .base-button {
     @apply inline-flex;
     @apply items-center;
