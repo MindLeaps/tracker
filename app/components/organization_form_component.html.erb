@@ -12,7 +12,7 @@
           </div>
           <div class="col-span-6 lg:col-span-2">
             <label for="mlid" class="block text-sm font-medium text-gray-700"><%= t(:mlid) %></label>
-            <%= f.text_field :mlid, class: 'mt-1 block rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm', maxlength: 3, size: 4 %>
+            <%= f.text_field :mlid, class: 'mt-1 block rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm uppercase', maxlength: 3, size: 4, value: MindleapsIdService.generate_organization_mlid %>
           </div>
         </div>
       </div>

@@ -22,10 +22,6 @@ class HtmlController < ApplicationController
     new_user_session_path(*args)
   end
 
-  def success_notice(title, text)
-    flash[:success_notice] = { title: title, text: text }
-  end
-
   def flash_redirect(destination)
     if destination.nil?
       flash[:redirect] = nil
@@ -50,6 +46,12 @@ class HtmlController < ApplicationController
   # rubocop:disable Metrics/ParameterLists
   def success(title:, text:, link_path: nil, link_text: nil, button_path: nil, button_text: nil, button_method: nil)
     flash[:success_notice] = {
+      title: title, text: text, link_path: link_path, link_text: link_text, button_path: button_path, button_method: button_method, button_text: button_text
+    }
+  end
+
+  def failure(title:, text:, link_path: nil, link_text: nil, button_path: nil, button_text: nil, button_method: nil)
+    flash[:failure_notice] = {
       title: title, text: text, link_path: link_path, link_text: link_text, button_path: button_path, button_method: button_method, button_text: button_text
     }
   end

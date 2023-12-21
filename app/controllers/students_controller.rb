@@ -28,7 +28,7 @@ class StudentsController < HtmlController
       success(title: :student_added, text: t(:student_name_added, name: @student.proper_name), link_text: t(:create_another), link_path: new_student_path(group_id: @student.group_id))
       return redirect_to(flash[:redirect] || student_path(@student))
     end
-    failure_notice t(:student_invalid), t(:fix_form_errors)
+    failure(title: t(:student_invalid), text: t(:fix_form_errors))
     render :new, status: :unprocessable_entity
   end
 
@@ -43,18 +43,17 @@ class StudentsController < HtmlController
     @student = Student.find params[:id]
     authorize @student
     @student.student_images.build
-    flash_redirect request.referer
   end
 
   def update
     @student = Student.find params[:id]
     authorize @student
     if update_student @student
-      success_notice t(:student_updated), t(:student_name_updated, name: @student.proper_name)
+      success title: t(:student_updated), text: t(:student_name_updated, name: @student.proper_name)
       return redirect_to(flash[:redirect] || student_path(@student))
     end
 
-    failure_notice t(:student_invalid), t(:fix_form_errors)
+    failure title: t(:student_invalid), text: t(:fix_form_errors)
     render :edit, status: :unprocessable_entity
   end
 
@@ -74,7 +73,10 @@ class StudentsController < HtmlController
     authorize @student
     @student.deleted_at = nil
 
-    notice_and_redirect t(:student_restored, name: @student.proper_name), student_path(@student) if @student.save
+    if @student.save
+      success title: t(:student_restored), text: t(:student_restored_text, name: @student.proper_name)
+      redirect_to student_path
+    end
   end
 
   private

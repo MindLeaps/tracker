@@ -19,16 +19,18 @@ class ChaptersController < HtmlController
     @chapter = Chapter.new chapter_params
     authorize @chapter
     @chapter.mlid = @chapter.mlid&.upcase
-    return notice_and_redirect t(:chapter_created, chapter: @chapter.chapter_name), chapters_url if @chapter.save
-
-    @chapters = Chapter.includes(:organization, groups: [:students]).all
+    if @chapter.save
+      success(title: t(:chapter_added), text: t(:chapter_added_text, chapter: @chapter.chapter_name))
+      return redirect_to chapters_url
+    end
+    failure(title: t(:chapter_invalid), text: t(:fix_form_errors))
     render :new, status: :unprocessable_entity
   end
 
   def show
     @chapter = Chapter.find params.require :id
     authorize @chapter
-    @pagy, @groups = pagy apply_scopes(GroupSummary.where(chapter_id: @chapter.id))
+    @pagy, @groups = pagy apply_scopes(GroupSummary.includes(:chapter).where(chapter_id: @chapter.id))
   end
 
   def edit
@@ -40,9 +42,10 @@ class ChaptersController < HtmlController
     @chapter = Chapter.includes(:organization).find params.require :id
     authorize @chapter
     if @chapter.update chapter_params
-      success_notice t(:chapter_updated), t(:chapter_name_updated, name: @chapter.chapter_name)
+      success title: t(:chapter_updated), text: t(:chapter_name_updated, name: @chapter.chapter_name)
       return redirect_to(flash[:redirect] || chapter_url)
     end
+    failure title: t(:chapter_invalid), text: t(:fix_form_errors)
     render :edit, status: :unprocessable_entity
   end
 

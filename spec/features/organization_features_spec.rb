@@ -9,7 +9,7 @@ RSpec.describe 'Interaction with Organizations' do
     it 'creates a new organization', js: true do
       visit '/organizations'
       click_link 'Add Organization'
-      fill_in 'Organization name', with: 'New Organization For Organization Feature Test'
+      fill_in 'Organization Name', with: 'New Organization For Organization Feature Test'
       click_button 'Create'
 
       expect(page).to have_content 'New Organization For Organization Feature Test'

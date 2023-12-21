@@ -25,7 +25,7 @@ class GroupsController < HtmlController
       return redirect_to group_path(@group)
     end
     skip_authorization
-    failure_notice t(:group_invalid), t(:fix_form_errors)
+    failure title: t(:group_invalid), text: t(:fix_form_errors)
     render :new, status: :unprocessable_entity
   end
 
@@ -45,12 +45,12 @@ class GroupsController < HtmlController
     @group = Group.find params.require :id
     if @group.valid? && @group.update(group_params)
       authorize @group
-      success_notice t(:group_updated), t(:group_name_updated, group: @group.group_name)
+      success title: t(:group_updated), text: t(:group_name_updated, group: @group.group_name)
       return redirect_to(flash[:redirect] || group_path(@group))
     end
     skip_authorization
 
-    failure_notice t(:group_invalid), t(:fix_form_errors)
+    failure title: t(:group_invalid), text: t(:fix_form_errors)
     render :edit, status: :unprocessable_entity
   end
 

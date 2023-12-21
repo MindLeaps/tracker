@@ -96,7 +96,8 @@ en:
   student_delete_confirmation: Are you sure you want to delete student "%{name}"?
   student_deleted: Student Deleted
   student_deleted_text: Student "%{student}" deleted.
-  student_restored: Student "%{name}" restored.
+  student_restored: Student Restored
+  student_restored_text: Student "%{name}" restored.
   number_of_students: Number of Students
   number_of_groups: Number of Groups
   number_of_chapters: Number of Chapters
@@ -123,7 +124,9 @@ en:
   restore_group: Restore Deleted Group
   edit_group: Edit Group
   edit: Edit
-  chapter_created: Chapter "%{chapter}" created.
+  chapter_added: Chapter Added
+  chapter_added_text: Chapter "%{chapter}" added.
+  chapter_invalid: Chapter Invalid
   chapter_updated: Chapter updated
   chapter_name_updated: Chapter "%{name}" updated.
   duplicate_lesson: Lesson already exists for group "%{group}" in "%{subject}" on selected date.

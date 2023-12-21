@@ -47,6 +47,18 @@ RSpec.describe 'User interacts with Students' do
       expect(created_student.gender).to eq('M')
       expect(created_student.country_of_nationality).to eq('AQ')
     end
+
+
+    it 'renders error flash when submitted form is incomplete' do
+      visit '/students'
+      click_link 'Add Student'
+      fill_in 'student_mlid', with: '1A'
+      fill_in 'First Name', with: 'Rick'
+      fill_in 'Last Name', with: 'Sanchez'
+      click_button 'Create'
+      expect(page).to have_content 'Student Invalid'
+      expect(page).to have_content 'Please fix the errors in the form'
+    end
   end
 
   describe 'Edit student' do
@@ -58,9 +70,12 @@ RSpec.describe 'User interacts with Students' do
 
       find('div.table-cell', text: 'Editovska', match: :first).click
       click_link 'Edit Student'
+      fill_in 'First Name', with: ''
+      click_button 'Update'
+      expect(page).to have_content 'Student Invalid'
       fill_in 'First Name', with: 'Editoredska'
       fill_in 'tag-autocomplete', with: 'Sol'
-      find('#awesomplete_list_1_item_0').click
+      find('.awesomplete ul li:first-child').click
       click_button 'Update'
 
       expect(page).to have_content 'Editoredska'
@@ -76,16 +91,26 @@ RSpec.describe 'User interacts with Students' do
   end
 
   describe 'Delete student' do
-    before :each do
-      create :student, first_name: 'Deleto', last_name: 'Mea'
-    end
-
     it 'deletes student Deleto Mea', js: true do
+      @student = create :student, first_name: 'Deleto', last_name: 'Mea'
       visit '/students'
       find('div.table-cell', text: 'Deleto', match: :first).click
+      expect(@student.reload.deleted_at).to be nil
       click_button 'Delete Student'
+      expect(@student.reload.deleted_at).to_not be nil
 
       expect(page).to have_content 'Student "Mea, Deleto" deleted.'
+    end
+
+    it 'restores deleted student', js: true do
+      @student = create :student, first_name: 'Restoro', last_name: 'Mea', deleted_at: Time.zone.now
+      visit '/students'
+      click_link_compat('Show Deleted')
+      find('div.table-cell', text: 'Restoro', match: :first).click
+      expect(@student.reload.deleted_at).to_not be nil
+      click_button 'Restore Deleted Student'
+      expect(@student.reload.deleted_at).to be nil
+      expect(page).to have_content 'Student "Mea, Restoro" restored'
     end
   end
 end

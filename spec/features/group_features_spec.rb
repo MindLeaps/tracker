@@ -42,6 +42,17 @@ RSpec.describe 'User interacts with Groups' do
       expect(page).to have_content 'Group "Feature Test Group" added.'
       expect(page).to have_link 'Create another', href: new_group_path(chapter_id: @chapter.id)
     end
+
+    it 'renders error flash when submitted form is incomplete' do
+      visit '/groups'
+      click_link 'Add Group'
+      fill_in 'Group Name', with: 'Feature Test Group'
+      select 'Chapter One', from: 'group_chapter_id'
+      click_button 'Create'
+
+      expect(page).to have_content 'Group Invalid'
+      expect(page).to have_content 'Please fix the errors in the form'
+    end
   end
 
   describe 'Group editing' do
@@ -56,6 +67,9 @@ RSpec.describe 'User interacts with Groups' do
       visit '/groups'
       click_link 'Test Group'
       click_link 'Edit Group'
+      fill_in 'Group Name', with: ''
+      click_button 'Update'
+      expect(page).to have_content 'Group Invalid'
       fill_in 'Group Name', with: 'Edited Group'
       select 'New Chapter', from: 'group_chapter_id'
       click_button 'Update'
