@@ -32,7 +32,7 @@ en:
   organization_mlid_error_message: Organization MLID has to be 3 characters long and can only contain numbers and letters. No special characters.
   chapter_mlid_error_message: Chapter MLID has to be up to 2 characters long and can only contain numbers and letters. No special characters.
   group_mlid_error_message: Group MLID has to be up to 2 characters long and can only contain numbers and letters. No special characters.
-  students: students
+  students: Students
   student_details: Student Details
   student_deleted_at: Student deleted %{time} ago
   date_of_birth: Date of Birth
@@ -46,7 +46,7 @@ en:
   country_of_nationality: Country of Nationality
   new_student: New Student
   personal_details: Personal, family, school, and health details
-  groups: groups
+  groups: Groups
   new_group: New Group
   group_name: Group Name
   chapter: Chapter
@@ -178,6 +178,8 @@ en:
   revoke_global_role_button: Revoke Global Role
   revoke_local_role_button: Revoke Role in %{org}
   unauthorized_logout: You have been loged out for performing unauthorized activity
+  logout: Logout
+  mobile_app: Mobile App
   user_added: User added
   profile_image: Profile Image
   delete_user: Delete User
@@ -228,6 +230,7 @@ en:
   student_does_not_belong_to_group: Student does not belong to this group anymore.
   lesson_for_student: Lesson %{date} - Student %{name}
   total: Total
+  analytics: Analytics
   general_analytics: General Analytics
   group_analytics: Group Analytics
   subject_analytics: Subject Analytics
