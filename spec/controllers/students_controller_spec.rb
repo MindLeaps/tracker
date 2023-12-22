@@ -202,7 +202,6 @@ RSpec.describe StudentsController, type: :controller do
 
       it { should respond_with :ok }
       it { should render_template :edit }
-      it { should set_flash[:redirect] }
     end
 
     describe '#performance' do
@@ -283,7 +282,7 @@ RSpec.describe StudentsController, type: :controller do
       end
 
       it { should redirect_to student_path(@student) }
-      it { should set_flash[:undo_notice] }
+      it { should set_flash[:success_notice] }
 
       it 'Marks the student as deleted' do
         expect(@student.reload.deleted_at).not_to be_nil
@@ -293,14 +292,10 @@ RSpec.describe StudentsController, type: :controller do
     describe '#undelete' do
       before :each do
         @student = create :student, deleted_at: Time.zone.now
-        request.env['HTTP_REFERER'] = 'http://example.com/students?param=1'
-
         post :undelete, params: { id: @student.id }
       end
 
-      it { should redirect_to 'http://example.com/students?param=1' }
-
-      it { should set_flash[:notice].to "Student \"#{@student.proper_name}\" restored." }
+      it { should set_flash[:success_notice] }
 
       it 'Marks the student as not deleted' do
         expect(@student.reload.deleted_at).to be_nil

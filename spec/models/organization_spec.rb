@@ -94,7 +94,9 @@ RSpec.describe Organization, type: :model do
 
     it 'returns users who have a role in the organization' do
       expect(org.members.length).to eq 3
-      expect(org.members).to include(*@members)
+      expect(org.members).to include(OrganizationMember.find @members[0].id)
+      expect(org.members).to include(OrganizationMember.find @members[1].id)
+      expect(org.members).to include(OrganizationMember.find @members[2].id)
     end
   end
 end

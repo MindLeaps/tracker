@@ -1,4 +1,4 @@
-<%- content_for :title, "#{t(:chapter).capitalize} <%- #{@chapter.chapter_name}" %>
+<%- content_for :title, "#{t(:chapter).capitalize} - #{@chapter.chapter_name}" %>
 
 <%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
   {title: CommonComponents::TagLabel.new(label: @chapter.chapter_name, img_src: 'chapter.svg'), href: '' },

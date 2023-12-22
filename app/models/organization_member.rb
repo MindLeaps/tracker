@@ -20,6 +20,7 @@
 #  organization_id    :integer
 #
 class OrganizationMember < ApplicationRecord
+  self.primary_key = :id
   def readonly?
     true
   end

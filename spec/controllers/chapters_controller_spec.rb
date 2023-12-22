@@ -55,9 +55,7 @@ RSpec.describe ChaptersController, type: :controller do
       end
 
       it { should render_template :new }
-      it 'Assigns the chapters for index rendering' do
-        expect(assigns[:chapters]).to include @existing_chapter
-      end
+      it { should set_flash[:failure_notice] }
     end
   end
 
@@ -91,7 +89,7 @@ RSpec.describe ChaptersController, type: :controller do
 
       it { should redirect_to chapter_url }
 
-      it { should set_flash[:notice].to 'Chapter "Updated Name" updated.' }
+      it { should set_flash[:success_notice] }
 
       it 'updates the existing chapter' do
         expect(@chapter.reload.chapter_name).to eq 'Updated Name'

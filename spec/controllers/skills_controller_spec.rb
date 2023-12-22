@@ -135,7 +135,7 @@ RSpec.describe SkillsController, type: :controller do
         end
 
         it { should redirect_to skills_path }
-        it { should set_flash[:undo_notice] }
+        it { should set_flash[:success_notice] }
 
         it 'deletes the skill' do
           expect(@skill.reload.deleted_at).not_to be_nil

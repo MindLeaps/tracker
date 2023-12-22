@@ -22,10 +22,10 @@ class UsersController < HtmlController
     @user = User.new params.require(:user).permit(:email)
     authorize @user
     if @user.save
-      success_notice_with_link t(:user_added), t(:user_with_email_added, email: @user.email), new_user_path, t(:create_another)
+      success title: t(:user_added), text: t(:user_with_email_added, email: @user.email), link_path: new_user_path, link_text: t(:create_another)
       return redirect_to user_path(@user)
     end
-    failure_notice t(:user_invalid), @user.errors.full_messages.join('\n')
+    failure title: t(:user_invalid), text: @user.errors.full_messages.join('\n')
     render :new, status: :unprocessable_entity
   end
 

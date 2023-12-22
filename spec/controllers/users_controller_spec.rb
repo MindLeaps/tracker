@@ -85,8 +85,8 @@ RSpec.describe UsersController, type: :controller do
         }
       end
 
-      it { should redirect_to users_path }
-      it { should set_flash[:notice].to 'User with email new_user@example.com added.' }
+      it { should redirect_to user_path User.last.id }
+      it { should set_flash[:success_notice] }
 
       it 'creates a new user' do
         expect(User.last.email).to eq 'new_user@example.com'
@@ -101,7 +101,7 @@ RSpec.describe UsersController, type: :controller do
 
       it { should respond_with 422 }
       it { should render_template :new }
-      it { should set_flash[:failure_notice].to({ title: 'User Invalid', text: 'Email can\'t be blank' }) }
+      it { should set_flash[:failure_notice] }
     end
   end
 

@@ -40,7 +40,10 @@ class SkillsController < HtmlController
 
     if @skill.can_delete?
       @skill.deleted_at = Time.zone.now
-      undo_notice_and_redirect t(:skill_deleted, skill_name: @skill.skill_name), undelete_skill_path, skills_path if @skill.save
+      if @skill.save
+        success title: t(:skill_deleted), text: t(:skill_deleted_text, skill_name: @skill.skill_name), link_text: t(:undo), link_path: undelete_skill_path
+        redirect_to skills_path
+      end
     else
       render_deletion_error
     end

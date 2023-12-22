@@ -70,7 +70,7 @@ class GroupsController < HtmlController
     group.deleted_at = nil
     if group.save
       success(title: t(:group_restored), text: t(:group_restored_text, group: group.group_name))
-      redirect_to request.referer || group.path
+      redirect_to group_path
     end
   end
 
