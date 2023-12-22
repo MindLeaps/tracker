@@ -38,7 +38,7 @@ class OrganizationsController < HtmlController
     authorize @organization
 
     if @organization.update params.require(:organization).permit :organization_name, :mlid
-      success title:t(:organization_updated), text: t(:organization_name_updated, name: @organization.organization_name)
+      success title: t(:organization_updated), text: t(:organization_name_updated, name: @organization.organization_name)
       return redirect_to organizations_url
     end
 
@@ -66,8 +66,7 @@ class OrganizationsController < HtmlController
     member_params.tap do |p|
       return redirect_to @organization if @organization.add_user_with_role p.require(:email), p.require(:role).to_sym
 
-      initialize_organization @organization.id
-      member_conflict_response
+      member_conflict_response @organization.id
     end
   rescue ActionController::ParameterMissing
     failure title: t(:invalid_user), text: t(:member_email_missing)
@@ -81,7 +80,8 @@ class OrganizationsController < HtmlController
     params.require(:user).permit(:email, :role)
   end
 
-  def member_conflict_response
+  def member_conflict_response(id)
+    initialize_organization id
     failure title: t(:invalid_user), text: t(:already_member)
     render :show, status: :conflict
   end

@@ -48,7 +48,6 @@ RSpec.describe 'User interacts with Students' do
       expect(created_student.country_of_nationality).to eq('AQ')
     end
 
-
     it 'renders error flash when submitted form is incomplete' do
       visit '/students'
       click_link 'Add Student'

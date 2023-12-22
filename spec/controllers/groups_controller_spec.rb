@@ -212,7 +212,6 @@ RSpec.describe GroupsController, type: :controller do
       post :undelete, params: { id: @group.id }
     end
 
-
     it { should set_flash[:success_notice] }
     it 'Removes the group\'s deleted timestamp' do
       expect(@group.reload.deleted_at).to be_nil

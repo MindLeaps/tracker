@@ -58,20 +58,20 @@ class GroupsController < HtmlController
     group = Group.find params.require :id
     authorize group
     group.deleted_at = Time.zone.now
-    if group.save
-      success(title: t(:group_deleted), text: t(:group_deleted_text, group: group.group_name), button_path: undelete_group_path, button_method: :post, button_text: t(:undo))
-      redirect_to request.referer || group.path
-    end
+    return unless group.save
+
+    success(title: t(:group_deleted), text: t(:group_deleted_text, group: group.group_name), button_path: undelete_group_path, button_method: :post, button_text: t(:undo))
+    redirect_to request.referer || group.path
   end
 
   def undelete
     group = Group.find params.require :id
     authorize group
     group.deleted_at = nil
-    if group.save
-      success(title: t(:group_restored), text: t(:group_restored_text, group: group.group_name))
-      redirect_to group_path
-    end
+    return unless group.save
+
+    success(title: t(:group_restored), text: t(:group_restored_text, group: group.group_name))
+    redirect_to group_path
   end
 
   private

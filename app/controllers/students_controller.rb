@@ -62,10 +62,10 @@ class StudentsController < HtmlController
     authorize @student
     @student.deleted_at = Time.zone.now
 
-    if @student.save
-      success(title: t(:student_deleted), text: t(:student_deleted_text, student: @student.proper_name), link_text: t(:undo), link_path: undelete_student_path)
-      redirect_to student_path
-    end
+    return unless @student.save
+
+    success(title: t(:student_deleted), text: t(:student_deleted_text, student: @student.proper_name), link_text: t(:undo), link_path: undelete_student_path)
+    redirect_to student_path
   end
 
   def undelete
@@ -73,10 +73,10 @@ class StudentsController < HtmlController
     authorize @student
     @student.deleted_at = nil
 
-    if @student.save
-      success title: t(:student_restored), text: t(:student_restored_text, name: @student.proper_name)
-      redirect_to student_path
-    end
+    return unless @student.save
+
+    success title: t(:student_restored), text: t(:student_restored_text, name: @student.proper_name)
+    redirect_to student_path
   end
 
   private
