@@ -16,13 +16,21 @@ class SubjectsController < HtmlController
   def create
     @subject = Subject.new subject_params
     authorize @subject
-    return notice_and_redirect(t(:subject_created, subject: @subject.subject_name), subjects_url) if @subject.save
+    if params[:add_skill]
+      @subject.assignments.build
+    elsif @subject.save
+      success(title: t(:subject_added), text: t(:subject_added_text, subject: @subject.subject_name))
+      return redirect_to @subject
+    else
+      failure title: t(:subject_invalid), text: t(:fix_form_errors)
+    end
 
-    render :index
+    render :new, status: :unprocessable_entity
   end
 
   def show
     @subject = Subject.includes(assignments: [:skill]).find params.require(:id)
+    @pagy, @skills = pagy @subject.skills
     authorize @subject
   end
 

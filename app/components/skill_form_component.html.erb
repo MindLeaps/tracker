@@ -1,4 +1,4 @@
-<%= form_with model: @skill, action: @action, data: { controller: 'skill-form' } do |f| %>
+<%= form_with model: @skill, action: @action do |f| %>
   <div class="bg-white px-4 py-5 shadow sm:p-4">
     <div class="md:grid md:grid-cols-4 md:gap-6">
       <div class="md:col-span-1">
@@ -26,9 +26,10 @@
       </div>
       <div class="mt-5 md:col-span-3 md:mt-0">
         <%= turbo_frame_tag f.field_id(:grades) do %>
-        <div id="grade_descriptors" class="grid grid-cols-6 gap-4">
+        <div id="grade_descriptors" class="grid grid-cols-6 gap-4" data-controller="association">
           <%= f.fields_for :grade_descriptors do |gf| %>
-            <div class="grid grid-cols-6 col-span-6 gap-4" data-skill-form-target="grade">
+            <% id = SecureRandom.uuid %>
+            <div class="grid grid-cols-6 col-span-6 gap-4" data-association-target="removable" id="<%= id %>">
             <div class="col-span-1">
               <%= gf.label :mark, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
               <%= gf.number_field :mark, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
@@ -38,12 +39,12 @@
               <%= gf.text_field :grade_description, rows: 5, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
             </div>
             <div class="col-span-2 relative">
-              <div class="dangerous-button absolute bottom-0 cursor-pointer" data-action="click->skill-form#delete"><%= t(:delete_grade) %></div>
+              <button class="dangerous-button absolute bottom-0 cursor-pointer" data-action="association#remove" data-association-remove-id-param="<%= id %>"><%= t(:delete_grade) %></button>
             </div>
             </div>
           <% end %>
         </div>
-          <%= f.submit "Add Grade", class: 'normal-button mt-4',
+          <%= f.submit t(:add_grade), class: 'normal-button mt-4',
                        name: :add_grade,
                        data: {turbo_frame: f.field_id(:grades)}
           %>

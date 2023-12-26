@@ -9,6 +9,7 @@
 #  lesson_uid   :uuid
 #  skill_name   :string
 #  skill_id     :integer
+#  subject_id   :integer
 #
 class LessonSkillSummary < ApplicationRecord
   def readonly?

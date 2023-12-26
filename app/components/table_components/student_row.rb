@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class TableComponents::StudentRow < TableComponents::BaseRow
-  # rubocop:disable Metrics/MethodLength
   def self.columns
     [
       { column_name: '#', numeric: true },
@@ -15,5 +14,4 @@ class TableComponents::StudentRow < TableComponents::BaseRow
       { column_name: I18n.t(:actions) }
     ]
   end
-  # rubocop:enable Metrics/MethodLength
 end

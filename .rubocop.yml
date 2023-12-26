@@ -39,6 +39,9 @@ Metrics/AbcSize:
   # a Float.
   Max: 25
 
+Metrics/MethodLength:
+  Max: 12
+
 Style/Documentation:
   Enabled: false
 

@@ -98,8 +98,8 @@ RSpec.describe SubjectsController, type: :controller do
           } }
         end
 
-        it { should redirect_to subjects_path }
-        it { should set_flash[:notice].to 'Subject "Created Subject I" created.' }
+        it { should redirect_to subject_path }
+        it { should set_flash[:success_notice] }
 
         it 'Creates the subject without skills' do
           created_subject = Subject.last
@@ -135,7 +135,7 @@ RSpec.describe SubjectsController, type: :controller do
             subject_name: 'Created Subject III'
           } }
 
-          expect(response).to render_template 'subjects/index'
+          expect(response).to render_template :new
         end
       end
     end

@@ -1,0 +1,38 @@
+<%- content_for :title, "#{t(:subject).capitalize} - #{@subject.subject_name}" %>
+
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  {title: CommonComponents::TagLabel.new(label: @subject.subject_name, img_src: 'subject.svg'), href: '' },
+], buttons: [
+  (CommonComponents::ButtonComponent.new(label: t(:edit_subject), href: edit_subject_path(@subject)) if policy(@subject).edit?),
+].compact)  do |h|
+  h.with_left do
+    render CommonComponents::Breadcrumbs.new(crumbs: [
+      { label: CommonComponents::TagLabel.new(label: @subject.organization.organization_name, img_src: 'world.svg'), href: organization_path(@subject.organization) },
+    ])
+  end
+end %>
+
+<div class="overflow-auto">
+  <div class="flex max-w-full">
+    <section class="pr-2 w-1/2">
+      <%= render CommonComponents::Card.new(title: t(:subject_information).capitalize) do |card| %>
+        <% card.with_card_content do %>
+          <div class="bg-white p-4">
+            <ul>
+              <li><%= t(:subject_name) %>: <%= @subject.subject_name %></li>
+              <li><%= t(:created) %>: <%= @subject.created_at %></li>
+              <li><%= t(:organization) %>: <%= @subject.organization.organization_name %></li>
+            </ul>
+          </div>
+        <% end %>
+      <% end %>
+    </section>
+    <section class="pr-2 w-1/2">
+      <%= render CommonComponents::Card.new(title: t(:skills).capitalize) do |card| %>
+        <% card.with_card_content do %>
+          <%= render TableComponents::Table.new(pagy: @pagy, rows: @skills, row_component: TableComponents::SkillRow) %>
+        <% end %>
+      <% end %>
+    </section>
+  </div>
+</div>

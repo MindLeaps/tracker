@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/MethodLength
 class RolifyCreateRoles < ActiveRecord::Migration[5.0]
   def change
     create_table(:roles) do |t|
@@ -22,4 +21,3 @@ class RolifyCreateRoles < ActiveRecord::Migration[5.0]
     add_index(:users_roles, %i[user_id role_id])
   end
 end
-# rubocop:enable Metrics/MethodLength

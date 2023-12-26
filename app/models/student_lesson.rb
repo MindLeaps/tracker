@@ -53,7 +53,6 @@ class StudentLesson < ApplicationRecord
     end
   end
 
-  # rubocop:disable Metrics/MethodLength
   def map_new_grades(skills_descriptors)
     formatted_grades_with_deleted.select { |g| should_grade_update?(g, skills_descriptors) }.map do |old_grade|
       descriptor_id = skills_descriptors[old_grade.skill_id]
@@ -69,7 +68,6 @@ class StudentLesson < ApplicationRecord
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
   # Returns Grades with valid grades for graded skills and nulled grades for ungraded skills and with deleted grades
   def formatted_grades_with_deleted
     Grade.find_by_sql [FORMATTED_GRADES_WITH_DELETED_SQL, { student_id: student_id, lesson_id: lesson_id, subject_id: subject.id }]

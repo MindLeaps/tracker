@@ -4,7 +4,7 @@
 #
 # Table name: organization_members
 #
-#  id                 :integer
+#  id                 :integer          primary key
 #  current_sign_in_at :datetime
 #  current_sign_in_ip :string
 #  email              :string

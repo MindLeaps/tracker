@@ -1,7 +1,7 @@
 <%- content_for :title, "#{t(:skill).capitalize} - #{@skill.skill_name}" %>
 
 <%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
-  {title: CommonComponents::TagLabel.new(label: @skill.skill_name, img_src: 'lightbulb.svg'), href: '' },
+  {title: CommonComponents::TagLabel.new(label: @skill.skill_name, img_src: 'skill.svg'), href: '' },
 ], buttons: [
   (CommonComponents::FormButtonComponent.new(label: t(:restore_skill), path: undelete_skill_path(@skill), method: :post) if policy(@skill).destroy? && @skill.deleted_at),
   (CommonComponents::DangerousFormButtonComponent.new(label: t(:delete_skill), path: skill_path(@skill), method: :delete) if policy(@skill).destroy? && !@skill.deleted_at)

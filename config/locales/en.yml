@@ -29,6 +29,7 @@ en:
   mlid: MLID
   name: Name
   undo: Undo
+  created: Created
   organization_mlid_error_message: Organization MLID has to be 3 characters long and can only contain numbers and letters. No special characters.
   chapter_mlid_error_message: Chapter MLID has to be up to 2 characters long and can only contain numbers and letters. No special characters.
   group_mlid_error_message: Group MLID has to be up to 2 characters long and can only contain numbers and letters. No special characters.
@@ -134,11 +135,15 @@ en:
   new_subject: New Subject
   subjects: Subjects
   subject: Subject
+  subject_information: Subject Information
   edit_subject: Edit Subject
   subject_name: Subject Name
   add_subject: Add Subject
   subject_created: Subject "%{subject}" created.
+  subject_added: Subject Added
+  subject_added_text: Subject "%{subject}" added.
   subject_updated: Subject updated.
+  subject_invalid: Subject Invalid
   lesson_created: Lesson created.
   skill_created: Skill "%{skill}" created.
   create_grade_button: Save Student Grades
@@ -148,6 +153,7 @@ en:
   student_graded: Student graded.
   student_absent: Absent
   student_not_graded: Not Graded
+  add_grade: Add Grade
   graded_vs_students_in_group: Graded / Students in Group
   back_to_subjects: Back to All Subjects
   cancel: Cancel

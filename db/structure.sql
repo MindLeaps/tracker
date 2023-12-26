@@ -480,7 +480,8 @@ SELECT
     NULL::integer AS skill_id,
     NULL::character varying AS skill_name,
     NULL::numeric AS average_mark,
-    NULL::bigint AS grade_count;
+    NULL::bigint AS grade_count,
+    NULL::integer AS subject_id;
 
 
 --
@@ -1644,24 +1645,6 @@ CREATE OR REPLACE VIEW public.group_lesson_summaries AS
 
 
 --
--- Name: lesson_skill_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.lesson_skill_summaries AS
- SELECT l.uid AS lesson_uid,
-    sk.id AS skill_id,
-    sk.skill_name,
-    round(avg(g.mark), 2) AS average_mark,
-    count(g.mark) AS grade_count
-   FROM ((((public.lessons l
-     JOIN public.subjects su ON ((su.id = l.subject_id)))
-     JOIN public.assignments a ON ((su.id = a.subject_id)))
-     JOIN public.skills sk ON ((a.skill_id = sk.id)))
-     LEFT JOIN public.grades g ON (((g.lesson_uid = l.uid) AND (g.skill_id = sk.id) AND (g.deleted_at IS NULL))))
-  GROUP BY l.uid, sk.id;
-
-
---
 -- Name: lesson_table_rows _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
@@ -1898,6 +1881,25 @@ CREATE OR REPLACE VIEW public.student_lesson_summaries AS
              LEFT JOIN public.absences a ON (((a.student_id = s.id) AND (a.lesson_id = l.id))))
           GROUP BY s.id, l.id, a.id) united
      JOIN public.subject_summaries su ON ((united.subject_id = su.id)));
+
+
+--
+-- Name: lesson_skill_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.lesson_skill_summaries AS
+ SELECT l.uid AS lesson_uid,
+    sk.id AS skill_id,
+    sk.skill_name,
+    round(avg(g.mark), 2) AS average_mark,
+    count(g.mark) AS grade_count,
+    su.id AS subject_id
+   FROM ((((public.lessons l
+     JOIN public.subjects su ON ((su.id = l.subject_id)))
+     JOIN public.assignments a ON ((su.id = a.subject_id)))
+     JOIN public.skills sk ON ((a.skill_id = sk.id)))
+     LEFT JOIN public.grades g ON (((g.lesson_uid = l.uid) AND (g.skill_id = sk.id) AND (g.deleted_at IS NULL))))
+  GROUP BY l.uid, sk.id, su.id;
 
 
 --
@@ -2232,6 +2234,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20220501041026'),
 ('20231015025217'),
 ('20231015025855'),
-('20231221220850');
+('20231221220850'),
+('20231222195655');
 
 
