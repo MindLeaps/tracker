@@ -52,27 +52,45 @@ RSpec.describe SubjectsController, type: :controller do
     end
 
     describe '#update' do
-      before :each do
-        @subject = create :subject_with_skills, subject_name: 'Test Subject', number_of_skills: 2
-        @new_skill = create :skill
-        post :update, params: { id: @subject.id, subject: {
-          subject_name: 'Updated Name',
-          organization_id: @subject.organization_id,
-          assignments_attributes: [
-            { id: @subject.assignments[0].id, skill_id: @subject.assignments[0].skill_id, _destroy: false },
-            { id: @subject.assignments[0].id, skill_id: @subject.assignments[1].skill_id, _destroy: false },
-            { skill_id: @new_skill.id }
-          ]
-        } }
-      end
+      context 'updates subject' do
+        before :each do
+          @subject = create :subject_with_skills, subject_name: 'Test Subject', number_of_skills: 2
+          @new_skill = create :skill
+          post :update, params: { id: @subject.id, subject: {
+            subject_name: 'Updated Name',
+            organization_id: @subject.organization_id,
+            assignments_attributes: [
+              { id: @subject.assignments[0].id, skill_id: @subject.assignments[0].skill_id, _destroy: false },
+              { id: @subject.assignments[0].id, skill_id: @subject.assignments[1].skill_id, _destroy: false },
+              { skill_id: @new_skill.id }
+            ]
+          } }
+        end
 
-      it { should redirect_to subject_path @subject }
-      it 'updates the subject name' do
-        expect(@subject.reload.subject_name).to eq 'Updated Name'
+        it { should redirect_to subject_path @subject }
+        it { should set_flash[:success_notice] }
+        it 'updates the subject name' do
+          expect(@subject.reload.subject_name).to eq 'Updated Name'
+        end
+        it 'updates the subject skills' do
+          expect(@subject.reload.skills.length).to eq 3
+          expect(@subject.skills).to include @new_skill
+        end
       end
-      it 'updates the subject skills' do
-        expect(@subject.reload.skills.length).to eq 3
-        expect(@subject.skills).to include @new_skill
+      context 'Requests additional skill' do
+        before :each do
+          @subject = create :subject_with_skills, subject_name: 'Test Subject', number_of_skills: 2
+          post :update, params: {
+            id: @subject.id,
+            subject: {
+              subject_name: ''
+            },
+            add_skill: 'Add Skill'
+          }
+        end
+
+        it { should render_template :new }
+        it { should respond_with :ok }
       end
     end
 
@@ -98,7 +116,7 @@ RSpec.describe SubjectsController, type: :controller do
           } }
         end
 
-        it { should redirect_to subject_path }
+        it { should redirect_to subject_path Subject.last }
         it { should set_flash[:success_notice] }
 
         it 'Creates the subject without skills' do
@@ -129,14 +147,31 @@ RSpec.describe SubjectsController, type: :controller do
         end
       end
 
+      context 'Requests additional skill' do
+        before :each do
+          post :create, params: {
+            subject: {
+              subject_name: ''
+            },
+            add_skill: 'Add Skill'
+          }
+        end
+
+        it { should render_template :new }
+        it { should respond_with :ok }
+      end
+
       context 'Rejects the subject' do
-        it 'and renders the index template' do
+        before :each do
           post :create, params: { subject: {
             subject_name: 'Created Subject III'
           } }
-
+        end
+        it 'and renders the new template' do
           expect(response).to render_template :new
         end
+
+        it { should set_flash[:failure_notice] }
       end
     end
   end

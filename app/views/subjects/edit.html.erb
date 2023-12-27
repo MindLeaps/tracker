@@ -1,0 +1,14 @@
+<%- content_for :title, "#{t(:edit_subject)} - #{@subject.subject_name}" %>
+
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  {title: CommonComponents::TagLabel.new(label: "#{t(:edit_subject)} - #{@subject.subject_name}", img_src: 'subject.svg'), href: '' },
+], buttons: [
+].compact)  do |h|
+  h.with_left do
+    render CommonComponents::Breadcrumbs.new(crumbs: [
+      { label: CommonComponents::TagLabel.new(label: t(:subjects).capitalize, img_src: 'subject.svg'), href: subjects_path }
+    ])
+  end
+end %>
+
+<%= render SubjectFormComponent.new(subject: @subject, action: :create, current_user: current_user) %>

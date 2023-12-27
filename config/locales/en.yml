@@ -142,7 +142,8 @@ en:
   subject_created: Subject "%{subject}" created.
   subject_added: Subject Added
   subject_added_text: Subject "%{subject}" added.
-  subject_updated: Subject updated.
+  subject_updated: Subject updated
+  subject_updated_text: Subject "%{subject}" updated.
   subject_invalid: Subject Invalid
   lesson_created: Lesson created.
   skill_created: Skill "%{skill}" created.

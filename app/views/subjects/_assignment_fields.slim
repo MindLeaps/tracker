@@ -1,4 +1,0 @@
-div.nested-fields
-  = f.association :skill, collection: policy_scope(Skill.exclude_deleted), label_method: :skill_name, include_blank: false
-  = link_to_remove_association f, class:'mdl-button mdl-js-button mdl-button--icon mdl-button--colored' do
-    = inline_svg_tag 'delete_forever.svg'

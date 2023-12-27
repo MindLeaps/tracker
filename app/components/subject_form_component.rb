@@ -56,6 +56,6 @@ class SubjectFormComponent < ViewComponent::Base
     @subject = subject
     @action = action
     @permitted_organizations = OrganizationPolicy::Scope.new(current_user, Organization).resolve.order(organization_name: :asc)
-    @permitted_skills = SkillPolicy::Scope.new(current_user, Skill).resolve.order(created_at: :asc)
+    @permitted_skills = SkillPolicy::Scope.new(current_user, Skill.where(deleted_at: nil)).resolve.order(created_at: :asc)
   end
 end

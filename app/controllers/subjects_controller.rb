@@ -18,19 +18,19 @@ class SubjectsController < HtmlController
     authorize @subject
     if params[:add_skill]
       @subject.assignments.build
+      render :new, status: :ok
     elsif @subject.save
       success(title: t(:subject_added), text: t(:subject_added_text, subject: @subject.subject_name))
-      return redirect_to @subject
+      redirect_to @subject
     else
       failure title: t(:subject_invalid), text: t(:fix_form_errors)
+      render :new, status: :unprocessable_entity
     end
-
-    render :new, status: :unprocessable_entity
   end
 
   def show
-    @subject = Subject.includes(assignments: [:skill]).find params.require(:id)
-    @pagy, @skills = pagy @subject.skills
+    @subject = Subject.find params.require(:id)
+    @pagy, @skills = pagy @subject.skills.includes(:organization)
     authorize @subject
   end
 
@@ -40,9 +40,18 @@ class SubjectsController < HtmlController
   end
 
   def update
-    subject = Subject.includes(:organization).find params.require(:id)
-    authorize subject
-    notice_and_redirect(t(:subject_updated), subject) if subject.update subject_params
+    @subject = Subject.includes(:organization, :skills).find params.require(:id)
+    authorize @subject
+    if params[:add_skill]
+      @subject.assignments.build
+      render :new, status: :ok
+    elsif @subject.update subject_params
+      success(title: t(:subject_updated), text: t(:subject_updated_text, subject: @subject.subject_name))
+      redirect_to @subject
+    else
+      failure(title: t(:subject_invalid), text: t(:fix_form_errors))
+      render :edit, status: :unprocessable_entity
+    end
   end
 
   private

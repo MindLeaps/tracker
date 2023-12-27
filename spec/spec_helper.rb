@@ -110,7 +110,7 @@ RSpec.configure do |config|
   # end
 
   # Capybara.javascript_driver = :chrome
-  Capybara.javascript_driver = :selenium_headless
+  Capybara.javascript_driver = :selenium
   Capybara.server = :puma, { Silent: true }
 end
 
