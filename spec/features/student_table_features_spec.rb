@@ -15,19 +15,19 @@ RSpec.describe 'User searches and navigates through students table', js: true do
 
     it 'displays searched students, including deleted' do
       visit '/students'
-      expect(page).to have_selector('.resource-row', count: 3)
+      expect(page).to have_selector('div.table-row-wrapper', count: 3)
       click_link_compat 'Show Deleted'
-      expect(page).to have_selector('.resource-row', count: 4)
+      expect(page).to have_selector('div.table-row-wrapper', count: 4)
       find('#search-field').send_keys('Umb', :enter)
-      expect(page).to have_selector('.resource-row', count: 3)
-      rows = page.all('.resource-row')
+      expect(page).to have_selector('div.table-row-wrapper', count: 3)
+      rows = page.all('div.table-row-wrapper')
       expect(rows[0]).to have_content 'Umborato'
       expect(rows[1]).to have_content 'Umberto'
       expect(rows[2]).to have_content 'Umbdeleto'
       expect(page).to have_field('search-field', with: 'Umb')
       click_link_compat 'Show Deleted'
-      expect(page).to have_selector('.resource-row', count: 2)
-      rows = page.all('.resource-row')
+      expect(page).to have_selector('div.table-row-wrapper', count: 2)
+      rows = page.all('div.table-row-wrapper')
       expect(rows[0]).to have_content 'Umborato'
       expect(rows[1]).to have_content 'Umberto'
     end

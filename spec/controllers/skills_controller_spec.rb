@@ -82,7 +82,7 @@ RSpec.describe SkillsController, type: :controller do
         end
 
         it { should redirect_to Skill.last }
-        it { should set_flash[:notice].to 'Skill "Skills Controller Spec Skill" created.' }
+        it { should set_flash[:success_notice] }
       end
       context 'Lesson creation unsuccessful' do
         before :each do
@@ -92,6 +92,8 @@ RSpec.describe SkillsController, type: :controller do
         end
 
         it { should render_template :new }
+        it { should respond_with :unprocessable_entity }
+        it { should set_flash[:failure_notice] }
       end
     end
 

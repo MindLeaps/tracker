@@ -45,6 +45,9 @@ Metrics/MethodLength:
 Style/Documentation:
   Enabled: false
 
+Style/GuardClause:
+  Enabled: false
+
 Rails:
    Enabled: true
 

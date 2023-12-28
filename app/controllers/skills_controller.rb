@@ -15,11 +15,14 @@ class SkillsController < HtmlController
     authorize @skill
     if params[:add_grade]
       @skill.grade_descriptors.build
+      render :new, status: :ok
     elsif @skill.save
-      return notice_and_redirect t(:skill_created, skill: @skill.skill_name), @skill
+      success(title: t(:skill_added), text: t(:skill_added_text, skill: @skill.skill_name))
+      redirect_to @skill
+    else
+      failure(title: t(:skill_invalid), text: t(:fix_form_errors))
+      render :new, status: :unprocessable_entity
     end
-
-    render :new
   end
 
   def show
@@ -42,7 +45,7 @@ class SkillsController < HtmlController
       @skill.deleted_at = Time.zone.now
       return unless @skill.save
 
-      success title: t(:skill_deleted), text: t(:skill_deleted_text, skill_name: @skill.skill_name), link_text: t(:undo), link_path: undelete_skill_path
+      success title: t(:skill_deleted), text: t(:skill_deleted_text, skill_name: @skill.skill_name), button_text: t(:undo), button_path: undelete_skill_path, button_method: :post
       redirect_to skills_path
     else
       render_deletion_error
@@ -53,8 +56,10 @@ class SkillsController < HtmlController
     @skill = Skill.find params.require :id
     authorize @skill
     @skill.deleted_at = nil
-
-    notice_and_redirect t(:skill_restored, skill_name: @skill.skill_name), request.referer || skill_path(@skill) if @skill.save
+    if @skill.save
+      success title: t(:skill_restored), text: t(:skill_restored_text, skill_name: @skill.skill_name)
+      redirect_to request.referer || @skill
+    end
   end
 
   private
