@@ -4,6 +4,7 @@
 - Student creation will redirect to the previous location
 - Validating organizations MLID can be up to 3 characters
 - Implemented independent scoping for tables so it's possible to have multiple tables per page with independent sorting
+- Made search dynamic; it does not reload the page and triggers automatically 200ms after the last keystroke
 
 ## 0.30.2 - Rails 7
 - Updated Rails to v7
