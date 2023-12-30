@@ -2,10 +2,10 @@
 
 class SubjectsController < HtmlController
   include Pagy::Backend
-
+  has_scope :table_order, type: :hash, default: { key: :created_at, order: :desc }
   def index
     authorize Subject
-    @pagy, @subjects = pagy policy_scope(Subject.includes(:assignments, :skills, :organization))
+    @pagy, @subjects = pagy apply_scopes(policy_scope(Subject.includes(:assignments, :skills, :organization)))
   end
 
   def new

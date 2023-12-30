@@ -4,5 +4,6 @@
     <div class="text-right table-cell "><%= @item.subject_name %></div>
     <div class="text-right table-cell "><%= @item.organization.organization_name %></div>
     <div class="table-cell "><%= @item.skills.length %></div>
+    <div class="table-cell "><%= @item.created_at.strftime('%F') %></div>
   </a>
 </div>

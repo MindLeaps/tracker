@@ -4,5 +4,6 @@
     <div class="text-right table-cell "><%= @item.name %></div>
     <div class="text-right table-cell "><%= @item.email %></div>
     <div class="text-right table-cell "><%= global_role %></div>
+    <div class="table-cell "><%= @item.created_at.strftime('%F') %></div>
   </a>
 </div>

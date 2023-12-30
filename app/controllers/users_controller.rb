@@ -2,7 +2,7 @@
 
 class UsersController < HtmlController
   include Pagy::Backend
-  has_scope :table_order, type: :hash
+  has_scope :table_order, type: :hash, default: { key: :created_at, order: :desc }
   has_scope :search, only: [:index, :show]
 
   before_action do

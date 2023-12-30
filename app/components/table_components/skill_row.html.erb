@@ -3,5 +3,6 @@
     <div class="table-cell "><%= @pagy.from + @item_counter %></div>
     <div class="table-cell text-right "><%= @item.skill_name %></div>
     <div class="table-cell text-right "><%= @item.organization.organization_name %></div>
+    <div class="table-cell "><%= @item.created_at.strftime('%F') %></div>
   </a>
 </div>

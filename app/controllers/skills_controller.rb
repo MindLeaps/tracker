@@ -3,6 +3,7 @@
 class SkillsController < HtmlController
   include Pagy::Backend
   has_scope :exclude_deleted, only: :index, type: :boolean, default: true
+  has_scope :table_order, type: :hash, default: { key: :created_at, order: :desc }
   has_scope :search, only: :index
 
   def index
