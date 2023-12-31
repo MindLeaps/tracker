@@ -86,6 +86,7 @@ en:
   add_organization: Add Organization
   add_user: Add User
   add_lesson: Add Lesson
+  lesson_information: Lesson Information
   student_added: Student Added
   student_updated: Student Updated
   student_name_added: Student "%{name}" added.
@@ -145,7 +146,9 @@ en:
   subject_updated: Subject updated
   subject_updated_text: Subject "%{subject}" updated.
   subject_invalid: Subject Invalid
-  lesson_created: Lesson created.
+  lesson_added: Lesson Added
+  lesson_added_text: Lesson on %{date} with group %{group} in subject %{subject} added.
+  lesson_invalid: Lesson Invalid
   skill_added: Skill Added
   skill_added_text: Skill "%{skill}" added.
   skill_invalid: Skill Invalid

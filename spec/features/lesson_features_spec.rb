@@ -18,7 +18,7 @@ RSpec.describe 'User interacts with lessons' do
       select 'Feature Testing I', from: 'lesson_subject_id'
       click_button 'Create'
 
-      expect(page).to have_content 'Lesson created'
+      expect(page).to have_content 'Lesson Added'
     end
 
     it 'lists all existing lessons' do
@@ -28,21 +28,22 @@ RSpec.describe 'User interacts with lessons' do
 
       visit '/'
       click_link 'Lessons'
-      expect(page).to have_css '.resource-row', count: 2
+      expect(page).to have_css 'a.table-row-wrapper', count: 2
       expect(page).to have_content 'Feature Testing II'
     end
 
-    it 'shows a specific lesson' do
+    it 'shows a specific lesson', js: true do
       group = create :group, group_name: 'Lesson Feature Test Group'
       create :student, first_name: 'Marinko', last_name: 'Marinkovic', group: group
       create :student, first_name: 'Ivan', last_name: 'Ivankovic', group: group
       create :student, first_name: 'Deleted', last_name: 'Deletovic', group: group, deleted_at: Time.zone.now
       sub = create :subject, subject_name: 'Feature Testing III'
+      create :skill_in_subject, subject: sub
       create :lesson, subject: sub, group: group
 
       visit '/'
       click_link 'Lessons'
-      first('.resource-row a').click
+      find('div.table-cell', match: :first).click
 
       expect(page).to have_content 'Lesson Feature Test Group'
       expect(page).to have_content 'Students'

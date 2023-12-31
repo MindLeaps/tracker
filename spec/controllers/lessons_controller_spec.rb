@@ -84,8 +84,8 @@ RSpec.describe LessonsController, type: :controller do
           } }
         end
 
-        it { should redirect_to lessons_path }
-        it { should set_flash[:notice].to 'Lesson created.' }
+        it { should redirect_to lesson_path Lesson.last }
+        it { should set_flash[:success_notice] }
 
         it 'creates the Lesson' do
           created_lesson = Lesson.last
@@ -108,7 +108,9 @@ RSpec.describe LessonsController, type: :controller do
           } }
         end
 
-        it { should render_template :index }
+        it { should render_template :new }
+        it { should respond_with :unprocessable_entity }
+        it { should set_flash[:failure_notice] }
       end
     end
   end

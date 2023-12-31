@@ -6,8 +6,8 @@ class TableComponents::StudentLessonRow < TableComponents::BaseRow
       { column_name: '#', numeric: true },
       { order_key: :last_name, column_name: I18n.t(:last_name) },
       { order_key: :first_name, column_name: I18n.t(:first_name) },
-      { order_key: :graded_skills, column_name: I18n.t(:graded_of_skills) },
-      { order_key: :average, column_name: I18n.t(:average) }
+      { order_key: :graded_skills, column_name: I18n.t(:graded_of_skills), numeric: true },
+      { order_key: :average, column_name: I18n.t(:average), numeric: true }
     ]
   end
 

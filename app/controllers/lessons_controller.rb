@@ -28,9 +28,13 @@ class LessonsController < HtmlController
   def create
     @lesson = Lesson.new params.require(:lesson).permit :group_id, :date, :subject_id
     authorize @lesson
-    return notice_and_redirect(t(:lesson_created), lessons_url) if @lesson.save
-
-    render :index
+    if @lesson.save
+      success(title: t(:lesson_added), text: t(:lesson_added_text, date: @lesson.date, group: @lesson.group.group_name, subject: @lesson.subject.subject_name))
+      redirect_to @lesson
+    else
+      failure(title: t(:lesson_invalid), text: t(:fix_form_errors))
+      render :new, status: :unprocessable_entity
+    end
   end
 
   private

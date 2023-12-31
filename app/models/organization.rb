@@ -24,6 +24,7 @@ class Organization < ApplicationRecord
   validates :mlid, presence: true, uniqueness: true, format: { with: /\A[A-Za-z0-9]{1,3}\Z/ }
 
   has_many :chapters, dependent: :restrict_with_error
+  has_many :subjects, dependent: :restrict_with_error
 
   def add_user_with_role(email, role)
     return false unless Role::LOCAL_ROLES.key? role
