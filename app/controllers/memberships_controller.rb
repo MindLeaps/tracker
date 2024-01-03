@@ -37,7 +37,7 @@ class MembershipsController < HtmlController
     @user = User.find params.require :user_id
     authorize Membership.new(user: @user)
     if RoleService.revoke_global_role @user
-      success_notice t(:role_updated), t(:global_role_revoked, email: @user.email)
+      success title: t(:role_updated), text: t(:global_role_revoked, email: @user.email)
       redirect_to @user
     else
       render 'users/show', status: :bad_request

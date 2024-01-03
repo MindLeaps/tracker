@@ -20,6 +20,10 @@ end %>
               <% if policy(@user).create_api_token? %>
                 <li>API Token: <%= @token %> <%= render CommonComponents::DangerousFormButtonComponent.new(label: t(:create_api_token), path: create_api_token_user_path(@user), method: :post) %></li>
               <% end %>
+              <li><%= "#{t(:global_role)}: #{@user.global_role.try(:label) || t(:no_global_role)}" %></li>
+              <% @user.roles.each do |r| %>
+                <li><%= "#{r.resource.organization_name}: #{r.label}" if r.local? %></li>
+              <% end %>
             </ul>
           </div>
 
@@ -31,7 +35,7 @@ end %>
         <%= render CommonComponents::Card.new(title: t(:global_roles).capitalize) do |card| %>
           <% card.with_card_content do %>
             <div class="bg-white p-4">
-              <%= form_with url: update_global_role_user_memberships_path(@user), method: :put do |f| %>
+              <%= form_with url: update_global_role_user_memberships_path(@user), id: 'user-roles-global', method: :put do |f| %>
                 <fieldset class="pb-4">
                   <div class="space-y-5">
                     <% Role::GLOBAL_ROLES.each do |role_key, role_name| %>
@@ -63,7 +67,7 @@ end %>
                 <% local_membership = Membership.new(user: @user, org: org) %>
                 <% if policy(local_membership).update? %>
                   <div class="py-6">
-                    <%= form_with model: [org.mlid, local_membership], url: user_membership_path(@user, org), method: :put, namespace: org.mlid do |f| %>
+                    <%= form_with model: [org.mlid, local_membership], url: user_membership_path(@user, org), method: :put, namespace: org.mlid, class: 'organization-role' do |f| %>
                       <h4 class="py-2"><%= org.organization_name %></h4>
                       <fieldset class="pb-4">
                         <% Role::LOCAL_ROLES.each do |role_value, role_name| %>

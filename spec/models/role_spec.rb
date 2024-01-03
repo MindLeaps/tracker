@@ -22,6 +22,44 @@ require 'rails_helper'
 RSpec.describe Role, type: :model do
   let(:org) { create :organization }
   let(:user) { create :user }
+
+  describe '#global?' do
+    it 'returns true for global roles' do
+      user.add_role :super_admin
+      expect(user.roles[0].global?).to eq(true)
+      user.remove_role :super_admin
+
+      user.add_role :global_admin
+      expect(user.roles[0].global?).to eq(true)
+      user.remove_role :global_admin
+
+      user.add_role :global_guest
+      expect(user.roles[0].global?).to eq(true)
+      user.remove_role :global_guest
+
+      user.add_role :global_researcher
+      expect(user.roles[0].global?).to eq(true)
+      user.remove_role :global_researcher
+    end
+    it 'returns true for local roles' do
+      user.add_role :admin, org
+      expect(user.roles.last.global?).to eq(false)
+      user.remove_role :admin, org
+
+      user.add_role :teacher, org
+      expect(user.roles.last.global?).to eq(false)
+      user.remove_role :teacher, org
+
+      user.add_role :researcher, org
+      expect(user.roles.last.global?).to eq(false)
+      user.remove_role :researcher, org
+
+      user.add_role :guest, org
+      expect(user.roles.last.global?).to eq(false)
+      user.remove_role :guest, org
+    end
+  end
+
   describe 'validations' do
     describe 'correct_role_scope' do
       describe 'super_admin' do

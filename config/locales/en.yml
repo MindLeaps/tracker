@@ -189,6 +189,7 @@ en:
   update_global_role_button: Update Global Role
   revoke_global_role_button: Revoke Global Role
   revoke_local_role_button: Revoke Role in %{org}
+  no_global_role: None
   unauthorized_logout: You have been loged out for performing unauthorized activity
   logout: Logout
   mobile_app: Mobile App
