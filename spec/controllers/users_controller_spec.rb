@@ -114,7 +114,7 @@ RSpec.describe UsersController, type: :controller do
     end
 
     it { should redirect_to users_path }
-    it { should set_flash[:notice] }
+    it { should set_flash[:success_notice] }
     it 'deletes an existing user' do
       expect(User.where(id: @user.id)).not_to exist
     end

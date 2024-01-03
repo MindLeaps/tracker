@@ -7,10 +7,10 @@ RSpec.describe 'User searches and navigates through students table', js: true do
 
   context 'without pagination' do
     before :each do
-      create :student, first_name: 'Umborato', last_name: 'Aco', mlid: 'ACO-123'
-      create :student, first_name: 'Umberto', last_name: 'Eco', mlid: 'ECO-123'
-      create :student, first_name: 'Umbdeleto', last_name: 'Del', mlid: 'DEL-123', deleted_at: Time.zone.now
-      create :student, first_name: 'Amberto', last_name: 'Oce', mlid: 'OCE-123'
+      create :student, first_name: 'Umborato', last_name: 'Aco', mlid: 'ACO-123', created_at: 1.day.ago
+      create :student, first_name: 'Umberto', last_name: 'Eco', mlid: 'ECO-123', created_at: 2.days.ago
+      create :student, first_name: 'Umbdeleto', last_name: 'Del', mlid: 'DEL-123', deleted_at: Time.zone.now, created_at: 4.days.ago
+      create :student, first_name: 'Amberto', last_name: 'Oce', mlid: 'OCE-123', created_at: 5.days.ago
     end
 
     it 'displays searched students, including deleted' do

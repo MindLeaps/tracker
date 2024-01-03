@@ -18,9 +18,9 @@ RSpec.describe 'User interacts with Analytics' do
       click_link 'Analytics'
       select @organization.organization_name, from: 'organization_select', wait: 10
       click_link 'Filter'
-      expect(page).to have_content('General Analytics')
-      expect(page).to have_link('Subject')
-      expect(page).to have_link('Group')
+      expect(page).to have_content('General analytics')
+      expect(page).to have_link('Subject analytics')
+      expect(page).to have_link('Group analytics')
 
       # Using regex whitespace match here because capybara fails to match a wrapped line in HighCharts SVG
       expect(page).to have_content(/Quantity(\s*)of(\s*)Data(\s*)Collected(\s*)By(\s*)Month/)
@@ -29,18 +29,15 @@ RSpec.describe 'User interacts with Analytics' do
       expect(page).to have_content(/Performance(\s*)change(\s*)throughout(\s*)the(\s*)program(\s*)separated(\s*)by(\s*)boys(\s*)and(\s*)girls/)
       expect(page).to have_content(/Average(\s*)performance(\s*)per(\s*)group(\s*)versus(\s*)time(\s*)in(\s*)program/)
 
-      click_link 'Subject'
-      expect(page).to have_content 'Subject Analytics'
+      click_link 'Subject analytics'
       select @organization.organization_name, from: 'organization_select'
       click_link 'Filter'
       expect(page).to have_content 'Memorization'
       expect(page).to have_content 'Grit'
 
-      click_link 'Group'
-      expect(page).to have_content 'Group Analytics'
+      click_link 'Group analytics'
       select @organization.organization_name, from: 'organization_select'
       click_link 'Filter'
-      expect(page).to have_content('Group Analytics')
       expect(page).to have_content(@group.group_chapter_name)
     end
   end

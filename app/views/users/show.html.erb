@@ -3,6 +3,7 @@
 <%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
   {title: CommonComponents::TagLabel.new(label: @user.email, img_src: 'identification.svg'), href: '' },
 ], buttons: [
+  (CommonComponents::DangerousFormButtonComponent.new(label: t(:delete_user), path: user_path(@user), method: :delete, options: { data: { turbo_confirm: t(:delete_user_confirmation_text) }}) if policy(@user).destroy?)
 ].compact) do |h|
   h.with_left do
   end

@@ -34,7 +34,8 @@ class UsersController < HtmlController
     authorize @user
     @user.destroy!
 
-    notice_and_redirect t(:delete_user_notice, email: @user.email), users_path
+    success(title: t(:user_deleted), text: t(:user_deleted_text, email: @user.email))
+    redirect_to users_path
   end
 
   def create_api_token

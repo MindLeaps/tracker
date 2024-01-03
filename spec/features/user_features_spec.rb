@@ -78,17 +78,18 @@ RSpec.describe 'User interacts with other users', js: true do
       end
     end
 
-    # describe 'Delete User' do
-    # it 'deletes an existing user' do
-    #   find('div.table-cell', text: user_name(@other_user), match: :first).click
-    #
-    #   click_button 'delete-dialog-button'
-    #   click_button 'confirm-delete-button'
-    #
-    #   expect(page).to have_content "User with e-mail address #{@other_user.email} deleted."
-    #   expect(User.where(id: @other_user.id)).not_to exist
-    # end
-    # end
+    describe 'Delete User' do
+      it 'deletes an existing user' do
+        find('div.table-cell', text: user_name(@other_user), match: :first).click
+
+        page.accept_alert 'Are you sure you want to delete this user? This action cannot be undone.' do
+          click_button 'Delete User'
+        end
+
+        expect(page).to have_content "User with e-mail address #{@other_user.email} deleted."
+        expect(User.where(id: @other_user.id)).not_to exist
+      end
+    end
   end
 end
 

@@ -8,9 +8,9 @@ RSpec.describe 'User interacts with skills', js: true do
 
     describe 'listing, searching, and filtering skills' do
       before :each do
-        create :skill, skill_name: 'Memorization'
-        create :skill, skill_name: 'Discipline'
-        create :skill, skill_name: 'Language'
+        create :skill, skill_name: 'Memorization', created_at: Time.zone.now
+        create :skill, skill_name: 'Discipline', created_at: 1.day.ago
+        create :skill, skill_name: 'Language', created_at: 10.days.ago
 
         visit '/skills'
       end

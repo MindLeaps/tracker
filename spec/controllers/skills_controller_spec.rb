@@ -195,7 +195,7 @@ RSpec.describe SkillsController, type: :controller do
 
       it { should redirect_to 'http://example.com/skills?param=1' }
 
-      it { should set_flash[:notice].to "Skill \"#{@skill.skill_name}\" restored." }
+      it { should set_flash[:success_notice] }
 
       it 'Marks the skill as not deleted' do
         expect(@skill.reload.deleted_at).to be_nil

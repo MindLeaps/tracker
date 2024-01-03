@@ -34,8 +34,6 @@
   </div>
 </div>
 
-<%= render '/shared/analytics_common' %>
-
 <script>
   function startAnalytics() {
     var datasets = <%= @group_series.to_json.html_safe %>;

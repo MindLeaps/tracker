@@ -196,8 +196,9 @@ en:
   user_added: User added
   profile_image: Profile Image
   delete_user: Delete User
-  delete_user_confirmation_text: Are you sure you want to delete this user?
-  delete_user_notice: User with e-mail address %{email} deleted.
+  delete_user_confirmation_text: Are you sure you want to delete this user? This action cannot be undone.
+  user_deleted: User Deleted
+  user_deleted_text: User with e-mail address %{email} deleted.
   first_page: First Page
   last_page: Last Page
   prev_page: Previous Page
