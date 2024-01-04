@@ -22,11 +22,8 @@ RSpec.describe 'User interacts with Student Tags' do
       find('label', text: 'Shared').click
       click_button 'Create'
 
-      expect(page).to have_content 'Tag "My Test Tag" created.'
+      expect(page).to have_content 'Tag "My Test Tag" added'
       expect(page).to have_content 'Tag Name: My Test Tag'
-      expect(page).to have_content "Organization: #{@org.organization_name}"
-
-      find(:css, '#back-button').click
 
       expect(page).to have_content 'My Test Tag'
       expect(page).to have_content @tags[0].tag_name

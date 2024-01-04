@@ -1,0 +1,3 @@
+<%= turbo_frame_tag(:new_tag) do %>
+  <%= render StudentTagFormComponent.new tag: @tag, action: :create, current_user: current_user %>
+<% end %>

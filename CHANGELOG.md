@@ -6,6 +6,7 @@
 - Implemented independent scoping for tables so it's possible to have multiple tables per page with independent sorting
 - Made search dynamic; it does not reload the page and triggers automatically 200ms after the last keystroke
 - Default table orders are now created_at descending, showing the most recent entries first
+- Implemented smaller forms such as student tags, as animated drop forms on the index pages
 
 ## 0.30.2 - Rails 7
 - Updated Rails to v7

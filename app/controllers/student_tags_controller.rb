@@ -39,10 +39,11 @@ class StudentTagsController < HtmlController
     @tag = Tag.new tag_params
     authorize @tag
     if @tag.save
-      success_notice_with_link t(:tag_added), t(:tag_with_name_added, name: @tag.tag_name), new_student_tag_path, I18n.t(:create_another)
-      return redirect_to student_tag_path(@tag)
+      success title: t(:tag_added), text: t(:tag_with_name_added, name: @tag.tag_name)
+      return redirect_to student_tags_path
     end
 
+    failure title: t(:invalid_tag), text: t(:fix_form_errors)
     render :new
   end
 

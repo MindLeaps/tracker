@@ -105,6 +105,13 @@
     @apply base-table-cell;
     @apply whitespace-nowrap;
   }
+
+  .drop-container {
+    @apply mb-4;
+    @apply transition;
+    @apply ease-in-out;
+    @apply duration-150;
+  }
 }
 
 .awesomplete [hidden] {

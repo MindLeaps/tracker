@@ -1,0 +1,40 @@
+<%= render DropContainerComponent.new do %>
+  <%= form_with model: @tag, url: student_tags_path, action: :create, class: 'space-y-0.5' do |f| %>
+    <div class="bg-white px-4 py-5 shadow sm:p-4">
+      <div class="md:grid md:grid-cols-4 md:gap-6">
+        <div class="md:col-span-1">
+          <h3 class="text-lg font-medium leading-6 text-gray-900"><%= t(:new_student_tag) %></h3>
+        </div>
+        <div class="mt-5 md:col-span-3 md:mt-0">
+          <div class="grid grid-cols-6 gap-4">
+            <div class="col-span-6 lg:col-span-2">
+              <%= f.label :tag_name, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+              <%= f.text_field :tag_name, autofocus: true, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            </div>
+            <div class="col-span-6 lg:col-span-2">
+              <%= f.label :organization_id, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+              <%= f.collection_select :organization_id, @permitted_organizations, :id, :organization_name, {}, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            </div>
+            <div class="col-span-6 lg:col-span-2">
+              <%= f.label :shared, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+              <%= f.check_box :shared, class: 'h-4 w-4 ml-4 border-purple-500 text-green-600 focus:ring-green-600 cursor-pointer' %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bg-white px-4 py-5 shadow sm:p-4">
+      <div class="md:grid md:grid-cols-4 md:gap-6">
+        <div class="md:col-span-1"></div>
+        <div class="mt-5 md:col-span-3 md:mt-0">
+          <div class="grid grid-cols-6 gap-4">
+            <div class="col-span-6 lg:col-span-4">
+              <%= f.submit class: 'normal-button', data: { turbo_frame: '_top' } %>
+              <%= link_to t(:cancel), nil, class: 'dangerous-button', data: { action: 'click->transition#close' } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+<% end %>

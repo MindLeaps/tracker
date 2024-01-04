@@ -2,9 +2,9 @@
 
 class CommonComponents::ButtonComponent < ViewComponent::Base
   include ApplicationHelper
-  def initialize(label:, href: nil, attributes: '')
+  def initialize(label:, href: nil, options: {})
     @label = label
     @href = href
-    @attributes = attributes
+    @options = options.merge({ type: 'button', class: 'normal-button' })
   end
 end

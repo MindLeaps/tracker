@@ -304,6 +304,7 @@ en:
   tags: Tags
   shared: Shared
   tag_name: Tag Name
+  invalid_tag: Invalid Tag
   back_to_student_tags: Back to Student Tags
   student_tags: Student Tags
   add_tag: Add Tag
