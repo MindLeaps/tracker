@@ -34,13 +34,17 @@ class HtmlController < ApplicationController
     flash[:redirect] = uri.path + (uri.query.present? ? "?#{uri.query}" : '')
   end
 
-  def failure_notice(title, text)
-    flash.now[:failure_notice] = { title: title, text: text }
-  end
-
-  def notice_and_redirect(notice, redirect_url)
-    flash[:notice] = notice
-    redirect_to redirect_url
+  def handle_turbo_failure_responses(error_flash_hash)
+    respond_to do |format|
+      format.turbo_stream do
+        flash.now[:failure_notice] = error_flash_hash
+        render :new, status: :unprocessable_entity
+      end
+      format.html do
+        flash[:failure_notice] = error_flash_hash
+        render :new, status: :unprocessable_entity
+      end
+    end
   end
 
   # rubocop:disable Metrics/ParameterLists
@@ -50,8 +54,20 @@ class HtmlController < ApplicationController
     }
   end
 
+  def success_now(title:, text:, link_path: nil, link_text: nil, button_path: nil, button_text: nil, button_method: nil)
+    flash.now[:success_notice] = {
+      title: title, text: text, link_path: link_path, link_text: link_text, button_path: button_path, button_method: button_method, button_text: button_text
+    }
+  end
+
   def failure(title:, text:, link_path: nil, link_text: nil, button_path: nil, button_text: nil, button_method: nil)
     flash[:failure_notice] = {
+      title: title, text: text, link_path: link_path, link_text: link_text, button_path: button_path, button_method: button_method, button_text: button_text
+    }
+  end
+
+  def failure_now(title:, text:, link_path: nil, link_text: nil, button_path: nil, button_text: nil, button_method: nil)
+    flash.now[:failure_notice] = {
       title: title, text: text, link_path: link_path, link_text: link_text, button_path: button_path, button_method: button_method, button_text: button_text
     }
   end

@@ -71,9 +71,10 @@ class SkillsController < HtmlController
 
   def render_deletion_error
     if Grade.where(skill: @skill).count != 0
-      notice_and_redirect t(:skill_not_deleted_because_grades), request.referer || skill_path(@skill)
+      failure title: t(:unable_to_delete_skill), text: t(:skill_not_deleted_because_grades)
     elsif @skill.subjects.count != 0
-      notice_and_redirect t(:skill_not_deleted_because_subject), request.referer || skill_path(@skill)
+      failure title: t(:unable_to_delete_skill), text: t(:skill_not_deleted_because_subject)
     end
+    redirect_to request.referer || skill_path(@skill)
   end
 end

@@ -33,6 +33,10 @@ class StudentTagsController < HtmlController
   def new
     authorize Tag
     @tag = Tag.new
+    respond_to do |format|
+      format.turbo_stream
+      format.html { render :new }
+    end
   end
 
   def create
@@ -42,9 +46,7 @@ class StudentTagsController < HtmlController
       success title: t(:tag_added), text: t(:tag_with_name_added, name: @tag.tag_name)
       return redirect_to student_tags_path
     end
-
-    failure title: t(:invalid_tag), text: t(:fix_form_errors)
-    render :new
+    handle_turbo_failure_responses({ title: t(:invalid_tag), text: t(:fix_form_errors) })
   end
 
   private

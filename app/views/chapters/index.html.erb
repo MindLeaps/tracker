@@ -3,8 +3,10 @@
 <%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
   {title: CommonComponents::TagLabel.new(label: t(:chapters).capitalize, img_src: 'chapter.svg'), href: '' },
 ], buttons: [
-  (CommonComponents::ButtonComponent.new(label: t(:add_chapter), href: new_chapter_path) if policy(Chapter).new?)
+  (CommonComponents::ButtonComponent.new(label: t(:add_chapter), href: new_chapter_path, options: { data: { turbo_stream: true } }) if policy(Chapter).new?)
 ].compact) %>
+
+<div id="new_chapter"></div>
 
 <%= render TableComponents::Table.new(pagy: @pagy, rows: @chapters, row_component: TableComponents::ChapterRow) do |t|
   t.with_left do %>

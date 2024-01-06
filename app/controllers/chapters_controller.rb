@@ -13,6 +13,10 @@ class ChaptersController < HtmlController
   def new
     authorize Chapter
     @chapter = Chapter.new
+    respond_to do |format|
+      format.turbo_stream
+      format.html { render :new }
+    end
   end
 
   def create
@@ -23,8 +27,7 @@ class ChaptersController < HtmlController
       success(title: t(:chapter_added), text: t(:chapter_added_text, chapter: @chapter.chapter_name))
       return redirect_to chapters_url
     end
-    failure(title: t(:chapter_invalid), text: t(:fix_form_errors))
-    render :new, status: :unprocessable_entity
+    handle_turbo_failure_responses({ title: t(:chapter_invalid), text: t(:fix_form_errors) })
   end
 
   def show

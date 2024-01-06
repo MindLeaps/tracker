@@ -12,11 +12,12 @@ class GroupFormComponent < ViewComponent::Base
     end
   end
 
-  def initialize(group:, action:, current_user:)
+  def initialize(group:, action:, current_user:, cancel: false)
     @group = group
     @action = action
     permitted_chapters = ChapterPolicy::Scope.new(current_user, Chapter.includes(:organization)).resolve
     @org_chapters = structure_chapters(permitted_chapters)
+    @cancel = cancel
   end
 
   def structure_chapters(permitted_chapters)

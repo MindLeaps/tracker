@@ -1,3 +1,10 @@
-<%= turbo_frame_tag(:new_tag) do %>
-  <%= render StudentTagFormComponent.new tag: @tag, action: :create, current_user: current_user %>
-<% end %>
+<%- content_for :title, t(:new_student_tag).capitalize %>
+
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  {title: CommonComponents::TagLabel.new(label: t(:students).capitalize, img_src: 'student.svg'), href: students_path },
+  {title: CommonComponents::TagLabel.new(label: t(:student_tags), img_src: 'tag.svg'), href: student_tags_path },
+  {title: CommonComponents::TagLabel.new(label: t(:new_student_tag), img_src: 'tag.svg'), href: '' }
+], buttons: [
+].compact) %>
+
+<%= render StudentTagFormComponent.new tag: @tag, action: :create, current_user: current_user %>

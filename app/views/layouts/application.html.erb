@@ -2,6 +2,7 @@
 <html class="h-full bg-gray-100 overflow-hidden">
   <head>
     <title>Tracker<% if content_for? :title %><%= " - #{content_for :title}" %><% end %></title>
+    <meta name="turbo-cache-control" content="no-preview">
     <meta content="notranslate" name="google" />
     <%= favicon_link_tag 'favicon.ico' %>
     <%= stylesheet_link_tag 'tailwind.css', media: 'all' %>
@@ -19,13 +20,8 @@
     </div>
     <!-- Global notification region -->
     <div aria-live="assertive" class="pointer-events-none fixed inset-0 flex items-end px-4 py-6 sm:items-start sm:px-6 sm:py-20">
-      <div class="flex w-full flex-col items-center space-y-4 sm:items-end">
-        <% if flash[:success_notice] %>
-          <%= render CommonComponents::SuccessNotificationComponent.new notice: flash[:success_notice].with_indifferent_access %>
-        <% end %>
-        <% if flash[:failure_notice] %>
-          <%= render CommonComponents::FailureNotificationComponent.new notice: flash[:failure_notice].with_indifferent_access %>
-        <% end %>
+      <div id="flashes" class="flex w-full flex-col items-center space-y-4 sm:items-end">
+        <%= render partial: 'shared/flashes' %>
       </div>
     </div>
   </body>

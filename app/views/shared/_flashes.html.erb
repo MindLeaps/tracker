@@ -1,0 +1,6 @@
+<% if flash[:success_notice] %>
+  <%= render CommonComponents::SuccessNotificationComponent.new notice: flash[:success_notice].with_indifferent_access %>
+<% end %>
+<% if flash[:failure_notice] %>
+  <%= render CommonComponents::FailureNotificationComponent.new notice: flash[:failure_notice].with_indifferent_access %>
+<% end %>

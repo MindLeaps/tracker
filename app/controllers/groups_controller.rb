@@ -15,18 +15,21 @@ class GroupsController < HtmlController
   def new
     authorize Group
     @group = populate_new_group
+    respond_to do |format|
+      format.turbo_stream
+      format.html { render :new }
+    end
   end
 
   def create
     @group = Group.new group_params
     if @group.valid? && @group.save
       authorize @group
-      success(title: t(:group_added), text: t(:group_with_name_added, group: @group.group_name), link_path: new_group_path(chapter_id: @group.chapter_id), link_text: t(:create_another))
-      return redirect_to group_path(@group)
+      success(title: t(:group_added), text: t(:group_with_name_added, group: @group.group_name))
+      return redirect_to groups_path
     end
     skip_authorization
-    failure title: t(:group_invalid), text: t(:fix_form_errors)
-    render :new, status: :unprocessable_entity
+    handle_turbo_failure_responses({ title: t(:group_invalid), text: t(:fix_form_errors) })
   end
 
   def show

@@ -1,0 +1,6 @@
+<%= turbo_stream.update 'new_group' do %>
+  <%= render DropContainerComponent.new do %>
+    <%= render GroupFormComponent.new(group: @group, action: :create, current_user: current_user, cancel: true) %>
+  <% end %>
+  <%= turbo_stream.update "flashes", partial: 'shared/flashes' %>
+<% end %>
