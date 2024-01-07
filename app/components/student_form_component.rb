@@ -24,10 +24,6 @@ class StudentFormComponent < ViewComponent::Base
     @student.estimated_dob.nil? || @student.estimated_dob
   end
 
-  def hiv_tested_checked?
-    !@student.hiv_tested.nil? || @student.hiv_tested
-  end
-
   def countries_for_select_box
     I18nData.countries(locale.to_s).map { |k, v| [v, k] }.sort_alphabetical_by(&:first)
   end

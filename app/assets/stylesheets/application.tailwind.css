@@ -114,6 +114,12 @@
   }
 }
 
+.validation-error {
+  @apply mt-1;
+  @apply text-sm;
+  @apply text-red-600;
+}
+
 .awesomplete [hidden] {
   display: none;
 }

@@ -167,8 +167,8 @@ en:
   student_has_no_images: This student has no images
   images_uploaded: Images uploaded.
   no_image_submitted: No image submitted.
-  no_valid_mlid_without_group: MLID cannot be valid without existing group.
-  duplicate_mlid: MLID already exists in group.
+  no_valid_mlid_without_group: cannot be valid without existing group.
+  duplicate_mlid: already exists in group.
   set_as_profile_image: Set Profile
   remove_as_profile_image: Unset Profile
   wrong_image: Image of %{other_student} cannot be a profile image for %{student}

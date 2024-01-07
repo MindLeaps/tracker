@@ -28,7 +28,7 @@ class StudentsController < HtmlController
       success(title: :student_added, text: t(:student_name_added, name: @student.proper_name), link_text: t(:create_another), link_path: new_student_path(group_id: @student.group_id))
       return redirect_to(flash[:redirect] || student_path(@student))
     end
-    failure(title: t(:student_invalid), text: t(:fix_form_errors))
+    failure_now(title: t(:student_invalid), text: t(:fix_form_errors))
     render :new, status: :unprocessable_entity
   end
 
