@@ -87,7 +87,7 @@ RSpec.describe StudentTagsController, type: :controller do
         } }
       end
 
-      it { should redirect_to student_tag_path Tag.last }
+      it { should redirect_to student_tags_path }
 
       it 'creates a new tag' do
         tag = Tag.last

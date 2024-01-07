@@ -114,6 +114,13 @@
   }
 }
 
+.field-label {
+  @apply block;
+  @apply text-sm;
+  @apply font-medium;
+  @apply text-gray-700;
+}
+
 .validation-error {
   @apply mt-1;
   @apply text-sm;

@@ -7,16 +7,19 @@
       <div class="mt-5 md:col-span-3 md:mt-0">
         <div class="grid grid-cols-6 gap-4">
           <div class="col-span-6 lg:col-span-2">
-            <label for="group_group_name" class="block text-sm font-medium text-gray-700"><%= t(:group_name) %></label>
+            <%= f.label :group_name, class: 'field-label' %>
             <%= f.text_field :group_name, autofocus: true, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            <%= render ValidationErrorComponent.new(model: @group, key: :group_name) %>
           </div>
           <div class="col-span-6 lg:col-span-2">
-            <label for="group_chapter" class="block text-sm font-medium text-gray-700"><%= t(:chapter) %></label>
+            <%= f.label :chapter, class: 'field-label' %>
             <%= f.grouped_collection_select :chapter_id, @org_chapters, :chapters, :org_display, :id, :display_with_mlid, { include_blank: true }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            <%= render ValidationErrorComponent.new(model: @group, key: :chapter) %>
           </div>
           <div class="col-span-6 lg:col-span-2">
-            <label for="mlid" class="block text-sm font-medium text-gray-700"><%= t(:mlid) %></label>
+            <%= f.label :mlid, class: 'field-label' %>
             <%= f.text_field :mlid, class: 'mt-1 block rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm uppercase', maxlength: 2, size: 4 %>
+            <%= render ValidationErrorComponent.new(model: @group, key: :mlid) %>
           </div>
         </div>
       </div>

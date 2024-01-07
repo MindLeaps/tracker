@@ -33,7 +33,7 @@ RSpec.describe 'User interacts with Groups' do
     it 'creates a new group', js: true do
       visit '/groups'
       click_link 'Add Group'
-      fill_in 'Group Name', with: 'Feature Test Group'
+      fill_in 'Group name', with: 'Feature Test Group'
       select 'Chapter One', from: 'group_chapter_id'
       fill_in 'group_mlid', with: 'G0'
       click_button 'Create'
@@ -45,7 +45,7 @@ RSpec.describe 'User interacts with Groups' do
     it 'renders error flash when submitted form is incomplete' do
       visit '/groups'
       click_link 'Add Group'
-      fill_in 'Group Name', with: 'Feature Test Group'
+      fill_in 'Group name', with: 'Feature Test Group'
       select 'Chapter One', from: 'group_chapter_id'
       click_button 'Create'
 
@@ -66,10 +66,10 @@ RSpec.describe 'User interacts with Groups' do
       visit '/groups'
       click_link 'Test Group'
       click_link 'Edit Group'
-      fill_in 'Group Name', with: ''
+      fill_in 'Group name', with: ''
       click_button 'Update'
       expect(page).to have_content 'Group Invalid'
-      fill_in 'Group Name', with: 'Edited Group'
+      fill_in 'Group name', with: 'Edited Group'
       select 'New Chapter', from: 'group_chapter_id'
       click_button 'Update'
 

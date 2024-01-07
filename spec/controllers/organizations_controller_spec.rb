@@ -55,7 +55,7 @@ RSpec.describe OrganizationsController, type: :controller do
         post :create, params: { organization: { organizations_name: 'Some Name' } }
       end
 
-      it { should respond_with :bad_request }
+      it { should respond_with :unprocessable_entity }
       it { should render_template :new }
       it { should set_flash[:failure_notice] }
     end

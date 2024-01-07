@@ -319,6 +319,26 @@ en:
   lesson_date: Lesson Date
   grades_per_skill: Grades Per Skill
 
+  activerecord:
+    attributes:
+      student:
+        mlid:
+          one: MLID
+          other: MLID
+      group:
+        mlid:
+          one: MLID
+          other: MLID
+      chapter:
+        mlid:
+          one: MLID
+          other: MLID
+      organization:
+        mlid:
+          one: MLID
+          other: MLID
+
+
   errors:
     messages:
       extension_whitelist_error: File is not an image

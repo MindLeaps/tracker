@@ -48,7 +48,7 @@ RSpec.describe 'User interacts with Chapters' do
     it 'creates a new Chapter', js: true do
       visit '/chapters'
       click_link 'Add Chapter'
-      fill_in 'Chapter Name', with: 'Chapter One'
+      fill_in 'Chapter name', with: 'Chapter One'
       fill_in 'chapter_mlid', with: 'M0'
       select 'New Org', from: 'chapter_organization_id'
       click_button 'Create'
@@ -60,7 +60,7 @@ RSpec.describe 'User interacts with Chapters' do
     it 'renders error flash when submitted form is incomplete' do
       visit '/chapters'
       click_link 'Add Chapter'
-      fill_in 'Chapter Name', with: 'Chapter One'
+      fill_in 'Chapter name', with: 'Chapter One'
       click_button 'Create'
       expect(page).to have_content 'Chapter Invalid'
       expect(page).to have_content 'Please fix the errors in the form'
@@ -79,10 +79,10 @@ RSpec.describe 'User interacts with Chapters' do
       visit '/chapters'
       click_link 'Test Chapter'
       click_link 'Edit Chapter'
-      fill_in 'Chapter Name', with: ''
+      fill_in 'Chapter name', with: ''
       click_button 'Update'
       expect(page).to have_content 'Chapter Invalid'
-      fill_in 'Chapter Name', with: 'Edited Chapter'
+      fill_in 'Chapter name', with: 'Edited Chapter'
       select 'New Organization', from: 'chapter_organization_id'
       click_button 'Update'
 
