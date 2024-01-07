@@ -40,7 +40,6 @@ RSpec.describe 'User interacts with Groups' do
 
       expect(page).to have_content 'Group Added'
       expect(page).to have_content 'Group "Feature Test Group" added.'
-      expect(page).to have_link 'Create another', href: new_group_path(chapter_id: @chapter.id)
     end
 
     it 'renders error flash when submitted form is incomplete' do

@@ -12,6 +12,10 @@ class OrganizationsController < HtmlController
   def new
     authorize Organization
     @organization = Organization.new params.permit :organization_name
+    respond_to do |format|
+      format.turbo_stream
+      format.html { render :new }
+    end
   end
 
   def create
@@ -24,8 +28,7 @@ class OrganizationsController < HtmlController
       return redirect_to organizations_url
     end
 
-    failure title: t(:organization_invalid), text: t(:fix_form_errors)
-    render :new, status: :bad_request
+    handle_turbo_failure_responses({ title: t(:organization_invalid), text: t(:fix_form_errors) })
   end
 
   def edit
