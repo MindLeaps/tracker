@@ -29,6 +29,7 @@
   }
 
   .base-button {
+    @apply cursor-pointer;
     @apply inline-flex;
     @apply items-center;
     @apply mr-2;
@@ -67,6 +68,32 @@
 
   .notification-out {
     @apply translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2;
+  }
+
+  .backdrop-in {
+    @apply ease-out;
+    @apply duration-300;
+    @apply opacity-100;
+  }
+
+  .backdrop-out {
+    @apply ease-in;
+    @apply duration-200;
+    @apply opacity-0;
+  }
+
+  .modal-in {
+    @apply ease-out;
+    @apply duration-300;
+    @apply opacity-100;
+    @apply translate-y-0;
+  }
+
+  .modal-out {
+    @apply ease-in;
+    @apply duration-200;
+    @apply opacity-0;
+    @apply translate-y-4;
   }
 
   .grading-marker {
@@ -112,19 +139,19 @@
     @apply ease-in-out;
     @apply duration-150;
   }
-}
 
-.field-label {
-  @apply block;
-  @apply text-sm;
-  @apply font-medium;
-  @apply text-gray-700;
-}
+  .field-label {
+    @apply block;
+    @apply text-sm;
+    @apply font-medium;
+    @apply text-gray-700;
+  }
 
-.validation-error {
-  @apply mt-1;
-  @apply text-sm;
-  @apply text-red-600;
+  .validation-error {
+    @apply mt-1;
+    @apply text-sm;
+    @apply text-red-600;
+  }
 }
 
 .awesomplete [hidden] {

@@ -26,7 +26,7 @@ RSpec.describe StudentLessonsController, type: :controller do
 
       describe '#show' do
         before :each do
-          get :show, params: { id: @student.id, lesson_id: @lesson.id }
+          get :show, format: :turbo_stream, params: { id: @student.id, lesson_id: @lesson.id }
         end
 
         it { should respond_with 200 }
@@ -71,7 +71,7 @@ RSpec.describe StudentLessonsController, type: :controller do
 
           it 'Marks the student as absent from lesson' do
             post :update, params: { id: @student.id, lesson_id: @lesson.id, student_lesson: {
-              absences: '1',
+              absence: '1',
               grades_attributes: { '0' => { grade_descriptor_id: @gd1.id } }
             } }
 

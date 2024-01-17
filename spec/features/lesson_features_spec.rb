@@ -69,18 +69,18 @@ RSpec.describe 'User interacts with lessons' do
         @lesson = create :lesson, subject: subject, group: group
       end
 
-      it 'shows students grades in specific lesson' do
+      it 'shows students grades in specific lesson', js: true do
         visit "/lessons/#{@lesson.id}"
-        click_link 'Graden'
+        find('div.table-cell', text: 'Graden', match: :first).click
 
         expect(page).to have_content 'Graden'
         expect(page).to have_content 'Featuring'
         expect(page).to have_content 'Testing'
       end
 
-      it 'grades a student' do
+      it 'grades a student', js: true do
         visit "/lessons/#{@lesson.id}"
-        click_link 'Graden'
+        find('div.table-cell', text: 'Graden', match: :first).click
 
         select '2 - Mark Two For Skill One', from: 'Featuring'
         select '1 - Mark One For Skill Two', from: 'Testing'
@@ -92,12 +92,12 @@ RSpec.describe 'User interacts with lessons' do
         expect(page).to have_content '1.5'
       end
 
-      it 'marks a student as being absent from a lesson' do
+      it 'marks a student as being absent from a lesson', js: true do
         visit "/lessons/#{@lesson.id}"
-        click_link 'Graden'
+        find('div.table-cell', text: 'Graden', match: :first).click
 
-        expect(page).to have_unchecked_field 'student_lesson[absences]'
-        check 'student_lesson[absences]'
+        expect(page).to have_unchecked_field 'Absent'
+        check 'Absent'
 
         click_button 'Save Student Grades'
         expect(page).to have_content 'Student graded.'

@@ -5,22 +5,27 @@ class StudentLessonsController < HtmlController
     lesson = lesson_from_param
     authorize lesson, :show?
     @student_lesson = StudentLesson.new student_id: params.require(:id), lesson: lesson
-    @absence = lesson.absences.map(&:student_id).include? params.require(:id)
+    @absent = lesson.absences.map(&:student_id).include? @student_lesson.student_id
+    respond_to do |format|
+      format.turbo_stream
+    end
   end
 
   def update
     lesson = Lesson.find params.require(:lesson_id)
     authorize lesson, :create?
+
     student_lesson = StudentLesson.new(student_id: params.require(:id), lesson: lesson)
     student_lesson.perform_grading format_attributes, student_absent?
 
-    notice_and_redirect I18n.t(:student_graded), lesson_path(lesson)
+    success(title: t(:student_graded), text: t(:student_graded_text, student: student_lesson.student.proper_name))
+    redirect_to lesson_path(lesson)
   end
 
   private
 
   def student_absent?
-    absence_param = params.require(:student_lesson).permit(:absences)[:absences]
+    absence_param = params.require(:student_lesson).permit(:absence)[:absence]
     ActiveRecord::Type::Boolean.new.cast(absence_param) || false
   end
 

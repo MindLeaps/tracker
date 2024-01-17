@@ -157,6 +157,7 @@ en:
   invalid_token: Invalid Google id_token
   invalid_user: User does not exist in MindLeaps
   student_graded: Student graded.
+  student_graded_text: Student %{student} graded.
   student_absent: Absent
   student_not_graded: Not Graded
   add_grade: Add Grade

@@ -36,6 +36,9 @@ end %>
     </section>
   </div>
 </div>
+
+<div id="modal" class=""></div>
+
 <%= javascript_tag do %>
   function onChartsLoad() {
     displayLessonGraph && displayLessonGraph('.ct-chart', '<%= @lesson.uid %>', <%= @group_lessons_data[:group_lessons].to_json.html_safe%>);

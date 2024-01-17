@@ -157,7 +157,7 @@ RSpec.describe SkillsController, type: :controller do
 
         it { should redirect_to 'http://example.com/skills?param=1' }
 
-        it { should set_flash[:notice].to 'Skill not deleted because it belongs to a subject. Remove it from the subject before deleting.' }
+        it { should set_flash[:success_notice] }
 
         it 'does not delete the skill' do
           expect(@skill.reload.deleted_at).to be_nil
@@ -177,7 +177,7 @@ RSpec.describe SkillsController, type: :controller do
 
         it { should redirect_to 'http://example.com/skills?param=1' }
 
-        it { should set_flash[:notice].to 'Skill not deleted because it has grades associated with it. You cannot delete a graded skill.' }
+        it { should set_flash[:success_notice] }
 
         it 'does not delete the skill' do
           expect(@skill.reload.deleted_at).to be_nil

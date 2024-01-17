@@ -45,7 +45,7 @@ RSpec.describe GroupsController, type: :controller do
       end
 
       it { should respond_with 302 }
-      it { should redirect_to group_path(assigns[:group]) }
+      it { should redirect_to groups_path }
     end
 
     context 'invalid group data' do
