@@ -6,7 +6,7 @@ class OrganizationFormComponent < ViewComponent::Base
   def initialize(organization:, action:, cancel: false)
     @organization = organization
     @action = action
-    @mlid = @organization.mlid || MindleapsIdService.generate_organization_mlid
+    @organization.mlid = MindleapsIdService.generate_organization_mlid unless @organization.mlid
     @cancel = cancel
   end
 end
