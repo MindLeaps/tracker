@@ -2,7 +2,8 @@
 
 class SubjectsController < HtmlController
   include Pagy::Backend
-  has_scope :table_order, type: :hash, default: { key: :created_at, order: :desc }
+  has_scope :table_order, type: :hash, default: { key: :created_at, order: :desc }, only: :index
+  has_scope :table_order_skills, type: :hash, only: :show
   def index
     authorize Subject
     @pagy, @subjects = pagy apply_scopes(policy_scope(Subject.includes(:assignments, :skills, :organization)))
@@ -30,7 +31,7 @@ class SubjectsController < HtmlController
 
   def show
     @subject = Subject.find params.require(:id)
-    @pagy, @skills = pagy @subject.skills.includes(:organization)
+    @pagy, @skills = pagy apply_scopes(@subject.skills.includes(:organization), { table_order_skills: params['table_order_skills'] || { key: :skill_name, order: :asc } })
     authorize @subject
   end
 

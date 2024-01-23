@@ -30,7 +30,7 @@ end %>
     <section class="pr-2 w-1/2">
       <%= render CommonComponents::Card.new(title: t(:skills).capitalize) do |card| %>
         <% card.with_card_content do %>
-          <%= render TableComponents::Table.new(pagy: @pagy, rows: @skills, row_component: TableComponents::SkillRow) %>
+          <%= render TableComponents::Table.new(pagy: @pagy, rows: @skills, row_component: TableComponents::SkillRow, order_scope_name: :table_order_skills) %>
         <% end %>
       <% end %>
     </section>

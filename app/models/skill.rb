@@ -23,6 +23,7 @@
 class Skill < ApplicationRecord
   include PgSearch::Model
   pg_search_scope :search, against: [:skill_name], using: { tsearch: { prefix: true } }
+  singleton_class.send(:alias_method, :table_order_skills, :table_order)
 
   validates :skill_name, presence: true
   validate :grade_descriptors_must_have_unique_marks
