@@ -2,7 +2,9 @@
 
 class OrganizationsController < HtmlController
   include Pagy::Backend
-  has_scope :table_order, type: :hash, default: { key: :created_at, order: :desc }
+  has_scope :table_order, type: :hash, default: { key: :created_at, order: :desc }, only: :index
+  has_scope :table_order_chapters, type: :hash, only: :show
+  has_scope :table_order_members, type: :hash, only: :show
   has_scope :search, only: :index
   def index
     authorize Organization
@@ -57,8 +59,8 @@ class OrganizationsController < HtmlController
   end
 
   def initialize_organization(id)
-    @pagy_chapters, @chapters = pagy ChapterSummary.where organization_id: id
-    @pagy_users, @members = pagy @organization.members
+    @pagy_chapters, @chapters = pagy apply_scopes(ChapterSummary.where(organization_id: id), { table_order_chapters: params['table_order_chapters'] || { key: :chapter_name, order: :asc } })
+    @pagy_users, @members = pagy apply_scopes(@organization.members, { table_order_members: params['table_order_members'] || { key: :email, order: :asc } })
     @new_member = User.new
     @roles = Role::LOCAL_ROLES.keys
   end

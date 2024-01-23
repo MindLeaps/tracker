@@ -20,6 +20,7 @@
 class ChapterSummary < ApplicationRecord
   include PgSearch::Model
   self.primary_key = :id
+  singleton_class.send(:alias_method, :table_order_chapters, :table_order)
 
   pg_search_scope :search, against: [:chapter_name, :organization_name, :chapter_mlid, :organization_mlid, :full_mlid], using: { tsearch: { prefix: true } }
 

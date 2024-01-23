@@ -14,14 +14,14 @@ end %>
     <section class="flex-1 pr-2">
       <%= render CommonComponents::Card.new(title: t(:chapters).capitalize) do |card| %>
         <% card.with_card_content do %>
-            <%= render TableComponents::Table.new(pagy: @pagy_chapters, rows: @chapters, row_component: TableComponents::OrganizationChapterRow) %>
+            <%= render TableComponents::Table.new(pagy: @pagy_chapters, rows: @chapters, row_component: TableComponents::OrganizationChapterRow, order_scope_name: :table_order_chapters) %>
         <% end %>
       <% end %>
     </section>
     <section class="flex-1 pr-2">
       <%= render CommonComponents::Card.new(title: t(:members).capitalize) do |card| %>
         <% card.with_card_content do %>
-          <%= render TableComponents::Table.new(pagy: @pagy_users, rows: @members, row_component: TableComponents::OrganizationMemberRow) %>
+          <%= render TableComponents::Table.new(pagy: @pagy_users, rows: @members, row_component: TableComponents::OrganizationMemberRow, order_scope_name: :table_order_members) %>
           <%= form_with model: @new_member, url: add_member_organization_path, class: 'space-y-0.5' do |f| %>
             <div class="bg-white flex p-4 justify-between items-end">
               <div class="flex-1 mr-4">
