@@ -3,7 +3,9 @@
 class SkillsController < HtmlController
   include Pagy::Backend
   has_scope :exclude_deleted, only: :index, type: :boolean, default: true
-  has_scope :table_order, type: :hash, default: { key: :created_at, order: :desc }
+  has_scope :table_order, type: :hash, default: { key: :created_at, order: :desc }, only: :index
+  has_scope :table_order_grades, type: :hash, only: :show
+  has_scope :table_order_subjects, type: :hash, only: :show
   has_scope :search, only: :index
 
   def index
@@ -28,8 +30,8 @@ class SkillsController < HtmlController
 
   def show
     @skill = Skill.includes(:organization).find params[:id]
-    @pagy, @subjects = pagy SubjectPolicy::Scope.new(current_user, @skill.subjects.includes(:assignments, :skills, :organization)).resolve
-    @pagy_grades, @grade_descriptors = pagy @skill.grade_descriptors
+    @pagy, @subjects = pagy SubjectPolicy::Scope.new(current_user, skill_subjects).resolve
+    @pagy_grades, @grade_descriptors = pagy apply_scopes(@skill.grade_descriptors, table_order_grades: params['table_order_grades'] || { key: :mark, order: :asc })
     authorize @skill
   end
 
@@ -64,6 +66,11 @@ class SkillsController < HtmlController
   end
 
   private
+
+  def skill_subjects
+    subjects = @skill.subjects.includes(:assignments, :skills, :organization)
+    apply_scopes(subjects, table_order_subjects: params['table_order_subjects'] || { key: :created_at, order: :desc })
+  end
 
   def skill_parameters
     params.require(:skill).permit(:skill_name, :organization_id, :skill_description, grade_descriptors_attributes: %i[mark grade_description _destroy])

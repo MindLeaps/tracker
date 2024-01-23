@@ -3,8 +3,8 @@
 class TableComponents::GradeDescriptorRow < TableComponents::BaseRow
   def self.columns
     [
-      { order_key: :group_name, column_name: I18n.t(:mark), numeric: true },
-      { order_key: :chapter_name, column_name: I18n.t(:grade_description) }
+      { order_key: :mark, column_name: I18n.t(:mark), numeric: true },
+      { order_key: :grade_description, column_name: I18n.t(:grade_description) }
     ]
   end
 end

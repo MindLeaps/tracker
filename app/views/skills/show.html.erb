@@ -29,7 +29,7 @@ end %>
       <%= render CommonComponents::Card.new(title: t(:grades).capitalize) do |card| %>
         <% card.with_card_content do %>
         <div class="bg-white">
-          <%= render TableComponents::Table.new(rows: @skill.grade_descriptors, row_component: TableComponents::GradeDescriptorRow, options: { no_pagination: true }) %>
+          <%= render TableComponents::Table.new(rows: @grade_descriptors, row_component: TableComponents::GradeDescriptorRow, options: { no_pagination: true }, order_scope_name: :table_order_grades) %>
         </div>
         <% end %>
       <% end %>
@@ -38,7 +38,7 @@ end %>
         <%= render CommonComponents::Card.new(title: t(:subjects_with_skill).capitalize) do |card| %>
           <% card.with_card_content do %>
             <div class="bg-white">
-              <%= render TableComponents::Table.new(pagy: @pagy, rows: @subjects, row_component: TableComponents::SubjectRow, options: { wrap: true }) %>
+              <%= render TableComponents::Table.new(pagy: @pagy, rows: @subjects, row_component: TableComponents::SubjectRow, options: { wrap: true }, order_scope_name: :table_order_subjects) %>
             </div>
           <% end %>
         <% end %>
