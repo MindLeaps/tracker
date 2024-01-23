@@ -15,9 +15,9 @@ class TableComponents::SkillLessonRow < TableComponents::BaseRow
   def self.columns
     [
       { column_name: '#', numeric: true },
-      { order_key: :skill, column_name: I18n.t(:skill) },
-      { order_key: :average, column_name: I18n.t(:average), numeric: true },
-      { order_key: :grades, column_name: I18n.t(:grades), numeric: true }
+      { order_key: :skill_name, column_name: I18n.t(:skill) },
+      { order_key: :average_mark, column_name: I18n.t(:average), numeric: true },
+      { order_key: :grade_count, column_name: I18n.t(:grades), numeric: true }
     ]
   end
 end

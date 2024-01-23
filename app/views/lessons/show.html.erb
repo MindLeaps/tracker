@@ -23,14 +23,22 @@ end %>
       <% end %>
       <%= render CommonComponents::Card.new(title: t(:skills).capitalize) do |card| %>
         <% card.with_card_content do %>
-          <%= render TableComponents::Table.new(pagy: @pagy, rows: @lesson_skill_summary, row_component: TableComponents::SkillLessonRow, options: {no_pagination: true}) %>
+          <%= render TableComponents::Table.new(pagy: @pagy, rows: @lesson_skill_summary, row_component: TableComponents::SkillLessonRow, order_scope_name: :table_order_lesson_skills, options: {no_pagination: true}) %>
         <% end %>
       <% end %>
     </section>
     <section class="flex-1 pr-2">
       <%= render CommonComponents::Card.new(title: t(:students).capitalize) do |card| %>
         <% card.with_card_content do %>
-          <%= render TableComponents::Table.new(pagy: @pagy, rows: @student_lesson_summaries, row_component: TableComponents::StudentLessonRow) %>
+          <%= render TableComponents::Table.new(pagy: @pagy, rows: @student_lesson_summaries, row_component: TableComponents::StudentLessonRow, order_scope_name: :table_order_lesson_students) do |t|
+            t.with_left do %>
+              <div class="flex items-center justify-between">
+                <div class="flex-1">
+                  <%= render CommonComponents::CheckboxLink.new(label: t(:show_deleted), checked: !excluding_deleted?, href: show_deleted_url) %>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
         <% end %>
       <% end %>
     </section>

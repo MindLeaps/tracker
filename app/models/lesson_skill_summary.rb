@@ -12,6 +12,7 @@
 #  subject_id   :integer
 #
 class LessonSkillSummary < ApplicationRecord
+  singleton_class.send(:alias_method, :table_order_lesson_skills, :table_order)
   def readonly?
     true
   end
