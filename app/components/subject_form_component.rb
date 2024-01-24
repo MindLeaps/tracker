@@ -16,7 +16,7 @@ class SubjectFormComponent < ViewComponent::Base
                 <%= f.text_field :subject_name, autofocus: true, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
               </div>
               <div class="col-span-6 lg:col-span-2">
-                <%= f.label :organization, class: 'block text-sm font-medium text-gray-700' %>
+                <%= f.label :organization_id, class: 'block text-sm font-medium text-gray-700' %>
                 <%= f.collection_select :organization_id, @permitted_organizations, :id, :organization_name, {}, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
               </div>
             </div>
@@ -27,11 +27,12 @@ class SubjectFormComponent < ViewComponent::Base
           <div class="mt-5 md:col-span-3 md:mt-0">
             <%= turbo_frame_tag f.field_id(:assignments) do %>
               <div id="skills" class="grid grid-cols-6 gap-4" data-controller="association">
-                <%= f.fields_for :assignments do |sf| %>
+                <%= f.fields_for :assignments, include_id: false do |sf| %>
                   <% id = SecureRandom.uuid %>
                   <div class="grid grid-cols-6 col-span-6 gap-4" data-association-target="removable" id="<%= id %>">
                     <div class="col-span-2">
-                      <%= sf.label :skill, class: 'block text-sm font-medium text-gray-700' %>
+                      <%= sf.hidden_field :id %>
+                      <%= sf.label :skill_id, class: 'block text-sm font-medium text-gray-700' %>
                       <%= sf.collection_select :skill_id, @permitted_skills, :id, :skill_name, {}, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
                     </div>
                     <div class="col-span-2 relative">
