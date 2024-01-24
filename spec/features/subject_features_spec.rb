@@ -54,8 +54,9 @@ RSpec.describe 'User interacts with subjects', js: true do
       expect(page).to have_content skill_names[2]
     end
 
-    it 'edits a subject' do
+    it 'edits a subject', js: true do
       create :skill, skill_name: 'New Skill'
+      create :skill, skill_name: 'Other Skill'
       subject = create :subject_with_skills, subject_name: 'Test Subject', number_of_skills: 2
 
       visit '/'
@@ -66,12 +67,17 @@ RSpec.describe 'User interacts with subjects', js: true do
       expect(page).to have_current_path edit_subject_path(subject)
       fill_in 'Subject name', with: 'Edited Name'
       click_button 'Add Skill'
-      all(:select, 'subject_assignments_attributes_0_skill_id').last.find(:option, 'New Skill').select_option
+      all(:select, 'subject_assignments_attributes_2_skill_id').last.find(:option, 'New Skill').select_option
+      click_button 'Add Skill'
+      all(:select, 'subject_assignments_attributes_3_skill_id').last.find(:option, 'Other Skill').select_option
       click_button 'Update Subject'
 
       expect(page).to have_current_path subject_path(subject)
       expect(page).to have_content 'Subject updated'
       expect(page).to have_content 'New Skill'
+      expect(page).to have_content 'Other Skill'
+      expect(subject.reload.skills.size).to eq 4
+      expect(subject.subject_name).to eq 'Edited Name'
     end
   end
 end

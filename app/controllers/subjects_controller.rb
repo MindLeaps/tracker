@@ -42,11 +42,12 @@ class SubjectsController < HtmlController
 
   def update
     @subject = Subject.includes(:organization, :skills).find params.require(:id)
+    @subject.assign_attributes subject_params
     authorize @subject
     if params[:add_skill]
       @subject.assignments.build
       render :new, status: :ok
-    elsif @subject.update subject_params
+    elsif @subject.save
       success(title: t(:subject_updated), text: t(:subject_updated_text, subject: @subject.subject_name))
       redirect_to @subject
     else
