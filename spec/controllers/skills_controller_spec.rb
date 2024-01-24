@@ -157,7 +157,7 @@ RSpec.describe SkillsController, type: :controller do
 
         it { should redirect_to 'http://example.com/skills?param=1' }
 
-        it { should set_flash[:success_notice] }
+        it { should set_flash[:failure_notice] }
 
         it 'does not delete the skill' do
           expect(@skill.reload.deleted_at).to be_nil
@@ -177,7 +177,7 @@ RSpec.describe SkillsController, type: :controller do
 
         it { should redirect_to 'http://example.com/skills?param=1' }
 
-        it { should set_flash[:success_notice] }
+        it { should set_flash[:failure_notice] }
 
         it 'does not delete the skill' do
           expect(@skill.reload.deleted_at).to be_nil

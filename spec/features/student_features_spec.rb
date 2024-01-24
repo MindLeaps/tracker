@@ -33,9 +33,9 @@ RSpec.describe 'User interacts with Students' do
       visit '/students'
       click_link 'Add Student'
       fill_in 'student_mlid', with: '1A'
-      fill_in 'First Name', with: 'Rick'
-      fill_in 'Last Name', with: 'Sanchez'
-      select('Antarctica', from: 'Country of Nationality')
+      fill_in 'First name', with: 'Rick'
+      fill_in 'Last name', with: 'Sanchez'
+      select('Antarctica', from: 'Country of nationality')
       select(@group.chapter_group_name_with_full_mlid, from: 'student_group_id')
       click_button 'Create'
 
@@ -52,8 +52,8 @@ RSpec.describe 'User interacts with Students' do
       visit '/students'
       click_link 'Add Student'
       fill_in 'student_mlid', with: '1A'
-      fill_in 'First Name', with: 'Rick'
-      fill_in 'Last Name', with: 'Sanchez'
+      fill_in 'First name', with: 'Rick'
+      fill_in 'Last name', with: 'Sanchez'
       click_button 'Create'
       expect(page).to have_content 'Student Invalid'
       expect(page).to have_content 'Please fix the errors in the form'
@@ -69,10 +69,10 @@ RSpec.describe 'User interacts with Students' do
 
       find('div.table-cell', text: 'Editovska', match: :first).click
       click_link 'Edit Student'
-      fill_in 'First Name', with: ''
+      fill_in 'First name', with: ''
       click_button 'Update'
       expect(page).to have_content 'Student Invalid'
-      fill_in 'First Name', with: 'Editoredska'
+      fill_in 'First name', with: 'Editoredska'
       fill_in 'tag-autocomplete', with: 'Sol'
       find('.awesomplete ul li:first-child').click
       click_button 'Update'
