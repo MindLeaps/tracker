@@ -1,7 +1,8 @@
--content_for :title, t(:edit_student_tag).capitalize
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  {title: CommonComponents::TagLabel.new(label: t(:students).capitalize, img_src: 'student.svg'), href: students_path },
+  {title: CommonComponents::TagLabel.new(label: t(:student_tags), img_src: 'tag.svg'), href: student_tags_path },
+  {title: CommonComponents::TagLabel.new(label: @tag.tag_name, img_src: 'tag.svg'), href: '' }
+], buttons: [
+].compact) %>
 
-- content_for :header_content do
-  = render layout: '/shared/header_content', locals: { title: t(:new_student_tag).capitalize } do
-
-.content-card.mdl-cell--8-col.card-padding.center
-  = render partial: 'shared/tag_form', locals: {tag: @tag, action: :update}
+<%= render StudentTagFormComponent.new tag: @tag, action: :update, current_user: current_user %>

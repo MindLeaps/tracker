@@ -1,8 +1,8 @@
-<%= form_with model: @tag, url: student_tags_path, action: @action, class: 'space-y-0.5' do |f| %>
+<%= form_with model: @tag, url: if @action == :create then student_tags_path else student_tag_path end, action: @action, class: 'space-y-0.5' do |f| %>
   <div class="bg-white px-4 py-5 shadow sm:p-4">
     <div class="md:grid md:grid-cols-4 md:gap-6">
       <div class="md:col-span-1">
-        <h3 class="text-lg font-medium leading-6 text-gray-900"><%= t(:new_student_tag) %></h3>
+        <h3 class="text-lg font-medium leading-6 text-gray-900"><%= t(:tag_information) %></h3>
       </div>
       <div class="mt-5 md:col-span-3 md:mt-0">
         <div class="grid grid-cols-6 gap-4">

@@ -23,34 +23,33 @@ RSpec.describe 'User interacts with Student Tags' do
       click_button 'Create'
 
       expect(page).to have_content 'Tag "My Test Tag" added'
-      expect(page).to have_content 'Tag Name: My Test Tag'
 
       expect(page).to have_content 'My Test Tag'
       expect(page).to have_content @tags[0].tag_name
       expect(page).to have_content @tags[1].tag_name
       expect(page).to have_content @tags[2].tag_name
 
-      click_link 'My Test Tag'
-      find(:css, '#edit-button').click
+      find('div.table-cell', text: 'My Test Tag', match: :first).click
+      click_link 'Edit Tag'
 
       fill_in 'Tag name', with: 'My Edited Tag'
       click_button 'Update'
 
       expect(page).to have_content 'My Edited Tag'
 
-      find(:css, '#back-button').click
+      click_link 'Student Tags'
       expect(page).to have_content 'My Edited Tag'
 
       visit '/students'
-      click_link 'Taggy'
-      click_link 'edit-button'
-      fill_in 'tags_autocomplete', with: 'My Edited T'
-      find('#awesomplete_list_1_item_0').click
+      find('div.table-cell', text: 'Taggy', match: :first).click
+      click_link 'Edit Student'
+      fill_in 'tag-autocomplete', with: 'My Edited T'
+      find('.awesomplete ul li:first-child').click
       click_button 'Update'
 
       visit '/students'
       click_link 'Student Tags'
-      click_link 'My Edited Tag'
+      find('div.table-cell', text: 'My Edited Tag', match: :first).click
     end
   end
 end
