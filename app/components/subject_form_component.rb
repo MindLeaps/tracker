@@ -29,12 +29,13 @@ class SubjectFormComponent < ViewComponent::Base
               <div id="skills" class="grid grid-cols-6 gap-4" data-controller="association">
                 <%= f.fields_for :assignments, include_id: false do |sf| %>
                   <% id = SecureRandom.uuid %>
-                  <div class="grid grid-cols-6 col-span-6 gap-4" data-association-target="removable" id="<%= id %>">
+                  <div class="grid grid-cols-6 col-span-6 gap-4 <%= if sf.object.marked_for_destruction? then 'hidden' else '' end %>" data-association-target="removable" id="<%= id %>">
                     <div class="col-span-2">
                       <%= sf.hidden_field :id %>
                       <%= sf.label :skill_id, class: 'block text-sm font-medium text-gray-700' %>
                       <%= sf.collection_select :skill_id, @permitted_skills, :id, :skill_name, {}, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
                     </div>
+                    <%= sf.check_box :_destroy, class: 'hidden', 'data-association-target': 'checkable', 'data-association-id': id %>
                     <div class="col-span-2 relative">
                       <button class="dangerous-button absolute bottom-0 cursor-pointer" data-action="association#remove" data-association-remove-id-param="<%= id %>"><%= t(:delete_skill) %></button>
                     </div>
