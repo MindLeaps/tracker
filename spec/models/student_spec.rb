@@ -102,7 +102,7 @@ RSpec.describe Student, type: :model do
           new_student = build :student, group: @group, mlid: 'AA1'
           expect(new_student).to be_invalid
           expect(new_student.errors.messages[:mlid])
-            .to include 'MLID already exists in group.'
+            .to include 'already exists in group.'
         end
       end
     end

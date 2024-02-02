@@ -12,6 +12,7 @@ RSpec.describe 'Interaction with Organizations' do
       fill_in 'Organization name', with: 'New Organization For Organization Feature Test'
       click_button 'Create'
 
+      expect(page).to have_content 'Organization Added'
       expect(page).to have_content 'New Organization For Organization Feature Test'
     end
   end
@@ -50,7 +51,7 @@ RSpec.describe 'Interaction with Organizations' do
 
       fill_in 'Email', with: @new_member.email
       select 'Administrator', from: 'Role'
-      click_button 'Add Member'
+      click_button 'Add User'
 
       expect(page).to have_content @new_member.name
       expect(@new_member.reload.has_role?(:admin, @organization)).to be true

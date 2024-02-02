@@ -1,0 +1,297 @@
+<% content_for :title, t(:general_analytics).capitalize %>
+<% content_for :head_content, javascript_include_tag('analytics') %>
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  { title: t(:general_analytics).capitalize, href: '' },
+  { title: t(:subject_analytics).capitalize, href: subject_analytics_url },
+  { title: t(:group_analytics).capitalize, href: group_analytics_url }
+]) do |h| %>
+  <% h.with_left do %>
+  <% end %>
+<% end %>
+
+<div class="overflow-x-scroll">
+  <div class="p-4 filter-wrap flex items-center flex-1" data-controller="analytics-filter">
+    <div class="pl-2">
+      <%= label_tag :organization_label, "Organization", class: 'block text-sm font-medium text-gray-700' %>
+      <%= select_tag :organization_select, options_from_collection_for_select(@available_organizations, :id, :organization_name, @selected_organization_id), :class => 'mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md', :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'organization_id', 'data-dependents' => ['chapter_id'].to_json, 'data-resources' => @available_organizations.map { |o| { id: o.id, label: o.organization_name} }.to_json %>
+    </div>
+    <div class="pl-2">
+      <%= label_tag :chapter_label, "Chapter", class: 'block text-sm font-medium text-gray-700' %>
+      <%= select_tag :chapter_select, options_from_collection_for_select(@available_chapters, :id, :chapter_name, @selected_chapter_id), :class => 'mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md', :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'chapter_id', 'data-dependents' => ['group_id'].to_json, 'data-resources' => @available_chapters.map { |c| { id: c.id, label: c.chapter_name, depend_id: c.organization_id } }.to_json %>
+    </div>
+    <div class="pl-2">
+      <%= label_tag :group_label, "Group", class: 'block text-sm font-medium text-gray-700' %>
+      <%= select_tag :group_select, options_from_collection_for_select(@available_groups, :id, :group_name, @selected_group_id), :class => 'mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md', :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'group_id', 'data-dependents' => ['student_id'].to_json, 'data-resources' => @available_groups.map { |g| { id: g.id, label: g.group_name, depend_id: g.chapter_id } }.to_json %>
+    </div>
+    <div class="pl-2">
+      <%= label_tag :student_label, "Student", class: 'block text-sm font-medium text-gray-700' %>
+      <%= select_tag :student_select, options_from_collection_for_select(@available_students, :id, :proper_name, @selected_student_id), :class => 'mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md', :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'student_id', 'data-resources' => @available_students.map { |s| { id: s.id, label: s.proper_name, depend_id: s.group_id } }.to_json %>
+    </div>
+    <div class="pl-2 pt-5">
+      <%= render CommonComponents::ButtonComponent.new(label: t(:filter), options: { 'data-analytics-filter-target' => 'anchor' })%>
+    </div>
+  </div>
+
+  <div class="grid gap-2" style="grid-template-columns: repeat(2, minmax(min-content, 50%))">
+    <div id="quantity-of-data-per-month" class="w-full h-96"></div>
+    <div id="histogram-of-student-performance" class="w-full h-96"></div>
+    <div id="performance-change-by-student" class="w-full h-96"></div>
+    <div id="performance-change-by-gender" class="w-full h-96"></div>
+    <div id="average-performance-per-group" class="w-full h-96"></div>
+    <div id="datapoint-count" class="analytics-counter w-full h-96 bg-white ">
+      <div class="text-center p-1"> <%= t(:number_of_datapoints) %></div>
+      <div class="relative -translate-y-1/2 text-center text-8xl top-1/3">
+        <span><%= number_with_delimiter Grade.where(student: @selected_students.select(:id)).count %></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function startAnalytics() {
+      Highcharts.chart('quantity-of-data-per-month', {
+          chart: {
+              type: 'column',
+              zoomType: 'x'
+          },
+          legend: {
+              enabled: false
+          },
+          credits: {
+              enabled: false
+          },
+          exporting: {
+            filename: 'quantity-of-data-chart',
+            buttons: {
+              contextButton: {
+                menuItems: [
+                  'downloadPNG',
+                  'downloadJPEG',
+                  'downloadPDF',
+                  'downloadSVG'
+                ]
+              }
+            },
+            fallbackToExportServer: false
+          },
+          title: {
+              text: '<%= t(:title_chart_2) %>'
+          },
+          xAxis: {
+              title: {
+                  text: '<%= t(:month) %>'
+              },
+              categories: <%= @assessments_per_month[:categories].to_json.html_safe %>
+          },
+          yAxis: {
+              title: {
+                  text: '<%= t(:nr_of_assessments) %>'
+              }
+          },
+          series: <%= @assessments_per_month[:series].to_json.html_safe  %>
+      });
+
+      Highcharts.chart('histogram-of-student-performance', {
+          chart: {
+              type: 'column'
+          },
+          legend: {
+              enabled: false
+          },
+          credits: {
+              enabled: false
+          },
+          tooltip: {
+              valueDecimals: 1
+          },
+          exporting: {
+            filename: 'histogram-performance-chart',
+            buttons: {
+              contextButton: {
+                menuItems: [
+                  'downloadPNG',
+                  'downloadJPEG',
+                  'downloadPDF',
+                  'downloadSVG'
+                ]
+              }
+            },
+            fallbackToExportServer: false
+          },
+          title: {
+              text: '<%= t(:title_chart_4) %>'
+          },
+          xAxis: {
+              title: {
+                  text: '<%= t(:performance) %>'
+              }
+          },
+          yAxis: {
+              title: {
+                  text: '<%= t(:frequency_perc) %>'
+              }
+          },
+          series: <%= @student_performance.html_safe  %>
+      });
+
+      Highcharts.chart('performance-change-by-student', {
+          chart: {
+              type: 'column'
+          },
+          legend: {
+              enabled: false
+          },
+          credits: {
+              enabled: false
+          },
+          tooltip: {
+              valueDecimals: 1
+          },
+          exporting: {
+            filename: 'performance-change-chart',
+            buttons: {
+              contextButton: {
+                menuItems: [
+                  'downloadPNG',
+                  'downloadJPEG',
+                  'downloadPDF',
+                  'downloadSVG'
+                ]
+              }
+            },
+            fallbackToExportServer: false
+          },
+          title: {
+              text: '<%= t(:title_chart_5) %>'
+          },
+          xAxis: {
+              title: {
+                  text: '<%= t(:performance_change) %>'
+              }
+          },
+          yAxis: {
+              title: {
+                  text: '<%= t(:frequency_perc) %>'
+              }
+          },
+          series: <%= @student_performance_change.html_safe %>
+      });
+
+      Highcharts.chart('performance-change-by-gender', {
+          chart: {
+              type: 'column'
+          },
+          legend: {
+              enabled: true
+          },
+          credits: {
+              enabled: false
+          },
+          tooltip: {
+              valueDecimals: 1
+          },
+          title: {
+              text: '<%= t(:title_chart_6) %>'
+          },
+          exporting: {
+            filename: 'gender-performance-change-chart',
+            buttons: {
+              contextButton: {
+                menuItems: [
+                  'downloadPNG',
+                  'downloadJPEG',
+                  'downloadPDF',
+                  'downloadSVG'
+                ]
+              }
+            },
+            fallbackToExportServer: false
+          },
+          xAxis: {
+              title: {
+                  text: '<%= t(:performance_change) %>'
+              }
+          },
+          yAxis: {
+              title: {
+                  text: '<%= t(:frequency_perc)  %>'
+              }
+          },
+          series: <%= @gender_performance_change.html_safe %>
+      });
+
+      Highcharts.chart('average-performance-per-group', {
+          chart: {
+              type: 'scatter',
+              zoomType: 'x'
+          },
+          legend: {
+              enabled: true
+          },
+          credits: {
+              enabled: false
+          },
+          tooltip: {
+            formatter: function () {
+              return '<span style="color:' + this.point.color + '">\u25CF</span> ' + this.series.name +
+                '<br/><span>x: <span style="font-weight: bold">' + this.point.x + '</span></span>' +
+                '<br/><span>y: <span style="font-weight: bold">' + this.point.y + '</span></span>' +
+                (this.point.date ? '<br/><span><%= t(:lesson_date) %>: ' + this.point.date + '</span>' : '');
+            }
+          },
+          exporting: {
+            filename: 'average-performance-chart',
+            buttons: {
+              contextButton: {
+                menuItems: [
+                  'downloadPNG',
+                  'downloadJPEG',
+                  'downloadPDF',
+                  'downloadSVG'
+                ]
+              }
+            },
+            fallbackToExportServer: false
+          },
+          title: {
+              text: '<%= t(:title_chart_8) %>'
+          },
+          xAxis: {
+              title: {
+                  text: '<%= t(:nr_of_lessons) %>'
+              }
+          },
+          yAxis: {
+              title: {
+                  text: '<%= t(:performance) %>'
+              }
+          },
+          plotOptions: {
+            series: {
+              events: {
+                click: function (e, a1, a2) {
+                  if (e.point.lesson_url) {
+                    window.open(e.point.lesson_url, '_blank');
+                  }
+                }
+              },
+              cursor: 'pointer',
+              marker: {
+                radius: 2
+              }
+            }
+          },
+          series: <%= @average_group_performance.html_safe %>
+      });
+  }
+
+  function pollForHighcharts (cb) {
+    if (window.Highcharts) {
+      cb()
+    } else {
+      setTimeout(pollForHighcharts.bind(this, cb), 100);
+    }
+  }
+
+  pollForHighcharts(startAnalytics);
+</script>

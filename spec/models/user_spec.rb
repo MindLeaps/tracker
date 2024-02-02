@@ -77,6 +77,12 @@ RSpec.describe User, type: :model do
         user = User.new email: 'existing_user_email@example.com'
         expect(user).to_not be_valid
       end
+
+      it 'with an invalid email' do
+        user = User.new email: 'invalid'
+        expect(user).to_not be_valid
+        expect(user.errors.full_messages_for(:email).first).to eq 'Email is not valid'
+      end
     end
   end
 

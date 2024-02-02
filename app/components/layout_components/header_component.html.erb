@@ -1,0 +1,20 @@
+<div class="sticky top-0 flex-shrink-0 flex h-16 border-b-2 border-purple-800 bg-white z-10">
+  <div class="flex-1 flex items-center whitespace-nowrap">
+    <% if left? %>
+      <%= left %>
+    <% end %>
+  </div>
+  <div class="px-4 flex-1 flex items-center w-full justify-center items-stretch space-x-4">
+    <% @tabs.each do |tab| %>
+      <a href="<%= tab[:href] if tab[:href].present? %>" class="<%= if tab[:href] == '' then 'border-green-700 text-gray-800 stroke-gray-800' else 'border-transparent hover:border-gray-400 text-gray-500 hover:text-gray-700 stroke-gray-500 hover:stroke-gray-700' end %> whitespace-nowrap border-b-4 inline-flex items-center px-1 pt-1 font-medium">
+        <%= render_label(tab[:title]) %>
+      </a>
+    <% end %>
+  </div>
+
+  <div class="px-4 flex-1 flex items-center whitespace-nowrap">
+    <% @buttons.each do |button| %>
+      <%= render button %>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,9 @@
+<div class="<%= 'shaded-row' if shaded? %> table-row-wrapper">
+  <a href="<%= helpers.lesson_student_path @item.lesson_id, @item.student_id %>" class="<%= 'shaded-row' if shaded? %> <%= 'deleted-row' if @item.deleted_at? %> table-row-wrapper" data-turbo-stream>
+    <div class="<%= if fully_graded? then 'fully-graded' elsif ungraded? then 'not-graded' else 'partially-graded' end %> relative px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-600 "><%= @pagy.from + @item_counter %></div>
+    <div class="table-cell text-right"><%= @item.last_name %></div>
+    <div class="table-cell text-right"><%= @item.first_name %></div>
+    <div class="table-cell "><%= @item.grade_count %> / <%= @item.skill_count %></div>
+    <div class="table-cell "><%= @item.average_mark %><%= " (#{t(:student_absent)})" if @item.absent %></div>
+  </a>
+</div>

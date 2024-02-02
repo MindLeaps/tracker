@@ -52,4 +52,8 @@ class StudentTableRow < ApplicationRecord
   def readonly?
     true
   end
+
+  def self.policy_class
+    StudentPolicy
+  end
 end

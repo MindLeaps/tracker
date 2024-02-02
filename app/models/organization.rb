@@ -21,9 +21,10 @@ class Organization < ApplicationRecord
   pg_search_scope :search, against: [:organization_name], using: { tsearch: { prefix: true } }
   resourcify
   validates :organization_name, presence: true, uniqueness: true
-  validates :mlid, presence: true, uniqueness: true, format: { with: /\A[A-Za-z0-9]+\Z/ }
+  validates :mlid, presence: true, uniqueness: true, format: { with: /\A[A-Za-z0-9]{1,3}\Z/ }
 
   has_many :chapters, dependent: :restrict_with_error
+  has_many :subjects, dependent: :restrict_with_error
 
   def add_user_with_role(email, role)
     return false unless Role::LOCAL_ROLES.key? role
@@ -35,6 +36,6 @@ class Organization < ApplicationRecord
   end
 
   def members
-    User.includes(:roles_users, :roles).where('roles.resource_id' => id)
+    OrganizationMember.where(organization_id: id)
   end
 end

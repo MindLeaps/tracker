@@ -1,0 +1,47 @@
+<%- content_for :title, "#{t(:skill).capitalize} - #{@skill.skill_name}" %>
+
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  {title: CommonComponents::TagLabel.new(label: @skill.skill_name, img_src: 'skill.svg'), href: '' },
+], buttons: [
+  (CommonComponents::FormButtonComponent.new(label: t(:restore_skill), path: undelete_skill_path(@skill), method: :post) if policy(@skill).destroy? && @skill.deleted_at),
+  (CommonComponents::DangerousFormButtonComponent.new(label: t(:delete_skill), path: skill_path(@skill), method: :delete) if policy(@skill).destroy? && !@skill.deleted_at)
+].compact)  do |h|
+  h.with_left do
+    render CommonComponents::Breadcrumbs.new(crumbs: [
+      { label: CommonComponents::TagLabel.new(label: @skill.organization.organization_name, img_src: 'world.svg'), href: organization_path(@skill.organization) },
+    ])
+  end
+end %>
+
+<div class="overflow-auto">
+  <div class="flex max-w-full">
+    <section class="pr-2 w-1/2">
+      <%= render CommonComponents::Card.new(title: t(:skill_information).capitalize) do |card| %>
+        <% card.with_card_content do %>
+          <div class="bg-white p-4">
+            <ul>
+              <li><%= t(:skill_name) %>: <%= @skill.skill_name %></li>
+              <li><%= t(:skill_description) %>: <%= @skill.skill_description %></li>
+            </ul>
+          </div>
+        <% end %>
+      <% end %>
+      <%= render CommonComponents::Card.new(title: t(:grades).capitalize) do |card| %>
+        <% card.with_card_content do %>
+        <div class="bg-white">
+          <%= render TableComponents::Table.new(rows: @grade_descriptors, row_component: TableComponents::GradeDescriptorRow, options: { no_pagination: true }, order_scope_name: :table_order_grades) %>
+        </div>
+        <% end %>
+      <% end %>
+    </section>
+    <section class="w-1/2">
+        <%= render CommonComponents::Card.new(title: t(:subjects_with_skill).capitalize) do |card| %>
+          <% card.with_card_content do %>
+            <div class="bg-white">
+              <%= render TableComponents::Table.new(pagy: @pagy, rows: @subjects, row_component: TableComponents::SubjectRow, options: { wrap: true }, order_scope_name: :table_order_subjects) %>
+            </div>
+          <% end %>
+        <% end %>
+    </section>
+  </div>
+</div>

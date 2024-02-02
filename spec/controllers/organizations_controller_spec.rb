@@ -35,12 +35,69 @@ RSpec.describe OrganizationsController, type: :controller do
   end
 
   describe '#create' do
-    it 'creates a new organization when supplied a valid name and MLID' do
-      post :create, params: { organization: { organization_name: 'New Test Organization', mlid: 'ABC' } }
+    let(:existing_org) { create :organization, organization_name: 'Existing Org', mlid: 'EX1' }
+    describe 'successful creation' do
+      before :each do
+        post :create, params: { organization: { organization_name: 'New Test Organization', mlid: 'ABC' } }
+      end
 
-      expect(response).to redirect_to controller: :organizations, action: :index
-      organization = Organization.last
-      expect(organization.organization_name).to eql 'New Test Organization'
+      it { should redirect_to organizations_url }
+      it { should set_flash[:success_notice] }
+
+      it 'creates a new organization when supplied a valid name and MLID' do
+        expect(response).to redirect_to controller: :organizations, action: :index
+        organization = Organization.last
+        expect(organization.organization_name).to eql 'New Test Organization'
+      end
+    end
+    describe 'failed creation' do
+      before :each do
+        post :create, params: { organization: { organizations_name: 'Some Name' } }
+      end
+
+      it { should respond_with :unprocessable_entity }
+      it { should render_template :new }
+      it { should set_flash[:failure_notice] }
+    end
+  end
+
+  describe '#edit' do
+    let(:org) { create :organization }
+    before :each do
+      get :edit, params: { id: org.id }
+    end
+    it { should respond_with 200 }
+    it { should render_template 'edit' }
+    it 'assigns the existing organization' do
+      expect(assigns(:organization)).to be_kind_of(Organization)
+      expect(assigns(:organization).id).to eq(org.id)
+    end
+  end
+
+  describe '#update' do
+    let(:existing_org) { create :organization, organization_name: 'Existing Org', mlid: 'EX1' }
+    describe 'successful update' do
+      before :each do
+        post :update, params: { id: existing_org.id, organization: { organization_name: 'Updated Org', mlid: 'UP1' } }
+      end
+
+      it { should redirect_to organizations_url }
+      it { should set_flash[:success_notice] }
+
+      it 'updates the name and MLID of an existing org' do
+        existing_org.reload
+        expect(existing_org.organization_name).to eq 'Updated Org'
+        expect(existing_org.mlid).to eq 'UP1'
+      end
+    end
+    describe 'Failed update' do
+      before :each do
+        post :update, params: { id: existing_org.id, organization: { mlid: 'INVALID' } }
+      end
+
+      it { should respond_with 400 }
+      it { should render_template :edit }
+      it { should set_flash[:failure_notice] }
     end
   end
 
@@ -49,7 +106,7 @@ RSpec.describe OrganizationsController, type: :controller do
       @org = create :organization
       @existing_user = create :user
 
-      post :add_member, params: { id: @org.id, member: { email: 'new_user@example.com', role: 'admin' } }
+      post :add_member, params: { id: @org.id, user: { email: 'new_user@example.com', role: 'admin' } }
     end
 
     it { should redirect_to organization_path @org }
@@ -61,29 +118,29 @@ RSpec.describe OrganizationsController, type: :controller do
     end
 
     it 'assigns an existing user, outside of the organization, a role in the organization' do
-      post :add_member, params: { id: @org.id, member: { email: @existing_user.email, role: 'admin' } }
+      post :add_member, params: { id: @org.id, user: { email: @existing_user.email, role: 'admin' } }
 
       expect(@existing_user.has_role?(:admin, @org)).to be true
     end
 
     context 'trying to add another role to an existing member of the organization' do
       before :each do
-        post :add_member, params: { id: @org.id, member: { email: 'new_user@example.com', role: 'teacher' } }
+        post :add_member, params: { id: @org.id, user: { email: 'new_user@example.com', role: 'teacher' } }
       end
 
       it { should respond_with :conflict }
       it { should render_template :show }
-      it { should set_flash[:alert].to 'User is already a member of the organization' }
+      it { should set_flash[:failure_notice] }
     end
 
     context 'email is missing' do
       before :each do
-        post :add_member, params: { id: @org.id, member: {} }
+        post :add_member, params: { id: @org.id, user: {} }
       end
 
       it { should respond_with :bad_request }
       it { should render_template :show }
-      it { should set_flash[:alert].to 'Member Email missing' }
+      it { should set_flash[:failure_notice] }
     end
   end
 end

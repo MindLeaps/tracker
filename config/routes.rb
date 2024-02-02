@@ -45,7 +45,7 @@ Rails.application.routes.draw do
       delete :revoke_global_role, on: :collection
     end
   end
-  resources :organizations, only: %i[index new create show] do
+  resources :organizations, only: %i[index new create show edit update] do
     member { post :add_member }
   end
   resources :chapters, only: %i[index new create show edit update]
@@ -53,15 +53,12 @@ Rails.application.routes.draw do
     member { post :undelete }
   end
 
-  resources :students, only: %i[index new create edit update destroy] do
+  resources :students, only: %i[index new create show edit update destroy] do
     member do
-      get 'performance'
-      get 'details'
       post :undelete
     end
-    resources :student_images, only: %i[index create]
+    resources :student_images, only: %i[create destroy]
   end
-  get '/students/:id', to: redirect('/students/%{id}/performance')
 
   resources :student_tags, only: %i[index new create show edit update]
 

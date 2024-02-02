@@ -18,7 +18,7 @@ RSpec.describe 'User interacts with lessons' do
       select 'Feature Testing I', from: 'lesson_subject_id'
       click_button 'Create'
 
-      expect(page).to have_content 'Lesson created'
+      expect(page).to have_content 'Lesson Added'
     end
 
     it 'lists all existing lessons' do
@@ -28,21 +28,22 @@ RSpec.describe 'User interacts with lessons' do
 
       visit '/'
       click_link 'Lessons'
-      expect(page).to have_css '.resource-row', count: 2
+      expect(page).to have_css 'a.table-row-wrapper', count: 2
       expect(page).to have_content 'Feature Testing II'
     end
 
-    it 'shows a specific lesson' do
+    it 'shows a specific lesson', js: true do
       group = create :group, group_name: 'Lesson Feature Test Group'
       create :student, first_name: 'Marinko', last_name: 'Marinkovic', group: group
       create :student, first_name: 'Ivan', last_name: 'Ivankovic', group: group
       create :student, first_name: 'Deleted', last_name: 'Deletovic', group: group, deleted_at: Time.zone.now
       sub = create :subject, subject_name: 'Feature Testing III'
+      create :skill_in_subject, subject: sub
       create :lesson, subject: sub, group: group
 
       visit '/'
       click_link 'Lessons'
-      first('.resource-row a').click
+      find('div.table-cell', match: :first).click
 
       expect(page).to have_content 'Lesson Feature Test Group'
       expect(page).to have_content 'Students'
@@ -68,18 +69,18 @@ RSpec.describe 'User interacts with lessons' do
         @lesson = create :lesson, subject: subject, group: group
       end
 
-      it 'shows students grades in specific lesson' do
+      it 'shows students grades in specific lesson', js: true do
         visit "/lessons/#{@lesson.id}"
-        click_link 'Graden'
+        find('div.table-cell', text: 'Graden', match: :first).click
 
         expect(page).to have_content 'Graden'
         expect(page).to have_content 'Featuring'
         expect(page).to have_content 'Testing'
       end
 
-      it 'grades a student' do
+      it 'grades a student', js: true do
         visit "/lessons/#{@lesson.id}"
-        click_link 'Graden'
+        find('div.table-cell', text: 'Graden', match: :first).click
 
         select '2 - Mark Two For Skill One', from: 'Featuring'
         select '1 - Mark One For Skill Two', from: 'Testing'
@@ -91,12 +92,12 @@ RSpec.describe 'User interacts with lessons' do
         expect(page).to have_content '1.5'
       end
 
-      it 'marks a student as being absent from a lesson' do
+      it 'marks a student as being absent from a lesson', js: true do
         visit "/lessons/#{@lesson.id}"
-        click_link 'Graden'
+        find('div.table-cell', text: 'Graden', match: :first).click
 
-        expect(page).to have_unchecked_field 'student_lesson[absences]'
-        check 'student_lesson[absences]'
+        expect(page).to have_unchecked_field 'Absent'
+        check 'Absent'
 
         click_button 'Save Student Grades'
         expect(page).to have_content 'Student graded.'

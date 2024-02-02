@@ -26,6 +26,9 @@ class RoleService
       User.transaction do
         user.roles.global.each { |r| user.revoke r.symbol }
       end
+      true
+    rescue StandardError
+      false
     end
 
     private

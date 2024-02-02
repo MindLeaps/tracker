@@ -44,10 +44,6 @@
   background-color: var(--primary-color) !important;
 }
 
-.hidden {
-  display: none;
-}
-
 .pagy_nav {
   vertical-align: middle;
   display: inline-block;

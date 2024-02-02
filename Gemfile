@@ -8,7 +8,6 @@ gem 'bootsnap'
 gem 'carrierwave'
 gem 'carrierwave-bombshelter'
 gem 'carrierwave-imageoptimizer'
-gem 'cocoon'
 gem 'devise'
 gem 'enum_help'
 gem 'fog-aws'
@@ -34,12 +33,12 @@ gem 'rolify'
 gem 'scenic'
 gem 'simple_form'
 gem 'skylight'
-gem 'slim'
 gem 'sort_alphabetical'
 gem 'sprockets-rails'
 gem 'stimulus-rails'
 gem 'tailwindcss-rails'
 gem 'tiddle'
+gem 'turbo-rails'
 gem 'view_component'
 
 group :production do
@@ -55,6 +54,7 @@ group :development, :test do
   gem 'rubocop-rails'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
+  gem 'rails_spotlight'
 
   # Rspec requires capybara > 2.1
   gem 'capybara', '> 2.1'

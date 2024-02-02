@@ -4,40 +4,39 @@ class StudentsController < HtmlController
   include Pagy::Backend
   has_scope :exclude_deleted, only: :index, type: :boolean, default: true
   has_scope :exclude_empty, only: :performance, type: :boolean, default: true
-  has_scope :table_order, only: :index, type: :hash
+  has_scope :table_order, only: [:index], type: :hash, default: { key: :created_at, order: :desc }
+  has_scope :student_lesson_order, only: [:show], type: :hash, default: { key: :date, order: :desc } do |_controller, scope, value|
+    scope.table_order value
+  end
   has_scope :search, only: :index
 
   def index
     authorize Student
-    @component = StudentComponents::StudentTable.new { |students| pagy apply_scopes(policy_scope(students)) }
+    @pagy, @student_rows = pagy apply_scopes(policy_scope(StudentTableRow.includes(:tags, { group: { chapter: :organization } })))
   end
 
   def new
     authorize Student
     @student = populate_new_student
+    flash_redirect request.referer
   end
 
   def create
     @student = Student.new student_params
     authorize @student
-    return link_notice_and_redirect t(:student_created, name: @student.proper_name), new_student_path(group_id: @student.group_id), I18n.t(:create_another), details_student_path(@student) if @student.save
-
-    render :new
+    if @student.save
+      success(title: :student_added, text: t(:student_name_added, name: @student.proper_name), link_text: t(:create_another), link_path: new_student_path(group_id: @student.group_id))
+      return redirect_to(flash[:redirect] || student_path(@student))
+    end
+    failure_now(title: t(:student_invalid), text: t(:fix_form_errors))
+    render :new, status: :unprocessable_entity
   end
 
-  def details
-    @student = Student.includes(:profile_image, :group).find params.require(:id)
+  def show
+    @student = Student.includes(:profile_image, group: { chapter: [:organization] }).find params.require(:id)
     authorize @student
-    set_back_url_flash
-  end
-
-  def performance
-    @student = Student.find params.require(:id)
-    authorize @student
-    @student_lessons_details_by_subject = apply_scopes(StudentLessonDetail).where(student_id: params[:id]).order(:date).all.group_by(&:subject_id)
-    redirect_to action: :details if @student_lessons_details_by_subject.empty?
-    @subjects = Subject.includes(:skills, :organization).where(id: @student_lessons_details_by_subject.keys)
-    set_back_url_flash
+    @student_lessons_details_by_subject = apply_scopes(StudentLessonDetail.where(student_id: params[:id])).all.group_by(&:subject_id)
+    @subjects = policy_scope(Subject).includes(:skills).where(id: @student_lessons_details_by_subject.keys)
   end
 
   def edit
@@ -49,9 +48,13 @@ class StudentsController < HtmlController
   def update
     @student = Student.find params[:id]
     authorize @student
-    return redirect_to details_student_path(@student) if update_student @student
+    if update_student @student
+      success title: t(:student_updated), text: t(:student_name_updated, name: @student.proper_name)
+      return redirect_to(flash[:redirect] || student_path(@student))
+    end
 
-    render :edit
+    failure title: t(:student_invalid), text: t(:fix_form_errors)
+    render :edit, status: :unprocessable_entity
   end
 
   def destroy
@@ -59,7 +62,10 @@ class StudentsController < HtmlController
     authorize @student
     @student.deleted_at = Time.zone.now
 
-    undo_notice_and_redirect t(:student_deleted, name: @student.proper_name), undelete_student_path, students_path if @student.save
+    return unless @student.save
+
+    success(title: t(:student_deleted), text: t(:student_deleted_text, student: @student.proper_name), link_text: t(:undo), link_path: undelete_student_path)
+    redirect_to student_path
   end
 
   def undelete
@@ -67,7 +73,10 @@ class StudentsController < HtmlController
     authorize @student
     @student.deleted_at = nil
 
-    notice_and_redirect t(:student_restored, name: @student.proper_name), request.referer || student_path(@student) if @student.save
+    return unless @student.save
+
+    success title: t(:student_restored), text: t(:student_restored_text, name: @student.proper_name)
+    redirect_to student_path
   end
 
   private

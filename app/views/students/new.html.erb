@@ -1,0 +1,19 @@
+<%- content_for :title, t(:new_student)%>
+
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  {title: t(:new_student), href: '' },
+], buttons: [].compact) do |h|
+  h.with_left do
+    render CommonComponents::Breadcrumbs.new(crumbs: if @student.group
+      [
+        { label: CommonComponents::TagLabel.new(label: @student.group.chapter.organization.organization_name, img_src: 'world.svg'), href: organization_path(@student.group.chapter.organization) },
+        { label: CommonComponents::TagLabel.new(label: @student.group.chapter.chapter_name, img_src: 'chapter.svg'), href: chapter_path(@student.group.chapter) },
+        { label: CommonComponents::TagLabel.new(label: @student.group_name, img_src: 'group.svg'), href: group_path(@student.group) }
+      ] else [
+        { label: CommonComponents::TagLabel.new(label: t(:students).capitalize, img_src: 'student.svg'), href: students_path }
+      ]
+   end)
+  end
+end %>
+
+<%= render StudentFormComponent.new(student: @student, action: 'create', current_user: current_user) %>

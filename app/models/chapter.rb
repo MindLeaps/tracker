@@ -39,6 +39,10 @@ class Chapter < ApplicationRecord
 
   scope :by_organization, ->(organization_id) { where organization_id: organization_id }
 
+  def display_with_mlid
+    I18n.t(:display_with_mlid, name: chapter_name, mlid: full_mlid)
+  end
+
   def full_mlid
     "#{organization.mlid}-#{mlid}"
   end

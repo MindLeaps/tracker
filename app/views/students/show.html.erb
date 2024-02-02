@@ -1,0 +1,135 @@
+<%- content_for :title, @student.proper_name %>
+
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  {title: CommonComponents::TagLabel.new(label: @student.proper_name, img_src: 'student.svg'), href: '' },
+], buttons: [
+  (CommonComponents::ButtonComponent.new(label: t(:edit_student), href: edit_student_path(@student)) if policy(@student).edit?),
+  (CommonComponents::FormButtonComponent.new(label: t(:restore_student), path: undelete_student_path(@student), method: :post) if policy(@student).destroy? && @student.deleted_at),
+  (CommonComponents::DangerousFormButtonComponent.new(label: t(:delete_student), path: student_path(@student), method: :delete) if policy(@student).destroy? && !@student.deleted_at)
+].compact) do |h|
+  h.with_left do
+    render CommonComponents::Breadcrumbs.new(crumbs: [
+      { label: CommonComponents::TagLabel.new(label: @student.group.chapter.organization.organization_name, img_src: 'world.svg'), href: organization_path(@student.group.chapter.organization) },
+      { label: CommonComponents::TagLabel.new(label: @student.group.chapter.chapter_name, img_src: 'chapter.svg'), href: chapter_path(@student.group.chapter) },
+      { label: CommonComponents::TagLabel.new(label: @student.group_name, img_src: 'group.svg'), href: group_path(@student.group) }
+    ])
+  end
+end %>
+
+<div class="overflow-auto">
+  <section class="">
+      <%= render CommonComponents::Card.new(title: t(:student_details)) do |card| %>
+        <% card.with_card_content do %>
+            <% if @student.profile_image %>
+              <%= image_tag @student.profile_image.image.medium.url, class: 'mb-2' %>
+            <% end %>
+
+            <% if @student.deleted_at  %>
+              <%= render AlertComponent.new(title: t(:student_deleted, name: @student.proper_name), text: t(:student_deleted_at, time: distance_of_time_in_words(@student.deleted_at, Time.zone.now))) %>
+            <% end %>
+            <div>
+              <dl>
+                <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt class="text-sm font-medium text-gray-500"><%= t(:mlid) %></dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><span class="text-gray-500"><%= "#{@student.group.chapter.organization.mlid}-#{@student.group.chapter.mlid}-#{@student.group.mlid}-" %></span><%= @student.mlid %></dd>
+                </div>
+                <div class="bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt class="text-sm font-medium text-gray-500"><%= t(:first_name) %></dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= @student.first_name %></dd>
+                </div>
+                <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt class="text-sm font-medium text-gray-500"><%= t(:last_name) %></dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= @student.last_name %></dd>
+                </div>
+                <div class="bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt class="text-sm font-medium text-gray-500"><%= t(:date_of_birth) %></dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= @student.estimated_dob ? t(:circa) : '' %> <%= @student.dob %></dd>
+                </div>
+                <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt class="text-sm font-medium text-gray-500"><%= t(:gender) %></dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= @student.gender_i18n %></dd>
+                </div>
+                <div class="bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt class="text-sm font-medium text-gray-500"><%= t(:group) %></dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= @student.group.group_name %></dd>
+                </div>
+                <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt class="text-sm font-medium text-gray-500"><%= t(:country_of_nationality) %></dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= I18nData.countries(locale)[@student.country_of_nationality] %></dd>
+                </div>
+                <div class="bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt class="text-sm font-medium text-gray-500"><%= t(:quartier) %></dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= @student.quartier %></dd>
+                </div>
+                <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt class="text-sm font-medium text-gray-500"><%= t(:guardian_name) %></dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= @student.guardian_name %></dd>
+                </div>
+                <div class="bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt class="text-sm font-medium text-gray-500"><%= t(:guardian_occupation) %></dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= @student.guardian_occupation %></dd>
+                </div>
+                <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt class="text-sm font-medium text-gray-500"><%= t(:guardian_contact) %></dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= @student.guardian_contact %></dd>
+                </div>
+                <div class="bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt class="text-sm font-medium text-gray-500"><%= t(:family_members) %></dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= @student.family_members %></dd>
+                </div>
+                <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt class="text-sm font-medium text-gray-500"><%= t(:name_of_school) %></dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= @student.name_of_school %></dd>
+                </div>
+                <div class="bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt class="text-sm font-medium text-gray-500"><%= t(:school_level_completed) %></dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= @student.school_level_completed %></dd>
+                </div>
+                <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt class="text-sm font-medium text-gray-500"><%= t(:year_of_dropout) %></dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= @student.year_of_dropout %></dd>
+                </div>
+                <div class="bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt class="text-sm font-medium text-gray-500"><%= t(:reason_for_leaving_school) %></dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= @student.reason_for_leaving %></dd>
+                </div>
+                <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt class="text-sm font-medium text-gray-500"><%= t(:health_insurance) %></dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= @student.health_insurance %></dd>
+                </div>
+                <div class="bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt class="text-sm font-medium text-gray-500"><%= t(:health_issues) %></dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= @student.health_issues %></dd>
+                </div>
+                <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt class="text-sm font-medium text-gray-500"><%= t(:hiv_tested) %></dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= @student.hiv_tested %></dd>
+                </div>
+                <div class="bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt class="text-sm font-medium text-gray-500"><%= t(:tags) %></dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><% @student.tags.each do |tag|%><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-80"><%= tag.tag_name %></span><% end %></dd>
+                </div>
+                <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                  <dt class="text-sm font-medium text-gray-500"><%= t(:notes) %></dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= @student.notes %></dd>
+                </div>
+              </dl>
+            </div>
+        <% end %>
+      <% end %>
+    </section>
+  <section class="overflow-hidden my-6">
+    <% @student_lessons_details_by_subject.each do |subject_id, lessons_details|
+      subject = @subjects.find(subject_id)
+    %>
+      <%= render CommonComponents::Card.new(title: t(:student_grades)) do |card| %>
+        <% card.with_card_content do %>
+    <div class="bg-white px-6 border-b border-gray-200 flex items-center justify-center">
+      <span class="border-b-2 border-transparent inline-flex font-medium text-gray-600 py-4 text-sm"><%= subject.subject_name %></span>
+    </div>
+      <%= render TableComponents::Table.new(rows: lessons_details, row_component: TableComponents::StudentPerformanceRow, column_arguments: { skills: subject.skills }, row_arguments: { skill_ids: subject.skills.map { |s| s.id.to_s } }, order_scope_name: :student_lesson_order) %>
+          <% end %>
+        <% end %>
+    <% end %>
+  </section>
+</div>

@@ -1,7 +1,0 @@
-- content_for :title, "#{t(:edit_chapter).capitalize} - #{@chapter.chapter_name}"
-
-- content_for :header_content do
-  = render partial: '/shared/header_content', locals: {back_button_url: chapter_path(@chapter), back_tooltip: "Back to #{@chapter.chapter_name}", title: "Edit #{@chapter.chapter_name}"}
-
-.content-card.mdl-cell--8-col.card-padding.center
-  = render ChapterFormComponent.new(chapter: @chapter, action: 'update', current_user: current_user)

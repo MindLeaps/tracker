@@ -9,7 +9,7 @@
 #  shared            :boolean
 #  student_count     :bigint
 #  tag_name          :string
-#  organization_id   :integer
+#  organization_id   :bigint
 #
 class StudentTagTableRow < ApplicationRecord
   belongs_to :organization

@@ -1,0 +1,6 @@
+<%= turbo_stream.update 'new_chapter' do %>
+  <%= render DropContainerComponent.new do %>
+    <%= render ChapterFormComponent.new(chapter: @chapter, action: :create, current_user: current_user, cancel: true) %>
+  <% end %>
+  <%= turbo_stream.update "flashes", partial: 'shared/flashes' %>
+<% end %>

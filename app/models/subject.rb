@@ -20,6 +20,7 @@
 #  subjects_organization_id_fk  (organization_id => organizations.id)
 #
 class Subject < ApplicationRecord
+  singleton_class.send(:alias_method, :table_order_subjects, :table_order)
   belongs_to :organization
   has_many :lessons, dependent: :restrict_with_error
   has_many :assignments, -> { exclude_deleted }, inverse_of: :subject, dependent: :destroy

@@ -1,0 +1,45 @@
+<%- content_for :title, @organization.organization_name %>
+
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  {title: CommonComponents::TagLabel.new(label: @organization.organization_name, img_src: 'world.svg'), href: '' },
+], buttons: [
+  (CommonComponents::ButtonComponent.new(label: t(:edit_organization), href: edit_organization_path(@organization)) if policy(@organization).edit?),
+].compact)  do |h|
+  h.with_left do
+  end
+end %>
+
+<div class="overflow-auto">
+  <div class="flex">
+    <section class="flex-1 pr-2">
+      <%= render CommonComponents::Card.new(title: t(:chapters).capitalize) do |card| %>
+        <% card.with_card_content do %>
+            <%= render TableComponents::Table.new(pagy: @pagy_chapters, rows: @chapters, row_component: TableComponents::OrganizationChapterRow, order_scope_name: :table_order_chapters) %>
+        <% end %>
+      <% end %>
+    </section>
+    <section class="flex-1 pr-2">
+      <%= render CommonComponents::Card.new(title: t(:members).capitalize) do |card| %>
+        <% card.with_card_content do %>
+          <%= render TableComponents::Table.new(pagy: @pagy_users, rows: @members, row_component: TableComponents::OrganizationMemberRow, order_scope_name: :table_order_members) %>
+          <%= form_with model: @new_member, url: add_member_organization_path, class: 'space-y-0.5' do |f| %>
+            <div class="bg-white flex p-4 justify-between items-end">
+              <div class="flex-1 mr-4">
+                <%= f.label :email, class: 'block text-sm font-medium text-gray-700' %>
+                <%= f.text_field :email, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+              </div>
+              <div class="flex-1 mr-4">
+                <%= f.label :role, class: 'block text-sm font-medium text-gray-700' %>
+                <%= f.select :role, @roles.map { |r| [t(r.name), r.name] }, {}, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+              </div>
+              <div>
+
+                <%= f.submit class: 'px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 cursor-pointer' %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+    </section>
+  </div>
+</div>

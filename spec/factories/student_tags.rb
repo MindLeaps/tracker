@@ -6,7 +6,7 @@
 #
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  student_id :integer          not null
+#  student_id :bigint           not null
 #  tag_id     :uuid             not null
 #
 # Indexes

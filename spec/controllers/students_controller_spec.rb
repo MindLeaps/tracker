@@ -24,7 +24,6 @@ RSpec.describe StudentsController, type: :controller do
           quartier: 'He lives somewhere...',
           estimated_dob: true
         } }
-        expect(response).to redirect_to details_student_path(assigns[:student])
 
         student = Student.last
         expect(student.first_name).to eql 'Trevor'
@@ -130,6 +129,29 @@ RSpec.describe StudentsController, type: :controller do
         expect(student.last_name).to eql 'Noted'
         expect(student.notes).to eql 'Prime is showing great promise despite the initial learning difficulties.'
       end
+
+      context 'redirects' do
+        it 'redirects to student page if there is no redirect flash' do
+          allow_any_instance_of(StudentsController).to receive(:flash).and_return(redirect: nil)
+          post :create, params: {
+            student: build(:student).as_json
+          }
+          expect(response).to redirect_to(student_path(Student.last))
+        end
+
+        it 'redirects to redirect flash if exists' do
+          allow_any_instance_of(StudentsController).to receive(:flash).and_return(redirect: students_path)
+          post :create, params: {
+            student: build(:student).as_json
+          }
+          expect(response).to redirect_to(students_path)
+          allow_any_instance_of(StudentsController).to receive(:flash).and_return(redirect: group_path(group_a))
+          post :create, params: {
+            student: build(:student).as_json
+          }
+          expect(response).to redirect_to(group_path(group_a))
+        end
+      end
     end
 
     describe '#index' do
@@ -162,10 +184,24 @@ RSpec.describe StudentsController, type: :controller do
         get :new, params: { group_id: @group.id }
       end
 
+      it { should respond_with :ok }
+      it { should render_template :new }
+      it { should set_flash[:redirect] }
+
       it 'prepopulates the student with the correct group' do
         expect(assigns(:student).group.id).to eq @group.id
         expect(assigns(:student).group.group_name).to eq @group.group_name
       end
+    end
+
+    describe '#edit' do
+      let(:student) { create :student }
+      before :each do
+        get :edit, params: { id: student.id }
+      end
+
+      it { should respond_with :ok }
+      it { should render_template :edit }
     end
 
     describe '#performance' do
@@ -174,13 +210,13 @@ RSpec.describe StudentsController, type: :controller do
           'Memorization' => [1, 2, 3],
           'Grit' => [3, 5, 6]
         }
-        get :performance, params: { id: @student.id }
+        get :show, params: { id: @student.id }
       end
 
       it { should respond_with 200 }
 
       it 'assigns the correct marks in skills by lesson' do
-        lessons = assigns[:student_lessons_details_by_subject].values.first
+        lessons = assigns[:student_lessons_details_by_subject].values.first.sort_by(&:date)
         expect(lessons[0].skill_marks.values.map { |l| l.slice('skill_name', 'mark') }).to eq [
           { 'skill_name' => 'Memorization', 'mark' => 1 }, { 'skill_name' => 'Grit', 'mark' => 3 }
         ]
@@ -193,55 +229,48 @@ RSpec.describe StudentsController, type: :controller do
       end
 
       it 'calculates the correct average mark for each lesson' do
-        lessons = assigns[:student_lessons_details_by_subject].values.first
-        expect(lessons.map(&:average_mark)).to eq [2.0, 3.5, 4.5]
+        lessons = assigns[:student_lessons_details_by_subject].values.first.sort_by(&:date)
+        expect(lessons.map { |l| l.average_mark.to_s }).to eq %w[2.0 3.5 4.5]
       end
 
       it 'assigns the subjects with the skills' do
         expect(assigns[:subjects].first.skills.map(&:skill_name)).to include 'Memorization', 'Grit'
         expect(assigns[:subjects].first.skills.length).to eq 2
       end
-
-      context 'student has no grades' do
-        before :each do
-          @student = create :student
-
-          get :performance, params: { id: @student.id }
-        end
-
-        it { should redirect_to action: :details }
-      end
-    end
-
-    describe '#details' do
-      before :each do
-        @student = create :student, first_name: 'Studento', last_name: 'Detailso', mlid: 'Det-123'
-        get :details, params: { id: @student.id }
-      end
-
-      it { should respond_with 200 }
     end
 
     describe '#update' do
-      before :each do
-        @student = create :student
-        @image = create :student_image, student: @student
+      let(:student) { create :student }
+      let(:image) { create :student_image, student: student }
+
+      context 'redirects after successful update' do
+        it 'redirects to student path if there is no redirect flash' do
+          allow_any_instance_of(StudentsController).to receive(:flash).and_return(redirect: nil)
+          post :update, params: { id: student.id, student: { first_name: 'updated' } }
+          expect(response).to redirect_to(student_path(student))
+        end
+
+        it 'redirects to the path in flash[:redirect]' do
+          allow_any_instance_of(StudentsController).to receive(:flash).and_return(redirect: students_path)
+          post :update, params: { id: student.id, student: { first_name: 'updated' } }
+          expect(response).to redirect_to(students_path)
+        end
       end
 
       it 'updates the student\'s profile image' do
-        post :update, params: { id: @student.id, student: { profile_image_id: @image.id } }
+        post :update, params: { id: student.id, student: { profile_image_id: image.id } }
 
-        expect(@student.reload.profile_image).to eq @image
+        expect(student.reload.profile_image).to eq image
       end
 
       it 'updates the student\'s tags' do
         tag1 = create :tag
         tag2 = create :tag
 
-        post :update, params: { id: @student.id, student: { tag_ids: [tag1.id, tag2.id, @student.tags[0].id] } }
+        post :update, params: { id: student.id, student: { tag_ids: [tag1.id, tag2.id, student.tags[0].id] } }
 
-        expect(@student.reload.tags.map(&:tag_name)).to include(tag1.tag_name, tag2.tag_name, @student.tags[0].tag_name)
-        expect(@student.reload.tags.length).to eq 3
+        expect(student.reload.tags.map(&:tag_name)).to include(tag1.tag_name, tag2.tag_name, student.tags[0].tag_name)
+        expect(student.reload.tags.length).to eq 3
       end
     end
 
@@ -252,8 +281,8 @@ RSpec.describe StudentsController, type: :controller do
         post :destroy, params: { id: @student.id }
       end
 
-      it { should redirect_to students_path }
-      it { should set_flash[:undo_notice] }
+      it { should redirect_to student_path(@student) }
+      it { should set_flash[:success_notice] }
 
       it 'Marks the student as deleted' do
         expect(@student.reload.deleted_at).not_to be_nil
@@ -263,14 +292,10 @@ RSpec.describe StudentsController, type: :controller do
     describe '#undelete' do
       before :each do
         @student = create :student, deleted_at: Time.zone.now
-        request.env['HTTP_REFERER'] = 'http://example.com/students?param=1'
-
         post :undelete, params: { id: @student.id }
       end
 
-      it { should redirect_to 'http://example.com/students?param=1' }
-
-      it { should set_flash[:notice].to "Student \"#{@student.proper_name}\" restored." }
+      it { should set_flash[:success_notice] }
 
       it 'Marks the student as not deleted' do
         expect(@student.reload.deleted_at).to be_nil

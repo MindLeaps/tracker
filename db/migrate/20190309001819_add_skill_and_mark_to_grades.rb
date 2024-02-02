@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class AddSkillAndMarkToGrades < ActiveRecord::Migration[5.2]
-  # rubocop:disable Metrics/MethodLength
   def up
     add_reference :grades, :skill, foreign_key: true
     add_column :grades, :mark, :integer
@@ -27,5 +26,4 @@ class AddSkillAndMarkToGrades < ActiveRecord::Migration[5.2]
     remove_column :grades, :mark
     add_index :grade_descriptors, %i[mark skill_id], unique: true
   end
-  # rubocop:enable Metrics/MethodLength
 end

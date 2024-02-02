@@ -2,33 +2,38 @@
 
 class ChaptersController < HtmlController
   include Pagy::Backend
-  has_scope :table_order, type: :hash
+  has_scope :table_order, type: :hash, default: { key: :created_at, order: :desc }
   has_scope :search, only: [:index]
 
   def index
     authorize Chapter
-    @pagy, @chapters = pagy apply_scopes(policy_scope(ChapterSummary, policy_scope_class: ChapterPolicy::Scope))
+    @pagy, @chapters = pagy apply_scopes(policy_scope(ChapterSummary.includes(:organization), policy_scope_class: ChapterPolicy::Scope))
   end
 
   def new
     authorize Chapter
     @chapter = Chapter.new
+    respond_to do |format|
+      format.turbo_stream
+      format.html { render :new }
+    end
   end
 
   def create
     @chapter = Chapter.new chapter_params
     authorize @chapter
     @chapter.mlid = @chapter.mlid&.upcase
-    return notice_and_redirect t(:chapter_created, chapter: @chapter.chapter_name), chapters_url if @chapter.save
-
-    @chapters = Chapter.includes(:organization, groups: [:students]).all
-    render :new
+    if @chapter.save
+      success(title: t(:chapter_added), text: t(:chapter_added_text, chapter: @chapter.chapter_name))
+      return redirect_to chapters_url
+    end
+    handle_turbo_failure_responses({ title: t(:chapter_invalid), text: t(:fix_form_errors) })
   end
 
   def show
     @chapter = Chapter.find params.require :id
     authorize @chapter
-    @pagy, @groups = pagy apply_scopes(GroupSummary.where(chapter_id: @chapter.id))
+    @pagy, @groups = pagy apply_scopes(GroupSummary.includes(:chapter).where(chapter_id: @chapter.id))
   end
 
   def edit
@@ -39,8 +44,11 @@ class ChaptersController < HtmlController
   def update
     @chapter = Chapter.includes(:organization).find params.require :id
     authorize @chapter
-    return notice_and_redirect t(:chapter_updated, chapter: @chapter.chapter_name), chapter_url if @chapter.update chapter_params
-
+    if @chapter.update chapter_params
+      success title: t(:chapter_updated), text: t(:chapter_name_updated, name: @chapter.chapter_name)
+      return redirect_to(flash[:redirect] || chapter_url)
+    end
+    failure title: t(:chapter_invalid), text: t(:fix_form_errors)
     render :edit, status: :unprocessable_entity
   end
 

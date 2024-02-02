@@ -1,0 +1,10 @@
+<div class="<%= 'shaded-row' if shaded? %> table-row-wrapper">
+  <a class="<%= 'shaded-row' if shaded? %> table-row-wrapper">
+    <div class="table-cell "><%= @item_counter %></div>
+    <div class="table-cell "><%= @item.date %></div>
+    <div class="table-cell "><%= @item.average_mark %></div>
+    <% @skill_ids.each do |skill_id| %>
+      <div class="table-cell "><%= @item.skill_marks[skill_id].try :[], 'mark' %></div>
+    <% end %>
+  </a>
+</div>

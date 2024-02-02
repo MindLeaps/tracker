@@ -14,6 +14,7 @@
 #  organization_mlid :string(3)
 #  organization_name :string
 #  student_count     :bigint
+#  created_at        :datetime
 #  chapter_id        :integer
 #  organization_id   :integer
 #
@@ -27,5 +28,9 @@ class GroupSummary < ApplicationRecord
 
   def readonly?
     true
+  end
+
+  def self.policy_class
+    GroupPolicy
   end
 end

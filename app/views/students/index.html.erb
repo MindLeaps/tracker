@@ -1,0 +1,22 @@
+<%- content_for :title, t(:students).capitalize %>
+
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  {title: CommonComponents::TagLabel.new(label: t(:students).capitalize, img_src: 'student.svg'), href: '' },
+  {title: CommonComponents::TagLabel.new(label: t(:student_tags), img_src: 'tag.svg'), href: student_tags_url }
+], buttons: [
+  (CommonComponents::ButtonComponent.new(label: t(:add_student), href: new_student_path) if policy(Student).new?)
+].compact) %>
+
+<%= render TableComponents::Table.new(pagy: @pagy, rows: @student_rows, row_component: TableComponents::StudentRow) do |t|
+  t.with_left do %>
+      <div class="flex items-center justify-between">
+        <div class="flex-1">
+          <%= render SearchFormComponent.new(search: { term: params[:search] }, query_parameters: request.query_parameters) %>
+        </div>
+        <div class="flex-1 px-4">
+          <%= render CommonComponents::CheckboxLink.new(label: t(:show_deleted), checked: !excluding_deleted?, href: show_deleted_url) %>
+        </div>
+      </div>
+    <% end
+  end
+%>

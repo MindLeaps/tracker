@@ -13,7 +13,8 @@ class StudentTagsController < HtmlController
   def show
     @tag = Tag.find params.require(:id)
     authorize @tag
-    @student_table_component = StudentComponents::StudentTable.new { |students| pagy apply_scopes(policy_scope(students.joins("INNER JOIN student_tags ON student_id = student_table_rows.id AND tag_id = '#{@tag.id}'"))) }
+    @pagy, @students = pagy apply_scopes(policy_scope(StudentTableRow.includes(:tags,
+                                                                               { group: { chapter: :organization } }).joins("INNER JOIN student_tags ON student_id = student_table_rows.id AND tag_id = '#{@tag.id}'")))
   end
 
   def edit
@@ -32,14 +33,20 @@ class StudentTagsController < HtmlController
   def new
     authorize Tag
     @tag = Tag.new
+    respond_to do |format|
+      format.turbo_stream
+      format.html { render :new }
+    end
   end
 
   def create
-    tag = Tag.new tag_params
-    authorize tag
-    return link_notice_and_redirect t(:tag_created, name: tag.tag_name), new_student_tag_path, I18n.t(:create_another), student_tag_path(tag) if tag.save
-
-    render :new
+    @tag = Tag.new tag_params
+    authorize @tag
+    if @tag.save
+      success title: t(:tag_added), text: t(:tag_with_name_added, name: @tag.tag_name)
+      return redirect_to student_tags_path
+    end
+    handle_turbo_failure_responses({ title: t(:invalid_tag), text: t(:fix_form_errors) })
   end
 
   private

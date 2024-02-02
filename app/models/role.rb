@@ -44,7 +44,15 @@ class Role < ApplicationRecord
   end
 
   def label
-    GLOBAL_ROLES[symbol] || LOCAL_ROLES[symbol]
+    I18n.t(symbol)
+  end
+
+  def global?
+    GLOBAL_ROLES.key?(symbol)
+  end
+
+  def local?
+    !global?
   end
 
   GLOBAL_ROLES = {

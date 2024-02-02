@@ -1,0 +1,22 @@
+<%- content_for :title, "#{t(:performance)} - #{@student.proper_name}" %>
+
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, title: @student.proper_name, tabs: [
+  {title: t(:performance).capitalize, href: '' },
+  {title: t(:details).capitalize, href: details_student_path(@student) },
+  {title: t(:images), href: student_student_images_path(@student) }
+], buttons: [
+  (CommonComponents::ButtonComponent.new(label: t(:edit_student), href: edit_student_path(@student)) if policy(@student).edit?),
+  (CommonComponents::FormButtonComponent.new(label: t(:restore_student), path: undelete_student_path(@student), method: :post) if policy(@student).destroy? && @student.deleted_at),
+  (CommonComponents::FormButtonComponent.new(label: t(:delete_student), path: undelete_student_path(@student), method: :delete) if policy(@student).destroy? && !@student.deleted_at)
+].compact) do |h|
+  h.with_left {}
+end %>
+
+<% @student_lessons_details_by_subject.each do |subject_id, lessons_details|
+  subject = @subjects.find(subject_id)
+%>
+  <div class="px-6 border-b border-gray-200 flex items-center justify-center">
+    <span class="border-b-2 border-transparent inline-flex font-medium text-gray-600 py-4 text-sm"><%= subject.subject_name %></span>
+  </div>
+  <%= render TableComponents::Table.new(rows: lessons_details, row_component: TableComponents::StudentPerformanceRow, column_arguments: { skills: subject.skills }, row_arguments: { skill_ids: subject.skills.map { |s| s.id.to_s } }) %>
+<% end %>

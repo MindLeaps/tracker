@@ -29,9 +29,14 @@ class User < ApplicationRecord
   has_many :authentication_tokens, dependent: :destroy
   rolify before_add: :before_add_role, strict: true
   validates :email, presence: true
+  validate :email_has_at_character
   validates :email, uniqueness: true, allow_blank: true
 
   devise :trackable, :token_authenticatable, :omniauthable, omniauth_providers: [:google_oauth2]
+
+  def email_has_at_character
+    errors.add(:email, :invalid_email) if email.present? && email.exclude?('@')
+  end
 
   def role_level_in(organization)
     [global_role_level, local_role_level_in(organization)].max

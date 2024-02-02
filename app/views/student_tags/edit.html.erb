@@ -1,0 +1,8 @@
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  {title: CommonComponents::TagLabel.new(label: t(:students).capitalize, img_src: 'student.svg'), href: students_path },
+  {title: CommonComponents::TagLabel.new(label: t(:student_tags), img_src: 'tag.svg'), href: student_tags_path },
+  {title: CommonComponents::TagLabel.new(label: @tag.tag_name, img_src: 'tag.svg'), href: '' }
+], buttons: [
+].compact) %>
+
+<%= render StudentTagFormComponent.new tag: @tag, action: :update, current_user: current_user %>

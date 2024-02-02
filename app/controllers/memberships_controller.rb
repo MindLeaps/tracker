@@ -3,7 +3,7 @@
 class MembershipsController < HtmlController
   def update
     @user = User.find params.require :user_id
-    role = params.require(:role).to_sym
+    role = params.require(:membership).require(:role).to_sym
     org = Organization.find params.require :id
     authorize Membership.new(user: @user, role: role, org: org)
 
@@ -25,7 +25,10 @@ class MembershipsController < HtmlController
     role = params.require(:role).to_sym
     authorize Membership.new(user: @user, role: role)
 
-    return redirect_to @user if RoleService.update_global_role @user, role
+    if RoleService.update_global_role @user, role
+      success title: t(:role_updated), text: t(:global_role_updated_text, email: @user.email, role: params.require(:role))
+      return redirect_to @user
+    end
 
     render 'users/show', status: :bad_request
   end
@@ -33,7 +36,11 @@ class MembershipsController < HtmlController
   def revoke_global_role
     @user = User.find params.require :user_id
     authorize Membership.new(user: @user)
-    RoleService.revoke_global_role @user
-    redirect_to @user
+    if RoleService.revoke_global_role @user
+      success title: t(:role_updated), text: t(:global_role_revoked, email: @user.email)
+      redirect_to @user
+    else
+      render 'users/show', status: :bad_request
+    end
   end
 end

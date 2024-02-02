@@ -17,10 +17,24 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 
 
 --
+-- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
+
+
+--
 -- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner: -
 --
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
 
 
 --
@@ -58,7 +72,7 @@ $$;
 -- Name: update_records_with_unique_mlids(text, integer); Type: PROCEDURE; Schema: public; Owner: -
 --
 
-CREATE PROCEDURE public.update_records_with_unique_mlids(table_name text, mlid_length integer)
+CREATE PROCEDURE public.update_records_with_unique_mlids(IN table_name text, IN mlid_length integer)
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -89,7 +103,7 @@ $$;
 -- Name: update_records_with_unique_mlids(text, integer, text); Type: PROCEDURE; Schema: public; Owner: -
 --
 
-CREATE PROCEDURE public.update_records_with_unique_mlids(table_name text, mlid_length integer, unique_scope text DEFAULT NULL::text)
+CREATE PROCEDURE public.update_records_with_unique_mlids(IN table_name text, IN mlid_length integer, IN unique_scope text DEFAULT NULL::text)
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -253,7 +267,7 @@ SELECT
     NULL::integer AS organization_id,
     NULL::character varying AS organization_name,
     NULL::timestamp without time zone AS deleted_at,
-    NULL::bigint AS group_count,
+    NULL::integer AS group_count,
     NULL::integer AS student_count,
     NULL::timestamp without time zone AS created_at,
     NULL::timestamp without time zone AS updated_at;
@@ -300,7 +314,7 @@ ALTER SEQUENCE public.chapters_id_seq OWNED BY public.chapters.id;
 --
 
 CREATE TABLE public.enrollments (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
     student_id bigint NOT NULL,
     group_id bigint NOT NULL,
     active_since timestamp without time zone NOT NULL,
@@ -409,6 +423,7 @@ SELECT
     NULL::integer AS id,
     NULL::character varying AS group_name,
     NULL::timestamp without time zone AS deleted_at,
+    NULL::timestamp without time zone AS created_at,
     NULL::integer AS chapter_id,
     NULL::character varying AS chapter_name,
     NULL::integer AS organization_id,
@@ -466,7 +481,8 @@ SELECT
     NULL::integer AS skill_id,
     NULL::character varying AS skill_name,
     NULL::numeric AS average_mark,
-    NULL::bigint AS grade_count;
+    NULL::bigint AS grade_count,
+    NULL::integer AS subject_id;
 
 
 --
@@ -528,6 +544,104 @@ ALTER SEQUENCE public.lessons_id_seq OWNED BY public.lessons.id;
 
 
 --
+-- Name: roles; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.roles (
+    id integer NOT NULL,
+    name character varying,
+    resource_type character varying,
+    resource_id integer,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.users (
+    id integer NOT NULL,
+    uid character varying,
+    name character varying,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    email character varying DEFAULT ''::character varying NOT NULL,
+    sign_in_count integer DEFAULT 0 NOT NULL,
+    current_sign_in_at timestamp without time zone,
+    last_sign_in_at timestamp without time zone,
+    current_sign_in_ip character varying,
+    last_sign_in_ip character varying,
+    provider character varying,
+    image character varying
+);
+
+
+--
+-- Name: users_roles; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.users_roles (
+    user_id integer,
+    role_id integer
+);
+
+
+--
+-- Name: organization_members; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.organization_members AS
+ WITH local AS (
+         SELECT u.id,
+            u.uid,
+            u.name,
+            u.created_at,
+            u.updated_at,
+            u.email,
+            u.sign_in_count,
+            u.current_sign_in_at,
+            u.last_sign_in_at,
+            u.current_sign_in_ip,
+            u.last_sign_in_ip,
+            u.provider,
+            u.image,
+            r.name AS local_role,
+            r.resource_id AS organization_id
+           FROM ((public.users u
+             JOIN public.users_roles ur ON ((u.id = ur.user_id)))
+             JOIN public.roles r ON ((r.id = ur.role_id)))
+          WHERE ((r.resource_type)::text = 'Organization'::text)
+        ), global AS (
+         SELECT u.id,
+            r.name AS global_role
+           FROM ((public.users u
+             JOIN public.users_roles ur ON ((u.id = ur.user_id)))
+             JOIN public.roles r ON ((r.id = ur.role_id)))
+          WHERE (r.resource_type IS NULL)
+        )
+ SELECT local.id,
+    local.uid,
+    local.name,
+    local.created_at,
+    local.updated_at,
+    local.email,
+    local.sign_in_count,
+    local.current_sign_in_at,
+    local.last_sign_in_at,
+    local.current_sign_in_ip,
+    local.last_sign_in_ip,
+    local.provider,
+    local.image,
+    local.local_role,
+    local.organization_id,
+    global.global_role
+   FROM (local
+     LEFT JOIN global ON ((local.id = global.id)));
+
+
+--
 -- Name: organization_summaries; Type: VIEW; Schema: public; Owner: -
 --
 
@@ -535,7 +649,10 @@ CREATE VIEW public.organization_summaries AS
 SELECT
     NULL::integer AS id,
     NULL::character varying AS organization_name,
-    NULL::bigint AS chapter_count,
+    NULL::character varying(3) AS organization_mlid,
+    NULL::integer AS chapter_count,
+    NULL::integer AS group_count,
+    NULL::integer AS student_count,
     NULL::timestamp without time zone AS updated_at,
     NULL::timestamp without time zone AS created_at;
 
@@ -591,20 +708,6 @@ SELECT
     NULL::character varying AS skill_name,
     NULL::integer AS subject_id,
     NULL::double precision AS mark;
-
-
---
--- Name: roles; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.roles (
-    id integer NOT NULL,
-    name character varying,
-    resource_type character varying,
-    resource_id integer,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
-);
 
 
 --
@@ -737,9 +840,11 @@ SELECT
     NULL::character varying AS last_name,
     NULL::timestamp without time zone AS deleted_at,
     NULL::integer AS lesson_id,
+    NULL::integer AS subject_id,
     NULL::numeric AS average_mark,
     NULL::bigint AS grade_count,
-    NULL::boolean AS absent;
+    NULL::boolean AS absent,
+    NULL::bigint AS skill_count;
 
 
 --
@@ -839,7 +944,7 @@ SELECT
     NULL::uuid AS id,
     NULL::character varying AS tag_name,
     NULL::boolean AS shared,
-    NULL::integer AS organization_id,
+    NULL::bigint AS organization_id,
     NULL::character varying AS organization_name,
     NULL::bigint AS student_count;
 
@@ -849,7 +954,7 @@ SELECT
 --
 
 CREATE TABLE public.student_tags (
-    student_id integer NOT NULL,
+    student_id bigint NOT NULL,
     tag_id uuid NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
@@ -874,6 +979,21 @@ CREATE SEQUENCE public.students_id_seq
 --
 
 ALTER SEQUENCE public.students_id_seq OWNED BY public.students.id;
+
+
+--
+-- Name: subject_summaries; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.subject_summaries AS
+SELECT
+    NULL::integer AS id,
+    NULL::character varying AS subject_name,
+    NULL::integer AS organization_id,
+    NULL::bigint AS skill_count,
+    NULL::timestamp without time zone AS created_at,
+    NULL::timestamp without time zone AS updated_at,
+    NULL::timestamp without time zone AS deleted_at;
 
 
 --
@@ -915,33 +1035,12 @@ ALTER SEQUENCE public.subjects_id_seq OWNED BY public.subjects.id;
 --
 
 CREATE TABLE public.tags (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
     tag_name character varying NOT NULL,
-    organization_id integer NOT NULL,
+    organization_id bigint NOT NULL,
     shared boolean NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
--- Name: users; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.users (
-    id integer NOT NULL,
-    uid character varying,
-    name character varying,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    email character varying DEFAULT ''::character varying NOT NULL,
-    sign_in_count integer DEFAULT 0 NOT NULL,
-    current_sign_in_at timestamp without time zone,
-    last_sign_in_at timestamp without time zone,
-    current_sign_in_ip character varying,
-    last_sign_in_ip character varying,
-    provider character varying,
-    image character varying
 );
 
 
@@ -963,16 +1062,6 @@ CREATE SEQUENCE public.users_id_seq
 --
 
 ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
-
-
---
--- Name: users_roles; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.users_roles (
-    user_id integer,
-    role_id integer
-);
 
 
 --
@@ -1503,25 +1592,6 @@ CREATE INDEX index_users_roles_on_user_id_and_role_id ON public.users_roles USIN
 
 
 --
--- Name: organization_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.organization_summaries AS
- SELECT o.id,
-    o.organization_name,
-    sum(
-        CASE
-            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN 1
-            ELSE 0
-        END) AS chapter_count,
-    o.updated_at,
-    o.created_at
-   FROM (public.organizations o
-     LEFT JOIN public.chapters c ON ((c.organization_id = o.id)))
-  GROUP BY o.id;
-
-
---
 -- Name: student_lesson_details _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
@@ -1573,77 +1643,6 @@ CREATE OR REPLACE VIEW public.group_lesson_summaries AS
   WHERE (g.deleted_at IS NULL)
   GROUP BY l.id, gr.id, c.id, s.id
   ORDER BY l.date;
-
-
---
--- Name: student_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.student_lesson_summaries AS
- SELECT united.student_id,
-    united.group_id,
-    united.first_name,
-    united.last_name,
-    united.deleted_at,
-    united.lesson_id,
-    united.average_mark,
-    united.grade_count,
-    united.absent
-   FROM ( SELECT s.id AS student_id,
-            s.group_id,
-            s.first_name,
-            s.last_name,
-            s.deleted_at,
-            l.id AS lesson_id,
-            round(avg(grades.mark), 2) AS average_mark,
-            count(grades.mark) AS grade_count,
-                CASE
-                    WHEN (a.id IS NULL) THEN false
-                    ELSE true
-                END AS absent
-           FROM ((((public.students s
-             JOIN public.groups g ON ((g.id = s.group_id)))
-             JOIN public.lessons l ON ((g.id = l.group_id)))
-             LEFT JOIN public.grades ON (((grades.student_id = s.id) AND (grades.lesson_id = l.id) AND (grades.deleted_at IS NULL))))
-             LEFT JOIN public.absences a ON (((a.student_id = s.id) AND (a.lesson_id = l.id))))
-          GROUP BY s.id, l.id, a.id
-        UNION
-         SELECT s.id AS student_id,
-            s.group_id,
-            s.first_name,
-            s.last_name,
-            s.deleted_at,
-            l.id AS lesson_id,
-            round(avg(grades.mark), 2) AS average_mark,
-            count(grades.mark) AS grade_count,
-                CASE
-                    WHEN (a.id IS NULL) THEN false
-                    ELSE true
-                END AS absent
-           FROM ((((public.lessons l
-             JOIN public.groups g ON ((g.id = l.group_id)))
-             JOIN public.grades ON (((grades.lesson_id = l.id) AND (grades.deleted_at IS NULL))))
-             JOIN public.students s ON ((grades.student_id = s.id)))
-             LEFT JOIN public.absences a ON (((a.student_id = s.id) AND (a.lesson_id = l.id))))
-          GROUP BY s.id, l.id, a.id) united;
-
-
---
--- Name: lesson_skill_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.lesson_skill_summaries AS
- SELECT l.uid AS lesson_uid,
-    sk.id AS skill_id,
-    sk.skill_name,
-    round(avg(g.mark), 2) AS average_mark,
-    count(g.mark) AS grade_count
-   FROM ((((public.lessons l
-     JOIN public.subjects su ON ((su.id = l.subject_id)))
-     JOIN public.assignments a ON ((su.id = a.subject_id)))
-     JOIN public.skills sk ON ((a.skill_id = sk.id)))
-     LEFT JOIN public.grades g ON (((g.lesson_uid = l.uid) AND (g.skill_id = sk.id) AND (g.deleted_at IS NULL))))
-  GROUP BY l.uid, sk.id;
 
 
 --
@@ -1700,72 +1699,6 @@ CREATE OR REPLACE VIEW public.student_tag_table_rows AS
 
 
 --
--- Name: chapter_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.chapter_summaries AS
- WITH group_student_count AS (
-         SELECT g.id AS group_id,
-            g.group_name,
-            g.deleted_at,
-            g.chapter_id,
-            sum(
-                CASE
-                    WHEN ((s.id IS NOT NULL) AND (s.deleted_at IS NULL)) THEN 1
-                    ELSE 0
-                END) AS student_count
-           FROM (public.groups g
-             LEFT JOIN public.students s ON ((g.id = s.group_id)))
-          WHERE (g.deleted_at IS NULL)
-          GROUP BY g.id
-        )
- SELECT c.id,
-    c.chapter_name,
-    c.mlid AS chapter_mlid,
-    o.mlid AS organization_mlid,
-    concat(o.mlid, '-', c.mlid) AS full_mlid,
-    c.organization_id,
-    o.organization_name,
-    c.deleted_at,
-    count(group_student_count.group_id) AS group_count,
-    (COALESCE(sum(group_student_count.student_count), (0)::numeric))::integer AS student_count,
-    c.created_at,
-    c.updated_at
-   FROM ((public.chapters c
-     LEFT JOIN group_student_count ON ((group_student_count.chapter_id = c.id)))
-     LEFT JOIN public.organizations o ON ((c.organization_id = o.id)))
-  GROUP BY c.id, o.id;
-
-
---
--- Name: group_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.group_summaries AS
- SELECT g.id,
-    g.group_name,
-    g.deleted_at,
-    g.chapter_id,
-    c.chapter_name,
-    o.id AS organization_id,
-    o.mlid AS organization_mlid,
-    c.mlid AS chapter_mlid,
-    g.mlid,
-    concat(o.mlid, '-', c.mlid, '-', g.mlid) AS full_mlid,
-    o.organization_name,
-    sum(
-        CASE
-            WHEN ((s.id IS NOT NULL) AND (s.deleted_at IS NULL)) THEN 1
-            ELSE 0
-        END) AS student_count
-   FROM (((public.groups g
-     LEFT JOIN public.students s ON ((g.id = s.group_id)))
-     LEFT JOIN public.chapters c ON ((g.chapter_id = c.id)))
-     LEFT JOIN public.organizations o ON ((c.organization_id = o.id)))
-  GROUP BY g.id, c.id, o.id;
-
-
---
 -- Name: performance_per_group_per_skill_per_lessons _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
@@ -1787,6 +1720,188 @@ CREATE OR REPLACE VIEW public.performance_per_group_per_skill_per_lessons AS
      JOIN public.skills s ON ((s.id = g.skill_id)))
   GROUP BY gr.id, c.id, l.id, s.id, su.id
   ORDER BY gr.id, l.date, s.id;
+
+
+--
+-- Name: subject_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.subject_summaries AS
+ SELECT su.id,
+    su.subject_name,
+    su.organization_id,
+    count(*) AS skill_count,
+    su.created_at,
+    su.updated_at,
+    su.deleted_at
+   FROM ((public.subjects su
+     JOIN public.assignments a ON ((su.id = a.subject_id)))
+     JOIN public.skills sk ON ((sk.id = a.skill_id)))
+  WHERE (sk.deleted_at IS NULL)
+  GROUP BY su.id;
+
+
+--
+-- Name: student_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.student_lesson_summaries AS
+ SELECT united.student_id,
+    united.group_id,
+    united.first_name,
+    united.last_name,
+    united.deleted_at,
+    united.lesson_id,
+    united.subject_id,
+    united.average_mark,
+    united.grade_count,
+    united.absent,
+    su.skill_count
+   FROM (( SELECT s.id AS student_id,
+            s.group_id,
+            s.first_name,
+            s.last_name,
+            s.deleted_at,
+            l.id AS lesson_id,
+            l.subject_id,
+            round(avg(grades.mark), 2) AS average_mark,
+            count(grades.mark) AS grade_count,
+                CASE
+                    WHEN (a.id IS NULL) THEN false
+                    ELSE true
+                END AS absent
+           FROM ((((public.students s
+             JOIN public.groups g ON ((g.id = s.group_id)))
+             JOIN public.lessons l ON ((g.id = l.group_id)))
+             LEFT JOIN public.grades ON (((grades.student_id = s.id) AND (grades.lesson_id = l.id) AND (grades.deleted_at IS NULL))))
+             LEFT JOIN public.absences a ON (((a.student_id = s.id) AND (a.lesson_id = l.id))))
+          GROUP BY s.id, l.id, a.id
+        UNION
+         SELECT s.id AS student_id,
+            s.group_id,
+            s.first_name,
+            s.last_name,
+            s.deleted_at,
+            l.id AS lesson_id,
+            l.subject_id,
+            round(avg(grades.mark), 2) AS average_mark,
+            count(grades.mark) AS grade_count,
+                CASE
+                    WHEN (a.id IS NULL) THEN false
+                    ELSE true
+                END AS absent
+           FROM ((((public.lessons l
+             JOIN public.groups g ON ((g.id = l.group_id)))
+             JOIN public.grades ON (((grades.lesson_id = l.id) AND (grades.deleted_at IS NULL))))
+             JOIN public.students s ON ((grades.student_id = s.id)))
+             LEFT JOIN public.absences a ON (((a.student_id = s.id) AND (a.lesson_id = l.id))))
+          GROUP BY s.id, l.id, a.id) united
+     JOIN public.subject_summaries su ON ((united.subject_id = su.id)));
+
+
+--
+-- Name: lesson_skill_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.lesson_skill_summaries AS
+ SELECT l.uid AS lesson_uid,
+    sk.id AS skill_id,
+    sk.skill_name,
+    round(avg(g.mark), 2) AS average_mark,
+    count(g.mark) AS grade_count,
+    su.id AS subject_id
+   FROM ((((public.lessons l
+     JOIN public.subjects su ON ((su.id = l.subject_id)))
+     JOIN public.assignments a ON ((su.id = a.subject_id)))
+     JOIN public.skills sk ON ((a.skill_id = sk.id)))
+     LEFT JOIN public.grades g ON (((g.lesson_uid = l.uid) AND (g.skill_id = sk.id) AND (g.deleted_at IS NULL))))
+  GROUP BY l.uid, sk.id, su.id;
+
+
+--
+-- Name: group_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.group_summaries AS
+ SELECT g.id,
+    g.group_name,
+    g.deleted_at,
+    g.created_at,
+    g.chapter_id,
+    c.chapter_name,
+    o.id AS organization_id,
+    o.mlid AS organization_mlid,
+    c.mlid AS chapter_mlid,
+    g.mlid,
+    concat(o.mlid, '-', c.mlid, '-', g.mlid) AS full_mlid,
+    o.organization_name,
+    sum(
+        CASE
+            WHEN ((s.id IS NOT NULL) AND (s.deleted_at IS NULL)) THEN 1
+            ELSE 0
+        END) AS student_count
+   FROM (((public.groups g
+     LEFT JOIN public.students s ON ((g.id = s.group_id)))
+     LEFT JOIN public.chapters c ON ((g.chapter_id = c.id)))
+     LEFT JOIN public.organizations o ON ((c.organization_id = o.id)))
+  GROUP BY g.id, c.id, o.id;
+
+
+--
+-- Name: chapter_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.chapter_summaries AS
+ SELECT c.id,
+    c.chapter_name,
+    c.mlid AS chapter_mlid,
+    o.mlid AS organization_mlid,
+    concat(o.mlid, '-', c.mlid) AS full_mlid,
+    c.organization_id,
+    o.organization_name,
+    c.deleted_at,
+    (sum(
+        CASE
+            WHEN ((g.id IS NOT NULL) AND (g.deleted_at IS NULL)) THEN 1
+            ELSE 0
+        END))::integer AS group_count,
+    (COALESCE(sum(g.student_count), (0)::numeric))::integer AS student_count,
+    c.created_at,
+    c.updated_at
+   FROM ((public.chapters c
+     LEFT JOIN public.group_summaries g ON ((g.chapter_id = c.id)))
+     LEFT JOIN public.organizations o ON ((c.organization_id = o.id)))
+  GROUP BY c.id, o.id;
+
+
+--
+-- Name: organization_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.organization_summaries AS
+ SELECT o.id,
+    o.organization_name,
+    o.mlid AS organization_mlid,
+    (sum(
+        CASE
+            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN 1
+            ELSE 0
+        END))::integer AS chapter_count,
+    (sum(
+        CASE
+            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN c.group_count
+            ELSE 0
+        END))::integer AS group_count,
+    (sum(
+        CASE
+            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN c.student_count
+            ELSE 0
+        END))::integer AS student_count,
+    o.updated_at,
+    o.created_at
+   FROM (public.organizations o
+     LEFT JOIN public.chapter_summaries c ON ((c.organization_id = o.id)))
+  GROUP BY o.id;
 
 
 --
@@ -2114,6 +2229,15 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20210810094527'),
 ('20210810102949'),
 ('20210909104020'),
-('20210910115239');
+('20210910115239'),
+('20211217173701'),
+('20211217173704'),
+('20220501040818'),
+('20220501041026'),
+('20231015025217'),
+('20231015025855'),
+('20231221220850'),
+('20231222195655'),
+('20231230202619');
 
 

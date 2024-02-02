@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class CreateTags < ActiveRecord::Migration[6.0]
-  # rubocop:disable Metrics/MethodLength
   def up
     enable_extension 'pgcrypto' unless extensions.include? 'pgcrypto'
 
@@ -23,5 +22,4 @@ class CreateTags < ActiveRecord::Migration[6.0]
     drop_table :student_tags
     drop_table :tags
   end
-  # rubocop:enable Metrics/MethodLength
 end

@@ -3,6 +3,9 @@
 class SkillsController < HtmlController
   include Pagy::Backend
   has_scope :exclude_deleted, only: :index, type: :boolean, default: true
+  has_scope :table_order, type: :hash, default: { key: :created_at, order: :desc }, only: :index
+  has_scope :table_order_grades, type: :hash, only: :show
+  has_scope :table_order_subjects, type: :hash, only: :show
   has_scope :search, only: :index
 
   def index
@@ -13,13 +16,22 @@ class SkillsController < HtmlController
   def create
     @skill = Skill.new skill_parameters
     authorize @skill
-    return notice_and_redirect t(:skill_created, skill: @skill.skill_name), @skill if @skill.save
-
-    render :new
+    if params[:add_grade]
+      @skill.grade_descriptors.build
+      render :new, status: :ok
+    elsif @skill.save
+      success(title: t(:skill_added), text: t(:skill_added_text, skill: @skill.skill_name))
+      redirect_to @skill
+    else
+      failure(title: t(:skill_invalid), text: t(:fix_form_errors))
+      render :new, status: :unprocessable_entity
+    end
   end
 
   def show
     @skill = Skill.includes(:organization).find params[:id]
+    @pagy, @subjects = pagy SubjectPolicy::Scope.new(current_user, skill_subjects).resolve
+    @pagy_grades, @grade_descriptors = pagy apply_scopes(@skill.grade_descriptors, table_order_grades: params['table_order_grades'] || { key: :mark, order: :asc })
     authorize @skill
   end
 
@@ -34,7 +46,10 @@ class SkillsController < HtmlController
 
     if @skill.can_delete?
       @skill.deleted_at = Time.zone.now
-      undo_notice_and_redirect t(:skill_deleted, skill_name: @skill.skill_name), undelete_skill_path, skills_path if @skill.save
+      return unless @skill.save
+
+      success title: t(:skill_deleted), text: t(:skill_deleted_text, skill_name: @skill.skill_name), button_text: t(:undo), button_path: undelete_skill_path, button_method: :post
+      redirect_to skills_path
     else
       render_deletion_error
     end
@@ -44,11 +59,18 @@ class SkillsController < HtmlController
     @skill = Skill.find params.require :id
     authorize @skill
     @skill.deleted_at = nil
-
-    notice_and_redirect t(:skill_restored, skill_name: @skill.skill_name), request.referer || skill_path(@skill) if @skill.save
+    if @skill.save
+      success title: t(:skill_restored), text: t(:skill_restored_text, skill_name: @skill.skill_name)
+      redirect_to request.referer || @skill
+    end
   end
 
   private
+
+  def skill_subjects
+    subjects = @skill.subjects.includes(:assignments, :skills, :organization)
+    apply_scopes(subjects, table_order_subjects: params['table_order_subjects'] || { key: :created_at, order: :desc })
+  end
 
   def skill_parameters
     params.require(:skill).permit(:skill_name, :organization_id, :skill_description, grade_descriptors_attributes: %i[mark grade_description _destroy])
@@ -56,9 +78,10 @@ class SkillsController < HtmlController
 
   def render_deletion_error
     if Grade.where(skill: @skill).count != 0
-      notice_and_redirect t(:skill_not_deleted_because_grades), request.referer || skill_path(@skill)
+      failure title: t(:unable_to_delete_skill), text: t(:skill_not_deleted_because_grades)
     elsif @skill.subjects.count != 0
-      notice_and_redirect t(:skill_not_deleted_because_subject), request.referer || skill_path(@skill)
+      failure title: t(:unable_to_delete_skill), text: t(:skill_not_deleted_because_subject)
     end
+    redirect_to request.referer || skill_path(@skill)
   end
 end

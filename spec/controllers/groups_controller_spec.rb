@@ -45,7 +45,7 @@ RSpec.describe GroupsController, type: :controller do
       end
 
       it { should respond_with 302 }
-      it { should redirect_to group_path(assigns[:group]) }
+      it { should redirect_to groups_path }
     end
 
     context 'invalid group data' do
@@ -169,7 +169,7 @@ RSpec.describe GroupsController, type: :controller do
 
       it { should redirect_to group_url }
 
-      it { should set_flash[:notice].to 'Group "Updated Name" updated.' }
+      it { should set_flash[:success_notice] }
 
       it 'updates the edited group' do
         expect(@group.reload.group_name).to eq 'Updated Name'
@@ -199,7 +199,7 @@ RSpec.describe GroupsController, type: :controller do
 
     it { should redirect_to 'http://example.com/groups?param=1' }
 
-    it { should set_flash[:undo_notice] }
+    it { should set_flash[:success_notice] }
 
     it 'Marks the group as deleted' do
       expect(@group.reload.deleted_at).to be_within(1.second).of Time.zone.now
@@ -209,15 +209,10 @@ RSpec.describe GroupsController, type: :controller do
   describe '#undelete' do
     before :each do
       @group = create :group, deleted_at: Time.zone.now
-      request.env['HTTP_REFERER'] = 'http://example.com/groups?param=1'
-
       post :undelete, params: { id: @group.id }
     end
 
-    it { should redirect_to 'http://example.com/groups?param=1' }
-
-    it { should set_flash[:notice].to "Group \"#{@group.group_name}\" restored." }
-
+    it { should set_flash[:success_notice] }
     it 'Removes the group\'s deleted timestamp' do
       expect(@group.reload.deleted_at).to be_nil
     end

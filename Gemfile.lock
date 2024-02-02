@@ -72,7 +72,7 @@ GEM
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
-    addressable (2.8.1)
+    addressable (2.8.6)
       public_suffix (>= 2.0.2, < 6.0)
     amazing_print (1.4.0)
     annotate (3.2.0)
@@ -92,11 +92,11 @@ GEM
     bootsnap (1.13.0)
       msgpack (~> 1.2)
     builder (3.2.4)
-    bullet (7.0.7)
+    bullet (7.1.4)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
     byebug (11.1.3)
-    capybara (3.38.0)
+    capybara (3.39.2)
       addressable
       matrix
       mini_mime (>= 0.1.3)
@@ -122,7 +122,6 @@ GEM
       image_optimizer (~> 1.6)
     case_transform (0.2)
       activesupport
-    cocoon (1.2.15)
     coderay (1.1.3)
     concurrent-ruby (1.2.2)
     crack (0.4.5)
@@ -189,7 +188,7 @@ GEM
       activesupport (>= 5.2)
     hashdiff (1.0.1)
     hashie (5.0.0)
-    i18n (1.13.0)
+    i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     i18n_data (0.17.1)
       simple_po_parser (~> 1.1)
@@ -213,9 +212,9 @@ GEM
       rexml
     kramdown-parser-gfm (1.1.0)
       kramdown (~> 2.0)
-    loofah (2.20.0)
+    loofah (2.22.0)
       crass (~> 1.0.2)
-      nokogiri (>= 1.5.9)
+      nokogiri (>= 1.12.0)
     mail (2.8.1)
       mini_mime (>= 0.1.1)
       net-imap
@@ -226,14 +225,17 @@ GEM
       actionpack (>= 5.2)
       activerecord (>= 5.2)
     matrix (0.4.2)
+    meta_request (0.7.4)
+      rack-contrib (>= 1.1, < 3)
+      railties (>= 3.0.0, < 7.1)
     method_source (1.0.0)
     mime-types (3.4.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2022.0105)
     mini_magick (4.11.0)
-    mini_mime (1.1.2)
-    mini_portile2 (2.8.2)
-    minitest (5.18.0)
+    mini_mime (1.1.5)
+    mini_portile2 (2.8.5)
+    minitest (5.20.0)
     msgpack (1.5.4)
     multi_json (1.15.0)
     multi_xml (0.6.0)
@@ -248,8 +250,8 @@ GEM
       net-protocol
     newrelic_rpm (8.15.0)
     nio4r (2.5.8)
-    nokogiri (1.14.3)
-      mini_portile2 (~> 2.8.0)
+    nokogiri (1.16.0)
+      mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     oauth2 (2.0.8)
       faraday (>= 0.17.3, < 3.0)
@@ -289,15 +291,17 @@ GEM
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    public_suffix (5.0.1)
+    public_suffix (5.0.4)
     puma (6.0.2)
       nio4r (~> 2.0)
     pundit (2.3.0)
       activesupport (>= 3.0.0)
     pundit-matchers (2.0.0)
       rspec-rails (>= 3.0.0)
-    racc (1.6.2)
-    rack (2.2.7)
+    racc (1.7.3)
+    rack (2.2.8)
+    rack-contrib (2.4.0)
+      rack (< 4)
     rack-protection (2.2.2)
       rack
     rack-test (2.1.0)
@@ -320,11 +324,13 @@ GEM
       actionpack (>= 5.0.1.rc1)
       actionview (>= 5.0.1.rc1)
       activesupport (>= 5.0.1.rc1)
-    rails-dom-testing (2.0.3)
-      activesupport (>= 4.2.0)
+    rails-dom-testing (2.2.0)
+      activesupport (>= 5.0.0)
+      minitest
       nokogiri (>= 1.6)
-    rails-html-sanitizer (1.5.0)
-      loofah (~> 2.19, >= 2.19.1)
+    rails-html-sanitizer (1.6.0)
+      loofah (~> 2.21)
+      nokogiri (~> 1.14)
     rails-i18n (7.0.6)
       i18n (>= 0.7, < 2)
       railties (>= 6.0.0, < 8)
@@ -332,6 +338,10 @@ GEM
       rack
       railties (>= 5.1)
       semantic_logger (~> 4.9)
+    rails_spotlight (0.1.7)
+      meta_request (~> 0.7)
+      rack-contrib (>= 1.1, < 3)
+      railties (>= 3.0.0, < 7.1)
     railties (7.0.4.3)
       actionpack (= 7.0.4.3)
       activesupport (= 7.0.4.3)
@@ -340,14 +350,14 @@ GEM
       thor (~> 1.0)
       zeitwerk (~> 2.5)
     rainbow (3.1.1)
-    rake (13.0.6)
-    regexp_parser (2.6.1)
+    rake (13.1.0)
+    regexp_parser (2.8.3)
     responders (3.1.0)
       actionpack (>= 5.2)
       railties (>= 5.2)
     reverse_markdown (2.1.1)
       nokogiri
-    rexml (3.2.5)
+    rexml (3.2.6)
     rolify (6.0.0)
     rspec-core (3.12.1)
       rspec-support (~> 3.12.0)
@@ -392,7 +402,7 @@ GEM
     scenic (1.7.0)
       activerecord (>= 4.0.0)
       railties (>= 4.0.0)
-    selenium-webdriver (4.9.0)
+    selenium-webdriver (4.16.0)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
@@ -406,9 +416,6 @@ GEM
     simple_po_parser (1.1.6)
     skylight (5.3.4)
       activesupport (>= 5.2.0)
-    slim (4.1.0)
-      temple (>= 0.7.6, < 0.9)
-      tilt (>= 2.0.6, < 2.1)
     smarter_csv (1.7.4)
     snaky_hash (2.0.0)
       hashie
@@ -443,20 +450,23 @@ GEM
       railties (>= 6.0.0)
     tailwindcss-rails (2.0.14)
       railties (>= 6.0.0)
-    temple (0.8.2)
-    thor (1.2.1)
+    thor (1.3.0)
     tiddle (1.8.0)
       activerecord (>= 5.2.0)
       devise (>= 4.0.0.rc1, < 5)
     tilt (2.0.11)
     timeout (0.3.2)
+    turbo-rails (1.5.0)
+      actionpack (>= 6.0.0)
+      activejob (>= 6.0.0)
+      railties (>= 6.0.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.4.2)
     unicode_utils (1.4.0)
     uniform_notifier (1.16.0)
     version_gem (1.1.0)
-    view_component (2.82.0)
+    view_component (3.6.0)
       activesupport (>= 5.2.0, < 8.0)
       concurrent-ruby (~> 1.0)
       method_source (~> 1.0)
@@ -472,7 +482,7 @@ GEM
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
     webrick (1.7.0)
-    websocket (1.2.9)
+    websocket (1.2.10)
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
@@ -480,7 +490,7 @@ GEM
       nokogiri (~> 1.8)
     yard (0.9.28)
       webrick (~> 1.7.0)
-    zeitwerk (2.6.8)
+    zeitwerk (2.6.12)
 
 PLATFORMS
   ruby
@@ -499,7 +509,6 @@ DEPENDENCIES
   carrierwave
   carrierwave-bombshelter
   carrierwave-imageoptimizer
-  cocoon
   database_cleaner
   devise
   dotenv-rails
@@ -530,6 +539,7 @@ DEPENDENCIES
   rails-controller-testing
   rails-i18n
   rails_semantic_logger
+  rails_spotlight
   rolify
   rspec-rails
   rubocop
@@ -540,7 +550,6 @@ DEPENDENCIES
   shoulda-matchers
   simple_form
   skylight
-  slim
   smarter_csv
   solargraph
   sort_alphabetical
@@ -549,6 +558,7 @@ DEPENDENCIES
   stimulus-rails
   tailwindcss-rails
   tiddle
+  turbo-rails
   view_component
   web-console
   webmock

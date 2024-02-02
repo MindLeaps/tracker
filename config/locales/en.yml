@@ -27,90 +27,180 @@ en:
 
   mindleaps_tracker: MindLeaps Tracker
   mlid: MLID
+  name: Name
+  undo: Undo
+  created: Created
   organization_mlid_error_message: Organization MLID has to be 3 characters long and can only contain numbers and letters. No special characters.
   chapter_mlid_error_message: Chapter MLID has to be up to 2 characters long and can only contain numbers and letters. No special characters.
   group_mlid_error_message: Group MLID has to be up to 2 characters long and can only contain numbers and letters. No special characters.
-  students: students
+  students: Students
   student_details: Student Details
-  student_deleted_at: Student deleted at
+  student_deleted_at: Student deleted %{time} ago
   date_of_birth: Date of Birth
   dob_estimated: DOB Estimated
   circa: "c. "
+  global_role: Global Role
+  global_roles: Global Roles
+  role_updated: Role Updated
+  global_role_updated_text: User "%{email}" now has global role %{role}
+  global_role_revoked: User "%{email}" global role revoked
   country_of_nationality: Country of Nationality
-  last_name: Last Name
-  first_name: First Name
   new_student: New Student
-  groups: groups
+  personal_details: Personal, family, school, and health details
+  groups: Groups
   new_group: New Group
+  group_name: Group Name
   chapter: Chapter
+  chapter_name: Chapter Name
+  chapter_organization: Chapter - Organization
   group_chapter: Group - Chapter
+  group_history: Group History
   new_chapter: New Chapter
   chapters: Chapters
   edit_chapter: Edit Chapter
   organizations: Organizations
+  none: None
+  email: Email
   new_organization: New Organization
+  edit_organization: Edit Organization
+  organization_information: Organization Information
+  organization_name: Organization Name
   organization: Organization
+  organization_invalid: Organization Invalid
+  organization_added: Organization Added
+  organization_updated: Organization updated
+  organization_name_added: Organization "%{name}" added
+  organization_name_updated: Organization "%{name}" updated
+
   users: Users
+  user_information: User Information
   new_user: New User
   user: User
+  user_email: User Email
+  user_invalid: User Invalid
+  user_with_email_added: User with email %{email} added
   add_student: Add Student
   add_student_to_group: Add Student to Group
   add_group: Add Group
-  student_created: Student "%{name}" created.
+  add_chapter: Add Chapter
+  add_organization: Add Organization
+  add_user: Add User
+  add_lesson: Add Lesson
+  lesson_information: Lesson Information
+  student_added: Student Added
+  student_updated: Student Updated
+  student_name_added: Student "%{name}" added.
+  student_name_updated: Student "%{name}" updated.
+  create_student: Create Student
   create_another: Create another
   delete_student: Delete Student
   restore_student: Restore Deleted Student
   student_delete_confirmation: Are you sure you want to delete student "%{name}"?
-  student_deleted: Student "%{name}" deleted.
-  student_restored: Student "%{name}" restored.
+  student_deleted: Student Deleted
+  student_deleted_text: Student "%{student}" deleted.
+  student_restored: Student Restored
+  student_restored_text: Student "%{name}" restored.
   number_of_students: Number of Students
+  number_of_groups: Number of Groups
+  number_of_chapters: Number of Chapters
   edit_student: Edit Student
-  group_created: Group "%{group}" created.
-  group_updated: Group "%{group}" updated.
-  group_deleted: Group "%{group}" deleted.
-  group_restored: Group "%{group}" restored.
+  student_invalid: Student Invalid
+  fix_form_errors: Please fix the errors in the form.
+  date:
+    date: Date
+    order:
+      - :year
+      - :month
+      - :day
+  group_added: Group Added
+  group_with_name_added: Group "%{group}" added.
+  group_updated: Group updated
+  group_name_updated: Group "%{group}" updated.
+  group_deleted: Group deleted
+  group_deleted_text: Group "%{group}" deleted.
+  group_restored: Group restored
+  group_restored_text: Group "%{group}" restored.
+  group_invalid: Group Invalid
+  group_invalid_text: Please fix the errors in the form.
   delete_group: Delete Group
   restore_group: Restore Deleted Group
   edit_group: Edit Group
-  chapter_created: Chapter "%{chapter}" created.
-  chapter_updated: Chapter "%{chapter}" updated.
+  edit: Edit
+  chapter_added: Chapter Added
+  chapter_added_text: Chapter "%{chapter}" added.
+  chapter_invalid: Chapter Invalid
+  chapter_updated: Chapter updated
+  chapter_name_updated: Chapter "%{name}" updated.
   duplicate_lesson: Lesson already exists for group "%{group}" in "%{subject}" on selected date.
   duplicate_grade: "%{name} already scored %{mark} in %{skill} on %{date} in %{subject}."
   new_subject: New Subject
   subjects: Subjects
   subject: Subject
+  subject_information: Subject Information
   edit_subject: Edit Subject
+  subject_name: Subject Name
+  add_subject: Add Subject
   subject_created: Subject "%{subject}" created.
-  subject_updated: Subject updated.
-  lesson_created: Lesson created.
-  skill_created: Skill "%{skill}" created.
+  subject_added: Subject Added
+  subject_added_text: Subject "%{subject}" added.
+  subject_updated: Subject updated
+  subject_updated_text: Subject "%{subject}" updated.
+  subject_invalid: Subject Invalid
+  lesson_added: Lesson Added
+  lesson_added_text: Lesson on %{date} with group %{group} in subject %{subject} added.
+  lesson_invalid: Lesson Invalid
+  skill_added: Skill Added
+  skill_added_text: Skill "%{skill}" added.
+  skill_invalid: Skill Invalid
   create_grade_button: Save Student Grades
+  delete_grade: Delete Grade
   invalid_token: Invalid Google id_token
   invalid_user: User does not exist in MindLeaps
+  student_grades: Student Grades
   student_graded: Student graded.
+  student_graded_text: Student %{student} graded.
   student_absent: Absent
   student_not_graded: Not Graded
+  add_grade: Add Grade
   graded_vs_students_in_group: Graded / Students in Group
   back_to_subjects: Back to All Subjects
   cancel: Cancel
+  delete_image: Delete Image
   student_has_no_images: This student has no images
   images_uploaded: Images uploaded.
   no_image_submitted: No image submitted.
-  no_valid_mlid_without_group: MLID cannot be valid without existing group.
-  duplicate_mlid: MLID already exists in group.
+  no_valid_mlid_without_group: cannot be valid without existing group.
+  duplicate_mlid: already exists in group.
+  set_as_profile_image: Set Profile
+  remove_as_profile_image: Unset Profile
   wrong_image: Image of %{other_student} cannot be a profile image for %{student}
   membership: Membership
+  members: Members
   member_email_missing: Member Email missing
   already_member: User is already a member of the organization
+  super_admin: Super Administrator
+  global_admin: Global Administrator
+  global_guest: Global Guest
+  global_researcher: Global Researcher
+  admin: Administrator
+  teacher: Teacher
+  researcher: Researcher
+  guest: Guest
+  role: Role
   update_role_button: Update Role
   update_global_role_button: Update Global Role
   revoke_global_role_button: Revoke Global Role
   revoke_local_role_button: Revoke Role in %{org}
+  no_global_role: None
   unauthorized_logout: You have been loged out for performing unauthorized activity
-  user_added: User with email %{email} added.
+  logout: Logout
+  mobile_app: Mobile App
+  user_added: User added
+  profile_image: Profile Image
   delete_user: Delete User
-  delete_user_confirmation_text: Are you sure you want to delete this user?
-  delete_user_notice: User with e-mail address %{email} deleted.
+  delete_user_confirmation_text: Are you sure you want to delete this user? This action cannot be undone.
+  user_deleted: User Deleted
+  user_deleted_text: User with e-mail address %{email} deleted.
   first_page: First Page
   last_page: Last Page
   prev_page: Previous Page
@@ -140,21 +230,56 @@ en:
   skill: Skill
   skills: Skills
   new_skill: New Skill
+  skill_name: Skill Name
+  add_skill: Add Skill
+  skill_information: Skill Information
   skill_description: Skill Description
   subjects_with_skill: Subjects With This Skill
   delete_skill: Delete Skill
+  restore_skill: Restore Skill
   delete_skill_confirmation_text: Are you sure you want to delete this skill?
-  skill_deleted: Skill "%{skill_name}" deleted.
-  skill_restored: Skill "%{skill_name}" restored.
+  skill_deleted: Skill Deleted
+  skill_deleted_text: Skill "%{skill_name}" deleted.
+  skill_restored: Skill Restored
+  skill_restored_text: Skill "%{skill_name}" restored.
+  unable_to_delete_skill: Unable to delete skill
   skill_not_deleted_because_subject: Skill not deleted because it belongs to a subject. Remove it from the subject before deleting.
   skill_not_deleted_because_grades: Skill not deleted because it has grades associated with it. You cannot delete a graded skill.
   student_does_not_belong_to_group: Student does not belong to this group anymore.
   lesson_for_student: Lesson %{date} - Student %{name}
   total: Total
+  analytics: Analytics
   general_analytics: General Analytics
   group_analytics: Group Analytics
   subject_analytics: Subject Analytics
   actions: Actions
+  close_sidebar: Close Sidebar
+  open_sidebar: Open sidebar
+  pagination_display: Displaying %{from} - %{to} of %{total} in total
+  quartier: Quartier
+  guardian: Guardian
+  guardian_name: Guardian Name
+  guardian_occupation: Guardian Occupation
+  guardian_contact: Guardian Contact
+  family_members: Family Members
+  notes: Notes
+  school_information: School Information
+  name_of_school: Name of School
+  school_level_completed: School Level Completed
+  year_of_dropout: Year of Dropout
+  reason_for_leaving_school: Reason for Leaving School
+  health_and_family: Health & Family
+  health_insurance: Health Insurance
+  health_issues: Health Issues
+  hiv_tested: HIV Tested
+
+  personal_information: Personal Information
+  group_information: Group Information
+  chapter_information: Chapter Information
+  display_with_mlid: "%{name} (%{mlid})"
+  first_name: First Name
+  last_name: Last Name
+  group_and_mlid: Group and MLID
 
   title_chart_2: Quantity of Data Collected By Month
   title_chart_4: Histogram of student performance values
@@ -180,8 +305,10 @@ en:
 
   tag: Tag
   tags: Tags
+  tag_information: Tag Information
   shared: Shared
   tag_name: Tag Name
+  invalid_tag: Invalid Tag
   back_to_student_tags: Back to Student Tags
   student_tags: Student Tags
   add_tag: Add Tag
@@ -189,15 +316,36 @@ en:
   new_student_tag: New Student Tag
   edit_student_tag: Edit Student Tag
   tag_shared_explanation: Shared tags will be available to all organizations, rather than just the organization the tag belongs to.
-  tag_created: Tag "%{name}" created.
+  tag_added: Tag Added.
+  tag_with_name_added: Tag "%{name}" added.
 
   lesson_date: Lesson Date
+  grades_per_skill: Grades Per Skill
 
+  activerecord:
+    attributes:
+      student:
+        mlid:
+          one: MLID
+          other: MLID
+      group:
+        mlid:
+          one: MLID
+          other: MLID
+      chapter:
+        mlid:
+          one: MLID
+          other: MLID
+      organization:
+        mlid:
+          one: MLID
+          other: MLID
 
 
   errors:
     messages:
       extension_whitelist_error: File is not an image
+      invalid_email: is not valid
 
   enums:
     student:

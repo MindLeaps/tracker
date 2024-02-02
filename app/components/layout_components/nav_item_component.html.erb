@@ -1,0 +1,13 @@
+<!-- Current: "", Default: "text-gray-700 hover:text-gray-900 hover:bg-gray-50" -->
+
+<% if @is_active %>
+  <a disabled="disabled" class="bg-purple-900 text-white group w-full p-3 rounded-md flex flex-col items-center text-xs font-medium">
+    <%= inline_svg_tag @svg_icon, class: 'group-hover:text-white h-6 w-6' %>
+    <%= @name %>
+  </a>
+<% else %>
+  <a href="<%= @url %>" class="text-purple-100 hover:bg-purple-900 hover:text-white group w-full p-3 rounded-md flex flex-col items-center text-xs font-medium">
+    <%= inline_svg_tag @svg_icon, class: 'group-hover:text-white h-6 w-6' %>
+    <%= @name %>
+  </a>
+<% end %>

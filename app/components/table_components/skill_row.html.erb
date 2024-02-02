@@ -1,0 +1,8 @@
+<div class="<%= 'shaded-row' if shaded? %> table-row-wrapper">
+  <a href="<%= helpers.skill_path @item %>" class="<%= 'shaded-row' if shaded? %> <%= 'deleted-row' if @item.deleted_at? %> table-row-wrapper">
+    <div class="table-cell "><%= @pagy.from + @item_counter %></div>
+    <div class="table-cell text-right "><%= @item.skill_name %></div>
+    <div class="table-cell text-right "><%= @item.organization.organization_name %></div>
+    <div class="table-cell "><%= @item.created_at.strftime('%F') %></div>
+  </a>
+</div>

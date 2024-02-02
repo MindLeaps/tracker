@@ -82,7 +82,7 @@ RSpec.describe SkillsController, type: :controller do
         end
 
         it { should redirect_to Skill.last }
-        it { should set_flash[:notice].to 'Skill "Skills Controller Spec Skill" created.' }
+        it { should set_flash[:success_notice] }
       end
       context 'Lesson creation unsuccessful' do
         before :each do
@@ -92,6 +92,8 @@ RSpec.describe SkillsController, type: :controller do
         end
 
         it { should render_template :new }
+        it { should respond_with :unprocessable_entity }
+        it { should set_flash[:failure_notice] }
       end
     end
 
@@ -135,7 +137,7 @@ RSpec.describe SkillsController, type: :controller do
         end
 
         it { should redirect_to skills_path }
-        it { should set_flash[:undo_notice] }
+        it { should set_flash[:success_notice] }
 
         it 'deletes the skill' do
           expect(@skill.reload.deleted_at).not_to be_nil
@@ -155,7 +157,7 @@ RSpec.describe SkillsController, type: :controller do
 
         it { should redirect_to 'http://example.com/skills?param=1' }
 
-        it { should set_flash[:notice].to 'Skill not deleted because it belongs to a subject. Remove it from the subject before deleting.' }
+        it { should set_flash[:failure_notice] }
 
         it 'does not delete the skill' do
           expect(@skill.reload.deleted_at).to be_nil
@@ -175,7 +177,7 @@ RSpec.describe SkillsController, type: :controller do
 
         it { should redirect_to 'http://example.com/skills?param=1' }
 
-        it { should set_flash[:notice].to 'Skill not deleted because it has grades associated with it. You cannot delete a graded skill.' }
+        it { should set_flash[:failure_notice] }
 
         it 'does not delete the skill' do
           expect(@skill.reload.deleted_at).to be_nil
@@ -193,7 +195,7 @@ RSpec.describe SkillsController, type: :controller do
 
       it { should redirect_to 'http://example.com/skills?param=1' }
 
-      it { should set_flash[:notice].to "Skill \"#{@skill.skill_name}\" restored." }
+      it { should set_flash[:success_notice] }
 
       it 'Marks the skill as not deleted' do
         expect(@skill.reload.deleted_at).to be_nil

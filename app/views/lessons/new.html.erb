@@ -1,0 +1,14 @@
+<%- content_for :title, t(:new_lesson) %>
+
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  {title: t(:new_lesson), href: '' },
+], buttons: [
+].compact)  do |h|
+  h.with_left do
+    render CommonComponents::Breadcrumbs.new(crumbs: [
+      { label: CommonComponents::TagLabel.new(label: t(:lessons), img_src: 'clipboard.svg'), href: lessons_path },
+    ])
+  end
+end %>
+
+<%= render LessonFormComponent.new(current_user: current_user, lesson: @lesson, action: :create) %>

@@ -2,10 +2,10 @@
 
 class LessonsController < HtmlController
   include Pagy::Backend
-  has_scope :exclude_deleted, type: :boolean, default: true
+  has_scope :exclude_deleted, type: :boolean
   has_scope :table_order, type: :hash, only: :index, default: { key: :date, order: :desc }
-  # has_scope cannot have 2 scopes with the same name. table_order_lesson_students is just an alias for table_order
-  has_scope :table_order_lesson_students, type: :hash, as: :table_order, default: { key: :last_name, order: :asc }, only: :show
+  has_scope :table_order_lesson_students, type: :hash, only: :show
+  has_scope :table_order_lesson_skills, type: :hash, only: :show
 
   def index
     authorize Lesson
@@ -15,8 +15,8 @@ class LessonsController < HtmlController
   def show
     @lesson = Lesson.includes(:group, :subject).find(params[:id])
     authorize @lesson
-    @pagy, @student_lesson_summaries = pagy apply_scopes(StudentLessonSummary.where(lesson_id: @lesson.id))
-    @lesson_skill_summary = LessonSkillSummary.where(lesson_uid: @lesson.uid)
+    @pagy, @student_lesson_summaries = pagy apply_scopes(StudentLessonSummary.where(lesson_id: @lesson.id), student_lesson_order_scope)
+    @lesson_skill_summary = apply_scopes(LessonSkillSummary.where(lesson_uid: @lesson.uid), { table_order_lesson_skills: params['table_order_lesson_skills'] || { key: :skill_name, order: :asc } })
     @group_lessons_data = process_group_lesson_data(GroupLessonSummary.around(@lesson, 31) || [], @lesson)
   end
 
@@ -28,12 +28,23 @@ class LessonsController < HtmlController
   def create
     @lesson = Lesson.new params.require(:lesson).permit :group_id, :date, :subject_id
     authorize @lesson
-    return notice_and_redirect(t(:lesson_created), lessons_url) if @lesson.save
-
-    render :index
+    if @lesson.save
+      success(title: t(:lesson_added), text: t(:lesson_added_text, date: @lesson.date, group: @lesson.group.group_name, subject: @lesson.subject.subject_name))
+      redirect_to @lesson
+    else
+      failure(title: t(:lesson_invalid), text: t(:fix_form_errors))
+      render :new, status: :unprocessable_entity
+    end
   end
 
   private
+
+  def student_lesson_order_scope
+    {
+      table_order_lesson_students: params['table_order_lesson_students'] || { key: :last_name, order: :asc },
+      exclude_deleted: params['exclude_deleted'] || true
+    }
+  end
 
   def process_group_lesson_data(data, current_lesson)
     {
