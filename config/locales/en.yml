@@ -156,6 +156,7 @@ en:
   delete_grade: Delete Grade
   invalid_token: Invalid Google id_token
   invalid_user: User does not exist in MindLeaps
+  student_grades: Student Grades
   student_graded: Student graded.
   student_graded_text: Student %{student} graded.
   student_absent: Absent
