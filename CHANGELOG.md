@@ -1,4 +1,4 @@
-## Unreleased
+## 0.31.0 - Redesign
 - Redesigned the whole application
 - Implemented Organization editing
 - Student creation will redirect to the previous location
