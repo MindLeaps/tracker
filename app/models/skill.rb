@@ -33,9 +33,9 @@ class Skill < ApplicationRecord
   has_many :assignments, dependent: :destroy
   has_many :subjects, through: :assignments, dependent: :restrict_with_error, inverse_of: :skills
 
-  scope :by_organization, ->(organization_id) { where organization_id: organization_id }
+  scope :by_organization, ->(organization_id) { where organization_id: }
 
-  scope :by_subject, ->(subject_id) { joins(:assignments).where(assignments: { subject_id: subject_id }) }
+  scope :by_subject, ->(subject_id) { joins(:assignments).where(assignments: { subject_id: }) }
 
   accepts_nested_attributes_for :grade_descriptors, update_only: true
 

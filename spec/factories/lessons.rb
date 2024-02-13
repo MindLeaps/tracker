@@ -41,9 +41,9 @@ FactoryBot.define do
           skill_marks.each do |skill_name, mark|
             next unless mark
 
-            skill = Skill.find_by skill_name: skill_name
-            gd = GradeDescriptor.find_by skill: skill, mark: mark
-            create :grade, student_id: student_id, grade_descriptor: gd, lesson: lesson
+            skill = Skill.find_by(skill_name:)
+            gd = GradeDescriptor.find_by(skill:, mark:)
+            create :grade, student_id:, grade_descriptor: gd, lesson:
           end
         end
       end

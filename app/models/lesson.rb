@@ -33,8 +33,8 @@ class Lesson < ApplicationRecord
   has_many :grades, dependent: :restrict_with_error
 
   validates :date, presence: true
-  scope :by_group, ->(group_id) { where group_id: group_id }
-  scope :by_subject, ->(subject_id) { where subject_id: subject_id }
+  scope :by_group, ->(group_id) { where group_id: }
+  scope :by_subject, ->(subject_id) { where subject_id: }
 
   validates :date, uniqueness: {
     scope: %i[group subject],
@@ -44,7 +44,7 @@ class Lesson < ApplicationRecord
   def mark_student_as_absent(student)
     return if student_absent?(student)
 
-    Absence.create student: student, lesson: self
+    Absence.create student:, lesson: self
   end
 
   def mark_student_as_present(student)

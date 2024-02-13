@@ -94,7 +94,7 @@ RSpec.describe Skill, type: :model do
   describe '#can_delete?' do
     it 'returns false if a skill has grades' do
       skill = create :skill
-      gd = create :grade_descriptor, skill: skill
+      gd = create(:grade_descriptor, skill:)
       create :grade, grade_descriptor: gd
 
       expect(skill.can_delete?).to eq false
@@ -102,7 +102,7 @@ RSpec.describe Skill, type: :model do
 
     it 'returns true if a skill has only deleted grades' do
       skill = create :skill
-      gd = create :grade_descriptor, skill: skill
+      gd = create(:grade_descriptor, skill:)
       create :grade, grade_descriptor: gd, deleted_at: Time.zone.now
 
       expect(skill.can_delete?).to eq true

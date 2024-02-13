@@ -18,7 +18,7 @@ class TagPolicy < ApplicationPolicy
     end
 
     def resolve_for_organization_id(organization_id)
-      scope.where(organization_id: organization_id).or(scope.where(shared: true))
+      scope.where(organization_id:).or(scope.where(shared: true))
     end
   end
 end

@@ -24,7 +24,7 @@ class GradeDescriptor < ApplicationRecord
   singleton_class.send(:alias_method, :table_order_grades, :table_order)
   belongs_to :skill
 
-  scope :by_skill, ->(skill_id) { where skill_id: skill_id }
+  scope :by_skill, ->(skill_id) { where skill_id: }
 
   validates :mark, presence: true
   validates :mark, uniqueness: { scope: :skill_id }

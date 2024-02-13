@@ -83,7 +83,7 @@ class StudentsController < HtmlController
 
   def student_params
     p = params.require(:student)
-    p[:student_tags_attributes] = p.fetch(:tag_ids, []).map { |tag_id| { tag_id: tag_id } }
+    p[:student_tags_attributes] = p.fetch(:tag_ids, []).map { |tag_id| { tag_id: } }
     p.delete :tag_ids
     p.permit(*Student.permitted_params)
   end

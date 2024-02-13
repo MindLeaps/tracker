@@ -17,7 +17,7 @@ class StudentLesson < ApplicationRecord
 
   # Returns Grades with valid grades for graded skills and nulled grades for ungraded skills or deleted grades
   def formatted_grades_for_grading
-    Grade.find_by_sql [FORMATTED_GRADES_SQL, { student_id: student_id, lesson_id: lesson_id, subject_id: subject.id }]
+    Grade.find_by_sql [FORMATTED_GRADES_SQL, { student_id:, lesson_id:, subject_id: subject.id }]
   end
 
   def perform_grading(skills_descriptors, new_absence)
@@ -36,7 +36,7 @@ class StudentLesson < ApplicationRecord
   end
 
   def student_absent?
-    Absence.find_by(student_id: student_id, lesson_id: lesson_id).present?
+    Absence.find_by(student_id:, lesson_id:).present?
   end
 
   private
@@ -46,9 +46,9 @@ class StudentLesson < ApplicationRecord
       return if student_absent? == new_absence
 
       if new_absence
-        Absence.create student_id: student_id, lesson: lesson
+        Absence.create(student_id:, lesson:)
       else
-        Absence.find_by(student_id: student_id, lesson_id: lesson_id).destroy!
+        Absence.find_by(student_id:, lesson_id:).destroy!
       end
     end
   end
@@ -59,9 +59,9 @@ class StudentLesson < ApplicationRecord
       if descriptor_id.nil?
         old_grade.deleted_at = Time.zone.now
       elsif old_grade.id.nil?
-        old_grade = Grade.new(student: student, lesson: lesson, grade_descriptor: GradeDescriptor.find(descriptor_id))
+        old_grade = Grade.new(student:, lesson:, grade_descriptor: GradeDescriptor.find(descriptor_id))
       else
-        old_grade.assign_attributes lesson: lesson, student: student, deleted_at: nil
+        old_grade.assign_attributes lesson:, student:, deleted_at: nil
         old_grade.grade_descriptor = GradeDescriptor.find descriptor_id
       end
       old_grade
@@ -70,7 +70,7 @@ class StudentLesson < ApplicationRecord
 
   # Returns Grades with valid grades for graded skills and nulled grades for ungraded skills and with deleted grades
   def formatted_grades_with_deleted
-    Grade.find_by_sql [FORMATTED_GRADES_WITH_DELETED_SQL, { student_id: student_id, lesson_id: lesson_id, subject_id: subject.id }]
+    Grade.find_by_sql [FORMATTED_GRADES_WITH_DELETED_SQL, { student_id:, lesson_id:, subject_id: subject.id }]
   end
 
   FORMATTED_GRADES_WITH_DELETED_SQL = <<~SQL.squish

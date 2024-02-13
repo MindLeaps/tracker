@@ -22,7 +22,7 @@ class StudentImagesController < HtmlController
 
   def student_images(student)
     images = params.require(:student_image).permit(image: [])[:image]
-    images.map { |i| StudentImage.new image: i, student: student }
+    images.map { |i| StudentImage.new image: i, student: }
   end
 
   def save_images(student_images)

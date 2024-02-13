@@ -34,12 +34,12 @@ RSpec.describe 'User interacts with lessons' do
 
     it 'shows a specific lesson', js: true do
       group = create :group, group_name: 'Lesson Feature Test Group'
-      create :student, first_name: 'Marinko', last_name: 'Marinkovic', group: group
-      create :student, first_name: 'Ivan', last_name: 'Ivankovic', group: group
-      create :student, first_name: 'Deleted', last_name: 'Deletovic', group: group, deleted_at: Time.zone.now
+      create(:student, first_name: 'Marinko', last_name: 'Marinkovic', group:)
+      create(:student, first_name: 'Ivan', last_name: 'Ivankovic', group:)
+      create :student, first_name: 'Deleted', last_name: 'Deletovic', group:, deleted_at: Time.zone.now
       sub = create :subject, subject_name: 'Feature Testing III'
       create :skill_in_subject, subject: sub
-      create :lesson, subject: sub, group: group
+      create(:lesson, subject: sub, group:)
 
       visit '/'
       click_link 'Lessons'
@@ -57,16 +57,16 @@ RSpec.describe 'User interacts with lessons' do
       let(:subject) { create :subject, subject_name: 'Feature Testing III' }
 
       before :each do
-        create :student, first_name: 'Graden', last_name: 'Gradanovic', group: group
-        skill1 = create :skill_in_subject, skill_name: 'Featuring', subject: subject
-        skill2 = create :skill_in_subject, skill_name: 'Testing', subject: subject
+        create(:student, first_name: 'Graden', last_name: 'Gradanovic', group:)
+        skill1 = create(:skill_in_subject, skill_name: 'Featuring', subject:)
+        skill2 = create(:skill_in_subject, skill_name: 'Testing', subject:)
 
         create :grade_descriptor, mark: 1, grade_description: 'Mark One For Skill One', skill: skill1
         create :grade_descriptor, mark: 2, grade_description: 'Mark Two For Skill One', skill: skill1
         create :grade_descriptor, mark: 1, grade_description: 'Mark One For Skill Two', skill: skill2
         create :grade_descriptor, mark: 2, grade_description: 'Mark Two For Skill Two', skill: skill2
 
-        @lesson = create :lesson, subject: subject, group: group
+        @lesson = create :lesson, subject:, group:
       end
 
       it 'shows students grades in specific lesson', js: true do

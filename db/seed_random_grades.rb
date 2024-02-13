@@ -7,7 +7,7 @@ def seed_group_random_grades(group, subject)
     # rubocop:disable Rails/Output
     puts("Lesson: #{current_date} - Chapter: #{group.chapter.chapter_name} - Group: #{group.group_name}")
     # rubocop:enable Rails/Output
-    lesson = Lesson.create subject: subject, date: current_date, group: group
+    lesson = Lesson.create(subject:, date: current_date, group:)
 
     group.students.each do |student|
       seed_student_performance student, lesson
@@ -30,7 +30,7 @@ end
 def seed_student_grades(student, lesson)
   Grade.transaction do
     lesson.subject.skills.each do |skill|
-      Grade.create lesson: lesson, student: student, grade_descriptor: skill.grade_descriptors.sample
+      Grade.create lesson:, student:, grade_descriptor: skill.grade_descriptors.sample
     end
   end
 end

@@ -117,7 +117,7 @@ RSpec.describe User, type: :model do
 
     context 'user is a local administrator' do
       let(:organization) { create :organization }
-      let(:user) { create :admin_of, organization: organization }
+      let(:user) { create :admin_of, organization: }
 
       it 'is true for an organization the user is admin of' do
         expect(user.administrator?(organization)).to eq true

@@ -68,7 +68,7 @@ RSpec.shared_examples :it_can_add_local_role do
 
   context :grant_local_role_organization do
     let(:other_user) { create :user }
-    let(:membership) { Membership.new user: other_user, role: role, org: org }
+    let(:membership) { Membership.new user: other_user, role:, org: }
     it { is_expected.to permit_action :update }
   end
 end
@@ -78,7 +78,7 @@ RSpec.shared_examples :it_cannot_add_local_role do
 
   context :grant_local_role_organization do
     let(:other_user) { create :user }
-    let(:membership) { Membership.new user: other_user, role: role, org: org }
+    let(:membership) { Membership.new user: other_user, role:, org: }
     it { is_expected.to forbid_action :update }
   end
 end
@@ -87,8 +87,8 @@ RSpec.shared_examples :it_can_revoke_local_role do
   subject { MembershipPolicy.new user, membership }
 
   context :revoke_user_from_organization do
-    let(:other_user) { create :user_with_role, role: role, organization: org }
-    let(:membership) { Membership.new user: other_user, org: org }
+    let(:other_user) { create :user_with_role, role:, organization: org }
+    let(:membership) { Membership.new user: other_user, org: }
     it { is_expected.to permit_action :destroy }
   end
 end
@@ -97,8 +97,8 @@ RSpec.shared_examples :it_cannot_revoke_local_role do
   subject { MembershipPolicy.new user, membership }
 
   context :revoke_user_from_organization do
-    let(:other_user) { create :user_with_role, role: role, organization: org }
-    let(:membership) { Membership.new user: other_user, org: org }
+    let(:other_user) { create :user_with_role, role:, organization: org }
+    let(:membership) { Membership.new user: other_user, org: }
     it { is_expected.to forbid_action :destroy }
   end
 end
@@ -107,8 +107,8 @@ RSpec.shared_examples :it_cannot_change_local_role do
   subject { MembershipPolicy.new user, membership }
 
   context :change_local_role_for_user do
-    let(:other_user) { create :user_with_role, role: role, organization: org }
-    let(:membership) { Membership.new user: other_user, role: :guest, org: org }
+    let(:other_user) { create :user_with_role, role:, organization: org }
+    let(:membership) { Membership.new user: other_user, role: :guest, org: }
     it { is_expected.to forbid_action :update }
   end
 end
@@ -129,7 +129,7 @@ RSpec.shared_examples :it_can_add_global_role do
 
   context :grant_global_role_to_user do
     let(:other_user) { create :user }
-    let(:membership) { Membership.new user: other_user, role: role }
+    let(:membership) { Membership.new user: other_user, role: }
     it { is_expected.to permit_action :update_global_role }
   end
 end
@@ -138,7 +138,7 @@ RSpec.shared_examples :it_can_revoke_global_role do
   subject { MembershipPolicy.new user, membership }
 
   context :grant_global_role_to_user do
-    let(:other_user) { create :user_with_global_role, role: role }
+    let(:other_user) { create :user_with_global_role, role: }
     let(:membership) { Membership.new user: other_user }
     it { is_expected.to permit_action :revoke_global_role }
   end
@@ -149,7 +149,7 @@ RSpec.shared_examples :it_cannot_add_global_role do
 
   context :grant_global_role_to_user do
     let(:other_user) { create :user }
-    let(:membership) { Membership.new user: other_user, role: role }
+    let(:membership) { Membership.new user: other_user, role: }
     it { is_expected.to forbid_action :update_global_role }
   end
 end
@@ -158,7 +158,7 @@ RSpec.shared_examples :it_cannot_revoke_global_role do
   subject { MembershipPolicy.new user, membership }
 
   context :revoke_global_role_from_user do
-    let(:other_user) { create :user_with_global_role, role: role }
+    let(:other_user) { create :user_with_global_role, role: }
     let(:membership) { Membership.new user: other_user }
     it { is_expected.to forbid_action :revoke_global_role }
   end
@@ -168,7 +168,7 @@ RSpec.shared_examples :it_cannot_change_global_role do
   subject { MembershipPolicy.new user, membership }
 
   context :revoke_global_role_from_user do
-    let(:other_user) { create :user_with_global_role, role: role }
+    let(:other_user) { create :user_with_global_role, role: }
     let(:membership) { Membership.new user: other_user, role: :global_guest }
     it { is_expected.to forbid_action :update_global_role }
   end

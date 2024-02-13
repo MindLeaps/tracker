@@ -66,20 +66,20 @@ FactoryBot.define do
           )
           (0..evaluator.grades.values.map(&:length).max - 1).each do |i|
             date = 1.year.ago.to_date + i.days
-            existing_lesson = Lesson.find_by subject_id: subject.id, group_id: student.group.id, date: date
+            existing_lesson = Lesson.find_by(subject_id: subject.id, group_id: student.group.id, date:)
             skill_marks = evaluator.grades.transform_values { |v| v[i] }
             if existing_lesson
               skill_marks.each do |skill_name, mark|
-                skill = Skill.joins(:subjects).find_by skill_name: skill_name, 'subjects.id': subject.id
-                gd = GradeDescriptor.find_by skill: skill, mark: mark
+                skill = Skill.joins(:subjects).find_by skill_name:, 'subjects.id': subject.id
+                gd = GradeDescriptor.find_by(skill:, mark:)
                 create :grade, student_id: student.id, grade_descriptor: gd, lesson: existing_lesson
               end
             else
               create(
                 :lesson_with_grades,
-                subject: subject,
+                subject:,
                 group: student.group,
-                date: date,
+                date:,
                 student_grades: { student.id => skill_marks }
               )
             end

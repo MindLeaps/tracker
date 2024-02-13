@@ -241,7 +241,7 @@ RSpec.describe StudentsController, type: :controller do
 
     describe '#update' do
       let(:student) { create :student }
-      let(:image) { create :student_image, student: student }
+      let(:image) { create :student_image, student: }
 
       context 'redirects after successful update' do
         it 'redirects to student path if there is no redirect flash' do

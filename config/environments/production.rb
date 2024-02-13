@@ -79,12 +79,12 @@ Rails.application.configure do
   config.active_support.report_deprecations = false
 
   # Use default logging formatter so that PID and timestamp are not suppressed.
-  config.log_formatter = ::Logger::Formatter.new
+  config.log_formatter = Logger::Formatter.new
 
   config.rails_semantic_logger.add_file_appender = false
   config.semantic_logger.add_appender(io: $stdout, level: config.log_level, formatter: JsonLimitBacktrace.new)
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
-  OmniAuth.config.full_host = "https://#{ENV['DOMAIN']}"
+  OmniAuth.config.full_host = "https://#{ENV.fetch('DOMAIN', nil)}"
 end
