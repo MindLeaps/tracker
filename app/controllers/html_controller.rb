@@ -11,15 +11,15 @@ class HtmlController < ApplicationController
   # rubocop:enable Rails/LexicallyScopedActionFilter
   around_action :switch_locale
 
-  def switch_locale(&action)
+  def switch_locale(&)
     locale = params[:locale] || I18n.default_locale
-    I18n.with_locale(locale, &action)
+    I18n.with_locale(locale, &)
   end
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
-  def session_path(*args)
-    new_user_session_path(*args)
+  def session_path(*)
+    new_user_session_path(*)
   end
 
   def flash_redirect(destination)
@@ -50,25 +50,25 @@ class HtmlController < ApplicationController
   # rubocop:disable Metrics/ParameterLists
   def success(title:, text:, link_path: nil, link_text: nil, button_path: nil, button_text: nil, button_method: nil)
     flash[:success_notice] = {
-      title: title, text: text, link_path: link_path, link_text: link_text, button_path: button_path, button_method: button_method, button_text: button_text
+      title:, text:, link_path:, link_text:, button_path:, button_method:, button_text:
     }
   end
 
   def success_now(title:, text:, link_path: nil, link_text: nil, button_path: nil, button_text: nil, button_method: nil)
     flash.now[:success_notice] = {
-      title: title, text: text, link_path: link_path, link_text: link_text, button_path: button_path, button_method: button_method, button_text: button_text
+      title:, text:, link_path:, link_text:, button_path:, button_method:, button_text:
     }
   end
 
   def failure(title:, text:, link_path: nil, link_text: nil, button_path: nil, button_text: nil, button_method: nil)
     flash[:failure_notice] = {
-      title: title, text: text, link_path: link_path, link_text: link_text, button_path: button_path, button_method: button_method, button_text: button_text
+      title:, text:, link_path:, link_text:, button_path:, button_method:, button_text:
     }
   end
 
   def failure_now(title:, text:, link_path: nil, link_text: nil, button_path: nil, button_text: nil, button_method: nil)
     flash.now[:failure_notice] = {
-      title: title, text: text, link_path: link_path, link_text: link_text, button_path: button_path, button_method: button_method, button_text: button_text
+      title:, text:, link_path:, link_text:, button_path:, button_method:, button_text:
     }
   end
   # rubocop:enable Metrics/ParameterLists

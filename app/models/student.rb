@@ -66,7 +66,7 @@ class Student < ApplicationRecord
 
   delegate :group_name, to: :group, allow_nil: true
 
-  scope :by_group, ->(group_id) { where group_id: group_id }
+  scope :by_group, ->(group_id) { where group_id: }
 
   def proper_name
     "#{last_name}, #{first_name}"
@@ -90,7 +90,7 @@ class Student < ApplicationRecord
       errors.add(:mlid, I18n.t(:no_valid_mlid_without_group))
       return
     end
-    existing_mlid_students = Student.where(mlid: mlid, group_id: group_id).where.not(id: id).count
+    existing_mlid_students = Student.where(mlid:, group_id:).where.not(id:).count
     return if existing_mlid_students.zero?
 
     errors.add(:mlid, I18n.t(:duplicate_mlid))

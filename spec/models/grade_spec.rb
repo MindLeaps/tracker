@@ -44,8 +44,8 @@ RSpec.describe Grade, type: :model do
     describe 'uniqueness' do
       before :each do
         group = create :group
-        @student = create :student, group: group
-        @lesson = create :lesson, group: group
+        @student = create(:student, group:)
+        @lesson = create(:lesson, group:)
         @grade_descriptor = create :grade_descriptor
 
         @existing_grade = create :grade, lesson: @lesson, student: @student, grade_descriptor: @grade_descriptor

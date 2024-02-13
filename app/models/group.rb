@@ -35,7 +35,7 @@ class Group < ApplicationRecord
 
   delegate :chapter_name, to: :chapter, allow_nil: true
 
-  scope :by_chapter, ->(chapter_id) { where chapter_id: chapter_id }
+  scope :by_chapter, ->(chapter_id) { where chapter_id: }
 
   def group_chapter_name
     "#{group_name} - #{chapter_name}"

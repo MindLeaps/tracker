@@ -34,7 +34,7 @@ module Analytics
               lineWidth: 1
             }
           }
-          { group: "#{t(:group)} #{summaries[0].group_chapter_name}", series: group_series, group_id: group_id }
+          { group: "#{t(:group)} #{summaries[0].group_chapter_name}", series: group_series, group_id: }
         end
         .sort_by { |e| e[:group_id] }
     end

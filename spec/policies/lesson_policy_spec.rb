@@ -84,7 +84,7 @@ RSpec.describe LessonPolicy do
     context 'as a Local Administrator' do
       let(:org) { create :organization }
       let(:chapter) { create :chapter, organization: org }
-      let(:group) { create :group, chapter: chapter }
+      let(:group) { create :group, chapter: }
       let(:current_user) { create :admin_of, organization: org }
 
       context 'on a Lesson Resource' do
@@ -93,7 +93,7 @@ RSpec.describe LessonPolicy do
       end
 
       context 'on a lesson inside own\'s organization' do
-        let(:lesson) { create :lesson, group: group }
+        let(:lesson) { create :lesson, group: }
         it { is_expected.to permit_action :show }
       end
 
@@ -103,7 +103,7 @@ RSpec.describe LessonPolicy do
       end
 
       context 'on a new lesson in own organization' do
-        let(:lesson) { build :lesson, group: group }
+        let(:lesson) { build :lesson, group: }
         it { is_expected.to permit_action :create }
       end
 
@@ -116,7 +116,7 @@ RSpec.describe LessonPolicy do
     context 'as a Local Teacher' do
       let(:org) { create :organization }
       let(:chapter) { create :chapter, organization: org }
-      let(:group) { create :group, chapter: chapter }
+      let(:group) { create :group, chapter: }
       let(:current_user) { create :teacher_in, organization: org }
 
       context 'on a User Resource' do
@@ -125,7 +125,7 @@ RSpec.describe LessonPolicy do
       end
 
       context 'on a lesson inside own\'s organization' do
-        let(:lesson) { create :lesson, group: group }
+        let(:lesson) { create :lesson, group: }
         it { is_expected.to permit_action :show }
       end
 
@@ -135,7 +135,7 @@ RSpec.describe LessonPolicy do
       end
 
       context 'on a new lesson in own organization' do
-        let(:lesson) { build :lesson, group: group }
+        let(:lesson) { build :lesson, group: }
         it { is_expected.to permit_action :create }
       end
 
@@ -148,7 +148,7 @@ RSpec.describe LessonPolicy do
     context 'as a Local Guest' do
       let(:org) { create :organization }
       let(:chapter) { create :chapter, organization: org }
-      let(:group) { create :group, chapter: chapter }
+      let(:group) { create :group, chapter: }
       let(:current_user) { create :guest_in, organization: org }
 
       context 'on a User Resource' do
@@ -157,7 +157,7 @@ RSpec.describe LessonPolicy do
       end
 
       context 'on a lesson inside own\'s organization' do
-        let(:lesson) { create :lesson, group: group }
+        let(:lesson) { create :lesson, group: }
         it { is_expected.to permit_action :show }
       end
 
@@ -167,7 +167,7 @@ RSpec.describe LessonPolicy do
       end
 
       context 'on a new lesson in own organization' do
-        let(:lesson) { build :lesson, group: group }
+        let(:lesson) { build :lesson, group: }
         it { is_expected.to forbid_action :create }
       end
 
@@ -180,7 +180,7 @@ RSpec.describe LessonPolicy do
     context 'as a Local Researcher' do
       let(:org) { create :organization }
       let(:chapter) { create :chapter, organization: org }
-      let(:group) { create :group, chapter: chapter }
+      let(:group) { create :group, chapter: }
       let(:current_user) { create :researcher_in, organization: org }
 
       context 'on a User Resource' do
@@ -189,7 +189,7 @@ RSpec.describe LessonPolicy do
       end
 
       context 'on a lesson inside own\'s organization' do
-        let(:lesson) { create :lesson, group: group }
+        let(:lesson) { create :lesson, group: }
         it { is_expected.to permit_action :show }
       end
 
@@ -199,7 +199,7 @@ RSpec.describe LessonPolicy do
       end
 
       context 'on a new lesson in own organization' do
-        let(:lesson) { build :lesson, group: group }
+        let(:lesson) { build :lesson, group: }
         it { is_expected.to forbid_action :create }
       end
 

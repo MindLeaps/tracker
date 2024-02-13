@@ -16,10 +16,10 @@ RSpec.describe StudentLessonsController, type: :controller do
     describe 'grading' do
       before :each do
         group = create :group, group_name: 'Student Grades Spec Group'
-        @student = create :student, first_name: 'Graden', last_name: 'Gradanovic', group: group
+        @student = create(:student, first_name: 'Graden', last_name: 'Gradanovic', group:)
         sub = create :subject, subject_name: 'Student Grades Testing'
         @skill = create :skill_in_subject, skill_name: 'Controller Test I', subject: sub
-        @lesson = create :lesson, subject: sub, group: group
+        @lesson = create(:lesson, subject: sub, group:)
         @gd1 = create :grade_descriptor, mark: 1, grade_description: 'Mark One For Skill One', skill: @skill
         @gd2 = create :grade_descriptor, mark: 2, grade_description: 'Mark Two For Skill One', skill: @skill
       end

@@ -70,8 +70,8 @@ RSpec.describe StudentLesson, type: :model do
     before :each do
       @subject = create :subject_with_mindleaps_skills
       group = create :group
-      @student = create :student, group: group
-      @lesson = create :lesson, group: group, subject: @subject
+      @student = create(:student, group:)
+      @lesson = create :lesson, group:, subject: @subject
 
       @student_lesson = StudentLesson.find_by student: @student, lesson: @lesson
     end
@@ -91,8 +91,8 @@ RSpec.describe StudentLesson, type: :model do
     before :each do
       @subject = create :subject_with_mindleaps_skills
       group = create :group
-      @student = create :student, group: group
-      @lesson = create :lesson, group: group, subject: @subject
+      @student = create(:student, group:)
+      @lesson = create :lesson, group:, subject: @subject
 
       @student_lesson = StudentLesson.find_by student: @student, lesson: @lesson
     end

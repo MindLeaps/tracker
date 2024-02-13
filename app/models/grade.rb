@@ -41,9 +41,9 @@ class Grade < ApplicationRecord
   belongs_to :grade_descriptor
   belongs_to :skill
 
-  scope :by_student, ->(student_id) { where student_id: student_id }
+  scope :by_student, ->(student_id) { where student_id: }
 
-  scope :by_lesson, ->(lesson_id) { where lesson_id: lesson_id }
+  scope :by_lesson, ->(lesson_id) { where lesson_id: }
 
   scope :exclude_deleted_students, -> { joins(:student).where students: { deleted_at: nil } }
 
@@ -67,8 +67,8 @@ class Grade < ApplicationRecord
 
   def find_duplicate
     Grade.joins(:grade_descriptor)
-         .where(student: student, lesson: lesson, skill_id: skill_id)
-         .where.not(id: id)
+         .where(student:, lesson:, skill_id:)
+         .where.not(id:)
          .take
   end
 

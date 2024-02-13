@@ -29,7 +29,7 @@ class Organization < ApplicationRecord
   def add_user_with_role(email, role)
     return false unless Role::LOCAL_ROLES.key? role
 
-    user = User.find_or_create_by!(email: email)
+    user = User.find_or_create_by!(email:)
     return false if user.member_of?(self)
 
     RoleService.update_local_role user, role, self

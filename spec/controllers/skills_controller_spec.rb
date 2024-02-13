@@ -147,7 +147,7 @@ RSpec.describe SkillsController, type: :controller do
       context 'Skill that belongs to a Subject but has no grades' do
         before :each do
           subject = create :subject
-          @skill = create :skill_in_subject, subject: subject
+          @skill = create(:skill_in_subject, subject:)
           request.env['HTTP_REFERER'] = 'http://example.com/skills?param=1'
 
           delete :destroy, params: {

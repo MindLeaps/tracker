@@ -41,7 +41,7 @@ class GroupLessonSummary < ApplicationRecord
     return [] if result == []
 
     result[
-      [[index - (number_of_elements / 2), 0].max, result.size - number_of_elements].min,
+      (index - (number_of_elements / 2)).clamp(0, result.size - number_of_elements),
       number_of_elements
     ]
   end

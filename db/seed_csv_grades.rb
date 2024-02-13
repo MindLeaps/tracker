@@ -56,10 +56,10 @@ class CSVDataSeeder
       mlid: id,
       first_name: Faker::Name.first_name,
       last_name: Faker::Name.last_name,
-      gender: gender,
+      gender:,
       dob: age.years.ago,
       estimated_dob: 'true',
-      group: group
+      group:
     )
   end
 
@@ -67,7 +67,7 @@ class CSVDataSeeder
     d = parse_date(date)
     # rubocop:disable Rails/Output
     @lessons[:"#{group.id}-#{date}"] ||=
-      puts("Lesson: #{d} - Chapter: #{group.chapter.chapter_name} - Group: #{group.group_name}") || Lesson.create(group: group, date: d, subject: @subject)
+      puts("Lesson: #{d} - Chapter: #{group.chapter.chapter_name} - Group: #{group.group_name}") || Lesson.create(group:, date: d, subject: @subject)
     # rubocop:enable Rails/Output
   end
 
@@ -96,7 +96,7 @@ class CSVDataSeeder
 
       skill_id = get_skill_id skill_name
       gd = get_gd skill_id, mark
-      new_grades << Grade.new(lesson: lesson, student: student, grade_descriptor: gd)
+      new_grades << Grade.new(lesson:, student:, grade_descriptor: gd)
     end
     Grade.transaction do
       new_grades.each(&:save!)
@@ -108,6 +108,6 @@ class CSVDataSeeder
   end
 
   def get_gd(skill_id, mark)
-    @gds[:"#{skill_id}-#{mark}"] ||= GradeDescriptor.where(skill_id: skill_id, mark: mark).first
+    @gds[:"#{skill_id}-#{mark}"] ||= GradeDescriptor.where(skill_id:, mark:).first
   end
 end

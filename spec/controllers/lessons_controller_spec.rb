@@ -37,12 +37,12 @@ RSpec.describe LessonsController, type: :controller do
         gd1 = create :grade_descriptor, skill: lesson.subject.skills[0], mark: 1
         gd2 = create :grade_descriptor, skill: lesson.subject.skills[1], mark: 2
         gd3 = create :grade_descriptor, skill: lesson.subject.skills[2], mark: 3
-        create :grade, lesson: lesson, student: @active_student1, grade_descriptor: gd1
-        create :grade, lesson: lesson, student: @active_student1, grade_descriptor: gd2
+        create :grade, lesson:, student: @active_student1, grade_descriptor: gd1
+        create :grade, lesson:, student: @active_student1, grade_descriptor: gd2
 
-        create :grade, lesson: lesson, student: @active_student2, grade_descriptor: gd1
-        create :grade, lesson: lesson, student: @active_student2, grade_descriptor: gd2
-        create :grade, lesson: lesson, student: @active_student2, grade_descriptor: gd3
+        create :grade, lesson:, student: @active_student2, grade_descriptor: gd1
+        create :grade, lesson:, student: @active_student2, grade_descriptor: gd2
+        create :grade, lesson:, student: @active_student2, grade_descriptor: gd3
         get :show, params: { id: lesson.id }
       end
 

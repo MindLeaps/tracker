@@ -80,7 +80,7 @@ RSpec.describe GroupPolicy do
 
       context 'on an existing group in the user\'s organization' do
         let(:chapter) { create :chapter, organization: org }
-        let(:resource) { create :group, chapter: chapter }
+        let(:resource) { create :group, chapter: }
 
         it { is_expected.to permit_actions %i[show destroy undelete] }
         it { is_expected.to permit_edit_and_update_actions }
@@ -88,7 +88,7 @@ RSpec.describe GroupPolicy do
 
       context 'on an existing group in a different organization' do
         let(:chapter) { create :chapter, organization: create(:organization) }
-        let(:resource) { create :group, chapter: chapter }
+        let(:resource) { create :group, chapter: }
 
         it { is_expected.to forbid_actions %i[show destroy undelete] }
         it { is_expected.to forbid_edit_and_update_actions }
@@ -96,7 +96,7 @@ RSpec.describe GroupPolicy do
 
       context 'creating a new group in own organization' do
         let(:chapter) { create :chapter, organization: org }
-        let(:resource) { build :group, chapter: chapter }
+        let(:resource) { build :group, chapter: }
 
         it { is_expected.to permit_new_and_create_actions }
       end
@@ -115,7 +115,7 @@ RSpec.describe GroupPolicy do
 
       context 'on an existing group in own organization' do
         let(:chapter) { create :chapter, organization: org }
-        let(:resource) { create :group, chapter: chapter }
+        let(:resource) { create :group, chapter: }
 
         it { is_expected.to permit_actions %i[show destroy undelete] }
         it { is_expected.to permit_edit_and_update_actions }
@@ -123,7 +123,7 @@ RSpec.describe GroupPolicy do
 
       context 'on an existing group in a different organization' do
         let(:chapter) { create :chapter, organization: create(:organization) }
-        let(:resource) { create :group, chapter: chapter }
+        let(:resource) { create :group, chapter: }
 
         it { is_expected.to forbid_actions %i[show destroy undelete] }
         it { is_expected.to forbid_edit_and_update_actions }
@@ -131,7 +131,7 @@ RSpec.describe GroupPolicy do
 
       context 'creating a new group in own organization' do
         let(:chapter) { create :chapter, organization: org }
-        let(:resource) { build :group, chapter: chapter }
+        let(:resource) { build :group, chapter: }
 
         it { is_expected.to permit_new_and_create_actions }
       end
@@ -150,7 +150,7 @@ RSpec.describe GroupPolicy do
 
       context 'on an existing group in own organization' do
         let(:chapter) { create :chapter, organization: org }
-        let(:resource) { create :group, chapter: chapter }
+        let(:resource) { create :group, chapter: }
 
         it { is_expected.to permit_action :show }
         it { is_expected.to forbid_actions %i[destroy undelete] }
@@ -159,7 +159,7 @@ RSpec.describe GroupPolicy do
 
       context 'on an existing group in a different organization' do
         let(:chapter) { create :chapter, organization: create(:organization) }
-        let(:resource) { create :group, chapter: chapter }
+        let(:resource) { create :group, chapter: }
 
         it { is_expected.to forbid_actions %i[show destroy undelete] }
         it { is_expected.to forbid_edit_and_update_actions }
@@ -167,7 +167,7 @@ RSpec.describe GroupPolicy do
 
       context 'creating a new group in own organization' do
         let(:chapter) { create :chapter, organization: org }
-        let(:resource) { build :group, chapter: chapter }
+        let(:resource) { build :group, chapter: }
 
         it { is_expected.to forbid_new_and_create_actions }
       end
@@ -186,7 +186,7 @@ RSpec.describe GroupPolicy do
 
       context 'on an existing group in own organization' do
         let(:chapter) { create :chapter, organization: org }
-        let(:resource) { create :group, chapter: chapter }
+        let(:resource) { create :group, chapter: }
 
         it { is_expected.to permit_action :show }
         it { is_expected.to forbid_actions %i[destroy undelete] }
@@ -195,7 +195,7 @@ RSpec.describe GroupPolicy do
 
       context 'on an existing group in a different organization' do
         let(:chapter) { create :chapter, organization: create(:organization) }
-        let(:resource) { create :group, chapter: chapter }
+        let(:resource) { create :group, chapter: }
 
         it { is_expected.to forbid_actions %i[show destroy undelete] }
         it { is_expected.to forbid_edit_and_update_actions }
@@ -203,7 +203,7 @@ RSpec.describe GroupPolicy do
 
       context 'creating a new group in own organization' do
         let(:chapter) { create :chapter, organization: org }
-        let(:resource) { build :group, chapter: chapter }
+        let(:resource) { build :group, chapter: }
 
         it { is_expected.to forbid_new_and_create_actions }
       end

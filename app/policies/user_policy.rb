@@ -39,6 +39,6 @@ class UserPolicy < ApplicationPolicy
   private
 
   def users_in_same_org?
-    !(user.roles.pluck(:resource_id) & record.roles.pluck(:resource_id)).empty?
+    !!user.roles.pluck(:resource_id).intersect?(record.roles.pluck(:resource_id))
   end
 end

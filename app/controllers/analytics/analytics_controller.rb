@@ -20,7 +20,7 @@ module Analytics
     end
 
     def find_resource_by_id_param(id, resource_class)
-      return resource_class.where(id: id) unless all_selected?(id)
+      return resource_class.where(id:) unless all_selected?(id)
       return policy_scope(yield resource_class) if block_given?
 
       policy_scope resource_class

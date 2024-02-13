@@ -4,18 +4,16 @@ class StudentLessonsController < HtmlController
   def show
     lesson = lesson_from_param
     authorize lesson, :show?
-    @student_lesson = StudentLesson.new student_id: params.require(:id), lesson: lesson
+    @student_lesson = StudentLesson.new(student_id: params.require(:id), lesson:)
     @absent = lesson.absences.map(&:student_id).include? @student_lesson.student_id
-    respond_to do |format|
-      format.turbo_stream
-    end
+    respond_to(&:turbo_stream)
   end
 
   def update
     lesson = Lesson.find params.require(:lesson_id)
     authorize lesson, :create?
 
-    student_lesson = StudentLesson.new(student_id: params.require(:id), lesson: lesson)
+    student_lesson = StudentLesson.new(student_id: params.require(:id), lesson:)
     student_lesson.perform_grading format_attributes, student_absent?
 
     success(title: t(:student_graded), text: t(:student_graded_text, student: student_lesson.student.proper_name))

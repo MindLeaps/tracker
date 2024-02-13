@@ -12,8 +12,8 @@ RSpec.describe StudentTagsController, type: :controller do
 
     describe '#index' do
       before :each do
-        @tag1 = create :tag, organization: organization
-        @tag2 = create :tag, organization: organization
+        @tag1 = create(:tag, organization:)
+        @tag2 = create :tag, organization:
       end
 
       context 'regular visit' do

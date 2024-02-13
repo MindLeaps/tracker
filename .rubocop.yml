@@ -41,6 +41,9 @@ Metrics/AbcSize:
 
 Metrics/MethodLength:
   Max: 13
+  Exclude:
+    - db/migrate/*
+    - app/lib/sql.rb
 
 Style/Documentation:
   Enabled: false
