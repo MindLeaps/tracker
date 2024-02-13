@@ -1,3 +1,6 @@
+## Unreleased
+- Upgraded Ruby to 3.3.0
+
 ## 0.31.0 - Redesign
 - Redesigned the whole application
 - Implemented Organization editing
