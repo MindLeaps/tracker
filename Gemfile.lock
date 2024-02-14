@@ -461,7 +461,7 @@ GEM
       devise (>= 4.0.0.rc1, < 5)
     tilt (2.0.11)
     timeout (0.4.1)
-    turbo-rails (1.5.0)
+    turbo-rails (2.0.2)
       actionpack (>= 6.0.0)
       activejob (>= 6.0.0)
       railties (>= 6.0.0)
