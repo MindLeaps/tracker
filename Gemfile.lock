@@ -453,7 +453,7 @@ GEM
     ssrf_filter (1.0.7)
     stimulus-rails (1.2.1)
       railties (>= 6.0.0)
-    tailwindcss-rails (2.0.14)
+    tailwindcss-rails (2.3.0)
       railties (>= 6.0.0)
     thor (1.3.0)
     tiddle (1.8.0)
