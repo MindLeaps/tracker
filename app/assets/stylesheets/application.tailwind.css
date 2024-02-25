@@ -146,12 +146,12 @@
     @apply font-medium;
     @apply text-gray-700;
   }
+}
 
-  .validation-error {
-    @apply mt-1;
-    @apply text-sm;
-    @apply text-red-600;
-  }
+.validation-error {
+  @apply mt-1;
+  @apply text-sm;
+  @apply text-red-600;
 }
 
 .awesomplete [hidden] {
