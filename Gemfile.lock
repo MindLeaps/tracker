@@ -419,7 +419,7 @@ GEM
       actionpack (>= 5.2)
       activemodel (>= 5.2)
     simple_po_parser (1.1.6)
-    skylight (5.3.4)
+    skylight (6.0.3)
       activesupport (>= 5.2.0)
     smarter_csv (1.10.1)
     snaky_hash (2.0.0)
