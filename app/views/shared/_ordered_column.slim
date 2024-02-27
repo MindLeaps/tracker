@@ -1,6 +1,0 @@
-th class=('mdl-data-table__cell--non-numeric' unless local_assigns.fetch(:numeric, false))
-  = link_to order_parameters(order_key), id: "#{order_key}-order" do
-    = column_name
-    = inline_svg_tag order_icon(order_key)
-  .mdl-tooltip data-mdl-for="#{order_key}-order"
-    = "Change order to #{column_name} #{order_for(order_key) == 'asc' ? 'Descending' : 'Ascending'}"
