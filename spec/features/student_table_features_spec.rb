@@ -47,10 +47,10 @@ RSpec.describe 'User searches and navigates through students table', js: true do
       expect(page).to have_selector('.student-row', count: 50)
       find('.next-page').click
       expect(page).to have_selector('.student-row', count: 3)
-      find('#search-field').send_keys('test_prefix_Amb', :enter, wait: 5)
+      find('#search-field').send_keys('test_prefix_Amb', :enter)
       expect(page).to have_selector('.student-row', count: 1)
       find('#search-field').send_keys([:backspace] * 15, :enter)
-      expect(page).to have_selector('.student-row', count: 50, wait: 5)
+      expect(page).to have_selector('.student-row', count: 50)
       find('.next-page').click
       expect(page).to have_selector('.student-row', count: 3)
     end
