@@ -1,6 +1,7 @@
 ## Unreleased
 - Upgraded Ruby to 3.3.0
 - Fixed #1805 - made sure to display form validation errors in red
+- Fixed #1804 - defaulting student DOB to January 1st
 
 ## 0.31.0 - Redesign
 - Redesigned the whole application
