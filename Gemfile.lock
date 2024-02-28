@@ -409,9 +409,6 @@ GEM
       concurrent-ruby (~> 1.0)
     shoulda-matchers (5.3.0)
       activesupport (>= 5.2.0)
-    simple_form (5.1.0)
-      actionpack (>= 5.2)
-      activemodel (>= 5.2)
     simple_po_parser (1.1.6)
     skylight (6.0.4)
       activesupport (>= 5.2.0)
@@ -523,7 +520,6 @@ DEPENDENCIES
   scenic
   selenium-webdriver
   shoulda-matchers
-  simple_form
   skylight
   smarter_csv
   sort_alphabetical
