@@ -31,7 +31,6 @@ gem 'rails-i18n'
 gem 'rails_semantic_logger'
 gem 'rolify'
 gem 'scenic'
-gem 'simple_form'
 gem 'skylight'
 gem 'sort_alphabetical'
 gem 'sprockets-rails'
@@ -54,7 +53,6 @@ group :development, :test do
   gem 'rubocop-rails'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
-  gem 'rails_spotlight'
 
   # Rspec requires capybara > 2.1
   gem 'capybara', '> 2.1'
@@ -75,10 +73,8 @@ group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'dotenv-rails'
-  gem 'web-console' # Access an IRB console on exception pages or by using <%= console %> in views
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'pry'
-  gem 'solargraph'
   gem 'spring'
 end
