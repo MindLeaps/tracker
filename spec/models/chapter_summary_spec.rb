@@ -59,9 +59,9 @@ RSpec.describe ChapterSummary, type: :model do
 
   describe 'search' do
     before :each do
-      @chapter1 = create :chapter, chapter_name: 'Abisamol', mlid: 'A1'
-      @chapter2 = create :chapter, chapter_name: 'Abisouena', mlid: 'C3'
-      @chapter3 = create :chapter, chapter_name: 'Milatava', mlid: 'MI'
+      @chapter1 = create :chapter, chapter_name: 'Abisamol', mlid: 'A1', organization: create(:organization, organization_name: 'Zugara')
+      @chapter2 = create :chapter, chapter_name: 'Abisouena', mlid: 'C3', organization: create(:organization, organization_name: 'Aramada')
+      @chapter3 = create :chapter, chapter_name: 'Milatava', mlid: 'MI', organization: create(:organization, organization_name: 'Zongorozni')
       @chapter4 = create :chapter, chapter_name: 'Zombara', mlid: 'Z9', organization: create(:organization, organization_name: 'Xibalba')
     end
 
