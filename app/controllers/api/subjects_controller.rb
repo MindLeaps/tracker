@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Api
   class SubjectsController < ApiController
     has_scope :after_timestamp

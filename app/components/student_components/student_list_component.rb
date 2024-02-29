@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class StudentComponents::StudentListComponent < ViewComponent::Base
   delegate :student_group_name, to: :helpers
 

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class MindleapsIdService
   class << self
     def generate_organization_mlid

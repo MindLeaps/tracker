@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class CommonComponents::CheckboxLink < ViewComponent::Base
   include ApplicationHelper
   erb_template <<~ERB

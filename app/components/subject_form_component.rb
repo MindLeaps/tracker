@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class SubjectFormComponent < ViewComponent::Base
   include Turbo::FramesHelper
   erb_template <<~ERB

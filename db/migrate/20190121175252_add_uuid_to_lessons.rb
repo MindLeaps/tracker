@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class AddUuidToLessons < ActiveRecord::Migration[5.2]
   def up
     add_column :lessons, :uid, :uuid, null: false, default: 'uuid_generate_v4()'

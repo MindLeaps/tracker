@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class StudentFormComponent < ViewComponent::Base
   attr_reader :chapter_groups, :permitted_tags
 

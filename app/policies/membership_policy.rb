@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class MembershipPolicy < ApplicationPolicy
   def update?
     @user.global_administrator? || @user.is_admin_of?(@record.org)

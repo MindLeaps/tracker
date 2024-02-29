@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Helpers
   # Poltergeist does not want to click overlapping elements, including our fancy checkbox, so we need to use .trigger there to force it
   # Other drivers, like chrome, do not support trigger method

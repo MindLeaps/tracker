@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class TableComponents::OrganizationRow < TableComponents::BaseRow
   erb_template <<~ERB
     <div class="<%= 'shaded-row' if shaded? %> table-row-wrapper organization-row">

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class TableComponents::LessonRow < TableComponents::BaseRow
   def self.columns
     [

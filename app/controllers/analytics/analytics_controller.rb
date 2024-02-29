@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Analytics
   class AnalyticsController < ::HtmlController
     protect_from_forgery with: :exception

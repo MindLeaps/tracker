@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class StudentTagFormComponent < ViewComponent::Base
   def initialize(tag:, action:, current_user:, cancel: false)
     @tag = tag

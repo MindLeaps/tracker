@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class StudentImageUploader < CarrierWave::Uploader::Base
   include CarrierWave::MiniMagick
   include CarrierWave::ImageOptimizer

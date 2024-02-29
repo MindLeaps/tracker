@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class TableComponents::StudentPerformanceRow < TableComponents::BaseRow
   def initialize(item:, item_counter:, pagy:, skill_ids:)
     super(item:, item_counter:, pagy:)

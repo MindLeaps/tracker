@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class AddSkillAndMarkToGrades < ActiveRecord::Migration[5.2]
   def up
     add_reference :grades, :skill, foreign_key: true

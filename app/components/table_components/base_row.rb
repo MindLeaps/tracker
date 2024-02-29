@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class TableComponents::BaseRow < ViewComponent::Base
   with_collection_parameter :item
 

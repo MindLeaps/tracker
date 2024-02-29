@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class SearchFormComponent < ViewComponent::Base
   attr_reader
   def initialize(search:, query_parameters:, autofocus: true)

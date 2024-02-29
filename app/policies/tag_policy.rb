@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class TagPolicy < ApplicationPolicy
   class Scope
     attr_reader :user, :scope

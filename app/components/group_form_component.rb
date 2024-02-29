@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class GroupFormComponent < ViewComponent::Base
   attr_reader :org_chapters
 

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require_relative 'seed_skills'
 require_relative 'seed_random_grades'
 require_relative 'seed_csv_grades'

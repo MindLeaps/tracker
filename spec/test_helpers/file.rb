@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Helpers
   def test_image_path
     Rails.root.join('spec/images/student_image.png')

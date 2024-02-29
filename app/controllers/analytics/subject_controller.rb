@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Analytics
   class SubjectController < AnalyticsController
     # rubocop:disable Metrics/PerceivedComplexity

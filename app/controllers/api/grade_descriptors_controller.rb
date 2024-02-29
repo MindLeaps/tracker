@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Api
   class GradeDescriptorsController < ApiController
     has_scope :after_timestamp

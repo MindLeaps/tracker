@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class CommonComponents::TableNavigation < ViewComponent::Base
   def initialize(pagy:, resource:, span:, search: nil, options: [])
     @resource = resource

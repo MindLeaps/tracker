@@ -18,6 +18,9 @@ Metrics/BlockLength:
     - spec/**/*
     - config/**/*
 
+Style/FrozenStringLiteralComment:
+  EnforcedStyle: never
+
 Metrics/ClassLength:
   CountAsOne: ['array', 'heredoc', 'hash']
 

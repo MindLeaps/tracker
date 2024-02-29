@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class CommonComponents::PaginationComponent < ViewComponent::Base
   delegate :pagy_url_for, to: :helpers
   def initialize(pagy:)

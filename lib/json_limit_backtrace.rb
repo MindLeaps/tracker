@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class JsonLimitBacktrace < SemanticLogger::Formatters::Json
   def exception
     return unless log.exception

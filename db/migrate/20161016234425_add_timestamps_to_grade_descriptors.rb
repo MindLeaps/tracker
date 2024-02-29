@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class AddTimestampsToGradeDescriptors < ActiveRecord::Migration[5.0]
   def change
     add_column :grade_descriptors, :created_at, :datetime

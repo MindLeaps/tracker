@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class LessonsController < HtmlController
   include Pagy::Backend
   has_scope :exclude_deleted, type: :boolean

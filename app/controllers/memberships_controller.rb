@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class MembershipsController < HtmlController
   def update
     @user = User.find params.require :user_id
