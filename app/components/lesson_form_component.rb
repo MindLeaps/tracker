@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class LessonFormComponent < ViewComponent::Base
   class ChapterGroups
     attr_reader :groups, :chapter_display

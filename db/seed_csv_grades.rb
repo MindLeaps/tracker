@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'smarter_csv'
 
 class CSVDataSeeder

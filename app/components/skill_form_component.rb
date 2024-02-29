@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class SkillFormComponent < ViewComponent::Base
   include Turbo::FramesHelper
   def initialize(skill:, action:, current_user:)

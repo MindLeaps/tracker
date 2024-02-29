@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class CommonComponents::TagLabel < ViewComponent::Base
   def initialize(label:, img_src:)
     @label = label

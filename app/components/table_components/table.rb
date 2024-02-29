@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class TableComponents::Table < ViewComponent::Base
   delegate :excluding_deleted?, :show_deleted_url, :student_group_name, :policy, to: :helpers
   renders_one :left

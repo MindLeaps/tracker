@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class ChapterFormComponent < ViewComponent::Base
   attr_reader :permitted_organizations
 

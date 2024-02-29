@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class TableComponents::Column < ViewComponent::Base
   delegate :order_parameters, :order_icon, :order_for, to: :helpers
   with_collection_parameter :column

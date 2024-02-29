@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 Rails.application.routes.draw do
   mount MindleapsAnalytics::Engine, at: '/analytics' if defined?(MindleapsAnalytics)
 

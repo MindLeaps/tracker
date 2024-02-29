@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # rubocop:disable Layout/LineLength
 # rubocop:disable Metrics/MethodLength
 def seed_mindleaps_skills(organization)

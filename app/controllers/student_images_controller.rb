@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class StudentImagesController < HtmlController
   def create
     @student = Student.find params.require(:student_id)

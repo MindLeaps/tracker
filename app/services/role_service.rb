@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class RoleService
   class << self
     def update_global_role(user, new_role)

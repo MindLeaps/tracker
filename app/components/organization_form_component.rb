@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class OrganizationFormComponent < ViewComponent::Base
   attr_reader :mlid
 

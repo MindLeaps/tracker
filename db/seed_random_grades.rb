@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 def seed_group_random_grades(group, subject)
   current_date = 6.months.ago
 

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class SubjectPolicy < ApplicationPolicy
   def index?
     true

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class LessonPolicy < ApplicationPolicy
   def index?
     true

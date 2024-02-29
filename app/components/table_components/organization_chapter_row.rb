@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class TableComponents::OrganizationChapterRow < TableComponents::BaseRow
   erb_template <<~ERB
     <div class="<%= 'shaded-row' if shaded? %> <%= 'deleted-row' if @item.deleted_at? %> table-row-wrapper chapter-row">

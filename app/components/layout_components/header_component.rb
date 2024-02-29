@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class LayoutComponents::HeaderComponent < LayoutComponents::SidebarComponent
   include ApplicationHelper
   renders_one :left

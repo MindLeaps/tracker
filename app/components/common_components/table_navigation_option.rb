@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class CommonComponents::TableNavigationOption < ViewComponent::Base
   with_collection_parameter :option
 

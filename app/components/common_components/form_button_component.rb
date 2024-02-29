@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class CommonComponents::FormButtonComponent < ViewComponent::Base
   def initialize(label:, method:, path: nil, params: nil, options: {})
     @label = label

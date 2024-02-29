@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Sql
   def self.performance_per_skill_in_lessons_per_student_query(student_ids)
     <<~SQL.squish

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Api
   class GroupsController < ApiController
     has_scope :after_timestamp

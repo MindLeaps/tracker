@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class ValidationErrorComponent < ViewComponent::Base
   erb_template <<~ERB
     <% @errors.each do |e| %>

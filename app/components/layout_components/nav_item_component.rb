@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class LayoutComponents::NavItemComponent < ViewComponent::Base
   def initialize(name:, url:, svg_icon: nil)
     @name = name

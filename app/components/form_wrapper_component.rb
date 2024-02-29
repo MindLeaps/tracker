@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class FormWrapperComponent < ViewComponent::Base
   renders_one :form_content
 

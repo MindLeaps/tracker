@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Helpers
   def get_v2_with_token(*args)
     get_with_token(*merge_version_header(args))

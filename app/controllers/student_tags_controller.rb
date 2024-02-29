@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class StudentTagsController < HtmlController
   include Pagy::Backend
   has_scope :table_order, only: [:index, :show], type: :hash

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class StudentLessonsController < HtmlController
   def show
     lesson = lesson_from_param
