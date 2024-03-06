@@ -41,12 +41,12 @@ class StudentLesson < ApplicationRecord
 
   def update_absence(new_absence)
     Absence.transaction do
-      return if student_absent? == new_absence
-
-      if new_absence
-        Absence.create(student_id:, lesson:)
-      else
-        Absence.find_by(student_id:, lesson_id:).destroy!
+      unless student_absent? == new_absence
+        if new_absence
+          Absence.create(student_id:, lesson:)
+        else
+          Absence.find_by(student_id:, lesson_id:).destroy!
+        end
       end
     end
   end

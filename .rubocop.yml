@@ -60,6 +60,14 @@ Rails:
 Rails/BulkChangeTable:
   Enabled: false
 
+Rails/ActionControllerFlashBeforeRender:
+  Enabled: false
+
+Rails/ThreeStateBooleanColumn:
+  Exclude:
+    - db/migrate/20160901192307_add_health_to_students.rb
+    - db/migrate/20200619222042_create_tags.rb
+
 Rails/SquishedSQLHeredocs:
   Enabled: false
 

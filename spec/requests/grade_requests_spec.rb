@@ -74,21 +74,21 @@ RSpec.describe 'Grade API', type: :request do
       get_with_token api_grades_path, as: :json
 
       expect(grades.length).to eq 5
-      expect(grades.map { |g| g['id'] }).to include @grade1.id, @grade2.id, @grade3.id, @grade4.id, @grade5.id
+      expect(grades.pluck('id')).to include @grade1.id, @grade2.id, @grade3.id, @grade4.id, @grade5.id
     end
 
     it 'responds with a list of grades including the grades of deleted students' do
       get_with_token api_grades_path, as: :json, params: { include_deleted_students: true }
 
       expect(grades.length).to eq 7
-      expect(grades.map { |g| g['id'] }).to include @grade1.id, @grade2.id, @grade3.id, @grade4.id, @grade5.id, @grade6.id, @grade7.id
+      expect(grades.pluck('id')).to include @grade1.id, @grade2.id, @grade3.id, @grade4.id, @grade5.id, @grade6.id, @grade7.id
     end
 
     it 'responds with a list of grades excluding the grades of deleted students and excluding deleted grades' do
       get_with_token api_grades_path, as: :json, params: { exclude_deleted: true }
 
       expect(grades.length).to eq 4
-      expect(grades.map { |g| g['id'] }).to include @grade1.id, @grade2.id, @grade3.id, @grade4.id
+      expect(grades.pluck('id')).to include @grade1.id, @grade2.id, @grade3.id, @grade4.id
     end
 
     it 'responds with timestamp' do
@@ -110,14 +110,14 @@ RSpec.describe 'Grade API', type: :request do
       get_with_token api_grades_path, params: { student_id: @student.id }, as: :json
 
       expect(grades.length).to eq 2
-      expect(grades.map { |g| g['id'] }).to include @grade1.id, @grade2.id
+      expect(grades.pluck('id')).to include @grade1.id, @grade2.id
     end
 
     it 'responds only with grades in a specific lesson' do
       get_with_token api_grades_path, params: { lesson_id: @lesson2.id }, as: :json
 
       expect(grades.length).to eq 3
-      expect(grades.map { |g| g['id'] }).to include @grade3.id, @grade4.id, @grade5.id
+      expect(grades.pluck('id')).to include @grade3.id, @grade4.id, @grade5.id
     end
 
     describe 'v2' do

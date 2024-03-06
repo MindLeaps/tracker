@@ -15,19 +15,6 @@ class StudentTagsController < HtmlController
                                                                                { group: { chapter: :organization } }).joins("INNER JOIN student_tags ON student_id = student_table_rows.id AND tag_id = '#{@tag.id}'")))
   end
 
-  def edit
-    @tag = Tag.find params.require(:id)
-    authorize @tag
-  end
-
-  def update
-    @tag = Tag.find params.require(:id)
-    authorize @tag
-    return redirect_to student_tag_path(@tag) if @tag.update tag_params
-
-    render :edit
-  end
-
   def new
     authorize Tag
     @tag = Tag.new
@@ -35,6 +22,11 @@ class StudentTagsController < HtmlController
       format.turbo_stream
       format.html { render :new }
     end
+  end
+
+  def edit
+    @tag = Tag.find params.require(:id)
+    authorize @tag
   end
 
   def create
@@ -45,6 +37,14 @@ class StudentTagsController < HtmlController
       return redirect_to student_tags_path
     end
     handle_turbo_failure_responses({ title: t(:invalid_tag), text: t(:fix_form_errors) })
+  end
+
+  def update
+    @tag = Tag.find params.require(:id)
+    authorize @tag
+    return redirect_to student_tag_path(@tag) if @tag.update tag_params
+
+    render :edit
   end
 
   private

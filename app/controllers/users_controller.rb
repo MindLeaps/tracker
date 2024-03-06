@@ -11,6 +11,16 @@ class UsersController < HtmlController
     authorize User
   end
 
+  def show
+    @user = User.includes(:roles).find params[:id]
+    @user_roles = @user.roles.to_h { |r| [r.resource_id, r.name.to_sym] }
+    @pagy, @organizations = pagy apply_scopes(policy_scope(Organization))
+    @membership = Membership.new user: @user
+    authorize @user
+  rescue Pundit::NotAuthorizedError
+    redirect_to users_path
+  end
+
   def new
     authorize User
     @user = User.new
@@ -42,15 +52,5 @@ class UsersController < HtmlController
     @user.authentication_tokens.destroy_all
     @token = Tiddle.create_and_return_token @user, request, expires_in: 1.hour
     render :show, status: :created
-  end
-
-  def show
-    @user = User.includes(:roles).find params[:id]
-    @user_roles = @user.roles.to_h { |r| [r.resource_id, r.name.to_sym] }
-    @pagy, @organizations = pagy apply_scopes(policy_scope(Organization))
-    @membership = Membership.new user: @user
-    authorize @user
-  rescue Pundit::NotAuthorizedError
-    redirect_to users_path
   end
 end

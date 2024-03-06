@@ -46,7 +46,7 @@ end
 group :development, :test do
   gem 'bullet', '!= 6.0.0' # 6.0.0 seems to break with Turbolinks
   gem 'rails-controller-testing'
-  gem 'rubocop'
+  gem 'rubocop', require: false
   gem 'rubocop-performance'
   gem 'rubocop-rails'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

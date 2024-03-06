@@ -46,6 +46,13 @@ RSpec.describe Api::GradesController, type: :controller do
       end
 
       it { should respond_with 201 }
+      it 'saves the grade' do
+        g = Grade.last
+        expect(g.grade_descriptor_id).to eq @gd1.id
+        expect(g.lesson_id).to eq @lesson.id
+        expect(g.lesson_uid).to eq @lesson.uid
+        expect(g.student_id).to eq @student.id
+      end
     end
 
     context 'rejects invalid parameters' do

@@ -8,6 +8,12 @@ class ChaptersController < HtmlController
     @pagy, @chapters = pagy apply_scopes(policy_scope(ChapterSummary.includes(:organization), policy_scope_class: ChapterPolicy::Scope))
   end
 
+  def show
+    @chapter = Chapter.find params.require :id
+    authorize @chapter
+    @pagy, @groups = pagy apply_scopes(GroupSummary.includes(:chapter).where(chapter_id: @chapter.id))
+  end
+
   def new
     authorize Chapter
     @chapter = Chapter.new
@@ -15,6 +21,11 @@ class ChaptersController < HtmlController
       format.turbo_stream
       format.html { render :new }
     end
+  end
+
+  def edit
+    @chapter = Chapter.find params.require :id
+    authorize @chapter
   end
 
   def create
@@ -26,17 +37,6 @@ class ChaptersController < HtmlController
       return redirect_to chapters_url
     end
     handle_turbo_failure_responses({ title: t(:chapter_invalid), text: t(:fix_form_errors) })
-  end
-
-  def show
-    @chapter = Chapter.find params.require :id
-    authorize @chapter
-    @pagy, @groups = pagy apply_scopes(GroupSummary.includes(:chapter).where(chapter_id: @chapter.id))
-  end
-
-  def edit
-    @chapter = Chapter.find params.require :id
-    authorize @chapter
   end
 
   def update

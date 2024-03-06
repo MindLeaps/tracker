@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Api::LessonsController, type: :controller do
-  let(:lesson) { JSON.parse(response.body)['lesson'] }
+  let(:lesson) { response.parsed_body['lesson'] }
   let(:admin) { create :global_admin }
 
   before :each do
@@ -34,7 +34,7 @@ RSpec.describe Api::LessonsController, type: :controller do
 
     context 'creating a new lesson' do
       before :each do
-        post :create, format: :json, params: { group_id: @group.id, subject_id: @subject.id, date: Time.zone.today.to_formatted_s }
+        post :create, format: :json, params: { group_id: @group.id, subject_id: @subject.id, date: Time.zone.today.to_fs }
       end
 
       it { should respond_with 201 }
@@ -46,8 +46,8 @@ RSpec.describe Api::LessonsController, type: :controller do
 
     context 'lesson already exists' do
       before :each do
-        create :lesson, group_id: @group.id, subject_id: @subject.id, date: Time.zone.today.to_formatted_s
-        post :create, format: :json, params: { group_id: @group.id, subject_id: @subject.id, date: Time.zone.today.to_formatted_s }
+        create :lesson, group_id: @group.id, subject_id: @subject.id, date: Time.zone.today.to_fs
+        post :create, format: :json, params: { group_id: @group.id, subject_id: @subject.id, date: Time.zone.today.to_fs }
       end
 
       it { should respond_with 200 }

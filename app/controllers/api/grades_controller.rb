@@ -33,9 +33,9 @@ module Api
       grade = Grade.new grade_all_params
       Grade.transaction do
         grade.grade_descriptor = GradeDescriptor.find grade.grade_descriptor_id
-        grade = save_or_update_if_exists(grade) { |existing_grade| respond_with :api, existing_grade, status: :ok, meta: { timestamp: Time.zone.now }, include: {} }
+        grade, status = save_or_update_if_exists(grade)
+        respond_with :api, grade, status:, meta: { timestamp: Time.zone.now }, include: {}
       end
-      respond_with :api, grade, meta: { timestamp: Time.zone.now }, include: included_params unless performed?
     rescue ActionController::ParameterMissing, ActiveRecord::RecordNotFound
       head :bad_request
     end
@@ -45,9 +45,9 @@ module Api
       authorize grade.lesson, :create?
       Grade.transaction do
         grade.grade_descriptor = GradeDescriptor.find_by skill_id: grade.skill_id, mark: grade.mark
-        grade = save_or_update_if_exists(grade) { |existing_grade| respond_with :api, existing_grade, json: existing_grade, status: :ok, meta: { timestamp: Time.zone.now }, include: {}, serializer: GradeSerializerV2 }
+        grade, status = save_or_update_if_exists(grade)
+        respond_with :api, grade, json: grade, status:, meta: { timestamp: Time.zone.now }, include: {}, serializer: GradeSerializerV2
       end
-      respond_with :api, grade, json: grade, status: :created, meta: { timestamp: Time.zone.now }, include: included_params, serializer: GradeSerializerV2 unless performed?
     rescue ActionController::ParameterMissing, ActiveRecord::RecordNotFound
       head :bad_request
     end
@@ -99,13 +99,19 @@ module Api
     end
 
     def save_or_update_if_exists(grade)
+      new_grade = nil
+      status = nil
       Grade.transaction do
-        return grade if grade.save
-
-        existing_grade = grade.find_duplicate
-        existing_grade.update grade_descriptor: grade.grade_descriptor, deleted_at: nil
-        yield existing_grade
+        if grade.save
+          new_grade = grade
+          status = :created
+        else
+          new_grade = grade.find_duplicate
+          new_grade.update grade_descriptor: grade.grade_descriptor, deleted_at: nil
+          status = :ok
+        end
       end
+      [new_grade, status]
     end
   end
 end

@@ -9,6 +9,13 @@ class OrganizationsController < HtmlController
     @pagy, @organizations = pagy apply_scopes(policy_scope(OrganizationSummary, policy_scope_class: OrganizationPolicy::Scope))
   end
 
+  def show
+    id = params.require :id
+    @organization = Organization.find id
+    authorize @organization
+    initialize_organization id
+  end
+
   def new
     authorize Organization
     @organization = Organization.new params.permit :organization_name
@@ -16,6 +23,11 @@ class OrganizationsController < HtmlController
       format.turbo_stream
       format.html { render :new }
     end
+  end
+
+  def edit
+    @organization = Organization.find params.require :id
+    authorize @organization
   end
 
   def create
@@ -31,11 +43,6 @@ class OrganizationsController < HtmlController
     handle_turbo_failure_responses({ title: t(:organization_invalid), text: t(:fix_form_errors) })
   end
 
-  def edit
-    @organization = Organization.find params.require :id
-    authorize @organization
-  end
-
   def update
     @organization = Organization.find params.require :id
     authorize @organization
@@ -47,13 +54,6 @@ class OrganizationsController < HtmlController
 
     failure title: t(:organization_invalid), text: t(:fix_form_errors)
     render :edit, status: :bad_request
-  end
-
-  def show
-    id = params.require :id
-    @organization = Organization.find id
-    authorize @organization
-    initialize_organization id
   end
 
   def initialize_organization(id)

@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Api::ChaptersController, type: :controller do
-  let(:chapters) { JSON.parse(response.body)['chapters'] }
-  let(:chapter) { JSON.parse(response.body)['chapter'] }
+  let(:chapters) { response.parsed_body['chapters'] }
+  let(:chapter) { response.parsed_body['chapter'] }
   let(:admin) { create :global_admin }
 
   before :each do

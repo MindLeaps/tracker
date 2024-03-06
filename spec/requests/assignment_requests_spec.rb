@@ -51,9 +51,9 @@ RSpec.describe 'Assignment API', type: :request do
     it 'responds with a list of assignments' do
       get_with_token api_assignments_path, as: :json
 
-      expect(assignments.map { |a| a['id'] }).to include @assignment1.id, @assignment2.id, @assignment3.id
-      expect(assignments.map { |a| a['subject_id'] }).to include @assignment1.subject_id, @assignment2.subject_id, @assignment3.subject_id
-      expect(assignments.map { |a| a['skill_id'] }).to include @assignment1.skill_id, @assignment2.skill_id, @assignment3.skill_id
+      expect(assignments.pluck('id')).to include @assignment1.id, @assignment2.id, @assignment3.id
+      expect(assignments.pluck('subject_id')).to include @assignment1.subject_id, @assignment2.subject_id, @assignment3.subject_id
+      expect(assignments.pluck('skill_id')).to include @assignment1.skill_id, @assignment2.skill_id, @assignment3.skill_id
     end
 
     it 'responds with timestamp' do
@@ -75,7 +75,7 @@ RSpec.describe 'Assignment API', type: :request do
       get_with_token api_assignments_path, params: { exclude_deleted: true }, as: :json
 
       expect(assignments.length).to eq 2
-      expect(assignments.map { |s| s['id'] }).to include @assignment1.id, @assignment2.id
+      expect(assignments.pluck('id')).to include @assignment1.id, @assignment2.id
     end
   end
 end

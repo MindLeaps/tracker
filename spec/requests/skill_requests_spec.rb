@@ -41,16 +41,16 @@ RSpec.describe 'Skill API', type: :request do
     it 'responds with a specific skill including subjects' do
       get_with_token skill_path(@skill), params: { include: 'subjects' }, as: :json
 
-      expect(subjects.map { |s| s['id'] }).to include @subject.id
-      expect(subjects.map { |s| s['subject_name'] }).to include @subject.subject_name
+      expect(subjects.pluck('id')).to include @subject.id
+      expect(subjects.pluck('subject_name')).to include @subject.subject_name
     end
 
     it 'responds with a specific skill including grade descriptors' do
       get_with_token skill_path(@skill), params: { include: 'grade_descriptors' }, as: :json
 
-      expect(grade_descriptors.map { |l| l['id'] }).to include @grade_descriptor1.id, @grade_descriptor2.id
-      expect(grade_descriptors.map { |l| l['mark'] }).to include @grade_descriptor1.mark, @grade_descriptor2.mark
-      expect(grade_descriptors.map { |l| l['grade_description'] }).to include @grade_descriptor1.grade_description, @grade_descriptor2.grade_description
+      expect(grade_descriptors.pluck('id')).to include @grade_descriptor1.id, @grade_descriptor2.id
+      expect(grade_descriptors.pluck('mark')).to include @grade_descriptor1.mark, @grade_descriptor2.mark
+      expect(grade_descriptors.pluck('grade_description')).to include @grade_descriptor1.grade_description, @grade_descriptor2.grade_description
     end
   end
 
@@ -66,8 +66,8 @@ RSpec.describe 'Skill API', type: :request do
     it 'responds with a list of skills' do
       get_with_token skills_path, as: :json
 
-      expect(skills.map { |s| s['id'] }).to include @skill1.id, @skill2.id, @skill3.id
-      expect(skills.map { |s| s['skill_name'] }).to include @skill1.skill_name, @skill2.skill_name, @skill3.skill_name
+      expect(skills.pluck('id')).to include @skill1.id, @skill2.id, @skill3.id
+      expect(skills.pluck('skill_name')).to include @skill1.skill_name, @skill2.skill_name, @skill3.skill_name
     end
 
     it 'responds with timestamp' do
@@ -89,21 +89,21 @@ RSpec.describe 'Skill API', type: :request do
       get_with_token skills_path, params: { organization_id: @org.id }, as: :json
 
       expect(skills.length).to eq 2
-      expect(skills.map { |s| s['id'] }).to include @skill1.id, @skill2.id
+      expect(skills.pluck('id')).to include @skill1.id, @skill2.id
     end
 
     it 'responds only with skills that are part of a specific subject' do
       get_with_token skills_path, params: { subject_id: @subject.id }, as: :json
 
       expect(skills.length).to eq 2
-      expect(skills.map { |s| s['id'] }).to include @skill1.id, @skill2.id
+      expect(skills.pluck('id')).to include @skill1.id, @skill2.id
     end
 
     it 'responds only with non-deleted skills' do
       get_with_token skills_path, params: { exclude_deleted: true }, as: :json
 
       expect(skills.length).to eq 1
-      expect(skills.map { |s| s['id'] }).to include @skill3.id
+      expect(skills.pluck('id')).to include @skill3.id
     end
   end
 end

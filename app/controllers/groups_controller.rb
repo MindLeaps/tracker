@@ -10,6 +10,13 @@ class GroupsController < HtmlController
     @pagy, @groups = pagy policy_scope(apply_scopes(GroupSummary.includes(chapter: [:organization])), policy_scope_class: GroupPolicy::Scope)
   end
 
+  def show
+    @group = Group.includes(:chapter).find params[:id]
+    authorize @group
+    @pagy, @student_rows = pagy apply_scopes(StudentTableRow.where(group_id: @group.id).includes(:tags, :group))
+    @student_table_component = TableComponents::Table.new(pagy: @pagy, rows: @student_rows, row_component: TableComponents::StudentRow)
+  end
+
   def new
     authorize Group
     @group = populate_new_group
@@ -17,6 +24,11 @@ class GroupsController < HtmlController
       format.turbo_stream
       format.html { render :new }
     end
+  end
+
+  def edit
+    @group = Group.find params.require :id
+    authorize @group
   end
 
   def create
@@ -28,18 +40,6 @@ class GroupsController < HtmlController
     end
     skip_authorization
     handle_turbo_failure_responses({ title: t(:group_invalid), text: t(:fix_form_errors) })
-  end
-
-  def show
-    @group = Group.includes(:chapter).find params[:id]
-    authorize @group
-    @pagy, @student_rows = pagy apply_scopes(StudentTableRow.where(group_id: @group.id).includes(:tags, :group))
-    @student_table_component = TableComponents::Table.new(pagy: @pagy, rows: @student_rows, row_component: TableComponents::StudentRow)
-  end
-
-  def edit
-    @group = Group.find params.require :id
-    authorize @group
   end
 
   def update
