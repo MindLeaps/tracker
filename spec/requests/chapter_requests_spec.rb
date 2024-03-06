@@ -3,9 +3,9 @@ require 'rails_helper'
 RSpec.describe 'Chapter API', type: :request do
   include_context 'super_admin_request'
 
-  let(:chapter) { JSON.parse(response.body)['chapter'] }
-  let(:chapters) { JSON.parse(response.body)['chapters'] }
-  let(:groups) { JSON.parse(response.body)['chapter']['groups'] }
+  let(:chapter) { response.parsed_body['chapter'] }
+  let(:chapters) { response.parsed_body['chapters'] }
+  let(:groups) { response.parsed_body['chapter']['groups'] }
 
   describe 'GET /chapters/:id' do
     before :each do
@@ -33,8 +33,8 @@ RSpec.describe 'Chapter API', type: :request do
       get_with_token chapter_path(@chapter), params: { include: 'groups' }, as: :json
 
       expect(chapter['id']).to eq @chapter.id
-      expect(groups.map { |g| g['id'] }).to include @group1.id, @group2.id
-      expect(groups.map { |g| g['group_name'] }).to include @group1.group_name, @group2.group_name
+      expect(groups.pluck('id')).to include @group1.id, @group2.id
+      expect(groups.pluck('group_name')).to include @group1.group_name, @group2.group_name
     end
   end
 
@@ -48,8 +48,8 @@ RSpec.describe 'Chapter API', type: :request do
     it 'responds with a list of chapters' do
       get_with_token chapters_path, as: :json
 
-      expect(chapters.map { |c| c['id'] }).to include @chapter1.id, @chapter2.id, @chapter3.id
-      expect(chapters.map { |c| c['chapter_name'] }).to include @chapter1.chapter_name, @chapter2.chapter_name, @chapter3.chapter_name
+      expect(chapters.pluck('id')).to include @chapter1.id, @chapter2.id, @chapter3.id
+      expect(chapters.pluck('chapter_name')).to include @chapter1.chapter_name, @chapter2.chapter_name, @chapter3.chapter_name
     end
 
     it 'responds with timestamp' do
@@ -72,14 +72,14 @@ RSpec.describe 'Chapter API', type: :request do
       get_with_token chapters_path, params: { exclude_deleted: true }, as: :json
 
       expect(chapters.length).to eq 2
-      expect(chapters.map { |g| g['id'] }).to include @chapter1.id, @chapter2.id
+      expect(chapters.pluck('id')).to include @chapter1.id, @chapter2.id
     end
 
     it 'responds only with chapters belonging to a specific organization' do
       get_with_token chapters_path, params: { organization_id: @org1.id }, as: :json
 
       expect(chapters.length).to eq 2
-      expect(chapters.map { |g| g['id'] }).to include @chapter1.id, @chapter2.id
+      expect(chapters.pluck('id')).to include @chapter1.id, @chapter2.id
     end
   end
 end

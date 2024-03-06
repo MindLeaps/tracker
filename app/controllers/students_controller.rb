@@ -13,10 +13,23 @@ class StudentsController < HtmlController
     @pagy, @student_rows = pagy apply_scopes(policy_scope(StudentTableRow.includes(:tags, { group: { chapter: :organization } })))
   end
 
+  def show
+    @student = Student.includes(:profile_image, group: { chapter: [:organization] }).find params.require(:id)
+    authorize @student
+    @student_lessons_details_by_subject = apply_scopes(StudentLessonDetail.where(student_id: params[:id])).all.group_by(&:subject_id)
+    @subjects = policy_scope(Subject).includes(:skills).where(id: @student_lessons_details_by_subject.keys)
+  end
+
   def new
     authorize Student
     @student = populate_new_student
     flash_redirect request.referer
+  end
+
+  def edit
+    @student = Student.find params[:id]
+    authorize @student
+    @student.student_images.build
   end
 
   def create
@@ -28,19 +41,6 @@ class StudentsController < HtmlController
     end
     failure_now(title: t(:student_invalid), text: t(:fix_form_errors))
     render :new, status: :unprocessable_entity
-  end
-
-  def show
-    @student = Student.includes(:profile_image, group: { chapter: [:organization] }).find params.require(:id)
-    authorize @student
-    @student_lessons_details_by_subject = apply_scopes(StudentLessonDetail.where(student_id: params[:id])).all.group_by(&:subject_id)
-    @subjects = policy_scope(Subject).includes(:skills).where(id: @student_lessons_details_by_subject.keys)
-  end
-
-  def edit
-    @student = Student.find params[:id]
-    authorize @student
-    @student.student_images.build
   end
 
   def update

@@ -45,9 +45,9 @@ RSpec.describe 'Grade Descriptor API', type: :request do
     it 'responds with a list of grade descriptors' do
       get_with_token api_grade_descriptors_path, as: :json
 
-      expect(grade_descriptors.map { |s| s['id'] }).to include @gd1.id, @gd2.id, @gd3.id
-      expect(grade_descriptors.map { |s| s['mark'] }).to include @gd1.mark, @gd2.mark, @gd3.mark
-      expect(grade_descriptors.map { |s| s['grade_description'] }).to include @gd1.grade_description, @gd2.grade_description, @gd3.grade_description
+      expect(grade_descriptors.pluck('id')).to include @gd1.id, @gd2.id, @gd3.id
+      expect(grade_descriptors.pluck('mark')).to include @gd1.mark, @gd2.mark, @gd3.mark
+      expect(grade_descriptors.pluck('grade_description')).to include @gd1.grade_description, @gd2.grade_description, @gd3.grade_description
     end
 
     it 'responds with timestamp' do
@@ -69,16 +69,16 @@ RSpec.describe 'Grade Descriptor API', type: :request do
       get_with_token api_grade_descriptors_path, params: { skill_id: @skill2.id }, as: :json
 
       expect(grade_descriptors.length).to eq 1
-      expect(grade_descriptors.map { |g| g['id'] }).to include @gd3.id
-      expect(grade_descriptors.map { |g| g['mark'] }).to include @gd3.mark
-      expect(grade_descriptors.map { |g| g['grade_description'] }).to include @gd3.grade_description
+      expect(grade_descriptors.pluck('id')).to include @gd3.id
+      expect(grade_descriptors.pluck('mark')).to include @gd3.mark
+      expect(grade_descriptors.pluck('grade_description')).to include @gd3.grade_description
     end
 
     it 'responds only with non-deleted grade descriptors' do
       get_with_token api_grade_descriptors_path, params: { exclude_deleted: true }, as: :json
 
       expect(grade_descriptors.length).to eq 2
-      expect(grade_descriptors.map { |s| s['id'] }).to include @gd1.id, @gd2.id
+      expect(grade_descriptors.pluck('id')).to include @gd1.id, @gd2.id
     end
   end
 end

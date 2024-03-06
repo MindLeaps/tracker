@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe 'Student API', type: :request do
   include_context 'super_admin_request'
 
-  let(:student) { JSON.parse(response.body)['student'] }
-  let(:students) { JSON.parse(response.body)['students'] }
+  let(:student) { response.parsed_body['student'] }
+  let(:students) { response.parsed_body['students'] }
 
   describe 'GET /students/:id' do
     before :each do
@@ -48,14 +48,14 @@ RSpec.describe 'Student API', type: :request do
       get_with_token students_path, as: :json
 
       expect(students.length).to eq 3
-      expect(students.map { |s| s['first_name'] }).to include 'Api', 'Controller', 'Spector'
+      expect(students.pluck('first_name')).to include 'Api', 'Controller', 'Spector'
     end
 
     it 'responds only with students belonging to a specific group' do
       get_with_token students_path, params: { group_id: @group1.id }, as: :json
 
       expect(students.length).to eq 2
-      expect(students.map { |s| s['first_name'] }).to include 'Api', 'Controller'
+      expect(students.pluck('first_name')).to include 'Api', 'Controller'
     end
 
     it 'responds with students including their group and organization' do
@@ -79,7 +79,7 @@ RSpec.describe 'Student API', type: :request do
       get_with_token students_path, params: { exclude_deleted: true }, as: :json
 
       expect(students.length).to eq 2
-      expect(students.map { |s| s['id'] }).to include @student2.id, @student3.id
+      expect(students.pluck('id')).to include @student2.id, @student3.id
     end
   end
 end

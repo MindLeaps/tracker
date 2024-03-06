@@ -3,10 +3,10 @@ require 'rails_helper'
 RSpec.describe 'Group API', type: :request do
   include_context 'super_admin_request'
 
-  let(:group) { JSON.parse(response.body)['group'] }
-  let(:groups) { JSON.parse(response.body)['groups'] }
-  let(:students) { JSON.parse(response.body)['group']['students'] }
-  let(:lessons) { JSON.parse(response.body)['group']['lessons'] }
+  let(:group) { response.parsed_body['group'] }
+  let(:groups) { response.parsed_body['groups'] }
+  let(:students) { response.parsed_body['group']['students'] }
+  let(:lessons) { response.parsed_body['group']['lessons'] }
 
   describe 'GET /groups/:id' do
     before :each do
@@ -34,9 +34,9 @@ RSpec.describe 'Group API', type: :request do
       get_with_token group_path(@group), params: { include: 'students' }, as: :json
 
       expect(group['id']).to eq @group.id
-      expect(students.map { |s| s['id'] }).to include @student1.id, @student2.id
-      expect(students.map { |s| s['first_name'] }).to include @student1.first_name, @student2.first_name
-      expect(students.map { |s| s['last_name'] }).to include @student1.last_name, @student2.last_name
+      expect(students.pluck('id')).to include @student1.id, @student2.id
+      expect(students.pluck('first_name')).to include @student1.first_name, @student2.first_name
+      expect(students.pluck('last_name')).to include @student1.last_name, @student2.last_name
     end
 
     it 'responds with a specific group including chapter' do
@@ -51,8 +51,8 @@ RSpec.describe 'Group API', type: :request do
       get_with_token group_path(@group), params: { include: 'lessons' }, as: :json
 
       expect(group['id']).to eq @group.id
-      expect(lessons.map { |l| l['id'] }).to include @lesson1.id, @lesson2.id
-      expect(lessons.map { |l| l['date'] }).to include @lesson1.date.to_s, @lesson2.date.to_s
+      expect(lessons.pluck('id')).to include @lesson1.id, @lesson2.id
+      expect(lessons.pluck('date')).to include @lesson1.date.to_s, @lesson2.date.to_s
     end
   end
 
@@ -66,8 +66,8 @@ RSpec.describe 'Group API', type: :request do
     it 'responds with a list of groups' do
       get_with_token groups_path, as: :json
 
-      expect(groups.map { |g| g['id'] }).to include @group1.id, @group2.id
-      expect(groups.map { |g| g['group_name'] }).to include @group1.group_name, @group2.group_name
+      expect(groups.pluck('id')).to include @group1.id, @group2.id
+      expect(groups.pluck('group_name')).to include @group1.group_name, @group2.group_name
     end
 
     it 'responds with timestamp' do
@@ -90,14 +90,14 @@ RSpec.describe 'Group API', type: :request do
       get_with_token groups_path, params: { exclude_deleted: true }, as: :json
 
       expect(groups.length).to eq 2
-      expect(groups.map { |g| g['id'] }).to include @group1.id, @group2.id
+      expect(groups.pluck('id')).to include @group1.id, @group2.id
     end
 
     it 'responds only with groups belonging to a specific chapter' do
       get_with_token groups_path, params: { chapter_id: @chapter1.id }, as: :json
 
       expect(groups.length).to eq 2
-      expect(groups.map { |g| g['id'] }).to include @group1.id, @group2.id
+      expect(groups.pluck('id')).to include @group1.id, @group2.id
     end
   end
 end

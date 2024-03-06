@@ -49,7 +49,7 @@ RSpec.describe StudentLessonDetail, type: :model do
         )
       end
       it 'calculates the average marks correctly' do
-        averages = StudentLessonDetail.all.order(:date).map(&:average_mark)
+        averages = StudentLessonDetail.order(:date).map(&:average_mark)
         expect(averages[0]).to be_within(0.01).of 2.86
         expect(averages[1]).to be_within(0.01).of 2.71
         expect(averages[2]).to be_within(0.01).of 3.17

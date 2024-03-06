@@ -41,14 +41,14 @@ RSpec.describe 'Subject API', type: :request do
     it 'responds with a specific subject including lessons' do
       get_with_token subject_path(@subject), params: { include: 'lessons' }, as: :json
 
-      expect(lessons.map { |l| l['id'] }).to include @lesson1.id, @lesson2.id
+      expect(lessons.pluck('id')).to include @lesson1.id, @lesson2.id
     end
 
     it 'responds with a specific subject including skills' do
       get_with_token subject_path(@subject), params: { include: 'skills' }, as: :json
 
-      expect(skills.map { |l| l['id'] }).to include @skill1.id, @skill2.id
-      expect(skills.map { |l| l['skill_name'] }).to include @skill1.skill_name, @skill2.skill_name
+      expect(skills.pluck('id')).to include @skill1.id, @skill2.id
+      expect(skills.pluck('skill_name')).to include @skill1.skill_name, @skill2.skill_name
     end
   end
 
@@ -62,8 +62,8 @@ RSpec.describe 'Subject API', type: :request do
     it 'responds with a list of subjects' do
       get_with_token subjects_path, as: :json
 
-      expect(subjects.map { |s| s['id'] }).to include @subject1.id, @subject2.id, @subject3.id
-      expect(subjects.map { |s| s['subject_name'] }).to include @subject1.subject_name, @subject2.subject_name, @subject3.subject_name
+      expect(subjects.pluck('id')).to include @subject1.id, @subject2.id, @subject3.id
+      expect(subjects.pluck('subject_name')).to include @subject1.subject_name, @subject2.subject_name, @subject3.subject_name
     end
 
     it 'responds with timestamp' do
@@ -85,7 +85,7 @@ RSpec.describe 'Subject API', type: :request do
       get_with_token subjects_path, params: { organization_id: @org.id }, as: :json
 
       expect(subjects.length).to eq 2
-      expect(subjects.map { |s| s['id'] }).to include @subject1.id, @subject2.id
+      expect(subjects.pluck('id')).to include @subject1.id, @subject2.id
     end
   end
 end

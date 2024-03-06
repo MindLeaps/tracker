@@ -7,9 +7,20 @@ class SubjectsController < HtmlController
     @pagy, @subjects = pagy apply_scopes(policy_scope(Subject.includes(:assignments, :skills, :organization)))
   end
 
+  def show
+    @subject = Subject.find params.require(:id)
+    @pagy, @skills = pagy apply_scopes(@subject.skills.includes(:organization), { table_order_skills: params['table_order_skills'] || { key: :skill_name, order: :asc } })
+    authorize @subject
+  end
+
   def new
     authorize Subject
     @subject = Subject.new
+  end
+
+  def edit
+    @subject = Subject.includes(:assignments).find params.require(:id)
+    authorize @subject
   end
 
   def create
@@ -25,17 +36,6 @@ class SubjectsController < HtmlController
       failure title: t(:subject_invalid), text: t(:fix_form_errors)
       render :new, status: :unprocessable_entity
     end
-  end
-
-  def show
-    @subject = Subject.find params.require(:id)
-    @pagy, @skills = pagy apply_scopes(@subject.skills.includes(:organization), { table_order_skills: params['table_order_skills'] || { key: :skill_name, order: :asc } })
-    authorize @subject
-  end
-
-  def edit
-    @subject = Subject.includes(:assignments).find params.require(:id)
-    authorize @subject
   end
 
   def update

@@ -11,6 +11,18 @@ class SkillsController < HtmlController
     @pagy, @skills = pagy apply_scopes(policy_scope(Skill.includes(:organization)))
   end
 
+  def show
+    @skill = Skill.includes(:organization).find params[:id]
+    @pagy, @subjects = pagy SubjectPolicy::Scope.new(current_user, skill_subjects).resolve
+    @pagy_grades, @grade_descriptors = pagy apply_scopes(@skill.grade_descriptors, table_order_grades: params['table_order_grades'] || { key: :mark, order: :asc })
+    authorize @skill
+  end
+
+  def new
+    @skill = Skill.new
+    authorize @skill
+  end
+
   def create
     @skill = Skill.new skill_parameters
     authorize @skill
@@ -24,18 +36,6 @@ class SkillsController < HtmlController
       failure(title: t(:skill_invalid), text: t(:fix_form_errors))
       render :new, status: :unprocessable_entity
     end
-  end
-
-  def show
-    @skill = Skill.includes(:organization).find params[:id]
-    @pagy, @subjects = pagy SubjectPolicy::Scope.new(current_user, skill_subjects).resolve
-    @pagy_grades, @grade_descriptors = pagy apply_scopes(@skill.grade_descriptors, table_order_grades: params['table_order_grades'] || { key: :mark, order: :asc })
-    authorize @skill
-  end
-
-  def new
-    @skill = Skill.new
-    authorize @skill
   end
 
   def destroy

@@ -3,10 +3,10 @@ require 'rails_helper'
 RSpec.describe 'Organization API', type: :request do
   include_context 'super_admin_request'
 
-  let(:organization) { JSON.parse(response.body)['organization'] }
-  let(:organizations) { JSON.parse(response.body)['organizations'] }
-  let(:chapters) { JSON.parse(response.body)['organization']['chapters'] }
-  let(:students) { JSON.parse(response.body)['organization']['students'] }
+  let(:organization) { response.parsed_body['organization'] }
+  let(:organizations) { response.parsed_body['organizations'] }
+  let(:chapters) { response.parsed_body['organization']['chapters'] }
+  let(:students) { response.parsed_body['organization']['students'] }
 
   describe 'GET /organizations/:id' do
     before :each do
@@ -32,8 +32,8 @@ RSpec.describe 'Organization API', type: :request do
     it 'responds with a specific organization including chapters' do
       get_with_token organization_path(@org), params: { include: 'chapters' }, as: :json
 
-      expect(chapters.map { |c| c['id'] }).to include @chapter1.id, @chapter2.id
-      expect(chapters.map { |c| c['chapter_name'] }).to include @chapter1.chapter_name, @chapter2.chapter_name
+      expect(chapters.pluck('id')).to include @chapter1.id, @chapter2.id
+      expect(chapters.pluck('chapter_name')).to include @chapter1.chapter_name, @chapter2.chapter_name
     end
   end
 
@@ -46,8 +46,8 @@ RSpec.describe 'Organization API', type: :request do
     it 'responds with a list of organizations' do
       get_with_token organizations_path, as: :json
 
-      expect(organizations.map { |o| o['id'] }).to include @org1.id, @org2.id, @org3.id
-      expect(organizations.map { |o| o['organization_name'] }).to include @org1.organization_name, @org2.organization_name, @org3.organization_name
+      expect(organizations.pluck('id')).to include @org1.id, @org2.id, @org3.id
+      expect(organizations.pluck('organization_name')).to include @org1.organization_name, @org2.organization_name, @org3.organization_name
     end
 
     it 'responds with timestamp' do
@@ -59,7 +59,7 @@ RSpec.describe 'Organization API', type: :request do
       get_with_token organizations_path, params: { exclude_deleted: true }, as: :json
 
       expect(organizations.length).to eq 2
-      expect(organizations.map { |o| o['id'] }).to include @org1.id, @org2.id
+      expect(organizations.pluck('id')).to include @org1.id, @org2.id
     end
 
     it 'responds only with organizations created or updated after a certain time' do

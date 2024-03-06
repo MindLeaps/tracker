@@ -70,8 +70,8 @@ module Analytics
             end
 
       {
-        categories: res.map { |e| e[0] },
-        series: [{ name: t(:nr_of_assessments), data: res.map { |e| e[1] } }]
+        categories: res.pluck(0),
+        series: [{ name: t(:nr_of_assessments), data: res.pluck(1) }]
       }
     end
 
