@@ -4,7 +4,7 @@ module Api
     has_scope :exclude_deleted, type: :boolean
 
     def index
-      @assignments = apply_scopes(Assignment).all
+      @assignments = apply_scopes(policy_scope(Assignment)).all
       respond_with @assignments, include: included_params, meta: { timestamp: Time.zone.now }
     end
 
