@@ -33,7 +33,6 @@ class OrganizationsController < HtmlController
   def create
     authorize Organization
     @organization = Organization.new(params.require(:organization).permit(:organization_name, :mlid))
-    @organization.mlid = @organization.mlid&.upcase
 
     if @organization.save
       success title: t(:organization_added), text: t(:organization_name_added, name: @organization.organization_name)

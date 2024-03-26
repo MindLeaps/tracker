@@ -20,6 +20,7 @@
 #  chapters_organization_id_fk  (organization_id => organizations.id)
 #
 class Chapter < ApplicationRecord
+  include Mlid
   validates :chapter_name, presence: true
   validates :chapter_name, uniqueness: {
     scope: :organization_id,
@@ -27,7 +28,7 @@ class Chapter < ApplicationRecord
       "Chapter \"#{data[:value]}\" already exists in #{chapter.organization_name} organization"
     end
   }
-  validates :mlid, presence: true, uniqueness: { scope: :organization_id }, format: { with: /\A[A-Za-z0-9]+\Z/ }
+  validates :mlid, uniqueness: { scope: :organization_id }, length: { maximum: 3 }
 
   belongs_to :organization
   has_many :groups, dependent: :restrict_with_error

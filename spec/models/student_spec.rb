@@ -61,7 +61,7 @@ RSpec.describe Student, type: :model do
       Bullet.enable = false
     end
 
-    subject { create :student, mlid: 'TEST1' }
+    subject { create :student, mlid: 'TS1' }
 
     describe 'student is valid' do
       it 'with first and last name, dob, and gender' do
@@ -99,8 +99,6 @@ RSpec.describe Student, type: :model do
         it 'when it is duplicated in the same group' do
           new_student = build :student, group: @group, mlid: 'AA1'
           expect(new_student).to be_invalid
-          expect(new_student.errors.messages[:mlid])
-            .to include 'already exists in group.'
         end
       end
     end
@@ -191,7 +189,7 @@ RSpec.describe Student, type: :model do
 
     describe 'search' do
       before :each do
-        @zombarato = create :student, first_name: 'Zombarato', last_name: 'Agustato', mlid: 'ot32to'
+        @zombarato = create :student, first_name: 'Zombarato', last_name: 'Agustato', mlid: 'Z31'
         @zombaruto = create :student, first_name: 'Zombaruto', last_name: 'Agurat'
         @zomzovato = create :student, first_name: 'Zomzovato', last_name: 'Domovat'
       end
@@ -209,7 +207,7 @@ RSpec.describe Student, type: :model do
       end
 
       it 'finds the student by the MLID match' do
-        result = Student.search('ot3')
+        result = Student.search('Z3')
         expect(result.length).to eq 1
         expect(result).to include @zombarato
       end

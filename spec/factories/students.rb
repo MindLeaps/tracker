@@ -41,7 +41,7 @@
 #
 FactoryBot.define do
   factory :student do
-    sequence(:mlid) { |n| " #{Faker::Lorem.characters(number: 1)}#{n}" }
+    sequence(:mlid, (0..99).to_a.cycle) { |n| "#{Faker::Lorem.characters(number: 1).upcase}#{n}" }
     first_name { Faker::Name.first_name }
     last_name { Faker::Name.last_name }
     dob { Faker::Time.between from: 20.years.ago.to_datetime, to: 10.years.ago.to_datetime }

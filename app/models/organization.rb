@@ -16,10 +16,11 @@
 #
 class Organization < ApplicationRecord
   include PgSearch::Model
+  include Mlid
   pg_search_scope :search, against: [:organization_name], using: { tsearch: { prefix: true } }
   resourcify
   validates :organization_name, presence: true, uniqueness: true
-  validates :mlid, presence: true, uniqueness: true, format: { with: /\A[A-Za-z0-9]{1,3}\Z/ }
+  validates :mlid, uniqueness: true, length: { maximum: 3 }
 
   has_many :chapters, dependent: :restrict_with_error
   has_many :subjects, dependent: :restrict_with_error

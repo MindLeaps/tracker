@@ -20,12 +20,13 @@
 #  groups_chapter_id_fk  (chapter_id => chapters.id)
 #
 class Group < ApplicationRecord
+  include Mlid
   validates :group_name, presence: true
   validates :group_name, uniqueness: {
     scope: :chapter_id,
     message: ->(object, data) { "Group \"#{data[:value]}\" already exists in #{object.chapter_name} chapter" }
   }
-  validates :mlid, presence: true, uniqueness: { scope: :chapter_id }, format: { with: /\A[A-Za-z0-9]+\Z/ }, length: { maximum: 2 }
+  validates :mlid, uniqueness: { scope: :chapter_id }, length: { maximum: 2 }
 
   belongs_to :chapter
   has_many :students, dependent: :restrict_with_error

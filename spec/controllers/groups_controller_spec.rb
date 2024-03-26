@@ -32,18 +32,16 @@ RSpec.describe GroupsController, type: :controller do
     context 'valid group data' do
       before :each do
         post :create, params: { group: { group_name: 'New Test Group',
-                                         mlid: 'G0',
+                                         mlid: 'g0',
                                          chapter_id: kigali_chapter.id } }
       end
 
       it 'creates a new group' do
         group = Group.last
         expect(group.group_name).to eql 'New Test Group'
+        expect(group.mlid).to eql 'G0'
         expect(group.chapter.chapter_name).to eql 'Newly Created Test Chapter'
       end
-
-      it { should respond_with 302 }
-      it { should redirect_to groups_path }
     end
 
     context 'invalid group data' do

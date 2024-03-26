@@ -5,8 +5,8 @@ RSpec.describe 'User interacts with Students' do
 
   describe 'List Students' do
     before :each do
-      create :student, first_name: 'Umberto', last_name: 'Eco', mlid: 'ECO-123'
-      create :student, first_name: 'Amberto', last_name: 'Oce', mlid: 'OCE-123'
+      create :student, first_name: 'Umberto', last_name: 'Eco', mlid: 'ECO'
+      create :student, first_name: 'Amberto', last_name: 'Oce', mlid: 'OCE'
     end
 
     it 'sorts students by first name alphabetically' do
