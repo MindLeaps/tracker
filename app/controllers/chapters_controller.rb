@@ -31,7 +31,6 @@ class ChaptersController < HtmlController
   def create
     @chapter = Chapter.new chapter_params
     authorize @chapter
-    @chapter.mlid = @chapter.mlid&.upcase
     if @chapter.save
       success(title: t(:chapter_added), text: t(:chapter_added_text, chapter: @chapter.chapter_name))
       return redirect_to chapters_url

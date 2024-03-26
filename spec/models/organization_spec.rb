@@ -23,10 +23,10 @@ RSpec.describe Organization, type: :model do
 
   describe 'is valid' do
     it 'with a valid, unique name and a unique MLID' do
-      org = Organization.new organization_name: 'Totally valid org', mlid: 'uni'
+      org = Organization.new organization_name: 'Totally valid org', mlid: 'UNI'
       expect(org).to be_valid
       expect(org.organization_name).to eql 'Totally valid org'
-      expect(org.mlid).to eql 'uni'
+      expect(org.mlid).to eql 'UNI'
     end
   end
 

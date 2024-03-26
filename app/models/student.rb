@@ -41,12 +41,13 @@
 #
 class Student < ApplicationRecord
   include PgSearch::Model
+  include Mlid
   pg_search_scope :search, against: [:first_name, :last_name, :mlid], associated_against: {
     tags: :tag_name
   }, using: { tsearch: { prefix: true } }
 
-  validates :mlid, :first_name, :last_name, :dob, :gender, presence: true
-  validate :unique_mlid_in_chapter
+  validates :first_name, :last_name, :dob, :gender, presence: true
+  validates :mlid, uniqueness: { scope: :group_id }, length: { maximum: 3 }
 
   enum gender: { M: 'male', F: 'female' }
 
@@ -79,18 +80,5 @@ class Student < ApplicationRecord
      :guardian_name, :guardian_occupation, :guardian_contact, :family_members, :health_insurance,
      :health_issues, :hiv_tested, :name_of_school, :school_level_completed, :year_of_dropout,
      :reason_for_leaving, :notes, :organization_id, :profile_image_id, { student_images_attributes: [:image], student_tags_attributes: [:tag_id, :student_id, :_destroy] }]
-  end
-
-  private
-
-  def unique_mlid_in_chapter
-    if group.nil?
-      errors.add(:mlid, I18n.t(:no_valid_mlid_without_group))
-      return
-    end
-    existing_mlid_students = Student.where(mlid:, group_id:).where.not(id:).count
-    return if existing_mlid_students.zero?
-
-    errors.add(:mlid, I18n.t(:duplicate_mlid))
   end
 end

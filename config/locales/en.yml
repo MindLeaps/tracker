@@ -33,6 +33,7 @@ en:
   organization_mlid_error_message: Organization MLID has to be 3 characters long and can only contain numbers and letters. No special characters.
   chapter_mlid_error_message: Chapter MLID has to be up to 2 characters long and can only contain numbers and letters. No special characters.
   group_mlid_error_message: Group MLID has to be up to 2 characters long and can only contain numbers and letters. No special characters.
+  mlid_cannot_contain_special_characters: No special characters allowed in MLID
   students: Students
   student_details: Student Details
   student_deleted_at: Student deleted %{time} ago
