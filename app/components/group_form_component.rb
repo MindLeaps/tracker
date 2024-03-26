@@ -19,7 +19,7 @@ class GroupFormComponent < ViewComponent::Base
   end
 
   def structure_chapters(permitted_chapters)
-    permitted_chapters.map(&:organization).uniq.map do |org|
+    permitted_chapters.map(&:organization).uniq.sort_by(&:organization_name).map do |org|
       OrganizationChapters.new(org, permitted_chapters)
     end
   end
