@@ -56,22 +56,22 @@ class GroupsController < HtmlController
   end
 
   def destroy
-    group = Group.find params.require :id
-    authorize group
-    group.deleted_at = Time.zone.now
-    return unless group.save
+    @group = Group.find params.require :id
+    authorize @group
+    delete_group(@group)
+    return unless @group.save
 
-    success(title: t(:group_deleted), text: t(:group_deleted_text, group: group.group_name), button_path: undelete_group_path, button_method: :post, button_text: t(:undo))
-    redirect_to request.referer || group.path
+    success(title: t(:group_deleted), text: t(:group_deleted_text, group: @group.group_name), button_path: undelete_group_path, button_method: :post, button_text: t(:undo))
+    redirect_to request.referer || @group.path
   end
 
   def undelete
-    group = Group.find params.require :id
-    authorize group
-    group.deleted_at = nil
-    return unless group.save
+    @group = Group.find params.require :id
+    authorize @group
+    delete_group(@group, restored: true)
+    return unless @group.save
 
-    success(title: t(:group_restored), text: t(:group_restored_text, group: group.group_name))
+    success(title: t(:group_restored), text: t(:group_restored_text, group: @group.group_name))
     redirect_to group_path
   end
 
@@ -89,5 +89,16 @@ class GroupsController < HtmlController
 
   def new_params
     params.permit :chapter_id
+  end
+
+  def delete_group(group, restored: false)
+    @group = group
+    @group.deleted_at = restored ? nil : Time.zone.now
+
+    Student.where(group_id: @group.id).update_all(deleted_at: @group.deleted_at)
+    Lesson.where(group_id: @group.id).find_each { |lesson|
+      lesson.update_attribute(:deleted_at, @group.deleted_at)
+      Grade.where(lesson_id: lesson.id).update_all(deleted_at: @group.deleted_at)
+    }
   end
 end
