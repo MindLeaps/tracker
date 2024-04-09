@@ -58,7 +58,7 @@ class GroupsController < HtmlController
   def destroy
     @group = Group.find params.require :id
     authorize @group
-    delete_group(@group)
+    @group.delete_group_and_dependents
     return unless @group.save
 
     success(title: t(:group_deleted), text: t(:group_deleted_text, group: @group.group_name), button_path: undelete_group_path, button_method: :post, button_text: t(:undo))
@@ -68,7 +68,7 @@ class GroupsController < HtmlController
   def undelete
     @group = Group.find params.require :id
     authorize @group
-    delete_group(@group, restored: true)
+    @group.restore_group_and_dependents
     return unless @group.save
 
     success(title: t(:group_restored), text: t(:group_restored_text, group: @group.group_name))
@@ -89,16 +89,5 @@ class GroupsController < HtmlController
 
   def new_params
     params.permit :chapter_id
-  end
-
-  def delete_group(group, restored: false)
-    @group = group
-    @group.deleted_at = restored ? nil : Time.zone.now
-
-    Student.where(group_id: @group.id).update_all(deleted_at: @group.deleted_at)
-    Lesson.where(group_id: @group.id).find_each { |lesson|
-      lesson.update_attribute(:deleted_at, @group.deleted_at)
-      Grade.where(lesson_id: lesson.id).update_all(deleted_at: @group.deleted_at)
-    }
   end
 end

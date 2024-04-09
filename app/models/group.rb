@@ -47,4 +47,28 @@ class Group < ApplicationRecord
   def full_mlid
     "#{chapter.full_mlid}-#{mlid}"
   end
+
+  def delete_group_and_dependents
+    transaction do
+      self.deleted_at = Time.zone.now
+
+      Student.where(group_id: id, deleted_at: nil).find_each { |student| student.update(deleted_at:) }
+      Lesson.where(group_id: id, deleted_at: nil).find_each do |lesson|
+        lesson.update(deleted_at:)
+        Grade.where(lesson_id: lesson.id, deleted_at: nil).find_each { |grade| grade.update(deleted_at:) }
+      end
+    end
+  end
+
+  def restore_group_and_dependents
+    transaction do
+      Student.where(group_id: id, deleted_at:).find_each { |student| student.update(deleted_at: nil) }
+      Lesson.where(group_id: id, deleted_at:).find_each do |lesson|
+        lesson.update(deleted_at: nil)
+        Grade.where(lesson_id: lesson.id, deleted_at:).find_each { |grade| grade.update(deleted_at: nil) }
+      end
+
+      self.deleted_at = nil
+    end
+  end
 end
