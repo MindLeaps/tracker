@@ -12,7 +12,8 @@ class StudentLessonsController < HtmlController
     authorize lesson, :create?
 
     student_lesson = StudentLesson.new(student_id: params.require(:id), lesson:)
-    student_lesson.perform_grading(format_attributes, student_absent?)
+    formatted_grade_attributes = format_attributes
+    student_lesson.perform_grading(formatted_grade_attributes, student_absent?)
 
     success(title: t(:student_graded), text: t(:student_graded_text, student: student_lesson.student.proper_name))
     redirect_to lesson_path(lesson)
@@ -30,9 +31,13 @@ class StudentLessonsController < HtmlController
   end
 
   def format_attributes
-    grades_attributes
-      &.select { |g| g['grade_descriptor_id'].present? }
-      &.reduce({}) { |acc, v| acc.merge(v['skill_id'].to_i => v['grade_descriptor_id'].to_i) }
+    retrieved_attributes = grades_attributes
+
+    if retrieved_attributes.present?
+      retrieved_attributes
+        .select { |g| g['grade_descriptor_id'].present? or g['grade_descriptor_id'].empty? }
+        .reduce({}) { |acc, v| acc.merge(v['skill_id'].to_i => Integer(v['grade_descriptor_id'], exception: false)) }
+    end
   end
 
   def lesson_from_param
