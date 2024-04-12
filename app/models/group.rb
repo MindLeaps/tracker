@@ -52,21 +52,21 @@ class Group < ApplicationRecord
     transaction do
       self.deleted_at = Time.zone.now
 
-      Student.includes(:group).where(group_id: id, deleted_at: nil).find_each { |student| student.update(deleted_at:) }
-      Lesson.includes(:group).where(group_id: id, deleted_at: nil).find_each do |lesson|
-        lesson.update(deleted_at:)
-        Grade.includes(:lesson).where(lesson_id: lesson.id, deleted_at: nil).find_each { |grade| grade.update(deleted_at:) }
-      end
+      # rubocop:disable Rails/SkipsModelValidations
+      Student.includes(:group).where(group_id: id, deleted_at: nil).update_all(deleted_at:)
+      Lesson.includes(:group).where(group_id: id, deleted_at: nil).update_all(deleted_at:)
+      Grade.includes(:lesson).where(lessons: { group_id: id, deleted_at: }, deleted_at: nil).update_all(deleted_at:)
+      # rubocop:enable Rails/SkipsModelValidations
     end
   end
 
   def restore_group_and_dependents
     transaction do
-      Student.includes(:group).where(group_id: id, deleted_at:).find_each { |student| student.update(deleted_at: nil) }
-      Lesson.includes(:group).where(group_id: id, deleted_at:).find_each do |lesson|
-        lesson.update(deleted_at: nil)
-        Grade.includes(:lesson).where(lesson_id: lesson.id, deleted_at:).find_each { |grade| grade.update(deleted_at: nil) }
-      end
+      # rubocop:disable Rails/SkipsModelValidations
+      Student.includes(:group).where(group_id: id, deleted_at:).update_all(deleted_at: nil)
+      Grade.includes(:lesson).where(lessons: { group_id: id, deleted_at: }, deleted_at:).update_all(deleted_at: nil)
+      Lesson.includes(:group).where(group_id: id, deleted_at:).update_all(deleted_at: nil)
+      # rubocop:enable Rails/SkipsModelValidations
 
       self.deleted_at = nil
     end
