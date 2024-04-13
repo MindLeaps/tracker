@@ -37,6 +37,7 @@ en:
   students: Students
   student_details: Student Details
   student_deleted_at: Student deleted %{time} ago
+  group_deleted_at: Group deleted %{time} ago
   date_of_birth: Date of Birth
   dob_estimated: DOB Estimated
   circa: "c. "

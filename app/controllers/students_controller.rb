@@ -62,7 +62,7 @@ class StudentsController < HtmlController
 
     return unless @student.save
 
-    success(title: t(:student_deleted), text: t(:student_deleted_text, student: @student.proper_name), link_text: t(:undo), link_path: undelete_student_path)
+    success(title: t(:student_deleted), text: t(:student_deleted_text, student: @student.proper_name), button_path: undelete_student_path, button_method: :post, button_text: t(:undo))
     redirect_to student_path
   end
 

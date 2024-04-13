@@ -189,6 +189,9 @@ RSpec.describe GroupsController, type: :controller do
       request.env['HTTP_REFERER'] = 'http://example.com/groups?param=1'
 
       @students = create_list :student, 2, group: @group
+      @lessons = create_list :lesson, 2, group: @group
+      @grades = create_list :grade, 2, lesson: @lessons.first
+      @deleted_student = create :student, group: @group, deleted_at: Time.zone.now
 
       post :destroy, params: { id: @group.id }
     end
@@ -200,17 +203,50 @@ RSpec.describe GroupsController, type: :controller do
     it 'Marks the group as deleted' do
       expect(@group.reload.deleted_at).to be_within(1.second).of Time.zone.now
     end
+
+    it 'Marks the group\'s dependents as deleted' do
+      @group.reload
+
+      @students.each { |student| expect(student.reload.deleted_at).to eq(@group.deleted_at) }
+      @lessons.each { |lesson| expect(lesson.reload.deleted_at).to eq(@group.deleted_at) }
+      @grades.each { |grade| expect(grade.reload.deleted_at).to eq(@group.deleted_at) }
+    end
+
+    it 'Does not mark previously deleted dependents of the group as deleted' do
+      @group.reload
+      @deleted_student.reload
+
+      expect(@deleted_student.deleted_at).to_not eq(@group.deleted_at)
+    end
   end
 
   describe '#undelete' do
     before :each do
       @group = create :group, deleted_at: Time.zone.now
+      @students = create_list :student, 2, group: @group, deleted_at: @group.deleted_at
+      @lessons = create_list :lesson, 2, group: @group, deleted_at: @group.deleted_at
+      @grades = create_list :grade, 2, lesson: @lessons.first, deleted_at: @group.deleted_at
+      @deleted_student = create :student, group: @group, deleted_at: Time.zone.now
+
       post :undelete, params: { id: @group.id }
     end
 
     it { should set_flash[:success_notice] }
+
     it 'Removes the group\'s deleted timestamp' do
       expect(@group.reload.deleted_at).to be_nil
+    end
+
+    it 'Removes the group\'s dependents deleted timestamps' do
+      @students.each { |student| expect(student.reload.deleted_at).to be_nil }
+      @lessons.each { |lesson| expect(lesson.reload.deleted_at).to be_nil }
+      @grades.each { |grade| expect(grade.reload.deleted_at).to be_nil }
+    end
+
+    it 'Does not remove the previously deleted dependents of the group\'s deleted timestamp' do
+      @deleted_student.reload
+
+      expect(@deleted_student.deleted_at).to_not be_nil
     end
   end
 end

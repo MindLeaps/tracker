@@ -47,4 +47,28 @@ class Group < ApplicationRecord
   def full_mlid
     "#{chapter.full_mlid}-#{mlid}"
   end
+
+  def delete_group_and_dependents
+    transaction do
+      self.deleted_at = Time.zone.now
+
+      # rubocop:disable Rails/SkipsModelValidations
+      Student.includes(:group).where(group_id: id, deleted_at: nil).update_all(deleted_at:)
+      Lesson.includes(:group).where(group_id: id, deleted_at: nil).update_all(deleted_at:)
+      Grade.includes(:lesson).where(lessons: { group_id: id, deleted_at: }, deleted_at: nil).update_all(deleted_at:)
+      # rubocop:enable Rails/SkipsModelValidations
+    end
+  end
+
+  def restore_group_and_dependents
+    transaction do
+      # rubocop:disable Rails/SkipsModelValidations
+      Student.includes(:group).where(group_id: id, deleted_at:).update_all(deleted_at: nil)
+      Grade.includes(:lesson).where(lessons: { group_id: id, deleted_at: }, deleted_at:).update_all(deleted_at: nil)
+      Lesson.includes(:group).where(group_id: id, deleted_at:).update_all(deleted_at: nil)
+      # rubocop:enable Rails/SkipsModelValidations
+
+      self.deleted_at = nil
+    end
+  end
 end
