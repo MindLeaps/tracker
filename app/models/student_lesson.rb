@@ -21,8 +21,11 @@ class StudentLesson < ApplicationRecord
   def perform_grading(skills_descriptors, new_absence)
     Grade.transaction do
       update_absence new_absence
-      new_grades = map_new_grades skills_descriptors
-      new_grades.each(&:save!)
+
+      if skills_descriptors.present?
+        new_grades = map_new_grades skills_descriptors
+        new_grades.each(&:save!)
+      end
     end
   end
 
@@ -74,14 +77,14 @@ class StudentLesson < ApplicationRecord
   FORMATTED_GRADES_WITH_DELETED_SQL = <<~SQL.squish
     SELECT g.id, student_id, lesson_id, grade_descriptor_id, g.created_at, g.updated_at, g.deleted_at, lesson_uid, s.id as skill_id, mark FROM skills s
       LEFT JOIN grades g ON s.id = g.skill_id AND student_id = :student_id AND lesson_id = :lesson_id
-      JOIN assignments a ON s.id = a.skill_id
+      JOIN assignments a ON s.id = a.skill_id AND a.deleted_at IS NULL
       WHERE subject_id = :subject_id;
   SQL
 
   FORMATTED_GRADES_SQL = <<~SQL.squish
     SELECT g.id, student_id, lesson_id, grade_descriptor_id, g.created_at, g.updated_at, g.deleted_at, lesson_uid, s.id as skill_id, mark FROM skills s
       LEFT JOIN grades g ON s.id = g.skill_id AND student_id = :student_id AND lesson_id = :lesson_id AND g.deleted_at IS NULL
-      JOIN assignments a ON s.id = a.skill_id
+      JOIN assignments a ON s.id = a.skill_id AND a.deleted_at IS NULL
       WHERE subject_id = :subject_id;
   SQL
 end

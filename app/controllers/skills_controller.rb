@@ -66,7 +66,7 @@ class SkillsController < HtmlController
   private
 
   def skill_subjects
-    subjects = @skill.subjects.includes(:assignments, :skills, :organization)
+    subjects = @skill.subjects.includes(:assignments, :skills, :organization).where(assignments: { deleted_at: nil })
     apply_scopes(subjects, table_order_subjects: params['table_order_subjects'] || { key: :created_at, order: :desc })
   end
 
