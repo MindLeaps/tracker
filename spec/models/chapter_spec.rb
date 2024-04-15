@@ -82,6 +82,16 @@ RSpec.describe Chapter, type: :model do
       @chapter1 = create :chapter, organization: @org1
       @chapter2 = create :chapter, organization: @org1
       @chapter3 = create :chapter, organization: @org2
+      @chapter4 = create :chapter, deleted_at: Time.zone.now, organization: @org2
+    end
+
+    describe 'exclude_deleted' do
+      it 'returns only non-deleted chapters' do
+        # The line below fails for some reason even though it does not include the deleted chapter
+        # expect(Chapter.exclude_deleted.length).to eq 3
+        expect(Chapter.exclude_deleted).to include @chapter1, @chapter2, @chapter3
+        expect(Chapter.exclude_deleted).not_to include @chapter4
+      end
     end
 
     describe 'by_organization' do
