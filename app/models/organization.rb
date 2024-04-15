@@ -39,13 +39,7 @@ class Organization < ApplicationRecord
       self.deleted_at = Time.zone.now
 
       # rubocop:disable Rails/SkipsModelValidations
-      chapters_to_update = Chapter.includes(:organization).where(organization_id: id, deleted_at: nil)
-      chapter_ids = chapters_to_update.pluck(:id)
-      groups_to_update = Group.includes(:chapter).where(chapters: chapter_ids, deleted_at: nil)
-      group_ids = groups_to_update.pluck(:id)
-
-      chapters_to_update.update_all(deleted_at:)
-      groups_to_update.update_all(deleted_at:)
+      group_ids = delete_chapters_and_groups
       Student.includes(:group).where(groups: group_ids, deleted_at: nil).update_all(deleted_at:)
       Lesson.includes(:group).where(groups: group_ids, deleted_at: nil).update_all(deleted_at:)
       Grade.includes(:lesson).where(lessons: { group_id: group_ids, deleted_at: }, deleted_at: nil).update_all(deleted_at:)
@@ -56,13 +50,7 @@ class Organization < ApplicationRecord
   def restore_organization_and_dependents
     transaction do
       # rubocop:disable Rails/SkipsModelValidations
-      chapters_to_update = Chapter.includes(:organization).where(organization_id: id, deleted_at:)
-      chapter_ids = chapters_to_update.pluck(:id)
-      groups_to_update = Group.includes(:chapter).where(chapters: chapter_ids, deleted_at:)
-      group_ids = groups_to_update.pluck(:id)
-
-      chapters_to_update.update_all(deleted_at: nil)
-      groups_to_update.update_all(deleted_at: nil)
+      group_ids = restore_chapters_and_groups
       Student.includes(:group).where(groups: group_ids, deleted_at:).update_all(deleted_at: nil)
       Grade.includes(:lesson).where(lessons: { group_id: group_ids, deleted_at: }, deleted_at:).update_all(deleted_at: nil)
       Lesson.includes(:group).where(groups: group_ids, deleted_at:).update_all(deleted_at: nil)
@@ -70,6 +58,30 @@ class Organization < ApplicationRecord
 
       self.deleted_at = nil
     end
+  end
+
+  def delete_chapters_and_groups
+    # rubocop:disable Rails/SkipsModelValidations
+    chapters_to_delete = Chapter.includes(:organization).where(organization_id: id, deleted_at: nil)
+    chapter_ids = chapters_to_delete.pluck(:id)
+    chapters_to_delete.update_all(deleted_at:)
+    groups_to_delete = Group.includes(:chapter).where(chapters: chapter_ids, deleted_at: nil)
+    group_ids = groups_to_delete.pluck(:id)
+    groups_to_delete.update_all(deleted_at:)
+    group_ids
+    # rubocop:enable Rails/SkipsModelValidations
+  end
+
+  def restore_chapters_and_groups
+    # rubocop:disable Rails/SkipsModelValidations
+    chapters_to_restore = Chapter.includes(:organization).where(organization_id: id, deleted_at:)
+    chapter_ids = chapters_to_restore.pluck(:id)
+    chapters_to_restore.update_all(deleted_at: nil)
+    groups_to_delete = Group.includes(:chapter).where(chapters: chapter_ids, deleted_at:)
+    group_ids = groups_to_delete.pluck(:id)
+    groups_to_delete.update_all(deleted_at: nil)
+    group_ids
+    # rubocop:enable Rails/SkipsModelValidations
   end
 
   def members
