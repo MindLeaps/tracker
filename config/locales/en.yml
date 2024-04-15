@@ -73,6 +73,13 @@ en:
   organization_updated: Organization updated
   organization_name_added: Organization "%{name}" added
   organization_name_updated: Organization "%{name}" updated
+  organization_deleted: Organization deleted
+  organization_deleted_text: Organization "%{organization}" deleted.
+  organization_deleted_at: Organization deleted %{time} ago
+  organization_restored: Organization restored
+  organization_restored_text: Organization "%{organization}" restored.
+  delete_organization: Delete Organization
+  restore_organization: Restore Deleted Organization
 
   users: Users
   user_information: User Information
