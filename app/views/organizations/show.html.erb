@@ -4,11 +4,16 @@
   {title: CommonComponents::TagLabel.new(label: @organization.organization_name, img_src: 'world.svg'), href: '' },
 ], buttons: [
   (CommonComponents::ButtonComponent.new(label: t(:edit_organization), href: edit_organization_path(@organization)) if policy(@organization).edit?),
+  (CommonComponents::FormButtonComponent.new(label: t(:restore_organization), path: undelete_organization_path(@organization), method: :post) if policy(@organization).destroy? && @organization.deleted_at),
+  (CommonComponents::DangerousFormButtonComponent.new(label: t(:delete_organization), path: organization_path(@organization), method: :delete) if policy(@organization).destroy? && !@organization.deleted_at)
 ].compact)  do |h|
   h.with_left do
   end
 end %>
 
+<% if @organization.deleted_at  %>
+  <%= render AlertComponent.new(title: t(:organization_deleted, name: @organization.organization_name), text: t(:organization_deleted_at, time: distance_of_time_in_words(@organization.deleted_at, Time.zone.now))) %>
+<% end %>
 <div class="overflow-auto">
   <div class="flex">
     <section class="flex-1 pr-2">

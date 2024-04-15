@@ -34,6 +34,44 @@ class Organization < ApplicationRecord
     RoleService.update_local_role user, role, self
   end
 
+  def delete_organization_and_dependents
+    transaction do
+      self.deleted_at = Time.zone.now
+
+      # rubocop:disable Rails/SkipsModelValidations
+      chapters_to_update = Chapter.includes(:organization).where(organization_id: id, deleted_at: nil)
+      chapter_ids = chapters_to_update.pluck(:id)
+      groups_to_update = Group.includes(:chapter).where(chapters: chapter_ids, deleted_at: nil)
+      group_ids = groups_to_update.pluck(:id)
+
+      chapters_to_update.update_all(deleted_at:)
+      groups_to_update.update_all(deleted_at:)
+      Student.includes(:group).where(groups: group_ids, deleted_at: nil).update_all(deleted_at:)
+      Lesson.includes(:group).where(groups: group_ids, deleted_at: nil).update_all(deleted_at:)
+      Grade.includes(:lesson).where(lessons: { group_id: group_ids, deleted_at: }, deleted_at: nil).update_all(deleted_at:)
+      # rubocop:enable Rails/SkipsModelValidations
+    end
+  end
+
+  def restore_organization_and_dependents
+    transaction do
+      # rubocop:disable Rails/SkipsModelValidations
+      chapters_to_update = Chapter.includes(:organization).where(organization_id: id, deleted_at:)
+      chapter_ids = chapters_to_update.pluck(:id)
+      groups_to_update = Group.includes(:chapter).where(chapters: chapter_ids, deleted_at:)
+      group_ids = groups_to_update.pluck(:id)
+
+      chapters_to_update.update_all(deleted_at: nil)
+      groups_to_update.update_all(deleted_at: nil)
+      Student.includes(:group).where(groups: group_ids, deleted_at:).update_all(deleted_at: nil)
+      Grade.includes(:lesson).where(lessons: { group_id: group_ids, deleted_at: }, deleted_at:).update_all(deleted_at: nil)
+      Lesson.includes(:group).where(groups: group_ids, deleted_at:).update_all(deleted_at: nil)
+      # rubocop:enable Rails/SkipsModelValidations
+
+      self.deleted_at = nil
+    end
+  end
+
   def members
     OrganizationMember.where(organization_id: id)
   end

@@ -11,6 +11,10 @@ class OrganizationPolicy < ApplicationPolicy
     user.global_administrator?
   end
 
+  def undelete?
+    destroy?
+  end
+
   def add_member?
     user.global_administrator? || user.is_admin_of?(record)
   end
