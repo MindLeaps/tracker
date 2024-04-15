@@ -51,10 +51,13 @@ class Chapter < ApplicationRecord
       self.deleted_at = Time.zone.now
 
       # rubocop:disable Rails/SkipsModelValidations
-      Group.includes(:chapter).where(chapter_id: id, deleted_at: nil).update_all(deleted_at:)
-      Student.includes(:group).where(groups: { chapter_id: id, deleted_at: }, deleted_at: nil).update_all(deleted_at:)
-      Lesson.includes(:group).where(groups: { chapter_id: id, deleted_at: }, deleted_at: nil).update_all(deleted_at:)
-      Grade.includes(:lesson).where(lessons: { groups: { chapter_id: id, deleted_at: }, deleted_at: }, deleted_at: nil).update_all(deleted_at:)
+      groups_to_update = Group.includes(:chapter).where(chapter_id: id, deleted_at: nil)
+      group_ids = groups_to_update.pluck(:id)
+
+      groups_to_update.update_all(deleted_at:)
+      Student.includes(:group).where(groups: group_ids, deleted_at: nil).update_all(deleted_at:)
+      Lesson.includes(:group).where(groups: group_ids, deleted_at: nil).update_all(deleted_at:)
+      Grade.includes(:lesson).where(lessons: { group_id: group_ids, deleted_at: }, deleted_at: nil).update_all(deleted_at:)
       # rubocop:enable Rails/SkipsModelValidations
     end
   end
@@ -62,10 +65,13 @@ class Chapter < ApplicationRecord
   def restore_chapter_and_dependents
     transaction do
       # rubocop:disable Rails/SkipsModelValidations
-      Student.includes(:group).where(groups: { chapter_id: id, deleted_at: }, deleted_at:).update_all(deleted_at: nil)
-      Grade.includes(:lesson).where(lessons: { groups: { chapter_id: id, deleted_at: }, deleted_at: }, deleted_at:).update_all(deleted_at: nil)
-      Lesson.includes(:group).where(groups: { chapter_id: id, deleted_at: }, deleted_at:).update_all(deleted_at: nil)
-      Group.includes(:chapter).where(chapter_id: id, deleted_at:).update_all(deleted_at: nil)
+      groups_to_update = Group.includes(:chapter).where(chapter_id: id, deleted_at:)
+      group_ids = groups_to_update.pluck(:id)
+
+      groups_to_update.update_all(deleted_at: nil)
+      Student.includes(:group).where(groups: group_ids, deleted_at:).update_all(deleted_at: nil)
+      Grade.includes(:lesson).where(lessons: { group_id: group_ids, deleted_at: }, deleted_at:).update_all(deleted_at: nil)
+      Lesson.includes(:group).where(groups: group_ids, deleted_at:).update_all(deleted_at: nil)
       # rubocop:enable Rails/SkipsModelValidations
 
       self.deleted_at = nil

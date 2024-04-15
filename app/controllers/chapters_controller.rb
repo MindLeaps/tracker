@@ -54,10 +54,10 @@ class ChaptersController < HtmlController
     @chapter = Chapter.find params.require :id
     authorize @chapter
     @chapter.delete_chapter_and_dependents
-    return unless @group.save
+    return unless @chapter.save
 
     success(title: t(:chapter_deleted), text: t(:chapter_deleted_text, chapter: @chapter.chapter_name), button_path: undelete_chapter_path, button_method: :post, button_text: t(:undo))
-    redirect_to request.referer || @group.path
+    redirect_to request.referer || @chapter.path
   end
 
   def undelete
@@ -66,7 +66,7 @@ class ChaptersController < HtmlController
     @chapter.restore_chapter_and_dependents
     return unless @chapter.save
 
-    success(title: t(:chapter_restored), text: t(:chapter_restored_text, group: @chapter.group_name))
+    success(title: t(:chapter_restored), text: t(:chapter_restored_text, chapter: @chapter.chapter_name))
     redirect_to chapter_path
   end
 
