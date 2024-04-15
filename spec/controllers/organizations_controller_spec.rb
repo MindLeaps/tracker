@@ -141,4 +141,80 @@ RSpec.describe OrganizationsController, type: :controller do
       it { should set_flash[:failure_notice] }
     end
   end
+
+  describe '#destroy' do
+    before :each do
+      @organization = create :organization
+      request.env['HTTP_REFERER'] = 'http://example.com/organizations?param=1'
+
+      @chapters = create_list :chapter, 2, organization: @organization
+      @groups = create_list :group, 2, chapter: @chapters.first
+      @students = create_list :student, 2, group: @groups.first
+      @lessons = create_list :lesson, 2, group: @groups.first
+      @grades = create_list :grade, 2, lesson: @lessons.first
+      @deleted_chapter = create :chapter, organization: @organization, deleted_at: Time.zone.now
+
+      post :destroy, params: { id: @organization.id }
+    end
+
+    it { should redirect_to 'http://example.com/organizations?param=1' }
+
+    it { should set_flash[:success_notice] }
+
+    it 'Marks the organization as deleted' do
+      expect(@organization.reload.deleted_at).to be_within(1.second).of Time.zone.now
+    end
+
+    it 'Marks the organization\'s dependents as deleted' do
+      @organization.reload
+
+      @chapters.each { |chapter| expect(chapter.reload.deleted_at).to eq(@organization.deleted_at) }
+      @groups.each { |group| expect(group.reload.deleted_at).to eq(@organization.deleted_at) }
+      @students.each { |student| expect(student.reload.deleted_at).to eq(@organization.deleted_at) }
+      @lessons.each { |lesson| expect(lesson.reload.deleted_at).to eq(@organization.deleted_at) }
+      @grades.each { |grade| expect(grade.reload.deleted_at).to eq(@organization.deleted_at) }
+    end
+
+    it 'Does not mark previously deleted dependents of the organization as deleted' do
+      @organization.reload
+      @deleted_chapter.reload
+
+      expect(@deleted_chapter.deleted_at).to_not eq(@organization.deleted_at)
+    end
+  end
+
+  describe '#undelete' do
+    before :each do
+      @organization = create :organization, deleted_at: Time.zone.now
+
+      @chapters = create_list :chapter, 2, organization: @organization, deleted_at: @organization.deleted_at
+      @groups = create_list :group, 2, chapter: @chapters.first, deleted_at: @organization.deleted_at
+      @students = create_list :student, 2, group: @groups.first, deleted_at: @organization.deleted_at
+      @lessons = create_list :lesson, 2, group: @groups.first, deleted_at: @organization.deleted_at
+      @grades = create_list :grade, 2, lesson: @lessons.first, deleted_at: @organization.deleted_at
+      @deleted_chapter = create :chapter, organization: @organization, deleted_at: Time.zone.now
+
+      post :undelete, params: { id: @organization.id }
+    end
+
+    it { should set_flash[:success_notice] }
+
+    it 'Removes the organization\'s deleted timestamp' do
+      expect(@organization.reload.deleted_at).to be_nil
+    end
+
+    it 'Removes the organization\'s dependents deleted timestamps' do
+      @chapters.each { |chapter| expect(chapter.reload.deleted_at).to be_nil }
+      @groups.each { |group| expect(group.reload.deleted_at).to be_nil }
+      @students.each { |student| expect(student.reload.deleted_at).to be_nil }
+      @lessons.each { |lesson| expect(lesson.reload.deleted_at).to be_nil }
+      @grades.each { |grade| expect(grade.reload.deleted_at).to be_nil }
+    end
+
+    it 'Does not remove the previously deleted dependents of the chapter\'s deleted timestamp' do
+      @deleted_chapter.reload
+
+      expect(@deleted_chapter.deleted_at).to_not be_nil
+    end
+  end
 end

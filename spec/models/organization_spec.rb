@@ -97,4 +97,20 @@ RSpec.describe Organization, type: :model do
       expect(org.members).to include(OrganizationMember.find(@members[2].id))
     end
   end
+
+  describe 'scopes' do
+    before :each do
+      @org1 = create :organization
+      @org2 = create :organization
+      @org3 = create :organization, deleted_at: Time.zone.now
+    end
+
+    describe 'exclude_deleted' do
+      it 'returns only non-deleted organizations' do
+        expect(Organization.exclude_deleted.length).to eq 2
+        expect(Organization.exclude_deleted).to include @org1, @org2
+        expect(Organization.exclude_deleted).not_to include @org3
+      end
+    end
+  end
 end
