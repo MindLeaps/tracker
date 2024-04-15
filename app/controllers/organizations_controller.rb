@@ -1,5 +1,6 @@
 class OrganizationsController < HtmlController
   include Pagy::Backend
+  has_scope :exclude_deleted, type: :boolean
   has_scope :table_order, type: :hash, default: { key: :created_at, order: :desc }, only: :index
   has_scope :table_order_chapters, type: :hash, only: :show
   has_scope :table_order_members, type: :hash, only: :show
@@ -56,10 +57,17 @@ class OrganizationsController < HtmlController
   end
 
   def initialize_organization(id)
-    @pagy_chapters, @chapters = pagy apply_scopes(ChapterSummary.where(organization_id: id), { table_order_chapters: params['table_order_chapters'] || { key: :chapter_name, order: :asc } })
+    @pagy_chapters, @chapters = pagy apply_scopes(ChapterSummary.where(organization_id: id), chapter_order_scope)
     @pagy_users, @members = pagy apply_scopes(@organization.members, { table_order_members: params['table_order_members'] || { key: :email, order: :asc } })
     @new_member = User.new
     @roles = Role::LOCAL_ROLES.keys
+  end
+
+  def chapter_order_scope
+    {
+      table_order_chapters: params['table_order_chapters'] || { key: :chapter_name, order: :asc },
+      exclude_deleted: params['exclude_deleted'] || true
+    }
   end
 
   def add_member
