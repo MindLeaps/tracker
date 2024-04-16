@@ -24,7 +24,7 @@ RSpec.describe 'User interacts with Analytics' do
       expect(page).to have_content(/Quantity(\s*)of(\s*)Data(\s*)Collected(\s*)By(\s*)Month/)
       expect(page).to have_content(/Histogram(\s*)of(\s*)student(\s*)performance(\s*)values/)
       expect(page).to have_content(/Performance(\s*)change(\s*)throughout(\s*)the(\s*)program(\s*)by(\s*)student/)
-      expect(page).to have_content(/Performance(\s*)change(\s*)throughout(\s*)the(\s*)program(\s*)separated(\s*)by(\s*)boys(\s*)and(\s*)girls/)
+      expect(page).to have_content(/Performance(\s*)change(\s*)throughout(\s*)the(\s*)program(\s*)separated(\s*)by(\s*)gender/)
       expect(page).to have_content(/Average(\s*)performance(\s*)per(\s*)group(\s*)versus(\s*)time(\s*)in(\s*)program/)
 
       click_link 'Subject analytics'

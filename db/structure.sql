@@ -43,7 +43,9 @@ COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UU
 
 CREATE TYPE public.gender AS ENUM (
     'male',
-    'female'
+    'female',
+    'non-binary',
+    'other'
 );
 
 
@@ -2244,6 +2246,6 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20231222195655'),
 ('20231230202619'),
 ('20240412093631'),
-('20240412093830');
+('20240416103233');
 
 

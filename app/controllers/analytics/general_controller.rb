@@ -27,17 +27,21 @@ module Analytics
     end
 
     def histogram_of_student_performance_change_by_gender
-      conn = ActiveRecord::Base.connection.raw_connection
-      male_students = @selected_students.where(gender: 'M')
-      female_students = @selected_students.where(gender: 'F')
-
       result = []
 
-      result << { name: "#{t(:gender)} M", data: conn.exec(Sql.performance_change_query(male_students)).values } if male_students.length.positive?
-
-      result << { name: "#{t(:gender)} F", data: conn.exec(Sql.performance_change_query(female_students)).values } if female_students.length.positive?
+      %w[M F NB O].each do |gender|
+        add_performance_change_results_to_set_for_gender(gender, result)
+      end
 
       result
+    end
+
+    def add_performance_change_results_to_set_for_gender(gender, result)
+      conn = ActiveRecord::Base.connection.raw_connection
+      students_by_gender = @selected_students.where(gender:)
+      return unless students_by_gender.length.positive?
+
+      result << { name: "#{t(:gender)} #{gender}", data: conn.exec(Sql.performance_change_query(students_by_gender)).values }
     end
 
     def histogram_of_student_performance_change

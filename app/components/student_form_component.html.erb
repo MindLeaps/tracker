@@ -27,6 +27,14 @@
                 <%= f.radio_button :gender, :F, class: 'h-4 w-4 border-purple-500 text-green-600 focus:ring-green-600 cursor-pointer' %>
                 <label for="student_gender_f" class="ml-3 text-sm font-medium text-gray-700 cursor-pointer"><%= t(:enums)[:student][:gender][:F] %></label>
               </div>
+              <div class="flex items-center">
+                <%= f.radio_button :gender, :NB, class: 'h-4 w-4 border-purple-500 text-green-600 focus:ring-green-600 cursor-pointer' %>
+                <label for="student_gender_nb" class="ml-3 text-sm font-medium text-gray-700 cursor-pointer"><%= t(:enums)[:student][:gender][:NB] %></label>
+              </div>
+              <div class="flex items-center">
+                <%= f.radio_button :gender, :O, class: 'h-4 w-4 border-purple-500 text-green-600 focus:ring-green-600 cursor-pointer' %>
+                <label for="student_gender_o" class="ml-3 text-sm font-medium text-gray-700 cursor-pointer"><%= t(:enums)[:student][:gender][:O] %></label>
+              </div>
             </div>
           </fieldset>
           <div class="col-span-6 lg:col-span-2">
