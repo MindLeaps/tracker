@@ -76,28 +76,88 @@ RSpec.describe Chapter, type: :model do
 
   describe 'scopes' do
     before :each do
-      @org1 = create :organization
-      @org2 = create :organization
+      @first_organization = create :organization
+      @second_organization = create :organization
 
-      @chapter1 = create :chapter, organization: @org1
-      @chapter2 = create :chapter, organization: @org1
-      @chapter3 = create :chapter, organization: @org2
-      @chapter4 = create :chapter, deleted_at: Time.zone.now, organization: @org2
+      @first_chapter = create :chapter, organization: @first_organization
+      @second_chapter = create :chapter, organization: @second_organization
+      @deleted_chapter = create :chapter, deleted_at: Time.zone.now, organization: @second_organization
     end
 
     describe 'exclude_deleted' do
       it 'returns only non-deleted chapters' do
-        # The line below fails for some reason even though it does not include the deleted chapter
-        # expect(Chapter.exclude_deleted.length).to eq 3
-        expect(Chapter.exclude_deleted).to include @chapter1, @chapter2, @chapter3
-        expect(Chapter.exclude_deleted).not_to include @chapter4
+        # Line below counts all organization variables inserted
+        expect(Chapter.exclude_deleted.length).to eq 3
+        expect(Chapter.exclude_deleted).to include @first_chapter, @second_chapter
+        expect(Chapter.exclude_deleted).not_to include @deleted_chapter
       end
     end
 
     describe 'by_organization' do
       it 'should return only chapters belonging to a certain organization' do
-        expect(Chapter.by_organization(@org1.id).length).to eq 2
-        expect(Chapter.by_organization(@org1.id)).to include @chapter1, @chapter2
+        expect(Chapter.by_organization(@first_organization.id).length).to eq 1
+        expect(Chapter.by_organization(@first_organization.id)).to include @first_chapter
+        expect(Chapter.by_organization(@first_organization.id)).not_to include @second_chapter
+      end
+    end
+  end
+
+  describe 'methods' do
+    describe 'delete_chapter_and_dependents' do
+      before :all do
+        @chapter_to_delete = create :chapter
+
+        @groups_to_delete = create_list :group, 2, chapter: @chapter_to_delete
+        @students_to_delete = create_list :student, 2, group: @groups_to_delete.first
+        @lessons_to_delete = create_list :lesson, 2, group: @groups_to_delete.first
+        @grades_to_delete = create_list :grade, 2, lesson: @lessons_to_delete.first
+        @deleted_group = create :group, chapter: @chapter_to_delete, deleted_at: Time.zone.now
+
+        @chapter_to_delete.delete_chapter_and_dependents
+      end
+
+      it 'marks the chapter as deleted' do
+        expect(@chapter_to_delete.deleted_at).to be_within(1.second).of Time.zone.now
+      end
+
+      it 'marks the chapter\'s dependents as deleted' do
+        @groups_to_delete.each { |group| expect(group.reload.deleted_at).to eq(@chapter_to_delete.deleted_at) }
+        @students_to_delete.each { |student| expect(student.reload.deleted_at).to eq(@chapter_to_delete.deleted_at) }
+        @lessons_to_delete.each { |lesson| expect(lesson.reload.deleted_at).to eq(@chapter_to_delete.deleted_at) }
+        @grades_to_delete.each { |grade| expect(grade.reload.deleted_at).to eq(@chapter_to_delete.deleted_at) }
+      end
+
+      it 'does not mark previously deleted dependents of the chapter as deleted' do
+        expect(@deleted_group.reload.deleted_at).to_not eq(@chapter_to_delete.deleted_at)
+      end
+    end
+
+    describe 'restore_chapter_and_dependents' do
+      before :all do
+        @chapter_to_restore = create :chapter, deleted_at: Time.zone.now
+
+        @groups_to_restore = create_list :group, 2, chapter: @chapter_to_restore, deleted_at: @chapter_to_restore.deleted_at
+        @students_to_restore = create_list :student, 2, group: @groups_to_restore.first, deleted_at: @chapter_to_restore.deleted_at
+        @lessons_to_restore = create_list :lesson, 2, group: @groups_to_restore.first, deleted_at: @chapter_to_restore.deleted_at
+        @grades_to_restore = create_list :grade, 2, lesson: @lessons_to_restore.first, deleted_at: @chapter_to_restore.deleted_at
+        @deleted_group = create :group, chapter: @chapter_to_restore, deleted_at: Time.zone.now
+
+        @chapter_to_restore.restore_chapter_and_dependents
+      end
+
+      it 'removes the chapter\'s deleted timestamp' do
+        expect(@chapter_to_restore.deleted_at).to be_nil
+      end
+
+      it 'removes the chapter\'s dependents deleted timestamps' do
+        @groups_to_restore.each { |group| expect(group.reload.deleted_at).to be_nil }
+        @students_to_restore.each { |student| expect(student.reload.deleted_at).to be_nil }
+        @lessons_to_restore.each { |lesson| expect(lesson.reload.deleted_at).to be_nil }
+        @grades_to_restore.each { |grade| expect(grade.reload.deleted_at).to be_nil }
+      end
+
+      it 'does not remove the previously deleted dependents of the chapter\'s deleted timestamp' do
+        expect(@deleted_group.reload.deleted_at).to_not be_nil
       end
     end
   end
