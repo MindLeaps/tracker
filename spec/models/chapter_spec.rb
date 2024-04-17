@@ -22,60 +22,61 @@
 require 'rails_helper'
 
 RSpec.describe Chapter, type: :model do
-  before :each do
-    @org1 = create :organization
-    @org2 = create :organization
-    @chapter1 = create :chapter, chapter_name: 'Existing Chapter Spec Chapter', organization: @org1, mlid: 'A1'
-  end
-
-  describe 'is valid' do
-    it 'with a valid, unique name in an organization and a valid MLID' do
-      chapter = Chapter.new chapter_name: 'Totally valid chapter', organization: @org1, mlid: 'C1'
-      expect(chapter).to be_valid
-      expect(chapter.chapter_name).to eql 'Totally valid chapter'
-      expect(chapter.mlid).to eql 'C1'
+  describe 'validations' do
+    before :each do
+      @org1 = create :organization
+      @org2 = create :organization
     end
 
-    it 'with a duplicated name and MLID in a different organization' do
-      chapter = Chapter.new(
-        chapter_name: 'Existing Chapter Spec Chapter',
-        mlid: 'A1',
-        organization_id: @org2.id
-      )
-      expect(chapter).to be_valid
-    end
-  end
+    describe 'is valid' do
+      it 'with a valid, unique name in an organization and a valid MLID' do
+        chapter = Chapter.new chapter_name: 'Totally valid chapter', organization: @org1, mlid: 'C1'
+        expect(chapter).to be_valid
+        expect(chapter.chapter_name).to eql 'Totally valid chapter'
+        expect(chapter.mlid).to eql 'C1'
+      end
 
-  describe 'is not valid' do
-    it 'without chapter name' do
-      chapter = Chapter.new chapter_name: nil, mlid: 'AB', organization: @org1
-      expect(chapter).to_not be_valid
-    end
-
-    it 'with a nonexisting organization id' do
-      chapter = Chapter.new chapter_name: 'Valid Name', organization_id: '1092837465', mlid: 'AB'
-      expect(chapter).to_not be_valid
+      it 'with a duplicated name and MLID in a different organization' do
+        create :chapter, chapter_name: 'Existing Chapter Spec Chapter', organization: @org1, mlid: 'A1'
+        chapter = Chapter.new chapter_name: 'Existing Chapter Spec Chapter', mlid: 'A1', organization_id: @org2.id
+        expect(chapter).to be_valid
+      end
     end
 
-    it 'with a duplicated name in the same organization' do
-      chapter = Chapter.new chapter_name: 'Existing Chapter Spec Chapter', organization_id: @org1.id, mlid: 'AB'
-      expect(chapter).to_not be_valid
-    end
+    describe 'is not valid' do
+      it 'without chapter name' do
+        chapter = Chapter.new chapter_name: nil, mlid: 'AB', organization: @org1
+        expect(chapter).to_not be_valid
+      end
 
-    it 'without an MLID' do
-      chapter = Chapter.new chapter_name: 'Valid Name', organization: @org1
-      expect(chapter).to_not be_valid
-    end
+      it 'with a nonexisting organization id' do
+        chapter = Chapter.new chapter_name: 'Valid Name', organization_id: '1092837465', mlid: 'AB'
+        expect(chapter).to_not be_valid
+      end
 
-    it 'with a duplicated MLID in an organization' do
-      existing_chapter = create :chapter, mlid: 'ML'
-      chapter = Chapter.new chapter_name: 'Chapter', organization: existing_chapter.organization, mlid: 'ML'
-      expect(chapter).to_not be_valid
+      it 'with a duplicated name in the same organization' do
+        create :chapter, chapter_name: 'Existing Chapter Spec Chapter', organization: @org1, mlid: 'A1'
+        chapter = Chapter.new chapter_name: 'Existing Chapter Spec Chapter', organization_id: @org1.id, mlid: 'AB'
+        expect(chapter).to_not be_valid
+      end
+
+      it 'without an MLID' do
+        chapter = Chapter.new chapter_name: 'Valid Name', organization: @org1
+        expect(chapter).to_not be_valid
+      end
+
+      it 'with a duplicated MLID in an organization' do
+        existing_chapter = create :chapter, mlid: 'ML'
+        chapter = Chapter.new chapter_name: 'Chapter', organization: existing_chapter.organization, mlid: 'ML'
+        expect(chapter).to_not be_valid
+      end
     end
   end
 
   describe 'scopes' do
-    before :each do
+    before :all do
+      Chapter.destroy_all
+
       @first_organization = create :organization
       @second_organization = create :organization
 
@@ -86,8 +87,7 @@ RSpec.describe Chapter, type: :model do
 
     describe 'exclude_deleted' do
       it 'returns only non-deleted chapters' do
-        # Line below counts all organization variables inserted
-        expect(Chapter.exclude_deleted.length).to eq 3
+        expect(Chapter.exclude_deleted.length).to eq 2
         expect(Chapter.exclude_deleted).to include @first_chapter, @second_chapter
         expect(Chapter.exclude_deleted).not_to include @deleted_chapter
       end
@@ -114,6 +114,7 @@ RSpec.describe Chapter, type: :model do
         @deleted_group = create :group, chapter: @chapter_to_delete, deleted_at: Time.zone.now
 
         @chapter_to_delete.delete_chapter_and_dependents
+        @chapter_to_delete.reload
       end
 
       it 'marks the chapter as deleted' do
@@ -143,6 +144,7 @@ RSpec.describe Chapter, type: :model do
         @deleted_group = create :group, chapter: @chapter_to_restore, deleted_at: Time.zone.now
 
         @chapter_to_restore.restore_chapter_and_dependents
+        @chapter_to_restore.reload
       end
 
       it 'removes the chapter\'s deleted timestamp' do

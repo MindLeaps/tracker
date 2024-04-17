@@ -62,4 +62,62 @@ RSpec.describe Group, type: :model do
       end
     end
   end
+
+  describe 'methods' do
+    describe 'delete_group_and_dependents' do
+      before :all do
+        @group_to_delete = create :group
+
+        @students_to_delete = create_list :student, 2, group: @group_to_delete
+        @lessons_to_delete = create_list :lesson, 2, group: @group_to_delete
+        @grades_to_delete = create_list :grade, 2, lesson: @lessons_to_delete.first
+        @deleted_student = create :student, group: @group_to_delete, deleted_at: Time.zone.now
+
+        @group_to_delete.delete_group_and_dependents
+        @group_to_delete.reload
+      end
+
+      it 'marks the group as deleted' do
+        expect(@group_to_delete.deleted_at).to be_within(1.second).of Time.zone.now
+      end
+
+      it 'marks the group\'s dependents as deleted' do
+        @students_to_delete.each { |student| expect(student.reload.deleted_at).to eq(@group_to_delete.deleted_at) }
+        @lessons_to_delete.each { |lesson| expect(lesson.reload.deleted_at).to eq(@group_to_delete.deleted_at) }
+        @grades_to_delete.each { |grade| expect(grade.reload.deleted_at).to eq(@group_to_delete.deleted_at) }
+      end
+
+      it 'does not mark previously deleted dependents of the group as deleted' do
+        expect(@deleted_student.reload.deleted_at).to_not eq(@group_to_delete.deleted_at)
+      end
+    end
+
+    describe 'restore_group_and_dependents' do
+      before :all do
+        @group_to_restore = create :group, deleted_at: Time.zone.now
+
+        @students_to_restore = create_list :student, 2, group: @group_to_restore, deleted_at: @group_to_restore.deleted_at
+        @lessons_to_restore = create_list :lesson, 2, group: @group_to_restore, deleted_at: @group_to_restore.deleted_at
+        @grades_to_restore = create_list :grade, 2, lesson: @lessons_to_restore.first, deleted_at: @group_to_restore.deleted_at
+        @deleted_student = create :student, group: @group_to_restore, deleted_at: Time.zone.now
+
+        @group_to_restore.restore_group_and_dependents
+        @group_to_restore.reload
+      end
+
+      it 'removes the group\'s deleted timestamp' do
+        expect(@group_to_restore.deleted_at).to be_nil
+      end
+
+      it 'removes the group\'s dependents deleted timestamps' do
+        @students_to_restore.each { |student| expect(student.reload.deleted_at).to be_nil }
+        @lessons_to_restore.each { |lesson| expect(lesson.reload.deleted_at).to be_nil }
+        @grades_to_restore.each { |grade| expect(grade.reload.deleted_at).to be_nil }
+      end
+
+      it 'does not remove the previously deleted dependents of the group\'s deleted timestamp' do
+        expect(@deleted_student.reload.deleted_at).to_not be_nil
+      end
+    end
+  end
 end
