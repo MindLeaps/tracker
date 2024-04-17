@@ -42,23 +42,25 @@ RSpec.describe Group, type: :model do
 
   describe 'scopes' do
     before :each do
-      @chapter1 = create :chapter
-      @chapter2 = create :chapter
+      @first_chapter = create :chapter
+      @second_chapter = create :chapter
 
-      @group1 = create :group, chapter: @chapter1
-      @group2 = create :group, chapter: @chapter2
-      @group3 = create :group, deleted_at: Time.zone.now, chapter: @chapter1
+      @first_group = create :group, chapter: @first_chapter
+      @second_group = create :group, chapter: @second_chapter
+      @deleted_group = create :group, deleted_at: Time.zone.now, chapter: @first_chapter
     end
 
     describe 'exclude_deleted' do
       it 'returns only non-deleted groups' do
-        expect(Group.exclude_deleted.length).to eq 2
-        expect(Group.exclude_deleted).to include @group1, @group2
+        expect(Group.exclude_deleted.length).to eq Group.where(deleted_at: nil).length
+        expect(Group.exclude_deleted).to include @first_group, @second_group
+        expect(Group.exclude_deleted).not_to include @deleted_group
       end
 
       it 'returns only groups belonging to a specific chapter' do
-        expect(Group.by_chapter(@chapter1.id).length).to eq 2
-        expect(Group.by_chapter(@chapter1.id)).to include @group1, @group3
+        expect(Group.by_chapter(@first_chapter.id).length).to eq 2
+        expect(Group.by_chapter(@first_chapter.id)).to include @first_group, @deleted_group
+        expect(Group.by_chapter(@first_chapter.id)).not_to include @second_group
       end
     end
   end

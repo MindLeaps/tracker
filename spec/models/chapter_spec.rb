@@ -75,8 +75,6 @@ RSpec.describe Chapter, type: :model do
 
   describe 'scopes' do
     before :all do
-      Chapter.destroy_all
-
       @first_organization = create :organization
       @second_organization = create :organization
 
@@ -87,7 +85,7 @@ RSpec.describe Chapter, type: :model do
 
     describe 'exclude_deleted' do
       it 'returns only non-deleted chapters' do
-        expect(Chapter.exclude_deleted.length).to eq 2
+        expect(Chapter.exclude_deleted.length).to eq Chapter.where(deleted_at: nil).length
         expect(Chapter.exclude_deleted).to include @first_chapter, @second_chapter
         expect(Chapter.exclude_deleted).not_to include @deleted_chapter
       end
