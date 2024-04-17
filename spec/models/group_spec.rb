@@ -67,7 +67,7 @@ RSpec.describe Group, type: :model do
 
   describe 'methods' do
     describe 'delete_group_and_dependents' do
-      before :all do
+      before :each do
         @group_to_delete = create :group
 
         @students_to_delete = create_list :student, 2, group: @group_to_delete
@@ -95,7 +95,7 @@ RSpec.describe Group, type: :model do
     end
 
     describe 'restore_group_and_dependents' do
-      before :all do
+      before :each do
         @group_to_restore = create :group, deleted_at: Time.zone.now
 
         @students_to_restore = create_list :student, 2, group: @group_to_restore, deleted_at: @group_to_restore.deleted_at

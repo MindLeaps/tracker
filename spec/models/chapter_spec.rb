@@ -74,7 +74,7 @@ RSpec.describe Chapter, type: :model do
   end
 
   describe 'scopes' do
-    before :all do
+    before :each do
       @first_organization = create :organization
       @second_organization = create :organization
 
@@ -102,7 +102,7 @@ RSpec.describe Chapter, type: :model do
 
   describe 'methods' do
     describe 'delete_chapter_and_dependents' do
-      before :all do
+      before :each do
         @chapter_to_delete = create :chapter
 
         @groups_to_delete = create_list :group, 2, chapter: @chapter_to_delete
@@ -132,7 +132,7 @@ RSpec.describe Chapter, type: :model do
     end
 
     describe 'restore_chapter_and_dependents' do
-      before :all do
+      before :each do
         @chapter_to_restore = create :chapter, deleted_at: Time.zone.now
 
         @groups_to_restore = create_list :group, 2, chapter: @chapter_to_restore, deleted_at: @chapter_to_restore.deleted_at
