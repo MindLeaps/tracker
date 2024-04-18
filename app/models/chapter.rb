@@ -45,4 +45,53 @@ class Chapter < ApplicationRecord
   def full_mlid
     "#{organization.mlid}-#{mlid}"
   end
+
+  def delete_chapter_and_dependents
+    transaction do
+      self.deleted_at = Time.zone.now
+
+      # rubocop:disable Rails/SkipsModelValidations
+      group_ids = delete_groups_for_chapter
+      Student.where(group_id: group_ids, deleted_at: nil).update_all(deleted_at:)
+      Lesson.where(group_id: group_ids, deleted_at: nil).update_all(deleted_at:)
+      Grade.includes(:lesson).where(lessons: { group_id: group_ids, deleted_at: }, deleted_at: nil).update_all(deleted_at:)
+      # rubocop:enable Rails/SkipsModelValidations
+
+      save
+    end
+  end
+
+  def restore_chapter_and_dependents
+    transaction do
+      # rubocop:disable Rails/SkipsModelValidations
+      group_ids = restore_groups_for_chapter
+      Student.where(group_id: group_ids, deleted_at:).update_all(deleted_at: nil)
+      Grade.includes(:lesson).where(lessons: { group_id: group_ids, deleted_at: }, deleted_at:).update_all(deleted_at: nil)
+      Lesson.where(group_id: group_ids, deleted_at:).update_all(deleted_at: nil)
+      # rubocop:enable Rails/SkipsModelValidations
+
+      self.deleted_at = nil
+      save
+    end
+  end
+
+  def delete_groups_for_chapter
+    # rubocop:disable Rails/SkipsModelValidations
+    groups_to_update = Group.where(chapter_id: id, deleted_at: nil)
+    group_ids = groups_to_update.pluck(:id)
+    groups_to_update.update_all(deleted_at:)
+
+    group_ids
+    # rubocop:enable Rails/SkipsModelValidations
+  end
+
+  def restore_groups_for_chapter
+    # rubocop:disable Rails/SkipsModelValidations
+    groups_to_update = Group.where(chapter_id: id, deleted_at:)
+    group_ids = groups_to_update.pluck(:id)
+    groups_to_update.update_all(deleted_at: nil)
+
+    group_ids
+    # rubocop:enable Rails/SkipsModelValidations
+  end
 end

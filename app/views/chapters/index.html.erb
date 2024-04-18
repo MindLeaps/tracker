@@ -15,6 +15,7 @@
         <%= render SearchFormComponent.new(search: { term: params[:search] }, query_parameters: request.query_parameters) %>
       </div>
       <div class="flex-1 px-4">
+        <%= render CommonComponents::CheckboxLink.new(label: t(:show_deleted), checked: !excluding_deleted?, href: show_deleted_url) %>
       </div>
     </div>
   <% end
