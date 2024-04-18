@@ -80,8 +80,7 @@ class OrganizationsController < HtmlController
   def destroy
     @organization = Organization.find params.require :id
     authorize @organization
-    @organization.delete_organization_and_dependents
-    return unless @organization.save
+    return unless @organization.delete_organization_and_dependents
 
     success(title: t(:organization_deleted), text: t(:organization_deleted_text, organization: @organization.organization_name),
             button_path: undelete_organization_path, button_method: :post, button_text: t(:undo))
@@ -91,8 +90,7 @@ class OrganizationsController < HtmlController
   def undelete
     @organization = Organization.find params.require :id
     authorize @organization
-    @organization.restore_organization_and_dependents
-    return unless @organization.save
+    return unless @organization.restore_organization_and_dependents
 
     success(title: t(:organization_restored), text: t(:organization_restored_text, organization: @organization.organization_name))
     redirect_to organization_path
