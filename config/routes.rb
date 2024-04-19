@@ -47,7 +47,9 @@ Rails.application.routes.draw do
     member { post :add_member }
     member { post :undelete }
   end
-  resources :chapters, only: %i[index new create show edit update]
+  resources :chapters, only: %i[index new create show edit update destroy] do
+    member { post :undelete }
+  end
   resources :groups, only: %i[index new create show edit update destroy] do
     member { post :undelete }
   end

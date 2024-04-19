@@ -4,6 +4,8 @@
   {title: CommonComponents::TagLabel.new(label: @chapter.chapter_name, img_src: 'chapter.svg'), href: '' },
 ], buttons: [
   (CommonComponents::ButtonComponent.new(label: t(:edit_chapter), href: edit_chapter_path(@chapter)) if policy(@chapter).edit?),
+  (CommonComponents::FormButtonComponent.new(label: t(:restore_chapter), path: undelete_chapter_path(@chapter), method: :post) if policy(@chapter).destroy? && @chapter.deleted_at),
+  (CommonComponents::DangerousFormButtonComponent.new(label: t(:delete_chapter), path: chapter_path(@chapter), method: :delete) if policy(@chapter).destroy? && !@chapter.deleted_at)
 ].compact)  do |h|
   h.with_left do
     render CommonComponents::Breadcrumbs.new(crumbs: [
@@ -12,4 +14,7 @@
   end
 end %>
 
+<% if @chapter.deleted_at  %>
+  <%= render AlertComponent.new(title: t(:chapter_deleted, name: @chapter.chapter_name), text: t(:chapter_deleted_at, time: distance_of_time_in_words(@chapter.deleted_at, Time.zone.now))) %>
+<% end %>
 <%= render TableComponents::Table.new(pagy: @pagy, rows: @groups, row_component: TableComponents::GroupRow) %>

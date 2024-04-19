@@ -19,7 +19,15 @@ end %>
     <section class="flex-1 pr-2">
       <%= render CommonComponents::Card.new(title: t(:chapters).capitalize) do |card| %>
         <% card.with_card_content do %>
-            <%= render TableComponents::Table.new(pagy: @pagy_chapters, rows: @chapters, row_component: TableComponents::OrganizationChapterRow, order_scope_name: :table_order_chapters) %>
+            <%= render TableComponents::Table.new(pagy: @pagy_chapters, rows: @chapters, row_component: TableComponents::OrganizationChapterRow, order_scope_name: :table_order_chapters) do |t|
+              t.with_left do %>
+                <div class="flex items-center justify-between">
+                  <div class="flex-1">
+                    <%= render CommonComponents::CheckboxLink.new(label: t(:show_deleted), checked: !excluding_deleted?, href: show_deleted_url) %>
+                  </div>
+                </div>
+            <% end %>
+          <% end %>
         <% end %>
       <% end %>
     </section>

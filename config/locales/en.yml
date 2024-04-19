@@ -140,6 +140,13 @@ en:
   chapter_invalid: Chapter Invalid
   chapter_updated: Chapter updated
   chapter_name_updated: Chapter "%{name}" updated.
+  chapter_deleted: Chapter deleted
+  chapter_deleted_text: Chapter "%{chapter}" deleted.
+  chapter_restored: Chapter restored
+  chapter_restored_text: Chapter "%{chapter}" restored.
+  chapter_deleted_at: Chapter deleted %{time} ago
+  restore_chapter: Restore Deleted Chapter
+  delete_chapter: Delete Chapter
   duplicate_lesson: Lesson already exists for group "%{group}" in "%{subject}" on selected date.
   duplicate_grade: "%{name} already scored %{mark} in %{skill} on %{date} in %{subject}."
   new_subject: New Subject

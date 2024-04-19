@@ -58,8 +58,7 @@ class GroupsController < HtmlController
   def destroy
     @group = Group.find params.require :id
     authorize @group
-    @group.delete_group_and_dependents
-    return unless @group.save
+    return unless @group.delete_group_and_dependents
 
     success(title: t(:group_deleted), text: t(:group_deleted_text, group: @group.group_name), button_path: undelete_group_path, button_method: :post, button_text: t(:undo))
     redirect_to request.referer || @group.path
@@ -68,8 +67,7 @@ class GroupsController < HtmlController
   def undelete
     @group = Group.find params.require :id
     authorize @group
-    @group.restore_group_and_dependents
-    return unless @group.save
+    return unless @group.restore_group_and_dependents
 
     success(title: t(:group_restored), text: t(:group_restored_text, group: @group.group_name))
     redirect_to group_path

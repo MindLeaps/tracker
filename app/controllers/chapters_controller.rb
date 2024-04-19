@@ -1,5 +1,6 @@
 class ChaptersController < HtmlController
   include Pagy::Backend
+  has_scope :exclude_deleted, type: :boolean, default: true
   has_scope :table_order, type: :hash, default: { key: :created_at, order: :desc }
   has_scope :search, only: [:index]
 
@@ -47,6 +48,24 @@ class ChaptersController < HtmlController
     end
     failure title: t(:chapter_invalid), text: t(:fix_form_errors)
     render :edit, status: :unprocessable_entity
+  end
+
+  def destroy
+    @chapter = Chapter.find params.require :id
+    authorize @chapter
+    return unless @chapter.delete_chapter_and_dependents
+
+    success(title: t(:chapter_deleted), text: t(:chapter_deleted_text, chapter: @chapter.chapter_name), button_path: undelete_chapter_path, button_method: :post, button_text: t(:undo))
+    redirect_to request.referer || @chapter.path
+  end
+
+  def undelete
+    @chapter = Chapter.find params.require :id
+    authorize @chapter
+    return unless @chapter.restore_chapter_and_dependents
+
+    success(title: t(:chapter_restored), text: t(:chapter_restored_text, chapter: @chapter.chapter_name))
+    redirect_to chapter_path
   end
 
   private
