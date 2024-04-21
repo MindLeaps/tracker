@@ -1,3 +1,9 @@
+## Unreleased
+
+- Implemented Organization, Chapter & Group deletion
+- Fixed #1770 - students missing in lesson view
+- Added policy scoping for Subjects and Assignments
+
 ## 0.31.1 - Ruby 3.3.0
 - Upgraded Ruby to 3.3.0
 - Fixed #1805 - made sure to display form validation errors in red

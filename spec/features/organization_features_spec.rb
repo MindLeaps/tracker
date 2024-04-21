@@ -55,4 +55,60 @@ RSpec.describe 'Interaction with Organizations' do
       expect(@new_member.reload.has_role?(:admin, @organization)).to be true
     end
   end
+
+  describe 'Organization deleting and undeleting' do
+    before :each do
+      @organization = create :organization, organization_name: 'About to be Deleted'
+      @deleted_organization = create :organization, deleted_at: Time.zone.now, organization_name: 'Already Deleted'
+      @chapters = create_list :chapter, 3, organization: @organization
+    end
+
+    it 'marks the organization as deleted' do
+      visit '/organizations'
+      click_link 'About to be Deleted'
+      click_button 'Delete Organization'
+
+      expect(page).to have_content 'Organization "About to be Deleted" deleted.'
+      expect(@organization.reload.deleted_at).to be_within(1.second).of Time.zone.now
+
+      click_button 'Undo'
+
+      expect(page).to have_content 'Organization "About to be Deleted" restored.'
+      expect(@organization.reload.deleted_at).to be_nil
+    end
+
+    it 'restores an already deleted organization' do
+      visit "/organizations/#{@deleted_organization.id}"
+      click_button 'Restore Deleted Organization'
+      visit '/organizations'
+      expect(page).to have_content 'Already Deleted'
+      expect(@deleted_organization.reload.deleted_at).to be_nil
+    end
+  end
+
+  describe 'Organization searching and filtering', js: true do
+    before :each do
+      @org1 = create :organization, organization_name: 'Abisamol'
+      @org2 = create :organization, organization_name: 'Abisouena'
+      @org3 = create :organization, organization_name: 'Abilatava', deleted_at: Time.zone.now
+      @org4 = create :organization, organization_name: 'Milatava'
+    end
+
+    it 'searches different organizations' do
+      visit '/organizations'
+      expect(page).to have_selector('.organization-row', count: 3)
+      click_link_compat 'Show Deleted'
+      expect(page).to have_selector('.organization-row', count: 4)
+      find('#search-field').send_keys('Abi', :enter)
+      expect(page).to have_selector('.organization-row', count: 3)
+      expect(page).to have_content 'Abisamol'
+      expect(page).to have_content 'Abisouena'
+      expect(page).to have_content 'Abilatava'
+      expect(page).to have_field('search-field', with: 'Abi')
+      click_link_compat 'Show Deleted'
+      expect(page).to have_selector('.organization-row', count: 2)
+      expect(page).to have_content 'Abisamol'
+      expect(page).to have_content 'Abisouena'
+    end
+  end
 end
