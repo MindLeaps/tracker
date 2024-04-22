@@ -4,17 +4,30 @@
   {title: CommonComponents::TagLabel.new(label: @organization.organization_name, img_src: 'world.svg'), href: '' },
 ], buttons: [
   (CommonComponents::ButtonComponent.new(label: t(:edit_organization), href: edit_organization_path(@organization)) if policy(@organization).edit?),
+  (CommonComponents::FormButtonComponent.new(label: t(:restore_organization), path: undelete_organization_path(@organization), method: :post) if policy(@organization).destroy? && @organization.deleted_at),
+  (CommonComponents::DangerousFormButtonComponent.new(label: t(:delete_organization), path: organization_path(@organization), method: :delete) if policy(@organization).destroy? && !@organization.deleted_at)
 ].compact)  do |h|
   h.with_left do
   end
 end %>
 
+<% if @organization.deleted_at  %>
+  <%= render AlertComponent.new(title: t(:organization_deleted, name: @organization.organization_name), text: t(:organization_deleted_at, time: distance_of_time_in_words(@organization.deleted_at, Time.zone.now))) %>
+<% end %>
 <div class="overflow-auto">
   <div class="flex">
     <section class="flex-1 pr-2">
       <%= render CommonComponents::Card.new(title: t(:chapters).capitalize) do |card| %>
         <% card.with_card_content do %>
-            <%= render TableComponents::Table.new(pagy: @pagy_chapters, rows: @chapters, row_component: TableComponents::OrganizationChapterRow, order_scope_name: :table_order_chapters) %>
+            <%= render TableComponents::Table.new(pagy: @pagy_chapters, rows: @chapters, row_component: TableComponents::OrganizationChapterRow, order_scope_name: :table_order_chapters) do |t|
+              t.with_left do %>
+                <div class="flex items-center justify-between">
+                  <div class="flex-1">
+                    <%= render CommonComponents::CheckboxLink.new(label: t(:show_deleted), checked: !excluding_deleted?, href: show_deleted_url) %>
+                  </div>
+                </div>
+            <% end %>
+          <% end %>
         <% end %>
       <% end %>
     </section>

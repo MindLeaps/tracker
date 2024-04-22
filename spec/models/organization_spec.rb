@@ -97,4 +97,86 @@ RSpec.describe Organization, type: :model do
       expect(org.members).to include(OrganizationMember.find(@members[2].id))
     end
   end
+
+  describe 'scopes' do
+    before :each do
+      @first_organization = create :organization
+      @second_organization = create :organization
+      @deleted_organization = create :organization, deleted_at: Time.zone.now
+    end
+
+    describe 'exclude_deleted' do
+      it 'returns only non-deleted organizations' do
+        expect(Organization.exclude_deleted.length).to eq Organization.where(deleted_at: nil).length
+        expect(Organization.exclude_deleted).to include @first_organization, @second_organization
+        expect(Organization.exclude_deleted).not_to include @deleted_organization
+      end
+    end
+  end
+
+  describe 'methods' do
+    describe 'delete_organization_and_dependents' do
+      before :each do
+        @organization_to_delete = create :organization
+
+        @chapters = create_list :chapter, 2, organization: @organization_to_delete
+        @groups = create_list :group, 2, chapter: @chapters.first
+        @students = create_list :student, 2, group: @groups.first
+        @lessons = create_list :lesson, 2, group: @groups.first
+        @grades = create_list :grade, 2, lesson: @lessons.first
+        @deleted_chapter = create :chapter, organization: @organization_to_delete, deleted_at: Time.zone.now
+
+        @organization_to_delete.delete_organization_and_dependents
+        @organization_to_delete.reload
+      end
+
+      it 'marks the organization as deleted' do
+        expect(@organization_to_delete.deleted_at).to be_within(1.second).of Time.zone.now
+      end
+
+      it 'marks the organization\'s dependents as deleted' do
+        @chapters.each { |chapter| expect(chapter.reload.deleted_at).to eq(@organization_to_delete.deleted_at) }
+        @groups.each { |group| expect(group.reload.deleted_at).to eq(@organization_to_delete.deleted_at) }
+        @students.each { |student| expect(student.reload.deleted_at).to eq(@organization_to_delete.deleted_at) }
+        @lessons.each { |lesson| expect(lesson.reload.deleted_at).to eq(@organization_to_delete.deleted_at) }
+        @grades.each { |grade| expect(grade.reload.deleted_at).to eq(@organization_to_delete.deleted_at) }
+      end
+
+      it 'does not mark previously deleted dependents of the organization as deleted' do
+        expect(@deleted_chapter.reload.deleted_at).to_not eq(@organization_to_delete.deleted_at)
+      end
+    end
+
+    describe 'restore_organization_and_dependents' do
+      before :each do
+        @organization_to_restore = create :organization, deleted_at: Time.zone.now
+
+        @chapters = create_list :chapter, 2, organization: @organization_to_restore, deleted_at: @organization_to_restore.deleted_at
+        @groups = create_list :group, 2, chapter: @chapters.first, deleted_at: @organization_to_restore.deleted_at
+        @students = create_list :student, 2, group: @groups.first, deleted_at: @organization_to_restore.deleted_at
+        @lessons = create_list :lesson, 2, group: @groups.first, deleted_at: @organization_to_restore.deleted_at
+        @grades = create_list :grade, 2, lesson: @lessons.first, deleted_at: @organization_to_restore.deleted_at
+        @deleted_chapter = create :chapter, organization: @organization_to_restore, deleted_at: Time.zone.now
+
+        @organization_to_restore.restore_organization_and_dependents
+        @organization_to_restore.reload
+      end
+
+      it 'removes the organization\'s deleted timestamp' do
+        expect(@organization_to_restore.deleted_at).to be_nil
+      end
+
+      it 'remove the organization\'s dependents deleted timestamps' do
+        @chapters.each { |chapter| expect(chapter.reload.deleted_at).to be_nil }
+        @groups.each { |group| expect(group.reload.deleted_at).to be_nil }
+        @students.each { |student| expect(student.reload.deleted_at).to be_nil }
+        @lessons.each { |lesson| expect(lesson.reload.deleted_at).to be_nil }
+        @grades.each { |grade| expect(grade.reload.deleted_at).to be_nil }
+      end
+
+      it 'does not remove the previously deleted dependents of the chapter\'s deleted timestamp' do
+        expect(@deleted_chapter.reload.deleted_at).to_not be_nil
+      end
+    end
+  end
 end

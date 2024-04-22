@@ -15,6 +15,10 @@ class ChapterPolicy < ApplicationPolicy
     user.administrator? record.organization
   end
 
+  def undelete?
+    destroy?
+  end
+
   class Scope < ApplicationPolicy::Scope
     def resolve
       return scope.all if user.global_role?

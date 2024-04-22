@@ -1,5 +1,6 @@
 class OrganizationsController < HtmlController
   include Pagy::Backend
+  has_scope :exclude_deleted, type: :boolean, default: true
   has_scope :table_order, type: :hash, default: { key: :created_at, order: :desc }, only: :index
   has_scope :table_order_chapters, type: :hash, only: :show
   has_scope :table_order_members, type: :hash, only: :show
@@ -56,10 +57,24 @@ class OrganizationsController < HtmlController
   end
 
   def initialize_organization(id)
-    @pagy_chapters, @chapters = pagy apply_scopes(ChapterSummary.where(organization_id: id), { table_order_chapters: params['table_order_chapters'] || { key: :chapter_name, order: :asc } })
-    @pagy_users, @members = pagy apply_scopes(@organization.members, { table_order_members: params['table_order_members'] || { key: :email, order: :asc } })
+    @pagy_chapters, @chapters = pagy apply_scopes(ChapterSummary.where(organization_id: id), chapter_order_scope)
+    @pagy_users, @members = pagy apply_scopes(@organization.members, member_order_scope)
     @new_member = User.new
     @roles = Role::LOCAL_ROLES.keys
+  end
+
+  def chapter_order_scope
+    {
+      table_order_chapters: params['table_order_chapters'] || { key: :chapter_name, order: :asc },
+      exclude_deleted: params['exclude_deleted'] || true
+    }
+  end
+
+  def member_order_scope
+    {
+      table_order_members: params['table_order_members'] || { key: :email, order: :asc },
+      exclude_deleted: nil
+    }
   end
 
   def add_member
@@ -74,6 +89,25 @@ class OrganizationsController < HtmlController
     failure title: t(:invalid_user), text: t(:member_email_missing)
     initialize_organization @organization.id
     render :show, status: :bad_request
+  end
+
+  def destroy
+    @organization = Organization.find params.require :id
+    authorize @organization
+    return unless @organization.delete_organization_and_dependents
+
+    success(title: t(:organization_deleted), text: t(:organization_deleted_text, organization: @organization.organization_name),
+            button_path: undelete_organization_path, button_method: :post, button_text: t(:undo))
+    redirect_to request.referer || @organization.path
+  end
+
+  def undelete
+    @organization = Organization.find params.require :id
+    authorize @organization
+    return unless @organization.restore_organization_and_dependents
+
+    success(title: t(:organization_restored), text: t(:organization_restored_text, organization: @organization.organization_name))
+    redirect_to organization_path
   end
 
   private

@@ -1,7 +1,7 @@
 class TableComponents::OrganizationRow < TableComponents::BaseRow
   erb_template <<~ERB
-    <div class="<%= 'shaded-row' if shaded? %> table-row-wrapper organization-row">
-      <a href="<%= helpers.organization_path @item %>" class="<%= 'shaded-row' if shaded? %> table-row-wrapper">
+    <div class="<%= 'shaded-row' if shaded? %> <%= 'deleted-row' if @item.deleted_at? %> table-row-wrapper organization-row">
+      <a href="<%= helpers.organization_path @item %>" class="<%= 'shaded-row' if shaded? %> <%= 'deleted-row' if @item.deleted_at? %> table-row-wrapper">
         <div class="table-cell "><%= @pagy.from + @item_counter %></div>
         <div class="table-cell "></span><%= @item.organization_mlid %></div>
         <div class="text-right table-cell "><%= @item.organization_name %></div>

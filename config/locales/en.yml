@@ -73,6 +73,13 @@ en:
   organization_updated: Organization updated
   organization_name_added: Organization "%{name}" added
   organization_name_updated: Organization "%{name}" updated
+  organization_deleted: Organization deleted
+  organization_deleted_text: Organization "%{organization}" deleted.
+  organization_deleted_at: Organization deleted %{time} ago
+  organization_restored: Organization restored
+  organization_restored_text: Organization "%{organization}" restored.
+  delete_organization: Delete Organization
+  restore_organization: Restore Deleted Organization
 
   users: Users
   user_information: User Information
@@ -133,6 +140,13 @@ en:
   chapter_invalid: Chapter Invalid
   chapter_updated: Chapter updated
   chapter_name_updated: Chapter "%{name}" updated.
+  chapter_deleted: Chapter deleted
+  chapter_deleted_text: Chapter "%{chapter}" deleted.
+  chapter_restored: Chapter restored
+  chapter_restored_text: Chapter "%{chapter}" restored.
+  chapter_deleted_at: Chapter deleted %{time} ago
+  restore_chapter: Restore Deleted Chapter
+  delete_chapter: Delete Chapter
   duplicate_lesson: Lesson already exists for group "%{group}" in "%{subject}" on selected date.
   duplicate_grade: "%{name} already scored %{mark} in %{skill} on %{date} in %{subject}."
   new_subject: New Subject

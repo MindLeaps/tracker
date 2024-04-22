@@ -656,7 +656,8 @@ SELECT
     NULL::integer AS group_count,
     NULL::integer AS student_count,
     NULL::timestamp without time zone AS updated_at,
-    NULL::timestamp without time zone AS created_at;
+    NULL::timestamp without time zone AS created_at,
+    NULL::timestamp without time zone AS deleted_at;
 
 
 --
@@ -1752,7 +1753,8 @@ CREATE OR REPLACE VIEW public.organization_summaries AS
             ELSE 0
         END))::integer AS student_count,
     o.updated_at,
-    o.created_at
+    o.created_at,
+    o.deleted_at
    FROM (public.organizations o
      LEFT JOIN public.chapter_summaries c ON ((c.organization_id = o.id)))
   GROUP BY o.id;
@@ -2245,8 +2247,12 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20231221220850'),
 ('20231222195655'),
 ('20231230202619'),
+('20240411100638'),
+('20240411121439'),
+('20240411131050'),
 ('20240412093631'),
 ('20240412093830'),
+('20240415131224'),
 ('20240416103233');
 
 
