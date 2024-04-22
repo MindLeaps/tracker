@@ -29,7 +29,7 @@ module Analytics
     def histogram_of_student_performance_change_by_gender
       result = []
 
-      %w[M F NB O].each do |gender|
+      %w[M F NB].each do |gender|
         add_performance_change_results_to_set_for_gender(gender, result)
       end
 

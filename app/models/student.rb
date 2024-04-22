@@ -49,7 +49,7 @@ class Student < ApplicationRecord
   validates :first_name, :last_name, :dob, :gender, presence: true
   validates :mlid, uniqueness: { scope: :group_id }, length: { maximum: 3 }
 
-  enum gender: { M: 'male', F: 'female', NB: 'non-binary', O: 'other' }
+  enum gender: { M: 'male', F: 'female', NB: 'non-binary' }
 
   belongs_to :group
   has_many :grades, dependent: :restrict_with_error

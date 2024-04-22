@@ -44,8 +44,7 @@ COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UU
 CREATE TYPE public.gender AS ENUM (
     'male',
     'female',
-    'non-binary',
-    'other'
+    'nonbinary'
 );
 
 
