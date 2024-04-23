@@ -1,6 +1,5 @@
 class CommonComponents::TooltipComponent < ViewComponent::Base
-  def initialize(label:, show: false)
-    @label = label
-    @show = show
+  def initialize(text:)
+    @text = text
   end
 end

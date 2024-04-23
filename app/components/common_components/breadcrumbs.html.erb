@@ -3,7 +3,7 @@
     <% @crumbs.each_with_index do |crumb, i| %>
       <li class="ml-0">
         <div class="flex items-center">
-          <a href="<%= crumb[:href] %>" class="text-sm font-medium text-gray-500 hover:text-gray-700 stroke-gray-500 hover:stroke-gray-700">
+          <a href="<%= crumb[:href] %>" class="text-sm font-medium text-gray-500 hover:text-gray-700 stroke-gray-500 hover:stroke-gray-700 inline-flex">
             <%= render_label crumb[:label] %>
           </a>
           <% if @current || i != @crumbs.size - 1 %>
