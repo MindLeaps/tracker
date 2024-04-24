@@ -66,6 +66,6 @@ Organization.transaction do
   seed_group_random_grades(kigali_chapter.groups[0], subjects[0])
 
   CSVDataSeeder.new('./db/seed_data/rwanda_data.csv').seed_data mindleaps.chapters[1], subjects[0]
-  CSVDataSeeder.new('./db/seed_data/uganda_data.csv').seed_data mindleaps.chapters[2], subjects[0]
+  # CSVDataSeeder.new('./db/seed_data/uganda_data.csv').seed_data mindleaps.chapters[2], subjects[0]
 end
 # rubocop:enable Metrics/BlockLength

@@ -40,7 +40,7 @@ class CSVDataSeeder
   end
 
   def create_group(group_id, chapter)
-    @groups[group_id] ||= chapter.groups.create!(mlid: group_id, group_name: generate_group_name(group_id))
+    @groups[group_id] ||= chapter.groups.create!(mlid: group_id.to_s, group_name: generate_group_name(group_id))
   end
 
   def generate_group_name(group_id)
@@ -51,7 +51,7 @@ class CSVDataSeeder
 
   def create_student(id, group, gender, age)
     @students[id] ||= Student.create!(
-      mlid: id,
+      mlid: id.to_s,
       first_name: Faker::Name.first_name,
       last_name: Faker::Name.last_name,
       gender:,
