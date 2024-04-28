@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Added 'Nonbinary' as a gender option
 - Implemented Organization, Chapter & Group deletion
 - Fixed #1770 - students missing in lesson view
 - Added policy scoping for Subjects and Assignments
