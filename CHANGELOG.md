@@ -1,8 +1,10 @@
 ## Unreleased
 
+- Added 'Nonbinary' as a gender option
 - Implemented Organization, Chapter & Group deletion
 - Fixed #1770 - students missing in lesson view
 - Added policy scoping for Subjects and Assignments
+- Fix seeding by making sure MLID is a string
 
 ## 0.31.1 - Ruby 3.3.0
 - Upgraded Ruby to 3.3.0
