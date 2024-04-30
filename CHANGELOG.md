@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Upgraded Ruby to 3.3.1
 - Added a tooltip when hovering long titles
 - Added 'Nonbinary' as a gender option
 - Implemented Organization, Chapter & Group deletion
