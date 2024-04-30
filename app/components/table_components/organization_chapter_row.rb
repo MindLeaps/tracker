@@ -4,7 +4,7 @@ class TableComponents::OrganizationChapterRow < TableComponents::BaseRow
       <a href="<%= helpers.chapter_path @item %>" class="<%= 'shaded-row' if shaded? %> <%= 'deleted-row' if @item.deleted_at? %> table-row-wrapper">
         <div class="table-cell "><%= @pagy.from + @item_counter %></div>
         <div class="table-cell "><span class="faded"><%= @item.organization_mlid %>-</span><%= @item.chapter_mlid %></div>
-        <div class="text-right table-cell "><%= @item.chapter_name %></div>
+        <div class="text-right table-cell truncate "><%= @item.chapter_name %></div>
         <div class="table-cell "><%= @item.group_count %></div>
         <div class="table-cell "><%= @item.student_count %></div>
       </a>
