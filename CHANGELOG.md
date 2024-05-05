@@ -1,9 +1,9 @@
-## Unreleased
+## 0.32.0 - Deletions & Nonbinary
 
+- Implemented Organization, Chapter & Group deletion
 - Upgraded Ruby to 3.3.1
 - Added a tooltip when hovering long titles
 - Added 'Nonbinary' as a gender option
-- Implemented Organization, Chapter & Group deletion
 - Fixed #1770 - students missing in lesson view
 - Added policy scoping for Subjects and Assignments
 - Fix seeding by making sure MLID is a string
