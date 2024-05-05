@@ -7,6 +7,8 @@
 - Fixed #1770 - students missing in lesson view
 - Added policy scoping for Subjects and Assignments
 - Fix seeding by making sure MLID is a string
+- Make sure all MLIDs are always uppercase by
+- Sorted organizations in new group form
 
 ## 0.31.1 - Ruby 3.3.0
 - Upgraded Ruby to 3.3.0
