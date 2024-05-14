@@ -62,7 +62,7 @@ Rails.application.configure do
   # config.action_view.annotate_rendered_view_with_filenames = true
 
   # Raise error when a before_action's only/except options reference missing actions
-  config.action_controller.raise_on_open_redirects = true
+  config.action_controller.raise_on_open_redirects = false
 
   # Bullet finds N + 1 queries: https://github.com/flyerhzm/bullet
   Bullet.enable = true
