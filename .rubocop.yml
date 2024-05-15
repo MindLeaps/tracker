@@ -12,6 +12,9 @@ AllCops:
     - vendor/**/* # Vendor gem dir in Travis CI
     - bin/yarn
     - lib/tasks/**/*
+    - db/migrate/20240513221504_add_service_name_to_active_storage_blobs.active_storage.rb
+    - db/migrate/20240513221505_create_active_storage_variant_records.active_storage.rb
+    - db/migrate/20240513221506_remove_not_null_on_active_storage_blobs_checksum.active_storage.rb
 
 Metrics/BlockLength:
   Exclude:
