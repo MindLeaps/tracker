@@ -1,3 +1,6 @@
+## Unreleased
+- Upgraded Rails to 7.1
+
 ## 0.32.0 - Deletions & Nonbinary
 
 - Implemented Organization, Chapter & Group deletion
