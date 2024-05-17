@@ -20,7 +20,7 @@ module Api
 
     def show
       if @api_version == 2
-        @grade = Grade.includes(:lesson).find_by uid: params.require(:id)
+        @grade = Grade.includes(:lesson).find_by id: params.require(:id)
         authorize @grade.lesson
         respond_with :api, @grade, meta: { timestamp: Time.zone.now }, include: included_params, serializer: GradeSerializerV2
       else
@@ -67,7 +67,7 @@ module Api
 
     def destroy_v2
       @grade = Grade.includes(:lesson)
-                    .find_by student_id: params.require(:student_id), lesson_uid: params.require(:lesson_id), skill_id: params.require(:skill_id)
+                    .find_by student_id: params.require(:student_id), lesson_id: params.require(:lesson_id), skill_id: params.require(:skill_id)
       authorize @grade.lesson, :destroy?
       @grade.update deleted_at: Time.zone.now
       respond_with :api, @grade, json: @grade, meta: { timestamp: Time.zone.now }, include: included_params, serializer: GradeSerializerV2
@@ -76,8 +76,8 @@ module Api
     private
 
     def build_grade
-      grade = Grade.new grade_v2_all_params
-      grade.lesson = Lesson.find_by! uid: grade.lesson_uid
+      grade = Grade.new grade_all_params
+      grade.lesson = Lesson.find_by! id: grade.lesson_id
       grade
     end
 
@@ -88,14 +88,6 @@ module Api
     def grade_all_params
       params.require %i[student_id grade_descriptor_id lesson_id]
       grade_params
-    end
-
-    def grade_v2_all_params
-      params.require %i[student_id lesson_id skill_id mark]
-      p = params.permit :student_id, :mark, :skill_id, :lesson_id
-      p[:lesson_uid] = p[:lesson_id]
-      p.delete :lesson_id
-      p
     end
 
     def save_or_update_if_exists(grade)
