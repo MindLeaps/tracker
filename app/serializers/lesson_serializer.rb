@@ -2,10 +2,9 @@
 #
 # Table name: lessons
 #
-#  id         :integer          not null, primary key
+#  id         :uuid             not null, primary key
 #  date       :date             not null
 #  deleted_at :datetime
-#  uid        :uuid             not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  group_id   :integer          not null
@@ -15,9 +14,9 @@
 #
 #  index_lessons_on_group_id                          (group_id)
 #  index_lessons_on_group_id_and_subject_id_and_date  (group_id,subject_id,date) UNIQUE WHERE (deleted_at IS NULL)
+#  index_lessons_on_id                                (id) UNIQUE
 #  index_lessons_on_subject_id                        (subject_id)
-#  index_lessons_on_uid                               (uid) UNIQUE
-#  lesson_uuid_unique                                 (uid) UNIQUE
+#  lesson_uuid_unique                                 (id) UNIQUE
 #
 # Foreign Keys
 #

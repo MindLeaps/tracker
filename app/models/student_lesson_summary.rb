@@ -10,7 +10,7 @@
 #  last_name    :string
 #  skill_count  :bigint
 #  group_id     :integer
-#  lesson_id    :integer
+#  lesson_id    :uuid
 #  student_id   :integer
 #  subject_id   :integer
 #

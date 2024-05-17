@@ -3,7 +3,7 @@
 # Table name: absences
 #
 #  id         :integer          not null, primary key
-#  lesson_id  :integer          not null
+#  lesson_id  :uuid             not null
 #  student_id :integer          not null
 #
 # Indexes

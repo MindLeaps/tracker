@@ -1,5 +1,5 @@
 class GradeSerializerV2 < ActiveModel::Serializer
-  attribute :lesson_uid, key: :lesson_id
+  attribute :lesson_id, key: :lesson_id
   attributes :student_id, :deleted_at, :skill_id, :mark
 
   belongs_to :student

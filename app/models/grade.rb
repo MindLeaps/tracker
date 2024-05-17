@@ -4,12 +4,11 @@
 #
 #  id                  :integer          not null, primary key
 #  deleted_at          :datetime
-#  lesson_uid          :uuid             not null
 #  mark                :integer          not null
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #  grade_descriptor_id :integer          not null
-#  lesson_id           :integer          not null
+#  lesson_id           :uuid             not null
 #  skill_id            :bigint           not null
 #  student_id          :integer          not null
 #
@@ -17,7 +16,6 @@
 #
 #  index_grades_on_grade_descriptor_id  (grade_descriptor_id)
 #  index_grades_on_lesson_id            (lesson_id)
-#  index_grades_on_lesson_uid           (lesson_uid)
 #  index_grades_on_skill_id             (skill_id)
 #  index_grades_on_student_id           (student_id)
 #
@@ -26,12 +24,10 @@
 #  fk_rails_...                   (skill_id => skills.id)
 #  grades_grade_descriptor_id_fk  (grade_descriptor_id => grade_descriptors.id)
 #  grades_lesson_id_fk            (lesson_id => lessons.id)
-#  grades_lesson_uid_fk           (lesson_uid => lessons.uid)
 #  grades_student_id_fk           (student_id => students.id)
 #
 class Grade < ApplicationRecord
-  before_validation :update_uids
-  validates :lesson_uid, presence: true
+  before_validation :update_lesson_ids
   validate :grade_skill_must_be_unique_for_lesson_and_student, if: :all_relations_exist?
 
   belongs_to :lesson
@@ -96,7 +92,7 @@ class Grade < ApplicationRecord
     self
   end
 
-  def update_uids
-    self.lesson_uid = lesson&.reload&.uid
+  def update_lesson_ids
+    self.lesson_id = lesson&.reload&.id
   end
 end
