@@ -77,7 +77,7 @@ module Api
 
     def build_grade
       grade = Grade.new grade_all_params
-      grade.lesson = Lesson.find_by! id: grade.lesson_id
+      grade.lesson = Lesson.find(grade.lesson_id)
       grade
     end
 
