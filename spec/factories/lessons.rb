@@ -28,7 +28,7 @@ FactoryBot.define do
     sequence(:date) { |n| n.days.ago }
     group { create :group }
     subject { create :subject_with_skills }
-    uid { SecureRandom.uuid }
+    id { SecureRandom.uuid }
     transient do
       student_grades { {} }
     end

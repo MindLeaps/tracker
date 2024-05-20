@@ -217,7 +217,7 @@ RSpec.describe 'Grade API', type: :request do
 
     context 'submitting valid parameters for a new grade' do
       before :each do
-        put_with_token api_grades_path, as: :json, params: { skill_id: @skill1.id, lesson_id: @lesson.reload.uid, student_id: @student.id, mark: 1 }
+        put_with_token api_grades_path, as: :json, params: { skill_id: @skill1.id, lesson_id: @lesson.reload.id, student_id: @student.id, mark: 1 }
       end
 
       it 'creates a new grade with correct lesson' do
@@ -237,7 +237,7 @@ RSpec.describe 'Grade API', type: :request do
       before :each do
         @existing_grade = create :grade, student: @student, lesson: @lesson, grade_descriptor: @gd1
 
-        put_with_token api_grades_path, as: :json, params: { lesson_id: @lesson.reload.uid, student_id: @student.id, skill_id: @skill1.id, mark: 2 }
+        put_with_token api_grades_path, as: :json, params: { lesson_id: @lesson.reload.id, student_id: @student.id, skill_id: @skill1.id, mark: 2 }
       end
 
       it 'overwrites an already existing grade' do
@@ -254,7 +254,7 @@ RSpec.describe 'Grade API', type: :request do
       before :each do
         @existing_grade = create :grade, student: @student, lesson: @lesson, grade_descriptor: @gd1, deleted_at: Time.zone.now
 
-        put_with_token api_grades_path, as: :json, params: { lesson_id: @lesson.reload.uid, student_id: @student.id, skill_id: @skill1.id, mark: 2 }
+        put_with_token api_grades_path, as: :json, params: { lesson_id: @lesson.reload.id, student_id: @student.id, skill_id: @skill1.id, mark: 2 }
       end
 
       it 'overwrites an already existing grade and undeletes it' do
@@ -312,7 +312,7 @@ RSpec.describe 'Grade API', type: :request do
 
     it 'marks the grade as deleted' do
       expect(@grade.reload.deleted_at).to be_nil
-      delete_v2_with_token api_destroy_grade_v2_path(student_id: @grade.student_id, lesson_id: @grade.lesson_uid, skill_id: @grade.skill_id), as: :json
+      delete_v2_with_token api_destroy_grade_v2_path(student_id: @grade.student_id, lesson_id: @grade.lesson_id, skill_id: @grade.skill_id), as: :json
 
       expect(@grade.reload.deleted_at.nil?).to be false
       expect(@grade.reload.deleted_at).to be_within(1.second).of Time.zone.now

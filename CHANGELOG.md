@@ -1,4 +1,5 @@
 ## Unreleased
+- Restructured Lessons to go by their UUID
 - Upgraded Rails to 7.1
 - Enabled YJIT
 

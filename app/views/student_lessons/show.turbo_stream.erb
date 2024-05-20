@@ -6,7 +6,7 @@
         <div class="modal-out transition-all transform-gpu" data-modal-target="modal" data-action="click->modal#stopPropagation">
         <%= render CommonComponents::Card.new(title: @student_lesson.student.proper_name) do |card| %>
           <% card.with_card_content do %>
-            <%= form_with model: @student_lesson, url: { action: :update }, method: :put, class: 'bg-white p-4 space-y-0.5', format: :turbo_stream do |f| %>
+            <%= form_with model: @student_lesson, url: { action: :update }, method: :put, class: 'bg-white p-4 space-y-0.5' do |f| %>
               <%= f.fields_for :grades, @student_lesson.formatted_grades_for_grading do |g| %>
                 <div class="p-2">
                   <%= g.hidden_field :skill_id, value: g.object.skill_id %>

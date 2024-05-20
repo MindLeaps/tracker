@@ -1,6 +1,6 @@
 class LessonsController < HtmlController
   include Pagy::Backend
-  has_scope :exclude_deleted, type: :boolean, only: :index, default: true
+  has_scope :exclude_deleted, type: :boolean, default: true
   has_scope :table_order, type: :hash, only: :index, default: { key: :date, order: :desc }
   has_scope :table_order_lesson_students, type: :hash, only: :show
   has_scope :table_order_lesson_skills, type: :hash, only: :show
@@ -14,7 +14,7 @@ class LessonsController < HtmlController
     @lesson = Lesson.includes(:group, :subject).find(params[:id])
     authorize @lesson
     @pagy, @student_lesson_summaries = pagy apply_scopes(StudentLessonSummary.where(lesson_id: @lesson.id), student_lesson_order_scope)
-    @lesson_skill_summary = apply_scopes(LessonSkillSummary.where(lesson_id: @lesson.id), { table_order_lesson_skills: params['table_order_lesson_skills'] || { key: :skill_name, order: :asc } })
+    @lesson_skill_summary = apply_scopes(LessonSkillSummary.where(lesson_id: @lesson.id), lesson_skill_order_scope)
     @group_lessons_data = process_group_lesson_data(GroupLessonSummary.around(@lesson, 31) || [], @lesson)
   end
 
@@ -41,6 +41,13 @@ class LessonsController < HtmlController
     {
       table_order_lesson_students: params['table_order_lesson_students'] || { key: :last_name, order: :asc },
       exclude_deleted: params['exclude_deleted'] || true
+    }
+  end
+
+  def lesson_skill_order_scope
+    {
+      table_order_lesson_skills: params['table_order_lesson_skills'] || { key: :skill_name, order: :asc },
+      exclude_deleted: nil
     }
   end
 

@@ -30,7 +30,7 @@ module Api
     end
 
     def create
-      grade = Grade.new grade_all_params
+      grade = Grade.new grade_v2_all_params
       Grade.transaction do
         grade.grade_descriptor = GradeDescriptor.find grade.grade_descriptor_id
         grade, status = save_or_update_if_exists(grade)
@@ -48,6 +48,7 @@ module Api
         grade, status = save_or_update_if_exists(grade)
         respond_with :api, grade, json: grade, status:, meta: { timestamp: Time.zone.now }, include: {}, serializer: GradeSerializerV2
       end
+
     rescue ActionController::ParameterMissing, ActiveRecord::RecordNotFound
       head :bad_request
     end
@@ -76,7 +77,7 @@ module Api
     private
 
     def build_grade
-      grade = Grade.new grade_all_params
+      grade = Grade.new grade_v2_all_params
       grade.lesson = Lesson.find(grade.lesson_id)
       grade
     end
@@ -85,9 +86,9 @@ module Api
       params.permit :student_id, :grade_descriptor_id, :lesson_id
     end
 
-    def grade_all_params
-      params.require %i[student_id grade_descriptor_id lesson_id]
-      grade_params
+    def grade_v2_all_params
+      params.require %i[student_id lesson_id skill_id mark]
+      params.permit :student_id, :mark, :skill_id, :lesson_id
     end
 
     def save_or_update_if_exists(grade)

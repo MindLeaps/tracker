@@ -1,6 +1,6 @@
 class StudentLessonsController < HtmlController
   def show
-    lesson = lesson_from_param
+    lesson = Lesson.find params[:lesson_id]
     authorize lesson, :show?
     @student_lesson = StudentLesson.new(student_id: params.require(:id), lesson:)
     @absent = lesson.absences.map(&:student_id).include? @student_lesson.student_id
@@ -38,9 +38,5 @@ class StudentLessonsController < HtmlController
         .select { |g| g['grade_descriptor_id'].present? or g['grade_descriptor_id'].empty? }
         .reduce({}) { |acc, v| acc.merge(v['skill_id'].to_i => Integer(v['grade_descriptor_id'], exception: false)) }
     end
-  end
-
-  def lesson_from_param
-    Lesson.find params[:lesson_id]
   end
 end
