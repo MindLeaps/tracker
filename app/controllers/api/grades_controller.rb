@@ -48,7 +48,6 @@ module Api
         grade, status = save_or_update_if_exists(grade)
         respond_with :api, grade, json: grade, status:, meta: { timestamp: Time.zone.now }, include: {}, serializer: GradeSerializerV2
       end
-
     rescue ActionController::ParameterMissing, ActiveRecord::RecordNotFound
       head :bad_request
     end
