@@ -8,10 +8,7 @@
       "properties": {
         "mark": {"type": "number"},
         "skill_id": {"type": "number"},
-        "lesson_id": {
-          "type": "string",
-          "format": "uuid"
-        },
+        "lesson_id": {"type": "string"},
         "student_id": {"type": "number"},
         "deleted_at": {"type": ["string", "null"], "format": "date-time"}
       },

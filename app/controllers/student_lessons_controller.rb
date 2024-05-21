@@ -1,4 +1,6 @@
 class StudentLessonsController < HtmlController
+  skip_after_action :verify_policy_scoped
+
   def show
     lesson = Lesson.find params[:lesson_id]
     authorize lesson, :show?

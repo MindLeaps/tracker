@@ -30,7 +30,7 @@ module Api
     end
 
     def create
-      grade = Grade.new grade_v2_all_params
+      grade = Grade.new grade_all_params
       Grade.transaction do
         grade.grade_descriptor = GradeDescriptor.find grade.grade_descriptor_id
         grade, status = save_or_update_if_exists(grade)
@@ -83,6 +83,11 @@ module Api
 
     def grade_params
       params.permit :student_id, :grade_descriptor_id, :lesson_id
+    end
+
+    def grade_all_params
+      params.require %i[student_id grade_descriptor_id lesson_id]
+      grade_params
     end
 
     def grade_v2_all_params
