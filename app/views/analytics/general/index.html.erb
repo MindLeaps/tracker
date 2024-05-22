@@ -84,6 +84,7 @@
               categories: <%= @assessments_per_month[:categories].to_json.html_safe %>
           },
           yAxis: {
+              allowDecimals: false,
               title: {
                   text: '<%= t(:nr_of_assessments) %>'
               }
@@ -257,6 +258,7 @@
               text: '<%= t(:title_chart_8) %>'
           },
           xAxis: {
+              allowDecimals: false,
               title: {
                   text: '<%= t(:nr_of_lessons) %>'
               }
