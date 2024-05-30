@@ -27,7 +27,6 @@ class ChangeLessonIdColumnTypeAndCopyValues < ActiveRecord::Migration[7.0]
     rename_column(:absences, :old_lesson_id, :lesson_id)
     rename_column(:lesson, :id, :uid)
     rename_column(:lesson, :old_id, :id)
-    execute 'ALTER TABLE lessons ADD PRIMARY KEY (id);'
 
     remove_column(:absences, :lesson_uid)
     # rubocop:enable Rails/DangerousColumnNames
