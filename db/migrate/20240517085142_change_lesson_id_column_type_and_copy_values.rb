@@ -2,27 +2,18 @@ class ChangeLessonIdColumnTypeAndCopyValues < ActiveRecord::Migration[7.0]
   def up
     # rubocop:disable Rails/SkipsModelValidations
     # rubocop:disable Rails/DangerousColumnNames
-    add_column(:lessons, :old_id, :integer)
-    add_column(:grades, :old_lesson_id, :integer)
-    add_column(:absences, :old_lesson_id, :integer)
+    rename_column(:lessons, :id, :old_id)
+    rename_column(:grades, :lesson_id, :old_lesson_id)
+    add_column(:absences, :lesson_uid, :uuid)
 
-    Lesson.update_all('old_id = id')
-    Grade.update_all('old_lesson_id = lesson_id')
-    Absence.update_all('old_lesson_id = lesson_id')
-
-    remove_column(:lessons, :id)
     rename_column(:lessons, :uid, :id)
     execute 'ALTER TABLE lessons ADD PRIMARY KEY (id);'
-    remove_column(:grades, :lesson_id)
-    remove_column(:absences, :lesson_id)
+    rename_column(:grades, :lesson_uid, :lesson_id)
+    rename_column(:absences, :lesson_id, :old_lesson_id)
+    rename_column(:absences, :lesson_uid, :lesson_id)
 
-    add_column(:grades, :lesson_id, :uuid, null: false, default: 'uuid_generate_v4()')
-    add_column(:absences, :lesson_id, :uuid, null: false, default: 'uuid_generate_v4()')
-
-    Lesson.pluck(:id, :old_id).each do
-      Grade.where(old_lesson_id: :old_id).update_all(lesson_id: :id)
-      Absence.where(old_lesson_id: :old_id).update_all(lesson_id: :id)
-    end
+    Absence.update_all(lesson: Lesson.find(id: :old_lesson_id))
+    change_column(:absences, :lesson_id, :uuid, null: false)
     # rubocop:enable Rails/DangerousColumnNames
     # rubocop:enable Rails/SkipsModelValidations
   end
@@ -30,21 +21,15 @@ class ChangeLessonIdColumnTypeAndCopyValues < ActiveRecord::Migration[7.0]
   def down
     # rubocop:disable Rails/SkipsModelValidations
     # rubocop:disable Rails/DangerousColumnNames
-    remove_column(:grades, :lesson_id, type: :uuid)
-    remove_column(:absences, :lesson_id, :uuid)
-    rename_column(:lessons, :id, :uid)
+    rename_column(:grades, :lesson_id, :lesson_uid)
+    rename_column(:grades, :old_lesson_id, :lesson_id)
+    rename_column(:absences, :lesson_id, :lesson_uid)
+    rename_column(:absences, :old_lesson_id, :lesson_id)
+    rename_column(:lesson, :id, :uid)
+    rename_column(:lesson, :old_id, :id)
+    execute 'ALTER TABLE lessons ADD PRIMARY KEY (id);'
 
-    add_column(:lessons, :id, :integer)
-    add_column(:grades, :lesson_id, :integer)
-    add_column(:absences, :lesson_id, :integer)
-
-    Lesson.update_all('id = old_id')
-    Grade.update_all('lesson_id = old_lesson_id')
-    Absence.update_all('lesson_id = old_lesson_id')
-
-    remove_column(:lessons, :old_id)
-    remove_column(:grades, :old_lesson_id)
-    remove_column(:absences, :old_lesson_id)
+    remove_column(:absences, :lesson_uid)
     # rubocop:enable Rails/DangerousColumnNames
     # rubocop:enable Rails/SkipsModelValidations
   end
