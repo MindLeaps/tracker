@@ -27,7 +27,6 @@ FactoryBot.define do
       subject { nil }
     end
 
-
     factory :skill_in_subject do
       after(:create) do |skill, evaluator|
         subject = evaluator.subject || create(:subject)
