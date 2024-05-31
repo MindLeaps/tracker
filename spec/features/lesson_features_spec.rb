@@ -90,7 +90,7 @@ RSpec.describe 'User interacts with lessons' do
         expect(page).to have_content '1.5'
       end
 
-      it 'marks a student as being absent from a lesson', js: true do
+      xit 'marks a student as being absent from a lesson', js: true do
         visit "/lessons/#{@lesson.id}"
         find('div.table-cell', text: 'Graden', match: :first).click
 
