@@ -2,12 +2,12 @@
 #
 # Table name: student_lesson_summaries
 #
-#  absent       :boolean
 #  average_mark :decimal(, )
 #  deleted_at   :datetime
 #  first_name   :string
 #  grade_count  :bigint
 #  last_name    :string
+#  lesson_date  :date
 #  skill_count  :bigint
 #  group_id     :integer
 #  lesson_id    :integer
@@ -33,6 +33,64 @@ RSpec.describe StudentLessonSummary, type: :model do
         summaries = StudentLessonSummary.table_order_lesson_students(key: :last_name, order: :desc).all
         expect(summaries.map(&:last_name)).to eq [@zimba.last_name, @abimz.last_name]
       end
+    end
+  end
+
+  describe 'values' do
+    before :each do
+      subject = create :subject
+      @group = create :group
+      @lesson = create(:lesson, group: @group, subject:)
+      @student = create :student, group: @group
+    end
+
+    it 'show the lesson date' do
+      summaries = StudentLessonSummary.all
+      summaries.each do |summary|
+        expect(summary.lesson_date).to eq @lesson.date
+      end
+    end
+  end
+
+  describe 'calculations' do
+    before :each do
+      subject = create :subject
+      @group = create :group
+      @lesson = create(:lesson, group: @group, subject:)
+      @first_student = create :student, group: @group
+      @second_student = create :student, group: @group
+
+      @first_skill = create(:skill_in_subject, subject:)
+      @second_skill = create(:skill_in_subject, subject:)
+      @empty_skill = create(:skill_in_subject, subject:)
+      @removed_skill = create(:skill_removed_from_subject, subject:)
+
+      @first_grade = create :grade, student: @first_student, lesson: @lesson, skill: @first_skill, mark: 1
+      @second_grade = create :grade, student: @first_student, lesson: @lesson, skill: @second_skill, mark: 5
+      @deleted_grade = create :grade, student: @first_student, lesson: @lesson, skill: @removed_skill, mark: 1, deleted_at: Time.zone.now
+    end
+
+    it 'only counts undeleted skills' do
+      summaries = StudentLessonSummary.all
+      summaries.each do |summary|
+        expect(summary.skill_count).to eq 3
+      end
+    end
+
+    it 'only counts grades of undeleted skills' do
+      first_summary = StudentLessonSummary.find_by!(student_id: @first_student.id)
+      second_summary = StudentLessonSummary.find_by!(student_id: @second_student.id)
+
+      expect(first_summary.grade_count).to eq 2
+      expect(second_summary.grade_count).to eq 0
+    end
+
+    it 'only uses grades of undeleted & graded skills to calculate average mark' do
+      first_summary = StudentLessonSummary.find_by!(student_id: @first_student.id)
+      second_summary = StudentLessonSummary.find_by!(student_id: @second_student.id)
+
+      expect(first_summary.average_mark).to eq((@first_grade.mark + @second_grade.mark) / 2)
+      expect(second_summary.average_mark).to be nil
     end
   end
 end

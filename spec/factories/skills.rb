@@ -27,6 +27,7 @@ FactoryBot.define do
       subject { nil }
     end
 
+
     factory :skill_in_subject do
       after(:create) do |skill, evaluator|
         subject = evaluator.subject || create(:subject)
@@ -37,6 +38,13 @@ FactoryBot.define do
         after(:create) do |skill|
           (1..7).each { |mark| create :grade_descriptor, mark:, skill: }
         end
+      end
+    end
+
+    factory :skill_removed_from_subject do
+      after(:create) do |skill, evaluator|
+        subject = evaluator.subject || create(:subject)
+        create :assignment, skill:, subject:, deleted_at: Time.zone.now
       end
     end
   end
