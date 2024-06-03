@@ -57,11 +57,11 @@ RSpec.describe SubjectsController, type: :controller do
           post :update, params: { id: @subject.id, subject: {
             subject_name: 'Updated Name',
             organization_id: @subject.organization_id,
-            assignments_attributes: [
-              { id: @subject.assignments[0].id, skill_id: @subject.assignments[0].skill_id, _destroy: false },
-              { id: @subject.assignments[0].id, skill_id: @subject.assignments[1].skill_id, _destroy: false },
-              { skill_id: @new_skill.id }
-            ]
+            assignments_attributes: {
+              0 => { id: @subject.assignments[0].id, skill_id: @subject.assignments[0].skill_id, _destroy: false },
+              1 => { id: @subject.assignments[0].id, skill_id: @subject.assignments[1].skill_id, _destroy: false },
+              2 => { skill_id: @new_skill.id }
+            }
           } }
         end
 
@@ -75,6 +75,29 @@ RSpec.describe SubjectsController, type: :controller do
           expect(@subject.skills).to include @new_skill
         end
       end
+
+      context 'does not update subject' do
+        before :each do
+          @subject_with_graded_skill = create :subject_with_skills, subject_name: 'Test Subject', number_of_skills: 1
+          @lesson_using_subject = create :lesson, subject: @subject_with_graded_skill
+          @grade_in_lesson = create :grade, lesson: @lesson_using_subject, skill: @subject_with_graded_skill.skills.first
+
+          post :update, params: { id: @subject_with_graded_skill.id, subject: {
+            subject_name: 'With removed but used skill',
+            organization_id: @subject_with_graded_skill.organization_id,
+            assignments_attributes: {
+              0 => { id: @subject_with_graded_skill.assignments[0].id, skill_id: @subject_with_graded_skill.assignments[0].skill_id, _destroy: '1' }
+            }
+          } }
+        end
+
+        it { should redirect_to subject_path @subject_with_graded_skill }
+        it { should set_flash[:failure_notice] }
+        it 'does not remove the skill' do
+          expect(@subject_with_graded_skill.reload.skills.length).to eq 1
+        end
+      end
+
       context 'Requests additional skill' do
         before :each do
           @subject = create :subject_with_skills, subject_name: 'Test Subject', number_of_skills: 2
