@@ -29,4 +29,8 @@ class Subject < ApplicationRecord
   scope :by_organization, ->(organization_id) { where organization_id: }
 
   accepts_nested_attributes_for :assignments, allow_destroy: true
+
+  def grades_in_skill?(skill_id)
+    lessons.joins(:grades).exists?(grades: { skill_id: })
+  end
 end

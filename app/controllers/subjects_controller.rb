@@ -45,7 +45,7 @@ class SubjectsController < HtmlController
     if params[:add_skill]
       @subject.assignments.build
       render :new, status: :ok
-    elsif can_update_subject
+    elsif save_with_assignment_validation
       redirect_to @subject
     else
       failure(title: t(:subject_invalid), text: t(:fix_form_errors))
@@ -55,38 +55,16 @@ class SubjectsController < HtmlController
 
   private
 
-  def can_update_subject
-    if !check_for_removed_skills || (check_for_removed_skills && no_grades_using_skill)
-      if @subject.save
-        success(title: t(:subject_updated), text: t(:subject_updated_text, subject: @subject.subject_name))
-      else
-        return false
-      end
+  def save_with_assignment_validation
+    removed_skill_ids = @subject.assignments.filter(&:marked_for_destruction?).map(&:skill_id)
+
+    removed_skill_ids.each do |id|
+      return failure(title: t(:unable_to_remove_skill_from_subject, skill_name: Skill.find(id).skill_name), text: t(:skill_not_removed_because_grades)) if @subject.grades_in_skill?(id)
     end
 
-    true
-  end
+    return success(title: t(:subject_updated), text: t(:subject_updated_text, subject: @subject.subject_name)) if @subject.save
 
-  def no_grades_using_skill
-    destroyed_assignments = formatted_assignment_attributes.select { |v| v if v[:_destroy] == '1' }
-    lessons_using_subject = Lesson.where(subject_id: @subject.id).pluck(:id)
-
-    destroyed_assignments.each do |assignment|
-      if Grade.exists?(lesson_id: lessons_using_subject, skill_id: assignment[:skill_id])
-        failure(title: t(:unable_to_remove_skill_from_subject, skill_name: Skill.find(assignment[:skill_id]).skill_name), text: t(:skill_not_removed_because_grades))
-        return false
-      end
-    end
-
-    true
-  end
-
-  def check_for_removed_skills
-    formatted_assignment_attributes.any? { |v| v[:_destroy] == '1' }
-  end
-
-  def formatted_assignment_attributes
-    subject_params[:assignments_attributes].to_unsafe_h.values
+    false
   end
 
   def subject_params
