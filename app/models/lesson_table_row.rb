@@ -14,6 +14,7 @@
 #  created_at           :datetime
 #  updated_at           :datetime
 #  group_id             :integer
+#  old_id               :integer
 #  subject_id           :integer
 #
 class LessonTableRow < ApplicationRecord

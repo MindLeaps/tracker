@@ -5,15 +5,14 @@
 #  id            :integer          not null, primary key
 #  name          :string
 #  resource_type :string
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
+#  created_at    :datetime
+#  updated_at    :datetime
 #  resource_id   :integer
 #
 # Indexes
 #
 #  index_roles_on_name                                    (name)
 #  index_roles_on_name_and_resource_type_and_resource_id  (name,resource_type,resource_id)
-#  index_roles_on_resource                                (resource_type,resource_id)
 #
 class Role < ApplicationRecord
   # rubocop:disable Rails/HasAndBelongsToMany
