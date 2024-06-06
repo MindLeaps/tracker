@@ -45,7 +45,7 @@ class SubjectsController < HtmlController
     if params[:add_skill]
       @subject.assignments.build
       render :new, status: :ok
-    elsif save_with_assignment_validation
+    elsif validate_assignments_and_save
       redirect_to @subject
     else
       failure(title: t(:subject_invalid), text: t(:fix_form_errors))
@@ -55,13 +55,10 @@ class SubjectsController < HtmlController
 
   private
 
-  def save_with_assignment_validation
-    removed_skill_ids = @subject.assignments.filter(&:marked_for_destruction?).map(&:skill_id)
+  def validate_assignments_and_save
+    invalid_skill = @subject.assignment_validation
 
-    removed_skill_ids.each do |id|
-      return failure(title: t(:unable_to_remove_skill_from_subject, skill_name: Skill.find(id).skill_name), text: t(:skill_not_removed_because_grades)) if @subject.grades_in_skill?(id)
-    end
-
+    return failure(title: t(:unable_to_remove_skill_from_subject, skill_name: invalid_skill), text: t(:skill_not_removed_because_grades)) if invalid_skill
     return success(title: t(:subject_updated), text: t(:subject_updated_text, subject: @subject.subject_name)) if @subject.save
 
     false
