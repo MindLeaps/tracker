@@ -41,7 +41,7 @@ class Lesson < ApplicationRecord
   def mark_student_as_absent(student)
     return if student_absent?(student)
 
-    Absence.create student:, lesson: self
+    Absence.create student:, lesson: self, lesson_old_id: old_id
   end
 
   def mark_student_as_present(student)
