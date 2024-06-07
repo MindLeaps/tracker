@@ -46,7 +46,7 @@ class StudentLesson < ApplicationRecord
     Absence.transaction do
       unless student_absent? == new_absence
         if new_absence
-          Absence.create(student_id:, lesson:)
+          Absence.create(student_id:, lesson:, lesson_old_id: lesson.old_id)
         else
           Absence.find_by(student_id:, lesson_id:).destroy!
         end

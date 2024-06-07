@@ -4,7 +4,7 @@
 #
 #  id            :integer          not null, primary key
 #  lesson_id     :uuid             not null
-#  old_lesson_id :integer          not null
+#  lesson_old_id :integer          not null
 #  student_id    :integer          not null
 #
 # Indexes

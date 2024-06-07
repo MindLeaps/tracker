@@ -161,7 +161,7 @@ SET default_table_access_method = heap;
 CREATE TABLE public.absences (
     id integer NOT NULL,
     student_id integer NOT NULL,
-    old_lesson_id integer NOT NULL,
+    lesson_old_id integer NOT NULL,
     lesson_id uuid NOT NULL
 );
 
@@ -377,7 +377,7 @@ ALTER SEQUENCE public.grade_descriptors_id_seq OWNED BY public.grade_descriptors
 CREATE TABLE public.grades (
     id integer NOT NULL,
     student_id integer NOT NULL,
-    old_lesson_id integer NOT NULL,
+    lesson_old_id integer NOT NULL,
     grade_descriptor_id integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,

@@ -9,7 +9,7 @@
 #  updated_at          :datetime         not null
 #  grade_descriptor_id :integer          not null
 #  lesson_id           :uuid             not null
-#  old_lesson_id       :integer          not null
+#  lesson_old_id       :integer          not null
 #  skill_id            :bigint           not null
 #  student_id          :integer          not null
 #
@@ -29,8 +29,9 @@
 #
 FactoryBot.define do
   factory :grade do
-    lesson { create :lesson }
-    student { create :student }
-    grade_descriptor { create :grade_descriptor }
+    lesson
+    student
+    grade_descriptor
+    lesson_old_id { lesson.old_id }
   end
 end

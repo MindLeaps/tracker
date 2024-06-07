@@ -9,12 +9,12 @@ class UpdateLessonIds < ActiveRecord::Migration[7.0]
     switch_lessons_primary_key
 
     remove_index :grades, :lesson_id
-    rename_column(:grades, :lesson_id, :old_lesson_id)
+    rename_column(:grades, :lesson_id, :lesson_old_id)
     rename_column(:grades, :lesson_uid, :lesson_id)
     # index on lesson_uid already existed so when that column is renamed the index is preserved
 
     remove_index :absences, :lesson_id
-    rename_column(:absences, :lesson_id, :old_lesson_id)
+    rename_column(:absences, :lesson_id, :lesson_old_id)
     add_column(:absences, :lesson_id, :uuid)
     switch_absences_lesson_ids
     change_column(:absences, :lesson_id, :uuid, null: false)
@@ -35,12 +35,12 @@ class UpdateLessonIds < ActiveRecord::Migration[7.0]
 
     # we preserve the index on lesson_id so when the column gets renamed to lesson_uid index is preserved
     rename_column(:grades, :lesson_id, :lesson_uid)
-    rename_column(:grades, :old_lesson_id, :lesson_id)
+    rename_column(:grades, :lesson_old_id, :lesson_id)
     add_index :grades, :lesson_id
 
     remove_index :absences, :lesson_id
     remove_column(:absences, :lesson_id)
-    rename_column(:absences, :old_lesson_id, :lesson_id)
+    rename_column(:absences, :lesson_old_id, :lesson_id)
     add_index :absences, :lesson_id
 
     reintroduce_foreign_keys
@@ -65,7 +65,7 @@ class UpdateLessonIds < ActiveRecord::Migration[7.0]
   def switch_absences_lesson_ids
     execute <<~SQL
       update absences a set lesson_id = l.id
-        from lessons l where l.old_id = a.old_lesson_id;
+        from lessons l where l.old_id = a.lesson_old_id;
     SQL
   end
 
