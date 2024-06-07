@@ -54,7 +54,7 @@ group :development, :test do
 
   # Rspec requires capybara > 2.1
   gem 'capybara', '> 2.1'
-  gem 'database_cleaner'
+  gem 'database_cleaner-active_record'
   gem 'factory_bot_rails'
   gem 'faker'
   gem 'json_matchers'

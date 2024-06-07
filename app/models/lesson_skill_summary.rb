@@ -4,8 +4,8 @@
 #
 #  average_mark :decimal(, )
 #  grade_count  :bigint
-#  lesson_uid   :uuid
 #  skill_name   :string
+#  lesson_id    :uuid
 #  skill_id     :integer
 #  subject_id   :integer
 #

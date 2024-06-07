@@ -49,7 +49,7 @@ end %>
 
 <%= javascript_tag do %>
   function onChartsLoad() {
-    displayLessonGraph && displayLessonGraph('.ct-chart', '<%= @lesson.uid %>', <%= @group_lessons_data[:group_lessons].to_json.html_safe%>);
+    displayLessonGraph && displayLessonGraph('.ct-chart', '<%= @lesson.id %>', <%= @group_lessons_data[:group_lessons].to_json.html_safe%>);
   }
 <% end %>
 <%= javascript_include_tag "charts", onload: 'onChartsLoad()' %>

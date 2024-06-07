@@ -8,7 +8,7 @@
 #  mark               :float
 #  skill_name         :string
 #  group_id           :integer
-#  lesson_id          :integer
+#  lesson_id          :uuid
 #  skill_id           :integer
 #  subject_id         :integer
 #

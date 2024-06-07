@@ -2,7 +2,7 @@
 #
 # Table name: student_lessons
 #
-#  lesson_id  :integer
+#  lesson_id  :uuid
 #  student_id :integer
 #
 require 'rails_helper'

@@ -9,6 +9,7 @@ require 'rspec/rails'
 require 'pundit/rspec'
 require 'webmock/rspec'
 require 'devise'
+require 'database_cleaner/active_record'
 
 WebMock.disable_net_connect!(allow: ['localhost', '127.0.0.1', 'chromedriver.storage.googleapis.com'], net_http_connect_on_start: true)
 
@@ -48,21 +49,20 @@ RSpec.configure do |config|
   # Filter lines from Rails gems in backtraces.
   config.filter_rails_from_backtrace!
   config.before(:suite) do
-    DatabaseCleaner.strategy = :truncation
-    DatabaseCleaner.start
+    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.clean_with :truncation
     # FactoryBot.lint
-  ensure
-    DatabaseCleaner.clean
   end
 
-  config.before(:each) do |example|
+  config.before(:each) do
     Capybara.raise_server_errors = true
-    DatabaseCleaner.strategy = example.metadata[:js] ? :deletion : :transaction
-    DatabaseCleaner.start
   end
 
-  config.append_after(:each) do
-    DatabaseCleaner.clean
+  config.around(:each) do |example|
+    DatabaseCleaner.strategy = example.metadata[:js] ? :truncation : :transaction
+    DatabaseCleaner.cleaning do
+      example.run
+    end
   end
 
   # Setup Bullet for detecting N+1 queries

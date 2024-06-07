@@ -74,7 +74,7 @@ RSpec.describe StudentLessonsController, type: :controller do
             } }
 
             expect(@lesson.absences[0].student_id).to eq @student.id
-            expect(@student.absences[0].lesson_id).to be @lesson.id
+            expect(@student.absences[0].lesson_id).to eq @lesson.id
           end
         end
       end
