@@ -137,8 +137,6 @@ GEM
       bigdecimal
       rexml
     crass (1.0.6)
-    database_cleaner (2.0.2)
-      database_cleaner-active_record (>= 2, < 3)
     database_cleaner-active_record (2.1.0)
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0.0)
@@ -513,7 +511,7 @@ DEPENDENCIES
   carrierwave
   carrierwave-bombshelter
   carrierwave-imageoptimizer
-  database_cleaner
+  database_cleaner-active_record
   devise
   dotenv-rails
   enum_help
