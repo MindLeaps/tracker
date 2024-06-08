@@ -15,10 +15,6 @@
                 </div>
               <% end %>
                 <div class="p-2">
-                  <%= f.label :absence, t(:student_absent), class: 'field-label' %>
-                  <%= f.check_box :absence, checked: @absent, class: 'h-4 w-4 ml-4 border-purple-500 text-green-600 focus:ring-green-600 cursor-pointer' %>
-                </div>
-                <div class="p-2">
                   <%= f.submit t(:create_grade_button), class: 'px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 cursor-pointer' %>
                   <div class="dangerous-button" data-action="click->modal#close"><%= t(:cancel) %></div>
                 </div>

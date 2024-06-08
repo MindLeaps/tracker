@@ -1,4 +1,5 @@
 ## Unreleased
+- Removed absence from student lesson summaries and added lesson date
 - Restructured Lessons to go by their UUID
 - Disabled decimals for 'No of Assessments' & 'No. of Lessons' in analytics
 - Upgraded Rails to 7.1

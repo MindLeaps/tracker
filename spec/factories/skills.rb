@@ -39,5 +39,12 @@ FactoryBot.define do
         end
       end
     end
+
+    factory :skill_removed_from_subject do
+      after(:create) do |skill, evaluator|
+        subject = evaluator.subject || create(:subject)
+        create :assignment, skill:, subject:, deleted_at: Time.zone.now
+      end
+    end
   end
 end
