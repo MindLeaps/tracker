@@ -6,10 +6,9 @@
 #  grade_count        :bigint
 #  group_chapter_name :text
 #  lesson_date        :date
-#  lesson_uid         :uuid             primary key
 #  chapter_id         :integer
 #  group_id           :integer
-#  lesson_id          :integer
+#  lesson_id          :uuid             primary key
 #  subject_id         :integer
 #
 require 'rails_helper'

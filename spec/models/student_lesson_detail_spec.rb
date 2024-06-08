@@ -11,7 +11,7 @@
 #  lesson_deleted_at  :datetime
 #  skill_marks        :jsonb
 #  student_deleted_at :datetime
-#  lesson_id          :integer
+#  lesson_id          :uuid
 #  student_id         :integer
 #  subject_id         :integer
 #

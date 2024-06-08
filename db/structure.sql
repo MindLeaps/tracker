@@ -10,6 +10,20 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
+-- Name: pg_stat_statements; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS pg_stat_statements WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION pg_stat_statements; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION pg_stat_statements IS 'track execution statistics of all SQL statements executed';
+
+
+--
 -- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -147,7 +161,8 @@ SET default_table_access_method = heap;
 CREATE TABLE public.absences (
     id integer NOT NULL,
     student_id integer NOT NULL,
-    lesson_id integer NOT NULL
+    lesson_old_id integer NOT NULL,
+    lesson_id uuid NOT NULL
 );
 
 
@@ -156,7 +171,6 @@ CREATE TABLE public.absences (
 --
 
 CREATE SEQUENCE public.absences_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -178,8 +192,8 @@ ALTER SEQUENCE public.absences_id_seq OWNED BY public.absences.id;
 CREATE TABLE public.ar_internal_metadata (
     key character varying NOT NULL,
     value character varying,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -202,7 +216,6 @@ CREATE TABLE public.assignments (
 --
 
 CREATE SEQUENCE public.assignments_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -239,7 +252,6 @@ CREATE TABLE public.authentication_tokens (
 --
 
 CREATE SEQUENCE public.authentication_tokens_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -295,7 +307,6 @@ CREATE TABLE public.chapters (
 --
 
 CREATE SEQUENCE public.chapters_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -315,7 +326,7 @@ ALTER SEQUENCE public.chapters_id_seq OWNED BY public.chapters.id;
 --
 
 CREATE TABLE public.enrollments (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     student_id bigint NOT NULL,
     group_id bigint NOT NULL,
     active_since timestamp without time zone NOT NULL,
@@ -345,7 +356,6 @@ CREATE TABLE public.grade_descriptors (
 --
 
 CREATE SEQUENCE public.grade_descriptors_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -367,12 +377,12 @@ ALTER SEQUENCE public.grade_descriptors_id_seq OWNED BY public.grade_descriptors
 CREATE TABLE public.grades (
     id integer NOT NULL,
     student_id integer NOT NULL,
-    lesson_id integer NOT NULL,
+    lesson_old_id integer NOT NULL,
     grade_descriptor_id integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     deleted_at timestamp without time zone,
-    lesson_uid uuid NOT NULL,
+    lesson_id uuid NOT NULL,
     skill_id bigint NOT NULL,
     mark integer NOT NULL
 );
@@ -383,7 +393,6 @@ CREATE TABLE public.grades (
 --
 
 CREATE SEQUENCE public.grades_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -404,8 +413,7 @@ ALTER SEQUENCE public.grades_id_seq OWNED BY public.grades.id;
 
 CREATE VIEW public.group_lesson_summaries AS
 SELECT
-    NULL::integer AS lesson_id,
-    NULL::uuid AS lesson_uid,
+    NULL::uuid AS lesson_id,
     NULL::date AS lesson_date,
     NULL::integer AS group_id,
     NULL::integer AS chapter_id,
@@ -457,7 +465,6 @@ CREATE TABLE public.groups (
 --
 
 CREATE SEQUENCE public.groups_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -478,7 +485,7 @@ ALTER SEQUENCE public.groups_id_seq OWNED BY public.groups.id;
 
 CREATE VIEW public.lesson_skill_summaries AS
 SELECT
-    NULL::uuid AS lesson_uid,
+    NULL::uuid AS lesson_id,
     NULL::integer AS skill_id,
     NULL::character varying AS skill_name,
     NULL::numeric AS average_mark,
@@ -492,14 +499,14 @@ SELECT
 
 CREATE VIEW public.lesson_table_rows AS
 SELECT
-    NULL::integer AS id,
+    NULL::integer AS old_id,
     NULL::integer AS group_id,
     NULL::date AS date,
     NULL::timestamp without time zone AS created_at,
     NULL::timestamp without time zone AS updated_at,
     NULL::integer AS subject_id,
     NULL::timestamp without time zone AS deleted_at,
-    NULL::uuid AS uid,
+    NULL::uuid AS id,
     NULL::character varying AS group_name,
     NULL::character varying AS chapter_name,
     NULL::character varying AS subject_name,
@@ -513,14 +520,14 @@ SELECT
 --
 
 CREATE TABLE public.lessons (
-    id integer NOT NULL,
+    old_id integer NOT NULL,
     group_id integer NOT NULL,
     date date NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     subject_id integer NOT NULL,
     deleted_at timestamp without time zone,
-    uid uuid DEFAULT public.uuid_generate_v4() NOT NULL
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL
 );
 
 
@@ -529,7 +536,6 @@ CREATE TABLE public.lessons (
 --
 
 CREATE SEQUENCE public.lessons_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -541,7 +547,7 @@ CREATE SEQUENCE public.lessons_id_seq
 -- Name: lessons_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE public.lessons_id_seq OWNED BY public.lessons.id;
+ALTER SEQUENCE public.lessons_id_seq OWNED BY public.lessons.old_id;
 
 
 --
@@ -553,8 +559,8 @@ CREATE TABLE public.roles (
     name character varying,
     resource_type character varying,
     resource_id integer,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
 );
 
 
@@ -680,7 +686,6 @@ CREATE TABLE public.organizations (
 --
 
 CREATE SEQUENCE public.organizations_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -704,7 +709,7 @@ SELECT
     NULL::integer AS group_id,
     NULL::character varying AS group_name,
     NULL::text AS group_chapter_name,
-    NULL::integer AS lesson_id,
+    NULL::uuid AS lesson_id,
     NULL::date AS date,
     NULL::integer AS skill_id,
     NULL::character varying AS skill_name,
@@ -717,7 +722,6 @@ SELECT
 --
 
 CREATE SEQUENCE public.roles_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -761,7 +765,6 @@ CREATE TABLE public.skills (
 --
 
 CREATE SEQUENCE public.skills_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -795,7 +798,6 @@ CREATE TABLE public.student_images (
 --
 
 CREATE SEQUENCE public.student_images_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -820,7 +822,7 @@ SELECT
     NULL::character varying AS first_name,
     NULL::character varying AS last_name,
     NULL::timestamp without time zone AS student_deleted_at,
-    NULL::integer AS lesson_id,
+    NULL::uuid AS lesson_id,
     NULL::date AS date,
     NULL::timestamp without time zone AS lesson_deleted_at,
     NULL::integer AS subject_id,
@@ -841,7 +843,7 @@ SELECT
     NULL::character varying AS first_name,
     NULL::character varying AS last_name,
     NULL::timestamp without time zone AS deleted_at,
-    NULL::integer AS lesson_id,
+    NULL::uuid AS lesson_id,
     NULL::date AS lesson_date,
     NULL::integer AS subject_id,
     NULL::numeric AS average_mark,
@@ -968,7 +970,6 @@ CREATE TABLE public.student_tags (
 --
 
 CREATE SEQUENCE public.students_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1017,7 +1018,6 @@ CREATE TABLE public.subjects (
 --
 
 CREATE SEQUENCE public.subjects_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1037,7 +1037,7 @@ ALTER SEQUENCE public.subjects_id_seq OWNED BY public.subjects.id;
 --
 
 CREATE TABLE public.tags (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     tag_name character varying NOT NULL,
     organization_id bigint NOT NULL,
     shared boolean NOT NULL,
@@ -1051,7 +1051,6 @@ CREATE TABLE public.tags (
 --
 
 CREATE SEQUENCE public.users_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1116,10 +1115,10 @@ ALTER TABLE ONLY public.groups ALTER COLUMN id SET DEFAULT nextval('public.group
 
 
 --
--- Name: lessons id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: lessons old_id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.lessons ALTER COLUMN id SET DEFAULT nextval('public.lessons_id_seq'::regclass);
+ALTER TABLE ONLY public.lessons ALTER COLUMN old_id SET DEFAULT nextval('public.lessons_id_seq'::regclass);
 
 
 --
@@ -1248,7 +1247,7 @@ ALTER TABLE ONLY public.groups
 --
 
 ALTER TABLE ONLY public.lessons
-    ADD CONSTRAINT lesson_uuid_unique UNIQUE (uid);
+    ADD CONSTRAINT lesson_uuid_unique UNIQUE (id);
 
 
 --
@@ -1433,13 +1432,6 @@ CREATE INDEX index_grades_on_lesson_id ON public.grades USING btree (lesson_id);
 
 
 --
--- Name: index_grades_on_lesson_uid; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_grades_on_lesson_uid ON public.grades USING btree (lesson_uid);
-
-
---
 -- Name: index_grades_on_skill_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1482,13 +1474,6 @@ CREATE INDEX index_lessons_on_subject_id ON public.lessons USING btree (subject_
 
 
 --
--- Name: index_lessons_on_uid; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_lessons_on_uid ON public.lessons USING btree (uid);
-
-
---
 -- Name: index_roles_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1500,13 +1485,6 @@ CREATE INDEX index_roles_on_name ON public.roles USING btree (name);
 --
 
 CREATE INDEX index_roles_on_name_and_resource_type_and_resource_id ON public.roles USING btree (name, resource_type, resource_id);
-
-
---
--- Name: index_roles_on_resource; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_roles_on_resource ON public.roles USING btree (resource_type, resource_id);
 
 
 --
@@ -1573,20 +1551,6 @@ CREATE UNIQUE INDEX index_users_on_email ON public.users USING btree (email);
 
 
 --
--- Name: index_users_roles_on_role_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_users_roles_on_role_id ON public.users_roles USING btree (role_id);
-
-
---
--- Name: index_users_roles_on_user_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_users_roles_on_user_id ON public.users_roles USING btree (user_id);
-
-
---
 -- Name: index_users_roles_on_user_id_and_role_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1621,30 +1585,6 @@ CREATE OR REPLACE VIEW public.chapter_summaries AS
 
 
 --
--- Name: group_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.group_lesson_summaries AS
- SELECT l.id AS lesson_id,
-    l.uid AS lesson_uid,
-    l.date AS lesson_date,
-    gr.id AS group_id,
-    gr.chapter_id,
-    s.id AS subject_id,
-    concat(gr.group_name, ' - ', c.chapter_name) AS group_chapter_name,
-    (round(avg(g.mark), 2))::double precision AS average_mark,
-    count(*) AS grade_count
-   FROM ((((public.lessons l
-     JOIN public.groups gr ON ((l.group_id = gr.id)))
-     JOIN public.grades g ON ((g.lesson_id = l.id)))
-     JOIN public.chapters c ON ((gr.chapter_id = c.id)))
-     JOIN public.subjects s ON ((l.subject_id = s.id)))
-  WHERE (g.deleted_at IS NULL)
-  GROUP BY l.id, gr.id, c.id, s.id
-  ORDER BY l.date;
-
-
---
 -- Name: group_summaries _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
@@ -1671,61 +1611,6 @@ CREATE OR REPLACE VIEW public.group_summaries AS
      LEFT JOIN public.chapters c ON ((g.chapter_id = c.id)))
      LEFT JOIN public.organizations o ON ((c.organization_id = o.id)))
   GROUP BY g.id, c.id, o.id;
-
-
---
--- Name: lesson_skill_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.lesson_skill_summaries AS
- SELECT l.uid AS lesson_uid,
-    sk.id AS skill_id,
-    sk.skill_name,
-    round(avg(g.mark), 2) AS average_mark,
-    count(g.mark) AS grade_count,
-    su.id AS subject_id
-   FROM ((((public.lessons l
-     JOIN public.subjects su ON ((su.id = l.subject_id)))
-     JOIN public.assignments a ON (((su.id = a.subject_id) AND (a.deleted_at IS NULL))))
-     JOIN public.skills sk ON ((a.skill_id = sk.id)))
-     LEFT JOIN public.grades g ON (((g.lesson_uid = l.uid) AND (g.skill_id = sk.id) AND (g.deleted_at IS NULL))))
-  GROUP BY l.uid, sk.id, su.id;
-
-
---
--- Name: lesson_table_rows _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.lesson_table_rows AS
- WITH group_student_counts AS (
-         SELECT gr.id AS group_id,
-            gr.group_name,
-            c.chapter_name,
-            COALESCE(count(s.id), (0)::bigint) AS student_count
-           FROM ((public.groups gr
-             LEFT JOIN public.students s ON (((s.group_id = gr.id) AND (s.deleted_at IS NULL))))
-             JOIN public.chapters c ON ((gr.chapter_id = c.id)))
-          GROUP BY gr.id, c.chapter_name
-        )
- SELECT l.id,
-    l.group_id,
-    l.date,
-    l.created_at,
-    l.updated_at,
-    l.subject_id,
-    l.deleted_at,
-    l.uid,
-    sc.group_name,
-    sc.chapter_name,
-    su.subject_name,
-    sc.student_count AS group_student_count,
-    count(DISTINCT g.student_id) AS graded_student_count,
-    round(avg(g.mark), 2) AS average_mark
-   FROM (((public.lessons l
-     JOIN public.subjects su ON ((l.subject_id = su.id)))
-     LEFT JOIN public.grades g ON (((l.id = g.lesson_id) AND (g.deleted_at IS NULL))))
-     JOIN group_student_counts sc ON ((l.group_id = sc.group_id)))
-  GROUP BY l.id, su.subject_name, sc.student_count, sc.group_name, sc.chapter_name;
 
 
 --
@@ -1757,6 +1642,105 @@ CREATE OR REPLACE VIEW public.organization_summaries AS
    FROM (public.organizations o
      LEFT JOIN public.chapter_summaries c ON ((c.organization_id = o.id)))
   GROUP BY o.id;
+
+
+--
+-- Name: student_tag_table_rows _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.student_tag_table_rows AS
+ SELECT t.id,
+    t.tag_name,
+    t.shared,
+    t.organization_id,
+    o.organization_name,
+    count(st.student_id) AS student_count
+   FROM ((public.tags t
+     JOIN public.organizations o ON ((t.organization_id = o.id)))
+     LEFT JOIN public.student_tags st ON ((t.id = st.tag_id)))
+  GROUP BY t.id, t.organization_id, o.organization_name;
+
+
+--
+-- Name: subject_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.subject_summaries AS
+ SELECT su.id,
+    su.subject_name,
+    su.organization_id,
+    sum(
+        CASE
+            WHEN (a.deleted_at IS NOT NULL) THEN 0
+            ELSE 1
+        END) AS skill_count,
+    su.created_at,
+    su.updated_at,
+    su.deleted_at
+   FROM ((public.subjects su
+     LEFT JOIN public.assignments a ON ((su.id = a.subject_id)))
+     LEFT JOIN public.skills sk ON ((sk.id = a.skill_id)))
+  WHERE (sk.deleted_at IS NULL)
+  GROUP BY su.id;
+
+
+--
+-- Name: group_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.group_lesson_summaries AS
+ SELECT l.id AS lesson_id,
+    l.date AS lesson_date,
+    gr.id AS group_id,
+    gr.chapter_id,
+    s.id AS subject_id,
+    concat(gr.group_name, ' - ', c.chapter_name) AS group_chapter_name,
+    (round(avg(g.mark), 2))::double precision AS average_mark,
+    count(*) AS grade_count
+   FROM ((((public.lessons l
+     JOIN public.groups gr ON ((l.group_id = gr.id)))
+     JOIN public.grades g ON ((g.lesson_id = l.id)))
+     JOIN public.chapters c ON ((gr.chapter_id = c.id)))
+     JOIN public.subjects s ON ((l.subject_id = s.id)))
+  WHERE (g.deleted_at IS NULL)
+  GROUP BY l.id, gr.id, c.id, s.id
+  ORDER BY l.date;
+
+
+--
+-- Name: lesson_table_rows _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.lesson_table_rows AS
+ WITH group_student_counts AS (
+         SELECT gr.id AS group_id,
+            gr.group_name,
+            c.chapter_name,
+            COALESCE(count(s.id), (0)::bigint) AS student_count
+           FROM ((public.groups gr
+             LEFT JOIN public.students s ON (((s.group_id = gr.id) AND (s.deleted_at IS NULL))))
+             JOIN public.chapters c ON ((gr.chapter_id = c.id)))
+          GROUP BY gr.id, c.chapter_name
+        )
+ SELECT l.old_id,
+    l.group_id,
+    l.date,
+    l.created_at,
+    l.updated_at,
+    l.subject_id,
+    l.deleted_at,
+    l.id,
+    sc.group_name,
+    sc.chapter_name,
+    su.subject_name,
+    sc.student_count AS group_student_count,
+    count(DISTINCT g.student_id) AS graded_student_count,
+    round(avg(g.mark), 2) AS average_mark
+   FROM (((public.lessons l
+     JOIN public.subjects su ON ((l.subject_id = su.id)))
+     LEFT JOIN public.grades g ON (((l.id = g.lesson_id) AND (g.deleted_at IS NULL))))
+     JOIN group_student_counts sc ON ((l.group_id = sc.group_id)))
+  GROUP BY l.id, su.subject_name, sc.student_count, sc.group_name, sc.chapter_name;
 
 
 --
@@ -1814,6 +1798,25 @@ CREATE OR REPLACE VIEW public.student_lesson_details AS
 
 
 --
+-- Name: lesson_skill_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.lesson_skill_summaries AS
+ SELECT l.id AS lesson_id,
+    sk.id AS skill_id,
+    sk.skill_name,
+    round(avg(g.mark), 2) AS average_mark,
+    count(g.mark) AS grade_count,
+    su.id AS subject_id
+   FROM ((((public.lessons l
+     JOIN public.subjects su ON ((su.id = l.subject_id)))
+     JOIN public.assignments a ON (((su.id = a.subject_id) AND (a.deleted_at IS NULL))))
+     JOIN public.skills sk ON ((a.skill_id = sk.id)))
+     LEFT JOIN public.grades g ON (((g.lesson_id = l.id) AND (g.skill_id = sk.id) AND (g.deleted_at IS NULL))))
+  GROUP BY l.id, sk.id, su.id;
+
+
+--
 -- Name: student_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
@@ -1864,50 +1867,18 @@ CREATE OR REPLACE VIEW public.student_lesson_summaries AS
 
 
 --
--- Name: student_tag_table_rows _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.student_tag_table_rows AS
- SELECT t.id,
-    t.tag_name,
-    t.shared,
-    t.organization_id,
-    o.organization_name,
-    count(st.student_id) AS student_count
-   FROM ((public.tags t
-     JOIN public.organizations o ON ((t.organization_id = o.id)))
-     LEFT JOIN public.student_tags st ON ((t.id = st.tag_id)))
-  GROUP BY t.id, t.organization_id, o.organization_name;
-
-
---
--- Name: subject_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.subject_summaries AS
- SELECT su.id,
-    su.subject_name,
-    su.organization_id,
-    sum(
-        CASE
-            WHEN (a.deleted_at IS NOT NULL) THEN 0
-            ELSE 1
-        END) AS skill_count,
-    su.created_at,
-    su.updated_at,
-    su.deleted_at
-   FROM ((public.subjects su
-     LEFT JOIN public.assignments a ON ((su.id = a.subject_id)))
-     LEFT JOIN public.skills sk ON ((sk.id = a.skill_id)))
-  WHERE (sk.deleted_at IS NULL)
-  GROUP BY su.id;
-
-
---
 -- Name: students update_enrollments_on_student_group_change_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
 CREATE TRIGGER update_enrollments_on_student_group_change_trigger AFTER INSERT OR UPDATE ON public.students FOR EACH ROW EXECUTE FUNCTION public.update_enrollments();
+
+
+--
+-- Name: absences absences_lesson_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.absences
+    ADD CONSTRAINT absences_lesson_id_fk FOREIGN KEY (lesson_id) REFERENCES public.lessons(id);
 
 
 --
@@ -1948,14 +1919,6 @@ ALTER TABLE ONLY public.enrollments
 
 ALTER TABLE ONLY public.student_tags
     ADD CONSTRAINT fk_rails_21aa011b2b FOREIGN KEY (tag_id) REFERENCES public.tags(id);
-
-
---
--- Name: absences fk_rails_442f8d40b0; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.absences
-    ADD CONSTRAINT fk_rails_442f8d40b0 FOREIGN KEY (lesson_id) REFERENCES public.lessons(id);
 
 
 --
@@ -2028,14 +1991,6 @@ ALTER TABLE ONLY public.grades
 
 ALTER TABLE ONLY public.grades
     ADD CONSTRAINT grades_lesson_id_fk FOREIGN KEY (lesson_id) REFERENCES public.lessons(id);
-
-
---
--- Name: grades grades_lesson_uid_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.grades
-    ADD CONSTRAINT grades_lesson_uid_fk FOREIGN KEY (lesson_uid) REFERENCES public.lessons(uid);
 
 
 --
@@ -2126,6 +2081,7 @@ SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
 ('20240531115345'),
+('20240517085142'),
 ('20240513221506'),
 ('20240513221505'),
 ('20240513221504'),
@@ -2133,9 +2089,6 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20240415131224'),
 ('20240412093830'),
 ('20240412093631'),
-('20240411131050'),
-('20240411121439'),
-('20240411100638'),
 ('20231230202619'),
 ('20231222195655'),
 ('20231221220850'),
@@ -2143,8 +2096,6 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20231015025217'),
 ('20220501041026'),
 ('20220501040818'),
-('20211217173704'),
-('20211217173701'),
 ('20210910115239'),
 ('20210909104020'),
 ('20210810102949'),

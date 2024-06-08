@@ -2,7 +2,7 @@
 #
 # Table name: lesson_table_rows
 #
-#  id                   :integer
+#  id                   :uuid
 #  average_mark         :decimal(, )
 #  chapter_name         :string
 #  date                 :date
@@ -11,10 +11,10 @@
 #  group_name           :string
 #  group_student_count  :bigint
 #  subject_name         :string
-#  uid                  :uuid
 #  created_at           :datetime
 #  updated_at           :datetime
 #  group_id             :integer
+#  old_id               :integer
 #  subject_id           :integer
 #
 class LessonTableRow < ApplicationRecord
