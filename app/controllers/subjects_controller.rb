@@ -45,8 +45,7 @@ class SubjectsController < HtmlController
     if params[:add_skill]
       @subject.assignments.build
       render :new, status: :ok
-    elsif @subject.save
-      success(title: t(:subject_updated), text: t(:subject_updated_text, subject: @subject.subject_name))
+    elsif validate_subject_skills_and_save
       redirect_to @subject
     else
       failure(title: t(:subject_invalid), text: t(:fix_form_errors))
@@ -55,6 +54,15 @@ class SubjectsController < HtmlController
   end
 
   private
+
+  def validate_subject_skills_and_save
+    graded_skill = @subject.graded_skill_name
+
+    return failure(title: t(:unable_to_remove_skill_from_subject, skill_name: graded_skill), text: t(:skill_not_removed_because_grades)) if graded_skill
+    return success(title: t(:subject_updated), text: t(:subject_updated_text, subject: @subject.subject_name)) if @subject.save
+
+    false
+  end
 
   def subject_params
     params.require(:subject).permit :subject_name, :organization_id, assignments_attributes: %i[id skill_id _destroy]

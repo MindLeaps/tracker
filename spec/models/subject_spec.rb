@@ -48,4 +48,44 @@ RSpec.describe Subject, type: :model do
       end
     end
   end
+
+  describe 'methods' do
+    describe 'grades_in_skill?' do
+      before :each do
+        @subject = create :subject
+        @graded_skill = create :skill, subject: @subject
+        @ungraded_skill = create :skill, subject: @subject
+        @lesson = create :lesson, subject: @subject
+        @grade_using_skill = create :grade, lesson: @lesson, skill: @graded_skill
+      end
+
+      it 'returns true for a graded skill' do
+        expect(@subject.grades_in_skill?(@graded_skill.id)).to be true
+      end
+
+      it 'returns false for an ungraded skill' do
+        expect(@subject.grades_in_skill?(@ungraded_skill.id)).to be false
+      end
+    end
+
+    describe 'graded_skill_name' do
+      before :each do
+        @subject = create :subject
+        @some_other_subject = create :subject
+        @graded_skill = create :skill
+        @assignment = create :assignment, subject: @subject, skill: @graded_skill
+        @lesson = create :lesson, subject: @subject
+        @grade_using_skill = create :grade, lesson: @lesson, skill: @graded_skill
+      end
+
+      it 'returns the graded skill name' do
+        @subject.assignments.each(&:mark_for_destruction)
+        expect(@subject.graded_skill_name).to eq @graded_skill.skill_name
+      end
+
+      it 'returns false if no graded skill is found' do
+        expect(@some_other_subject.graded_skill_name).to be false
+      end
+    end
+  end
 end
