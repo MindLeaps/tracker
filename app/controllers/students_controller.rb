@@ -18,6 +18,7 @@ class StudentsController < HtmlController
     authorize @student
     @student_lessons_details_by_subject = apply_scopes(StudentLessonDetail.where(student_id: params[:id])).all.group_by(&:subject_id)
     @subjects = policy_scope(Subject).includes(:skills).where(id: @student_lessons_details_by_subject.keys)
+    @lesson_summaries = StudentLessonSummary.order(lesson_date: :asc).last(30)
   end
 
   def new

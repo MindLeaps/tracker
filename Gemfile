@@ -37,6 +37,7 @@ gem 'tailwindcss-rails'
 gem 'tiddle'
 gem 'turbo-rails'
 gem 'view_component'
+gem 'tzinfo-data'
 
 group :production do
   gem 'newrelic_rpm'

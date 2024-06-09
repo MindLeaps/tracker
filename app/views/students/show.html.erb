@@ -18,6 +18,13 @@ end %>
 
 <div class="overflow-auto">
   <section class="">
+ <div class="w-1/2">
+     <%= render CommonComponents::Card.new(title: t(:student_averages_last_30_classes).capitalize) do |card| %>
+           <% card.with_card_content do %>
+             <div class="ct-chart ct-octave bg-white full-width"></div>
+           <% end %>
+         <% end %>
+  </div>
       <%= render CommonComponents::Card.new(title: t(:student_details)) do |card| %>
         <% card.with_card_content do %>
             <% if @student.profile_image %>
@@ -133,3 +140,11 @@ end %>
     <% end %>
   </section>
 </div>
+
+<%= javascript_tag do %>
+  function onChartsLoad() {
+    var lessonSummariesData = <%= @lesson_summaries.map { |summary| { date: summary.lesson_date} }.to_json.html_safe %>;
+    displayLessonGraph && displayLessonGraph('.ct-chart', '<%= @student.id %>', lessonSummariesData);
+  }
+<% end %>
+<%= javascript_include_tag "charts", onload: 'onChartsLoad()' %>
