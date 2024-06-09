@@ -58,6 +58,7 @@ module Analytics
     def assessments_per_month # rubocop:disable Metrics/MethodLength
       conn = ActiveRecord::Base.connection.raw_connection
       lesson_ids = Lesson.where(group_id: @selected_students.map(&:group_id).uniq).ids
+      lesson_ids_formatted = lesson_ids.map { |str| "'#{str}'" }.join(', ')
 
       res = if lesson_ids.blank?
               []
@@ -68,7 +69,7 @@ module Analytics
                                                 on l.id = g.lesson_id
                                               inner join groups as gr
                                                 on gr.id = l.group_id
-                                            where l.id IN (#{lesson_ids.join(', ')})
+                                            where l.id IN (#{lesson_ids_formatted})
                                             group by month
                                             order by month;").values
             end

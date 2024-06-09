@@ -50,7 +50,6 @@ RSpec.describe Api::GradesController, type: :controller do
         g = Grade.last
         expect(g.grade_descriptor_id).to eq @gd1.id
         expect(g.lesson_id).to eq @lesson.id
-        expect(g.lesson_uid).to eq @lesson.uid
         expect(g.student_id).to eq @student.id
       end
     end
@@ -102,7 +101,7 @@ RSpec.describe Api::GradesController, type: :controller do
 
     context 'successfully creates a new grade' do
       before :each do
-        put :put_v2, format: :json, params: { lesson_id: @lesson.reload.uid, student_id: @student.id, mark: 1, skill_id: @skill.id }
+        put :put_v2, format: :json, params: { lesson_id: @lesson.reload.id, student_id: @student.id, mark: 1, skill_id: @skill.id }
       end
 
       it { should respond_with 201 }

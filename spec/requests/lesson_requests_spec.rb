@@ -46,9 +46,9 @@ RSpec.describe 'Lesson API', type: :request do
 
     describe 'v2' do
       it 'responds with a specific lesson by UUID' do
-        get_v2_with_token lesson_path(id: @lesson.reload.uid), as: :json
+        get_v2_with_token lesson_path(id: @lesson.reload.id), as: :json
 
-        expect(lesson['id']).to eq @lesson.uid
+        expect(lesson['id']).to eq @lesson.id
         expect(lesson['group_id']).to eq @lesson.group_id
         expect(lesson['subject_id']).to eq @lesson.subject_id
         expect(lesson['date']).to eq @lesson.date.to_s
@@ -108,7 +108,7 @@ RSpec.describe 'Lesson API', type: :request do
 
         expect(response).to be_successful
         expect(lessons.length).to eq 3
-        expect(lessons.pluck('id')).to include @lesson1.reload.uid, @lesson2.reload.uid, @lesson3.reload.uid
+        expect(lessons.pluck('id')).to include @lesson1.reload.id, @lesson2.reload.id, @lesson3.reload.id
       end
     end
   end
@@ -158,7 +158,7 @@ RSpec.describe 'Lesson API', type: :request do
         it 'creates a new lesson with the passed UUID' do
           post_v2_with_token lessons_path, as: :json, params: { id: '5e9d2b0e-1dc6-4c04-b70c-9d67c20b083e', group_id: @group.id, subject_id: @subject.id, date: Time.zone.today.to_fs }
           new_lesson = Lesson.last
-          expect(new_lesson.uid).to eq '5e9d2b0e-1dc6-4c04-b70c-9d67c20b083e'
+          expect(new_lesson.id).to eq '5e9d2b0e-1dc6-4c04-b70c-9d67c20b083e'
           expect(new_lesson.subject_id).to eq @subject.id
           expect(new_lesson.group_id).to eq @group.id
           expect(new_lesson.date).to eq Time.zone.today
@@ -171,7 +171,7 @@ RSpec.describe 'Lesson API', type: :request do
           expect(new_lesson.subject_id).to eq @subject.id
           expect(new_lesson.group_id).to eq @group.id
           expect(new_lesson.date).to eq Time.zone.today
-          expect(lesson['id']).to eq new_lesson.uid
+          expect(lesson['id']).to eq new_lesson.id
         end
 
         it 'has a Location header with the resource URL' do
@@ -182,7 +182,7 @@ RSpec.describe 'Lesson API', type: :request do
 
       context 'lesson already exists' do
         before :each do
-          @existing_lesson = create :lesson, uid: '5e9d2b0e-1dc6-4c04-b70c-9d67c20b083e', group_id: @group.id, subject_id: @subject.id, date: Time.zone.today.to_fs
+          @existing_lesson = create :lesson, id: '5e9d2b0e-1dc6-4c04-b70c-9d67c20b083e', group_id: @group.id, subject_id: @subject.id, date: Time.zone.today.to_fs
           post_v2_with_token lessons_path, as: :json, params: { group_id: @group.id, subject_id: @subject.id, date: Time.zone.today.to_fs }
         end
 

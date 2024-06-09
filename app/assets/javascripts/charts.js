@@ -9,7 +9,7 @@ function displayLessonGraph(containerId, lessonUid, data) {
             x: e.timestamp,
             y: e.average_mark,
             meta: {
-              lesson_uid: e.lesson_uid,
+              lesson_id: e.lesson_id,
               lesson_url: e.lesson_url
             }
           };
