@@ -68,7 +68,7 @@ RSpec.describe Subject, type: :model do
       end
     end
 
-    describe 'assignment_validation' do
+    describe 'graded_skill_name' do
       before :each do
         @subject = create :subject
         @some_other_subject = create :subject
@@ -80,11 +80,11 @@ RSpec.describe Subject, type: :model do
 
       it 'returns the graded skill name' do
         @subject.assignments.each(&:mark_for_destruction)
-        expect(@subject.assignment_validation).to eq @graded_skill.skill_name
+        expect(@subject.graded_skill_name).to eq @graded_skill.skill_name
       end
 
       it 'returns false if no graded skill is found' do
-        expect(@some_other_subject.assignment_validation).to be false
+        expect(@some_other_subject.graded_skill_name).to be false
       end
     end
   end
