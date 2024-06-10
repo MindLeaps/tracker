@@ -26,7 +26,6 @@
 class Lesson < ApplicationRecord
   belongs_to :group
   belongs_to :subject
-  has_many :absences, dependent: :restrict_with_error
   has_many :grades, dependent: :restrict_with_error
 
   validates :date, presence: true
@@ -37,21 +36,4 @@ class Lesson < ApplicationRecord
     scope: %i[group subject],
     message: ->(object, _data) { I18n.t :duplicate_lesson, group: object.group.group_name, subject: object.subject.subject_name }
   }
-
-  def mark_student_as_absent(student)
-    return if student_absent?(student)
-
-    Absence.create student:, lesson: self, lesson_old_id: old_id
-  end
-
-  def mark_student_as_present(student)
-    return unless student_absent? student
-
-    absence = absences.detect { |a| a.student_id == student.id }
-    absence.destroy
-  end
-
-  def student_absent?(student)
-    absences.any? { |absence| absence.student_id == student.id }
-  end
 end

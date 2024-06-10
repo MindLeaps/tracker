@@ -64,9 +64,7 @@ module ApplicationHelper
     user.name || user.email
   end
 
-  def lesson_student_average_grade(lesson, student)
-    return t(:student_absent) if lesson.student_absent? student
-
+  def lesson_student_average_grade
     t :student_not_graded
   end
 

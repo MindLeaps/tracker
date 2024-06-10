@@ -2,7 +2,6 @@
 #
 # Table name: student_lesson_details
 #
-#  absent             :boolean
 #  average_mark       :decimal(, )
 #  date               :date
 #  first_name         :string
