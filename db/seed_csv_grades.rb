@@ -90,7 +90,7 @@ class CSVDataSeeder
   def grade_student(student, lesson, grades)
     new_grades = []
     grades.each do |skill_name, mark|
-      return lesson.mark_student_as_absent(student) if mark.nil?
+      next if mark.nil?
 
       skill_id = get_skill_id skill_name
       gd = get_gd skill_id, mark

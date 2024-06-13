@@ -155,37 +155,6 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: absences; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.absences (
-    id integer NOT NULL,
-    student_id integer NOT NULL,
-    lesson_old_id integer NOT NULL,
-    lesson_id uuid NOT NULL
-);
-
-
---
--- Name: absences_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.absences_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: absences_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.absences_id_seq OWNED BY public.absences.id;
-
-
---
 -- Name: ar_internal_metadata; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -828,8 +797,7 @@ SELECT
     NULL::integer AS subject_id,
     NULL::numeric AS average_mark,
     NULL::bigint AS grade_count,
-    NULL::jsonb AS skill_marks,
-    NULL::boolean AS absent;
+    NULL::jsonb AS skill_marks;
 
 
 --
@@ -1066,13 +1034,6 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
--- Name: absences id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.absences ALTER COLUMN id SET DEFAULT nextval('public.absences_id_seq'::regclass);
-
-
---
 -- Name: assignments id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1168,14 +1129,6 @@ ALTER TABLE ONLY public.subjects ALTER COLUMN id SET DEFAULT nextval('public.sub
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
-
-
---
--- Name: absences absences_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.absences
-    ADD CONSTRAINT absences_pkey PRIMARY KEY (id);
 
 
 --
@@ -1352,20 +1305,6 @@ ALTER TABLE ONLY public.chapters
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
-
-
---
--- Name: index_absences_on_lesson_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_absences_on_lesson_id ON public.absences USING btree (lesson_id);
-
-
---
--- Name: index_absences_on_student_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_absences_on_student_id ON public.absences USING btree (student_id);
 
 
 --
@@ -1768,36 +1707,6 @@ CREATE OR REPLACE VIEW public.performance_per_group_per_skill_per_lessons AS
 
 
 --
--- Name: student_lesson_details _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.student_lesson_details AS
- SELECT s.id AS student_id,
-    s.first_name,
-    s.last_name,
-    s.deleted_at AS student_deleted_at,
-    l.id AS lesson_id,
-    l.date,
-    l.deleted_at AS lesson_deleted_at,
-    l.subject_id,
-    round(avg(grades.mark), 2) AS average_mark,
-    count(grades.mark) AS grade_count,
-    COALESCE(jsonb_object_agg(grades.skill_id, jsonb_build_object('mark', grades.mark, 'grade_descriptor_id', grades.grade_descriptor_id, 'skill_name', skills.skill_name)) FILTER (WHERE (skills.skill_name IS NOT NULL)), '{}'::jsonb) AS skill_marks,
-        CASE
-            WHEN (a.id IS NULL) THEN false
-            ELSE true
-        END AS absent
-   FROM (((((public.students s
-     JOIN public.groups g ON ((g.id = s.group_id)))
-     JOIN public.lessons l ON ((g.id = l.group_id)))
-     LEFT JOIN public.grades ON (((grades.student_id = s.id) AND (grades.lesson_id = l.id))))
-     LEFT JOIN public.skills ON ((skills.id = grades.skill_id)))
-     LEFT JOIN public.absences a ON (((a.student_id = s.id) AND (a.lesson_id = l.id))))
-  GROUP BY s.id, l.id, a.id
-  ORDER BY l.subject_id;
-
-
---
 -- Name: lesson_skill_summaries _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
@@ -1867,18 +1776,35 @@ CREATE OR REPLACE VIEW public.student_lesson_summaries AS
 
 
 --
+-- Name: student_lesson_details _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.student_lesson_details AS
+ SELECT s.id AS student_id,
+    s.first_name,
+    s.last_name,
+    s.deleted_at AS student_deleted_at,
+    l.id AS lesson_id,
+    l.date,
+    l.deleted_at AS lesson_deleted_at,
+    l.subject_id,
+    round(avg(grades.mark), 2) AS average_mark,
+    count(grades.mark) AS grade_count,
+    COALESCE(jsonb_object_agg(grades.skill_id, jsonb_build_object('mark', grades.mark, 'grade_descriptor_id', grades.grade_descriptor_id, 'skill_name', skills.skill_name)) FILTER (WHERE (skills.skill_name IS NOT NULL)), '{}'::jsonb) AS skill_marks
+   FROM ((((public.students s
+     JOIN public.groups g ON ((g.id = s.group_id)))
+     JOIN public.lessons l ON ((g.id = l.group_id)))
+     LEFT JOIN public.grades ON (((grades.student_id = s.id) AND (grades.lesson_id = l.id))))
+     LEFT JOIN public.skills ON ((skills.id = grades.skill_id)))
+  GROUP BY s.id, l.id
+  ORDER BY l.subject_id;
+
+
+--
 -- Name: students update_enrollments_on_student_group_change_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
 CREATE TRIGGER update_enrollments_on_student_group_change_trigger AFTER INSERT OR UPDATE ON public.students FOR EACH ROW EXECUTE FUNCTION public.update_enrollments();
-
-
---
--- Name: absences absences_lesson_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.absences
-    ADD CONSTRAINT absences_lesson_id_fk FOREIGN KEY (lesson_id) REFERENCES public.lessons(id);
 
 
 --
@@ -1951,14 +1877,6 @@ ALTER TABLE ONLY public.grades
 
 ALTER TABLE ONLY public.authentication_tokens
     ADD CONSTRAINT fk_rails_ad331ebb27 FOREIGN KEY (user_id) REFERENCES public.users(id);
-
-
---
--- Name: absences fk_rails_dc2c1be879; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.absences
-    ADD CONSTRAINT fk_rails_dc2c1be879 FOREIGN KEY (student_id) REFERENCES public.students(id);
 
 
 --
@@ -2080,6 +1998,7 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240610074002'),
 ('20240531115345'),
 ('20240517085142'),
 ('20240513221506'),

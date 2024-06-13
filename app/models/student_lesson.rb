@@ -18,10 +18,8 @@ class StudentLesson < ApplicationRecord
     Grade.find_by_sql [FORMATTED_GRADES_SQL, { student_id:, lesson_id:, subject_id: subject.id }]
   end
 
-  def perform_grading(skills_descriptors, new_absence)
+  def perform_grading(skills_descriptors)
     Grade.transaction do
-      update_absence new_absence
-
       if skills_descriptors.present?
         new_grades = map_new_grades skills_descriptors
         new_grades.each(&:save!)
@@ -36,23 +34,7 @@ class StudentLesson < ApplicationRecord
     true
   end
 
-  def student_absent?
-    Absence.find_by(student_id:, lesson_id:).present?
-  end
-
   private
-
-  def update_absence(new_absence)
-    Absence.transaction do
-      unless student_absent? == new_absence
-        if new_absence
-          Absence.create(student_id:, lesson:, lesson_old_id: lesson.old_id)
-        else
-          Absence.find_by(student_id:, lesson_id:).destroy!
-        end
-      end
-    end
-  end
 
   def map_new_grades(skills_descriptors)
     formatted_grades_with_deleted.select { |g| should_grade_update?(g, skills_descriptors) }.map do |old_grade|
