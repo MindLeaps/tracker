@@ -419,8 +419,7 @@ SELECT
     NULL::integer AS chapter_id,
     NULL::integer AS subject_id,
     NULL::text AS group_chapter_name,
-    NULL::double precision AS average_mark,
-    NULL::bigint AS grade_count;
+    NULL::double precision AS average_mark;
 
 
 --
@@ -1614,97 +1613,22 @@ CREATE OR REPLACE VIEW public.group_summaries AS
 
 
 --
--- Name: organization_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+-- Name: lesson_skill_summaries _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
-CREATE OR REPLACE VIEW public.organization_summaries AS
- SELECT o.id,
-    o.organization_name,
-    o.mlid AS organization_mlid,
-    (sum(
-        CASE
-            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN 1
-            ELSE 0
-        END))::integer AS chapter_count,
-    (sum(
-        CASE
-            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN c.group_count
-            ELSE 0
-        END))::integer AS group_count,
-    (sum(
-        CASE
-            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN c.student_count
-            ELSE 0
-        END))::integer AS student_count,
-    o.updated_at,
-    o.created_at,
-    o.deleted_at
-   FROM (public.organizations o
-     LEFT JOIN public.chapter_summaries c ON ((c.organization_id = o.id)))
-  GROUP BY o.id;
-
-
---
--- Name: student_tag_table_rows _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.student_tag_table_rows AS
- SELECT t.id,
-    t.tag_name,
-    t.shared,
-    t.organization_id,
-    o.organization_name,
-    count(st.student_id) AS student_count
-   FROM ((public.tags t
-     JOIN public.organizations o ON ((t.organization_id = o.id)))
-     LEFT JOIN public.student_tags st ON ((t.id = st.tag_id)))
-  GROUP BY t.id, t.organization_id, o.organization_name;
-
-
---
--- Name: subject_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.subject_summaries AS
- SELECT su.id,
-    su.subject_name,
-    su.organization_id,
-    sum(
-        CASE
-            WHEN (a.deleted_at IS NOT NULL) THEN 0
-            ELSE 1
-        END) AS skill_count,
-    su.created_at,
-    su.updated_at,
-    su.deleted_at
-   FROM ((public.subjects su
-     LEFT JOIN public.assignments a ON ((su.id = a.subject_id)))
-     LEFT JOIN public.skills sk ON ((sk.id = a.skill_id)))
-  WHERE (sk.deleted_at IS NULL)
-  GROUP BY su.id;
-
-
---
--- Name: group_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.group_lesson_summaries AS
+CREATE OR REPLACE VIEW public.lesson_skill_summaries AS
  SELECT l.id AS lesson_id,
-    l.date AS lesson_date,
-    gr.id AS group_id,
-    gr.chapter_id,
-    s.id AS subject_id,
-    concat(gr.group_name, ' - ', c.chapter_name) AS group_chapter_name,
-    (round(avg(g.mark), 2))::double precision AS average_mark,
-    count(*) AS grade_count
+    sk.id AS skill_id,
+    sk.skill_name,
+    round(avg(g.mark), 2) AS average_mark,
+    count(g.mark) AS grade_count,
+    su.id AS subject_id
    FROM ((((public.lessons l
-     JOIN public.groups gr ON ((l.group_id = gr.id)))
-     JOIN public.grades g ON ((g.lesson_id = l.id)))
-     JOIN public.chapters c ON ((gr.chapter_id = c.id)))
-     JOIN public.subjects s ON ((l.subject_id = s.id)))
-  WHERE (g.deleted_at IS NULL)
-  GROUP BY l.id, gr.id, c.id, s.id
-  ORDER BY l.date;
+     JOIN public.subjects su ON ((su.id = l.subject_id)))
+     JOIN public.assignments a ON (((su.id = a.subject_id) AND (a.deleted_at IS NULL))))
+     JOIN public.skills sk ON ((a.skill_id = sk.id)))
+     LEFT JOIN public.grades g ON (((g.lesson_id = l.id) AND (g.skill_id = sk.id) AND (g.deleted_at IS NULL))))
+  GROUP BY l.id, sk.id, su.id;
 
 
 --
@@ -1741,6 +1665,37 @@ CREATE OR REPLACE VIEW public.lesson_table_rows AS
      LEFT JOIN public.grades g ON (((l.id = g.lesson_id) AND (g.deleted_at IS NULL))))
      JOIN group_student_counts sc ON ((l.group_id = sc.group_id)))
   GROUP BY l.id, su.subject_name, sc.student_count, sc.group_name, sc.chapter_name;
+
+
+--
+-- Name: organization_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.organization_summaries AS
+ SELECT o.id,
+    o.organization_name,
+    o.mlid AS organization_mlid,
+    (sum(
+        CASE
+            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN 1
+            ELSE 0
+        END))::integer AS chapter_count,
+    (sum(
+        CASE
+            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN c.group_count
+            ELSE 0
+        END))::integer AS group_count,
+    (sum(
+        CASE
+            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN c.student_count
+            ELSE 0
+        END))::integer AS student_count,
+    o.updated_at,
+    o.created_at,
+    o.deleted_at
+   FROM (public.organizations o
+     LEFT JOIN public.chapter_summaries c ON ((c.organization_id = o.id)))
+  GROUP BY o.id;
 
 
 --
@@ -1798,22 +1753,43 @@ CREATE OR REPLACE VIEW public.student_lesson_details AS
 
 
 --
--- Name: lesson_skill_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+-- Name: student_tag_table_rows _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
-CREATE OR REPLACE VIEW public.lesson_skill_summaries AS
- SELECT l.id AS lesson_id,
-    sk.id AS skill_id,
-    sk.skill_name,
-    round(avg(g.mark), 2) AS average_mark,
-    count(g.mark) AS grade_count,
-    su.id AS subject_id
-   FROM ((((public.lessons l
-     JOIN public.subjects su ON ((su.id = l.subject_id)))
-     JOIN public.assignments a ON (((su.id = a.subject_id) AND (a.deleted_at IS NULL))))
-     JOIN public.skills sk ON ((a.skill_id = sk.id)))
-     LEFT JOIN public.grades g ON (((g.lesson_id = l.id) AND (g.skill_id = sk.id) AND (g.deleted_at IS NULL))))
-  GROUP BY l.id, sk.id, su.id;
+CREATE OR REPLACE VIEW public.student_tag_table_rows AS
+ SELECT t.id,
+    t.tag_name,
+    t.shared,
+    t.organization_id,
+    o.organization_name,
+    count(st.student_id) AS student_count
+   FROM ((public.tags t
+     JOIN public.organizations o ON ((t.organization_id = o.id)))
+     LEFT JOIN public.student_tags st ON ((t.id = st.tag_id)))
+  GROUP BY t.id, t.organization_id, o.organization_name;
+
+
+--
+-- Name: subject_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.subject_summaries AS
+ SELECT su.id,
+    su.subject_name,
+    su.organization_id,
+    sum(
+        CASE
+            WHEN (a.deleted_at IS NOT NULL) THEN 0
+            ELSE 1
+        END) AS skill_count,
+    su.created_at,
+    su.updated_at,
+    su.deleted_at
+   FROM ((public.subjects su
+     LEFT JOIN public.assignments a ON ((su.id = a.subject_id)))
+     LEFT JOIN public.skills sk ON ((sk.id = a.skill_id)))
+  WHERE (sk.deleted_at IS NULL)
+  GROUP BY su.id;
 
 
 --
@@ -1864,6 +1840,36 @@ CREATE OR REPLACE VIEW public.student_lesson_summaries AS
              JOIN public.students s ON ((grades.student_id = s.id)))
           GROUP BY s.id, l.id) united
      JOIN public.subject_summaries su ON ((united.subject_id = su.id)));
+
+
+--
+-- Name: group_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.group_lesson_summaries AS
+ SELECT lesson_id,
+    lesson_date,
+    group_id,
+    chapter_id,
+    subject_id,
+    group_chapter_name,
+    (round((avg(average_mark))::numeric, 2))::double precision AS average_mark
+   FROM ( SELECT l.id AS lesson_id,
+            l.date AS lesson_date,
+            gr.id AS group_id,
+            gr.chapter_id,
+            s.id AS subject_id,
+            concat(gr.group_name, ' - ', c.chapter_name) AS group_chapter_name,
+            (avg(g.mark))::double precision AS average_mark
+           FROM (((((public.students st
+             JOIN public.groups gr ON ((st.group_id = gr.id)))
+             JOIN public.chapters c ON ((gr.chapter_id = c.id)))
+             JOIN public.lessons l ON ((l.group_id = gr.id)))
+             JOIN public.subjects s ON ((l.subject_id = s.id)))
+             JOIN public.grades g ON (((g.student_id = st.id) AND (g.lesson_id = l.id) AND (g.deleted_at IS NULL))))
+          GROUP BY l.id, gr.id, c.id, s.id, st.id) student_lesson_averages
+  GROUP BY lesson_id, group_id, chapter_id, subject_id, lesson_date, group_chapter_name
+  ORDER BY lesson_date;
 
 
 --
@@ -2080,6 +2086,7 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240614142029'),
 ('20240531115345'),
 ('20240517085142'),
 ('20240513221506'),
