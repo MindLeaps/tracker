@@ -143,8 +143,7 @@ end %>
 
 <%= javascript_tag do %>
   function onChartsLoad() {
-    var lessonSummariesData = <%= @lesson_summaries.map { |summary| { date: summary.lesson_date} }.to_json.html_safe %>;
-    displayLessonGraph && displayLessonGraph('.ct-chart', '<%= @student.id %>', lessonSummariesData);
+    displayStudentLessons && displayStudentLessons('.ct-chart', '<%= @student.id %>', <%= @lesson_summaries.to_json.html_safe %>);
   }
 <% end %>
 <%= javascript_include_tag "charts", onload: 'onChartsLoad()' %>
