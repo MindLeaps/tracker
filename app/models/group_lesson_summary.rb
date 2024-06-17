@@ -3,6 +3,7 @@
 # Table name: group_lesson_summaries
 #
 #  average_mark       :float
+#  grade_count        :bigint
 #  group_chapter_name :text
 #  lesson_date        :date
 #  chapter_id         :integer
