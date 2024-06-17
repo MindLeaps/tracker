@@ -21,8 +21,10 @@ RSpec.describe 'User interacts with lessons' do
 
     it 'lists all existing lessons' do
       sub = create :subject, subject_name: 'Feature Testing II'
-      create :lesson, subject: sub
-      create :lesson, subject: sub
+      group = create :group
+      create(:student, group:)
+      create(:lesson, subject: sub, group:)
+      create(:lesson, subject: sub, group:)
 
       visit '/'
       click_link 'Lessons'
