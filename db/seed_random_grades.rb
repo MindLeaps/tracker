@@ -16,13 +16,7 @@ def seed_group_random_grades(group, subject)
 end
 
 def seed_student_performance(student, lesson)
-  return mark_absent(student, lesson) if rand < 0.1
-
   seed_student_grades student, lesson
-end
-
-def mark_absent(student, lesson)
-  lesson.mark_student_as_absent student
 end
 
 def seed_student_grades(student, lesson)

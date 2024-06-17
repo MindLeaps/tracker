@@ -47,7 +47,6 @@ RSpec.describe Student, type: :model do
   describe 'relationships' do
     it { should belong_to :group }
     it { should have_many :grades }
-    it { should have_many :absences }
     it { should have_many :enrollments }
     it { should have_many :student_images }
     it { should accept_nested_attributes_for :student_images }

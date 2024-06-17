@@ -5,7 +5,6 @@ class StudentLessonsController < HtmlController
     lesson = Lesson.find params[:lesson_id]
     authorize lesson, :show?
     @student_lesson = StudentLesson.new(student_id: params.require(:id), lesson:)
-    @absent = lesson.absences.map(&:student_id).include? @student_lesson.student_id
     respond_to(&:turbo_stream)
   end
 
@@ -15,18 +14,13 @@ class StudentLessonsController < HtmlController
 
     student_lesson = StudentLesson.new(student_id: params.require(:id), lesson:)
     formatted_grade_attributes = format_attributes
-    student_lesson.perform_grading(formatted_grade_attributes, student_absent?)
+    student_lesson.perform_grading(formatted_grade_attributes)
 
     success(title: t(:student_graded), text: t(:student_graded_text, student: student_lesson.student.proper_name))
     redirect_to lesson_path(lesson)
   end
 
   private
-
-  def student_absent?
-    absence_param = params.require(:student_lesson).permit(:absence)[:absence]
-    ActiveRecord::Type::Boolean.new.cast(absence_param) || false
-  end
 
   def grades_attributes
     params.require(:student_lesson).permit(grades_attributes: %i[skill_id grade_descriptor_id])[:grades_attributes]&.values

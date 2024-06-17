@@ -64,27 +64,6 @@ RSpec.describe StudentLesson, type: :model do
     end
   end
 
-  describe '#student_absent?' do
-    before :each do
-      @subject = create :subject_with_mindleaps_skills
-      group = create :group
-      @student = create(:student, group:)
-      @lesson = create :lesson, group:, subject: @subject
-
-      @student_lesson = StudentLesson.find_by student: @student, lesson: @lesson
-    end
-
-    it 'returns true if the student has an non-delete absence entry' do
-      create :absence, student: @student, lesson: @lesson
-
-      expect(@student_lesson.student_absent?).to eq true
-    end
-
-    it 'returns false if the student does not have an absence entry for the lesson' do
-      expect(@student_lesson.student_absent?).to eq false
-    end
-  end
-
   describe '#perform_grading' do
     before :each do
       @subject = create :subject_with_mindleaps_skills
@@ -96,44 +75,19 @@ RSpec.describe StudentLesson, type: :model do
     end
 
     describe 'student has no prior grades' do
-      context 'student has no absence entry' do
-        it 'grades the student in multiple skills' do
-          @student_lesson.perform_grading({
-                                            @subject.skills[0].id => @subject.skills[0].grade_descriptors[0].id,
-                                            @subject.skills[1].id => @subject.skills[1].grade_descriptors[5].id,
-                                            @subject.skills[2].id => @subject.skills[2].grade_descriptors[3].id
-                                          }, false)
+      it 'grades the student in multiple skills' do
+        @student_lesson.perform_grading({
+                                          @subject.skills[0].id => @subject.skills[0].grade_descriptors[0].id,
+                                          @subject.skills[1].id => @subject.skills[1].grade_descriptors[5].id,
+                                          @subject.skills[2].id => @subject.skills[2].grade_descriptors[3].id
+                                        })
 
-          expect(@student.reload.grades.length).to eq 3
-          expect(@student.grades.map(&:grade_descriptor_id)).to include(
-            @subject.skills[0].grade_descriptors[0].id,
-            @subject.skills[1].grade_descriptors[5].id,
-            @subject.skills[2].grade_descriptors[3].id
-          )
-        end
-      end
-
-      context 'student has an absence entry' do
-        before :each do
-          create :absence, student: @student, lesson: @lesson
-        end
-
-        it 'grades the student in multiple skills and removes the absence entry' do
-          @student_lesson.perform_grading({
-                                            @subject.skills[0].id => @subject.skills[0].grade_descriptors[0].id,
-                                            @subject.skills[1].id => @subject.skills[1].grade_descriptors[5].id,
-                                            @subject.skills[2].id => @subject.skills[2].grade_descriptors[3].id
-                                          }, false)
-
-          expect(@student.reload.grades.length).to eq 3
-          expect(@student.grades.map(&:grade_descriptor_id)).to include(
-            @subject.skills[0].grade_descriptors[0].id,
-            @subject.skills[1].grade_descriptors[5].id,
-            @subject.skills[2].grade_descriptors[3].id
-          )
-
-          expect(@student_lesson.student_absent?).to eq false
-        end
+        expect(@student.reload.grades.length).to eq 3
+        expect(@student.grades.map(&:grade_descriptor_id)).to include(
+          @subject.skills[0].grade_descriptors[0].id,
+          @subject.skills[1].grade_descriptors[5].id,
+          @subject.skills[2].grade_descriptors[3].id
+        )
       end
     end
 
@@ -146,7 +100,7 @@ RSpec.describe StudentLesson, type: :model do
       it 'grades the student in already graded skill, changing existing grade' do
         @student_lesson.perform_grading({
                                           @subject.skills[0].id => @subject.skills[0].grade_descriptors[4].id
-                                        }, false)
+                                        })
 
         expect(@student.grades.map(&:grade_descriptor_id)).to include(@subject.skills[0].grade_descriptors[4].id)
         expect(@student.grades.map(&:grade_descriptor_id)).not_to include(@subject.skills[0].grade_descriptors[2].id)
@@ -156,16 +110,10 @@ RSpec.describe StudentLesson, type: :model do
         @student_lesson.perform_grading({
                                           @subject.skills[0].id => @subject.skills[0].grade_descriptors[3].id,
                                           @subject.skills[1].id => @subject.skills[1].grade_descriptors[4].id
-                                        }, false)
+                                        })
 
         expect(@student.grades.map(&:grade_descriptor_id)).to include(@subject.skills[1].grade_descriptors[4].id)
         expect(@student.grades.map(&:deleted_at)).to contain_exactly nil, nil
-      end
-
-      it 'marks the student as absent' do
-        @student_lesson.perform_grading({}, true)
-
-        expect(@student_lesson.student_absent?).to eq true
       end
     end
   end

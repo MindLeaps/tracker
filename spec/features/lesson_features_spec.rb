@@ -91,18 +91,6 @@ RSpec.describe 'User interacts with lessons' do
         expect(page).to have_content '2 / 2'
         expect(page).to have_content '1.5'
       end
-
-      xit 'marks a student as being absent from a lesson', js: true do
-        visit "/lessons/#{@lesson.id}"
-        find('div.table-cell', text: 'Graden', match: :first).click
-
-        expect(page).to have_unchecked_field 'Absent'
-        check 'Absent'
-
-        click_button 'Save Student Grades'
-        expect(page).to have_content 'Student graded.'
-        expect(page).to have_content 'Absent'
-      end
     end
   end
 end

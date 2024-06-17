@@ -175,7 +175,6 @@ en:
   student_grades: Student Grades
   student_graded: Student graded.
   student_graded_text: Student %{student} graded.
-  student_absent: Absent
   student_not_graded: Not Graded
   add_grade: Add Grade
   graded_vs_students_in_group: Graded / Students in Group
