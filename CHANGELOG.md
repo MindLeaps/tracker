@@ -1,4 +1,5 @@
 ## Unreleased
+- Changed Group lesson summaries to show average of students' averages
 - Blocked users from removing a graded skill from a subject
 - Removed absence from student lesson summaries and added lesson date
 - Restructured Lessons to go by their UUID
