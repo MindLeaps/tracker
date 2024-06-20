@@ -24,5 +24,12 @@ RSpec.describe Tag, type: :model do
 
   describe 'validations' do
     it { should validate_presence_of :tag_name }
+    it 'when the same tag is created for an organization' do
+      @org = create :organization
+      create :tag, tag_name: 'Existing Tag', organization: @org
+      new_tag = Tag.new tag_name: 'Existing Tag', organization_id: @org
+
+      expect(new_tag).to_not be_valid
+    end
   end
 end

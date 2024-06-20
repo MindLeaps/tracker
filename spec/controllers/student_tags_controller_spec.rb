@@ -86,12 +86,27 @@ RSpec.describe StudentTagsController, type: :controller do
       end
 
       it { should redirect_to student_tags_path }
-
       it 'creates a new tag' do
         tag = Tag.last
         expect(tag.tag_name).to eq 'My Test Tag'
         expect(tag.organization_id).to eq @org.id
         expect(tag.shared).to eq true
+      end
+
+      context 'with existing tag' do
+        before :each do
+          @org = create :organization
+          @existing_tag = create :tag, organization: @org, tag_name: 'Existing Tag'
+
+          post :create, params: { tag: {
+            tag_name: 'Existing Tag',
+            organization_id: @org.id,
+            shared: false
+          } }
+        end
+
+        it { should render_template :new }
+        it { should set_flash[:failure_notice] }
       end
     end
   end

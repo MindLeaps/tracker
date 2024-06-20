@@ -19,4 +19,10 @@ class Tag < ApplicationRecord
   belongs_to :organization
 
   validates :tag_name, presence: true
+  validates :tag_name, uniqueness: {
+    scope: :organization_id,
+    message: lambda do |tag, data|
+      "Tag \"#{data[:value]}\" already exists in #{Organization.find(tag.organization_id).organization_name} organization"
+    end
+  }
 end
