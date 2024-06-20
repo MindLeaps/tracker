@@ -78,13 +78,16 @@
             allowDecimals: false,
             title: {
                 text: '<%= t(:nr_of_lessons) %>'
-            }
+            },
+            min: 1
         },
         yAxis: {
             allowDecimals: false,
             title: {
                 text: '<%= t(:performance) %>'
-            }
+            },
+            max: 7,
+            endOnTick: false
         },
         legend: {
             enabled: false
