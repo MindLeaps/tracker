@@ -107,7 +107,7 @@ end %>
                 </div>
                 <div class="bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                   <dt class="text-sm font-medium text-gray-500"><%= t(:tags) %></dt>
-                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><% @student.tags.each do |tag|%><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-80"><%= tag.tag_name %></span><% end %></dd>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><% @student.tags.each do |tag|%><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-80 mx-1"><%= tag.tag_name %></span><% end %></dd>
                 </div>
                 <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                   <dt class="text-sm font-medium text-gray-500"><%= t(:notes) %></dt>
