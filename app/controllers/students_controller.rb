@@ -21,7 +21,7 @@ class StudentsController < HtmlController
     @lesson_summaries = StudentLessonSummary.where(student_id: @student.id).where.not(average_mark: nil).order(lesson_date: :asc).last(30).map do |summary|
       {
         lesson_date: summary.lesson_date,
-        average_mark: summary.average_mark,
+        average_mark: summary.average_mark
       }
     end
   end
