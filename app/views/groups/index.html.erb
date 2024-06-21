@@ -7,7 +7,15 @@
 ].compact) %>
 
 <div id="new_group"></div>
-
+<section class="">
+   <div class="w-1/2">
+       <%= render CommonComponents::Card.new(title: t(:student_averages_last_30_classes).capitalize) do |card| %>
+             <% card.with_card_content do %>
+               <div class="ct-chart ct-octave bg-white full-width"></div>
+             <% end %>
+           <% end %>
+    </div>
+</section>
 <%= render TableComponents::Table.new(pagy: @pagy, rows: @groups, row_component: TableComponents::GroupRow) do |t|
   t.with_left do %>
     <div class="flex items-center justify-between">
@@ -21,3 +29,9 @@
   <% end
      end
   %>
+<%= javascript_tag do %>
+  function onChartsLoad() {
+    displayAveragesGraph && displayAveragesGraph('.ct-chart', '', <%= @group_summaries.to_json.html_safe %>);
+  }
+<% end %>
+<%= javascript_include_tag "charts", onload: 'onChartsLoad()' %>

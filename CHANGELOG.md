@@ -7,6 +7,7 @@
 - Upgraded Rails to 7.1
 - Enabled YJIT
 - Added analytics for last 30 day grade average for students.
+- Added analytics for last 30 day grade average for groups.
 
 ## 0.32.0 - Deletions & Nonbinary
 
