@@ -51,7 +51,7 @@ function displayLessonGraph(containerId, lessonUid, data) {
 
 }
 
-function displayStudentLessons(containerId, studentId, data) {
+function displayAveragesGraph(containerId, studentId, data) {
   new Chartist.Line(containerId, {
     series: [
       {
