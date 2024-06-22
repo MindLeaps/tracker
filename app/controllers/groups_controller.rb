@@ -9,10 +9,10 @@ class GroupsController < HtmlController
     @group = Group.new
     @pagy, @groups = pagy policy_scope(apply_scopes(GroupSummary.includes(chapter: [:organization])), policy_scope_class: GroupPolicy::Scope)
     @group_summaries = GroupLessonSummary.order(lesson_date: :asc).last(30).map do |summary|
-    {
-      lesson_date: summary.lesson_date,
-      average_mark: summary.average_mark
-    }
+      {
+        lesson_date: summary.lesson_date,
+        average_mark: summary.average_mark
+      }
     end
   end
 
