@@ -26,12 +26,12 @@ module Analytics
         acc.tap do |a|
           if a.key?(skill_name)
             if a[skill_name].key?(student_name)
-              a[skill_name][student_name].push(x: e[0], y: e[1], lesson_url: lesson_path(e[2]), date: e[3])
+              a[skill_name][student_name].push(x: e[0] + 1, y: e[1], lesson_url: lesson_path(e[2]), date: e[3])
             else
-              a[skill_name][student_name] = [{ x: e[0], y: e[1], lesson_url: lesson_path(e[2]), date: e[3] }]
+              a[skill_name][student_name] = [{ x: e[0] + 1, y: e[1], lesson_url: lesson_path(e[2]), date: e[3] }]
             end
           else
-            a[skill_name] = { student_name => [{ x: e[0], y: e[1], lesson_url: lesson_path(e[2]), date: e[3] }] }
+            a[skill_name] = { student_name => [{ x: e[0] + 1, y: e[1], lesson_url: lesson_path(e[2]), date: e[3] }] }
           end
         end
       end
@@ -57,12 +57,12 @@ module Analytics
         acc.tap do |a|
           if a.key?(e.skill_name)
             if a[e.skill_name].key?(e.group_chapter_name)
-              a[e.skill_name][e.group_chapter_name].push(x: a[e.skill_name][e.group_chapter_name].length, y: e.mark, lesson_url: lesson_path(e.lesson_id), date: e.date)
+              a[e.skill_name][e.group_chapter_name].push(x: a[e.skill_name][e.group_chapter_name].length + 1, y: e.mark, lesson_url: lesson_path(e.lesson_id), date: e.date)
             else
-              a[e.skill_name][e.group_chapter_name] = [{ x: 0, y: e.mark, lesson_url: lesson_path(e.lesson_id), date: e.date }]
+              a[e.skill_name][e.group_chapter_name] = [{ x: 1, y: e.mark, lesson_url: lesson_path(e.lesson_id), date: e.date }]
             end
           else
-            a[e.skill_name] = { e.group_chapter_name => [{ x: 0, y: e.mark, lesson_url: lesson_path(e.lesson_id), date: e.date }] }
+            a[e.skill_name] = { e.group_chapter_name => [{ x: 1, y: e.mark, lesson_url: lesson_path(e.lesson_id), date: e.date }] }
           end
         end
       end

@@ -50,15 +50,6 @@
   function startAnalytics() {
     let datasets = <%= @subject_series.to_json.html_safe %>;
 
-    // Increment 'No. of Lessons' to start from 1
-    datasets.forEach((set) => {
-        set.series.forEach((series) => {
-            series.data.forEach((dataPoint) => {
-                dataPoint.x += 1
-            })
-        })
-    })
-
     datasets.forEach(function(dataset) {
       new Highcharts.Chart({
         chart: {
