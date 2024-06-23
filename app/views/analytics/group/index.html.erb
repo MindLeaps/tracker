@@ -36,7 +36,7 @@
 
 <script>
   function startAnalytics() {
-    var datasets = <%= @group_series.to_json.html_safe %>;
+    let datasets = <%= @group_series.to_json.html_safe %>;
 
     datasets.forEach(function(dataset) {
       new Highcharts.Chart({
