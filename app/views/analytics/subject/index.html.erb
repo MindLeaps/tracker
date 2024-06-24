@@ -48,7 +48,7 @@
 
 <script>
   function startAnalytics() {
-    var datasets = <%= @subject_series.to_json.html_safe %>;
+    let datasets = <%= @subject_series.to_json.html_safe %>;
 
     datasets.forEach(function(dataset) {
       new Highcharts.Chart({
@@ -93,13 +93,16 @@
           allowDecimals: false,
           title: {
             text: '<%= t(:nr_of_lessons) %>'
-          }
+          },
+          min: 1
         },
         yAxis: {
           allowDecimals: false,
           title: {
             text: '<%= t(:performance) %>'
-          }
+          },
+          max: 7,
+          endOnTick: false
         },
         plotOptions: {
           series: {

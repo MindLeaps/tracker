@@ -125,7 +125,9 @@
           xAxis: {
               title: {
                   text: '<%= t(:performance) %>'
-              }
+              },
+              max: 7,
+              endOnTick: false
           },
           yAxis: {
               title: {
@@ -261,12 +263,15 @@
               allowDecimals: false,
               title: {
                   text: '<%= t(:nr_of_lessons) %>'
-              }
+              },
+              min: 1
           },
           yAxis: {
               title: {
                   text: '<%= t(:performance) %>'
-              }
+              },
+              max: 7,
+              endOnTick: false
           },
           plotOptions: {
             series: {
