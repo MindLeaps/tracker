@@ -10,6 +10,9 @@
     <%= yield :head_content %>
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
     <%= csrf_meta_tags %>
+    <% if staging_site? %>
+      <meta name="robots" content="noindex, nofollow">
+    <% end %>
   </head>
   <body class="h-full bg-gray-200">
     <div class="h-full flex">
