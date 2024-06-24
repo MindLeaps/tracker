@@ -6,6 +6,7 @@
 - Disabled decimals for 'No of Assessments' & 'No. of Lessons' in analytics
 - Upgraded Rails to 7.1
 - Enabled YJIT
+- Added analytics for last 30 day grade average for students.
 
 ## 0.32.0 - Deletions & Nonbinary
 
