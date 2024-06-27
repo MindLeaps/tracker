@@ -96,7 +96,8 @@ module Analytics
     def format_point_data(data)
       data.map do |e|
         {
-          x: e[0],
+          # Increment 'No. of Lessons' to start from 1
+          x: e[0] + 1,
           y: e[1],
           lesson_url: lesson_path(e[2]),
           date: e[3]
