@@ -8,12 +8,6 @@ class GroupsController < HtmlController
     authorize Group
     @group = Group.new
     @pagy, @groups = pagy policy_scope(apply_scopes(GroupSummary.includes(chapter: [:organization])), policy_scope_class: GroupPolicy::Scope)
-    @group_summaries = GroupLessonSummary.order(lesson_date: :asc).last(30).map do |summary|
-      {
-        lesson_date: summary.lesson_date,
-        average_mark: summary.average_mark
-      }
-    end
   end
 
   def show
@@ -21,6 +15,12 @@ class GroupsController < HtmlController
     authorize @group
     @pagy, @student_rows = pagy apply_scopes(StudentTableRow.where(group_id: @group.id).includes(:tags, :group))
     @student_table_component = TableComponents::Table.new(pagy: @pagy, rows: @student_rows, row_component: TableComponents::StudentRow)
+    @group_summaries = GroupLessonSummary.where(group_id: @group.id).where.not(average_mark: nil).order(lesson_date: :asc).last(30).map do |summary|
+    {
+      lesson_date: summary.lesson_date,
+      average_mark: summary.average_mark
+    }
+   end
   end
 
   def new
