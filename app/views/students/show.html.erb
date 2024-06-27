@@ -143,7 +143,7 @@ end %>
 
 <%= javascript_tag do %>
   function onChartsLoad() {
-    displayStudentLessons && displayStudentLessons('.ct-chart', '<%= @student.id %>', <%= @lesson_summaries.to_json.html_safe %>);
+    displayAveragesGraph && displayAveragesGraph('.ct-chart', '', <%= @lesson_summaries.to_json.html_safe %>);
   }
 <% end %>
 <%= javascript_include_tag "charts", onload: 'onChartsLoad()' %>
