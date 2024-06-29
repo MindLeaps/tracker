@@ -1,4 +1,5 @@
 ## Unreleased
+- Changed Group lesson summaries to show average of students' averages
 - Added validation for existing tags in an organization
 - Blocked users from removing a graded skill from a subject
 - Removed absence from student lesson summaries and added lesson date

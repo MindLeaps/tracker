@@ -10,8 +10,10 @@ RSpec.describe LessonsController, type: :controller do
 
     describe '#index' do
       before :each do
-        @lesson1 = create :lesson
-        @lesson2 = create :lesson
+        @group = create :group
+        @active_student1 = create :student, group: @group
+        @lesson1 = create :lesson, group: @group
+        @lesson2 = create :lesson, group: @group
 
         get :index
       end

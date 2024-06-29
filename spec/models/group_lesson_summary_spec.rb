@@ -34,7 +34,7 @@ RSpec.describe GroupLessonSummary, type: :model do
       }
     end
 
-    it 'returns group lesson summaries with correct marks and grade count' do
+    it 'returns group lesson summaries with average marks and grade count' do
       result = GroupLessonSummary.all
       expect(result.size).to eq 3
 
@@ -106,6 +106,41 @@ RSpec.describe GroupLessonSummary, type: :model do
       expect(result[4].average_mark).to eq 3
       expect(result[5].average_mark).to eq 4
       expect(result[6].average_mark).to eq 5
+    end
+  end
+
+  describe 'calculations' do
+    before :each do
+      subject = create :subject
+      @group = create :group
+      @lesson = create(:lesson, group: @group, subject:)
+      @first_student = create :student, group: @group
+      @second_student = create :student, group: @group
+      @deleted_student = create :student, group: @group, deleted_at: Time.zone.now
+
+      @first_skill = create(:skill_in_subject, subject:)
+      @second_skill = create(:skill_in_subject, subject:)
+      @removed_skill = create(:skill_removed_from_subject, subject:)
+
+      @first_grade = create :grade, student: @first_student, lesson: @lesson, skill: @first_skill, mark: 1
+      @second_grade = create :grade, student: @first_student, lesson: @lesson, skill: @second_skill, mark: 5
+      @third_grade = create :grade, student: @second_student, lesson: @lesson, skill: @second_skill, mark: 1
+      @grade_for_deleted_student = create :grade, student: @deleted_student, lesson: @lesson, skill: @first_skill, mark: 5
+      @deleted_grade = create :grade, student: @first_student, lesson: @lesson, skill: @removed_skill, mark: 1, deleted_at: Time.zone.now
+    end
+
+    it 'returns a correct average mark' do
+      summary = GroupLessonSummary.find_by!(lesson_id: @lesson.id)
+      first_student_average = (@first_grade.mark + @second_grade.mark) / 2
+      second_student_average = @third_grade.mark
+
+      expect(summary.average_mark).to eq((first_student_average + second_student_average) / 2)
+    end
+
+    it 'returns the count of active and undeleted grades' do
+      summary = GroupLessonSummary.find_by!(lesson_id: @lesson.id)
+
+      expect(summary.grade_count).to eq 3
     end
   end
 end
