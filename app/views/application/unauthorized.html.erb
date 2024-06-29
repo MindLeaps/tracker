@@ -7,7 +7,7 @@
   <%= csrf_meta_tags %>
   <% if staging_site? %>
     <meta name="robots" content="noindex, nofollow">
-    <link rel="canonical" href="https://mindleapstracker.org/<%= request.path %>" />
+    <link rel="canonical" href="https://mindleapstracker.org<%= request.path %>" />
   <% end %>
 </head>
 <body>
