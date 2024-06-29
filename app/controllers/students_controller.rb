@@ -18,6 +18,12 @@ class StudentsController < HtmlController
     authorize @student
     @student_lessons_details_by_subject = apply_scopes(StudentLessonDetail.where(student_id: params[:id])).all.group_by(&:subject_id)
     @subjects = policy_scope(Subject).includes(:skills).where(id: @student_lessons_details_by_subject.keys)
+    @lesson_summaries = StudentLessonSummary.where(student_id: @student.id).where.not(average_mark: nil).order(lesson_date: :asc).last(30).map do |summary|
+      {
+        lesson_date: summary.lesson_date,
+        average_mark: summary.average_mark
+      }
+    end
   end
 
   def new

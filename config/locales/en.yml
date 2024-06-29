@@ -80,7 +80,7 @@ en:
   organization_restored_text: Organization "%{organization}" restored.
   delete_organization: Delete Organization
   restore_organization: Restore Deleted Organization
-
+  student_averages_last_30_classes: Student Averages in the last 30 classes
   users: Users
   user_information: User Information
   new_user: New User
