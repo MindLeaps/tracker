@@ -1,4 +1,4 @@
-## Unreleased
+## 0.33.0 - Lesson UUIDs & Graphs
 - Added validation for existing tags in an organization
 - Blocked users from removing a graded skill from a subject
 - Removed absence from student lesson summaries and added lesson date
@@ -8,7 +8,7 @@
 - Enabled YJIT
 - Added analytics for last 30 day grade average for students.
 - Added analytics for last 30 day grade average for groups.
-- Added canoninal and noindex tags to stop search engines from indexing staging site
+- Added canonical and noindex tags to stop search engines from indexing staging site
 
 ## 0.32.0 - Deletions & Nonbinary
 
