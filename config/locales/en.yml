@@ -57,6 +57,7 @@ en:
   chapter_organization: Chapter - Organization
   group_chapter: Group - Chapter
   group_history: Group History
+  students_in_group: Students currently enrolled in this group
   new_chapter: New Chapter
   chapters: Chapters
   edit_chapter: Edit Chapter
@@ -80,7 +81,7 @@ en:
   organization_restored_text: Organization "%{organization}" restored.
   delete_organization: Delete Organization
   restore_organization: Restore Deleted Organization
-  student_averages_last_30_classes: Student Averages in the last 30 classes
+  average_performance_for_last_30_lessons: Average performance for last 30 lessons
   users: Users
   user_information: User Information
   new_user: New User
