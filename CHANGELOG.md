@@ -1,3 +1,6 @@
+## Unreleased
+- Added Count of Graded/absent/total students and total lesson average mark in lesson view
+
 ## 0.33.0 - Lesson UUIDs & Graphs
 - Added validation for existing tags in an organization
 - Blocked users from removing a graded skill from a subject
