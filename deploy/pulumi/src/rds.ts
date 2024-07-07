@@ -96,6 +96,7 @@ export function createTrackerDatabase(subnetGroup: SubnetGroup, securityGroup: S
         allocatedStorage: 20,
         allowMajorVersionUpgrade: true,
         autoMinorVersionUpgrade: true,
+        caCertIdentifier: "rds-ca-rsa4096-g1",
         maintenanceWindow: 'Sun:01:00-Sun:04:00',
         backupRetentionPeriod: 35,
         monitoringInterval: 60,

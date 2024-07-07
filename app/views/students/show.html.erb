@@ -19,7 +19,7 @@ end %>
 <div class="overflow-auto">
   <section class="">
    <div class="w-1/2">
-       <%= render CommonComponents::Card.new(title: t(:student_averages_last_30_classes).capitalize) do |card| %>
+       <%= render CommonComponents::Card.new(title: t(:average_performance_for_last_30_lessons).capitalize) do |card| %>
              <% card.with_card_content do %>
                <div class="ct-chart ct-octave bg-white full-width"></div>
              <% end %>
@@ -143,7 +143,7 @@ end %>
 
 <%= javascript_tag do %>
   function onChartsLoad() {
-    displayStudentLessons && displayStudentLessons('.ct-chart', '<%= @student.id %>', <%= @lesson_summaries.to_json.html_safe %>);
+    displayAveragesGraph && displayAveragesGraph('.ct-chart', '', <%= @lesson_summaries.to_json.html_safe %>);
   }
 <% end %>
 <%= javascript_include_tag "charts", onload: 'onChartsLoad()' %>
