@@ -12,7 +12,6 @@
     ])
   end
 end %>
-
 <div class="overflow-auto">
   <div class="flex">
     <section class="flex-1 pr-2">
@@ -28,6 +27,26 @@ end %>
       <% end %>
     </section>
     <section class="flex-1 pr-2">
+     <div>
+        <dl class="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+          <dt class="truncate text-sm font-medium text-gray-500"><%= t(:total_nr_of_students) %>:</dt>
+          <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900"><%= @total_students %></dd>
+        </div>
+        <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+          <dt class="truncate text-sm font-medium text-gray-500"><%= t(:nr_of_graded_students) %>:</dt>
+          <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900"><%= @total_attending_students %></dd>
+        </div>
+        <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+          <dt class="truncate text-sm font-medium text-gray-500"><%= t(:nr_of_absent_students) %>:</dt>
+          <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900"><%= @total_students - @total_attending_students %></dd>
+        </div>
+        <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+          <dt class="truncate text-sm font-medium text-gray-500"><%= t(:average_mark_across_students) %>:</dt>
+          <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900"><%= @sum_of_average_marks / @total_attending_students %></dd>
+        </div>
+      </dl>
+    </div>
       <%= render CommonComponents::Card.new(title: t(:students).capitalize) do |card| %>
         <% card.with_card_content do %>
           <%= render TableComponents::Table.new(pagy: @pagy, rows: @student_lesson_summaries, row_component: TableComponents::StudentLessonRow, order_scope_name: :table_order_lesson_students) do |t|
