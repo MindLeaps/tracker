@@ -75,7 +75,7 @@ class LessonsController < HtmlController
   end
 
   def calculate_student_summaries(lesson_id)
-    student_summaries = StudentLessonSummary.where(lesson_id: lesson_id)
+    student_summaries = StudentLessonSummary.where(lesson_id:)
     @total_students = student_summaries.count
     @total_attending_students = student_summaries.where.not(average_mark: nil).count
     @sum_of_average_marks = student_summaries.where.not(average_mark: nil).sum(:average_mark)
