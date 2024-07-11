@@ -72,5 +72,4 @@ class LessonsController < HtmlController
     i = data.find_index { |e| e.lesson_id == lesson.id }
     i.present? && i + 1 < data.size ? lesson_url(data[i + 1].lesson_id, request.query_parameters) : nil
   end
-
 end
