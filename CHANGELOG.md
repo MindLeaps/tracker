@@ -1,3 +1,6 @@
+## Unreleased
+- Changed Group lesson summaries to show average of students' averages
+
 ## 0.33.0 - Lesson UUIDs & Graphs
 - Added validation for existing tags in an organization
 - Blocked users from removing a graded skill from a subject
