@@ -16,7 +16,6 @@ class LessonsController < HtmlController
     @pagy, @student_lesson_summaries = pagy apply_scopes(StudentLessonSummary.where(lesson_id: @lesson.id), student_lesson_order_scope)
     @lesson_skill_summary = apply_scopes(LessonSkillSummary.where(lesson_id: @lesson.id), lesson_skill_order_scope)
     @group_lessons_data = process_group_lesson_data(GroupLessonSummary.around(@lesson, 31) || [], @lesson)
-    calculate_student_summaries(@lesson.id)
   end
 
   def new
@@ -74,10 +73,4 @@ class LessonsController < HtmlController
     i.present? && i + 1 < data.size ? lesson_url(data[i + 1].lesson_id, request.query_parameters) : nil
   end
 
-  def calculate_student_summaries(lesson_id)
-    student_summaries = StudentLessonSummary.where(lesson_id:)
-    @total_students = student_summaries.count
-    @total_attending_students = student_summaries.where.not(average_mark: nil).count
-    @sum_of_average_marks = student_summaries.where.not(average_mark: nil).sum(:average_mark)
-  end
 end
