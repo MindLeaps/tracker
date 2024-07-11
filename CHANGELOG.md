@@ -1,4 +1,5 @@
 ## Unreleased
+- Added Count of Graded/absent/total students and total lesson average mark in lesson view
 - Changed Group lesson summaries to show average of students' averages
 
 ## 0.33.0 - Lesson UUIDs & Graphs
