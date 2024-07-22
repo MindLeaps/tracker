@@ -72,11 +72,22 @@ CREATE FUNCTION public.update_enrollments() RETURNS trigger
 declare
   current_enrollment_group_id int := null;
 BEGIN
-  SELECT group_id into current_enrollment_group_id FROM enrollments e where e.student_id = new.id;
-  if current_enrollment_group_id is null or current_enrollment_group_id != new.group_id then
-    update enrollments set inactive_since = now() where inactive_since is null;
-    insert into enrollments (student_id, group_id, active_since, inactive_since, created_at, updated_at)
-    values (new.id, new.group_id, now(), null, now(), now());
+  SELECT group_id into current_enrollment_group_id FROM enrollments e where e.student_id = new.id and e.inactive_since is null;
+  if current_enrollment_group_id is null then
+      insert into enrollments (student_id, group_id, active_since, inactive_since, created_at, updated_at)
+      values (new.id, new.group_id, now(), null, now(), now());
+  else if current_enrollment_group_id != new.group_id then
+      if (SELECT group_id from enrollments e where e.student_id = new.id and e.group_id = new.group_id) is null then
+        insert into enrollments (student_id, group_id, active_since, inactive_since, created_at, updated_at)
+        values (new.id, new.group_id, now(), null, now(), now());
+      else
+        update enrollments set inactive_since = null, active_since = now(), updated_at = now()
+        where group_id = new.group_id  and student_id = new.id;
+      end if;
+
+      update enrollments set inactive_since = now(), updated_at = now()
+      where inactive_since is null and group_id = current_enrollment_group_id and student_id = new.id;
+  end if;
   end if;
   return new;
 END;
@@ -1708,10 +1719,12 @@ CREATE OR REPLACE VIEW public.student_lesson_summaries AS
             l.subject_id,
             round(avg(grades.mark), 2) AS average_mark,
             count(grades.mark) AS grade_count
-           FROM (((public.lessons l
+           FROM ((((public.lessons l
              JOIN public.groups g ON ((g.id = l.group_id)))
              JOIN public.grades ON (((grades.lesson_id = l.id) AND (grades.deleted_at IS NULL))))
              JOIN public.students s ON ((grades.student_id = s.id)))
+             JOIN public.enrollments en ON ((s.id = en.student_id)))
+          WHERE (((en.active_since)::date <= l.date) AND ((en.inactive_since IS NULL) OR ((en.inactive_since)::date >= l.date)))
           GROUP BY s.id, l.id) united
      JOIN public.subject_summaries su ON ((united.subject_id = su.id)));
 
@@ -1721,21 +1734,20 @@ CREATE OR REPLACE VIEW public.student_lesson_summaries AS
 --
 
 CREATE OR REPLACE VIEW public.group_lesson_summaries AS
- SELECT l.id AS lesson_id,
-    l.date AS lesson_date,
+ SELECT slu.lesson_id,
+    slu.lesson_date,
     gr.id AS group_id,
     gr.chapter_id,
     slu.subject_id,
     concat(gr.group_name, ' - ', c.chapter_name) AS group_chapter_name,
     (round(avg(slu.average_mark), 2))::double precision AS average_mark,
     (sum(slu.grade_count))::bigint AS grade_count
-   FROM (((public.lessons l
-     JOIN public.groups gr ON ((l.group_id = gr.id)))
+   FROM ((public.student_lesson_summaries slu
+     JOIN public.groups gr ON ((slu.group_id = gr.id)))
      JOIN public.chapters c ON ((gr.chapter_id = c.id)))
-     JOIN public.student_lesson_summaries slu ON (((l.subject_id = slu.subject_id) AND (l.group_id = slu.group_id) AND (l.date = slu.lesson_date))))
   WHERE (slu.deleted_at IS NULL)
-  GROUP BY l.id, gr.id, c.id, slu.subject_id
-  ORDER BY l.date;
+  GROUP BY slu.lesson_id, gr.id, c.id, slu.subject_id, slu.lesson_date
+  ORDER BY slu.lesson_date;
 
 
 --
@@ -2001,6 +2013,7 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240716100102'),
 ('20240614142029'),
 ('20240610074002'),
 ('20240531115345'),
