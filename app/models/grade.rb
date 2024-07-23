@@ -9,7 +9,6 @@
 #  updated_at          :datetime         not null
 #  grade_descriptor_id :integer          not null
 #  lesson_id           :uuid             not null
-#  lesson_old_id       :integer          not null
 #  skill_id            :bigint           not null
 #  student_id          :integer          not null
 #
@@ -28,7 +27,6 @@
 #  grades_student_id_fk           (student_id => students.id)
 #
 class Grade < ApplicationRecord
-  before_validation :update_old_lesson_ids
   validate :grade_skill_must_be_unique_for_lesson_and_student, if: :all_relations_exist?
 
   belongs_to :lesson
@@ -91,9 +89,5 @@ class Grade < ApplicationRecord
     self.deleted_at = Time.zone.now
     save
     self
-  end
-
-  def update_old_lesson_ids
-    self.lesson_old_id = lesson&.reload&.old_id
   end
 end

@@ -8,7 +8,6 @@
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  group_id   :integer          not null
-#  old_id     :integer          not null
 #  subject_id :integer          not null
 #
 # Indexes

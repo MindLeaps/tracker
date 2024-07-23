@@ -354,7 +354,6 @@ ALTER SEQUENCE public.grade_descriptors_id_seq OWNED BY public.grade_descriptors
 CREATE TABLE public.grades (
     id integer NOT NULL,
     student_id integer NOT NULL,
-    lesson_old_id integer NOT NULL,
     grade_descriptor_id integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
@@ -477,7 +476,6 @@ SELECT
 
 CREATE VIEW public.lesson_table_rows AS
 SELECT
-    NULL::integer AS old_id,
     NULL::integer AS group_id,
     NULL::date AS date,
     NULL::timestamp without time zone AS created_at,
@@ -498,7 +496,6 @@ SELECT
 --
 
 CREATE TABLE public.lessons (
-    old_id integer NOT NULL,
     group_id integer NOT NULL,
     date date NOT NULL,
     created_at timestamp without time zone NOT NULL,
@@ -507,25 +504,6 @@ CREATE TABLE public.lessons (
     deleted_at timestamp without time zone,
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL
 );
-
-
---
--- Name: lessons_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.lessons_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: lessons_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.lessons_id_seq OWNED BY public.lessons.old_id;
 
 
 --
@@ -1082,13 +1060,6 @@ ALTER TABLE ONLY public.grades ALTER COLUMN id SET DEFAULT nextval('public.grade
 --
 
 ALTER TABLE ONLY public.groups ALTER COLUMN id SET DEFAULT nextval('public.groups_id_seq'::regclass);
-
-
---
--- Name: lessons old_id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.lessons ALTER COLUMN old_id SET DEFAULT nextval('public.lessons_id_seq'::regclass);
 
 
 --
@@ -1737,37 +1708,6 @@ CREATE OR REPLACE VIEW public.student_lesson_summaries AS
 
 
 --
--- Name: lesson_table_rows _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.lesson_table_rows AS
- SELECT l.old_id,
-    l.group_id,
-    l.date,
-    l.created_at,
-    l.updated_at,
-    l.subject_id,
-    l.deleted_at,
-    l.id,
-    gr.group_name,
-    c.chapter_name,
-    s.subject_name,
-    count(DISTINCT ROW(l.id, slu.student_id)) AS group_student_count,
-    count(
-        CASE
-            WHEN (slu.grade_count > 0) THEN 1
-            ELSE NULL::integer
-        END) AS graded_student_count,
-    round(avg(slu.average_mark), 2) AS average_mark
-   FROM ((((public.lessons l
-     JOIN public.groups gr ON ((l.group_id = gr.id)))
-     JOIN public.chapters c ON ((gr.chapter_id = c.id)))
-     JOIN public.subjects s ON ((l.subject_id = s.id)))
-     JOIN public.student_lesson_summaries slu ON (((l.id = slu.lesson_id) AND (slu.deleted_at IS NULL))))
-  GROUP BY l.id, s.subject_name, gr.group_name, c.chapter_name;
-
-
---
 -- Name: group_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
@@ -1791,6 +1731,45 @@ CREATE OR REPLACE VIEW public.group_lesson_summaries AS
   WHERE (slu.deleted_at IS NULL)
   GROUP BY slu.lesson_id, gr.id, c.id, slu.subject_id, slu.lesson_date
   ORDER BY slu.lesson_date;
+
+
+--
+-- Name: lesson_table_rows _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.lesson_table_rows AS
+ WITH group_student_counts AS (
+         SELECT gr.id AS group_id,
+            gr.group_name,
+            c.chapter_name,
+            COALESCE(count(s_1.id), (0)::bigint) AS student_count
+           FROM ((public.groups gr
+             LEFT JOIN public.students s_1 ON (((s_1.group_id = gr.id) AND (s_1.deleted_at IS NULL))))
+             JOIN public.chapters c ON ((gr.chapter_id = c.id)))
+          GROUP BY gr.id, c.chapter_name
+        )
+ SELECT l.group_id,
+    l.date,
+    l.created_at,
+    l.updated_at,
+    l.subject_id,
+    l.deleted_at,
+    l.id,
+    sc.group_name,
+    sc.chapter_name,
+    s.subject_name,
+    sc.student_count AS group_student_count,
+    count(
+        CASE
+            WHEN (slu.grade_count > 0) THEN 1
+            ELSE NULL::integer
+        END) AS graded_student_count,
+    round(avg(slu.average_mark), 2) AS average_mark
+   FROM (((public.lessons l
+     JOIN public.subjects s ON ((l.subject_id = s.id)))
+     JOIN group_student_counts sc ON ((l.group_id = sc.group_id)))
+     JOIN public.student_lesson_summaries slu ON (((l.subject_id = slu.subject_id) AND (l.group_id = slu.group_id) AND (l.date = slu.lesson_date) AND (slu.deleted_at IS NULL))))
+  GROUP BY l.id, s.subject_name, sc.student_count, sc.group_name, sc.chapter_name;
 
 
 --
@@ -1993,6 +1972,7 @@ SET search_path TO "$user", public;
 INSERT INTO "schema_migrations" (version) VALUES
 ('20240917090713'),
 ('20240828172524'),
+('20240723120532'),
 ('20240716100102'),
 ('20240614142029'),
 ('20240610074002'),
