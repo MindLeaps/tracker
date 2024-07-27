@@ -9,7 +9,6 @@
 #  updated_at          :datetime         not null
 #  grade_descriptor_id :integer          not null
 #  lesson_id           :uuid             not null
-#  lesson_old_id       :integer          not null
 #  skill_id            :bigint           not null
 #  student_id          :integer          not null
 #

@@ -346,7 +346,6 @@ ALTER SEQUENCE public.grade_descriptors_id_seq OWNED BY public.grade_descriptors
 CREATE TABLE public.grades (
     id integer NOT NULL,
     student_id integer NOT NULL,
-    lesson_old_id integer NOT NULL,
     grade_descriptor_id integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
@@ -468,7 +467,6 @@ SELECT
 
 CREATE VIEW public.lesson_table_rows AS
 SELECT
-    NULL::integer AS old_id,
     NULL::integer AS group_id,
     NULL::date AS date,
     NULL::timestamp without time zone AS created_at,
@@ -1073,13 +1071,6 @@ ALTER TABLE ONLY public.grades ALTER COLUMN id SET DEFAULT nextval('public.grade
 --
 
 ALTER TABLE ONLY public.groups ALTER COLUMN id SET DEFAULT nextval('public.groups_id_seq'::regclass);
-
-
---
--- Name: lessons old_id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.lessons ALTER COLUMN old_id SET DEFAULT nextval('public.lessons_id_seq'::regclass);
 
 
 --
@@ -1753,8 +1744,7 @@ CREATE OR REPLACE VIEW public.lesson_table_rows AS
              JOIN public.chapters c ON ((gr.chapter_id = c.id)))
           GROUP BY gr.id, c.chapter_name
         )
- SELECT l.old_id,
-    l.group_id,
+ SELECT l.group_id,
     l.date,
     l.created_at,
     l.updated_at,
@@ -2001,6 +1991,7 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240723120532'),
 ('20240614142029'),
 ('20240610074002'),
 ('20240531115345'),
