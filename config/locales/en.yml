@@ -266,6 +266,8 @@ en:
   student_does_not_belong_to_group: Student does not belong to this group anymore.
   lesson_for_student: Lesson %{date} - Student %{name}
   total: Total
+  reports: Reports
+  generate_report: Generate report
   analytics: Analytics
   general_analytics: General Analytics
   group_analytics: Group Analytics

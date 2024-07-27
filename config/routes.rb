@@ -61,6 +61,9 @@ Rails.application.routes.draw do
 
   resources :student_tags, only: %i[index new create show edit update]
 
+  resources :reports, only: %i[index show]
+  post 'reports/show', to: 'reports#show', as: :show_reports
+  get '/reports', controller: 'reports', action: :index
   resources :lessons, only: %i[index new create show] do
     resources :students, controller: :student_lessons, only: %i[show update]
   end
