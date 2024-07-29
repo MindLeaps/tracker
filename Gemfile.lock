@@ -262,7 +262,7 @@ GEM
       net-protocol
     newrelic_rpm (9.11.0)
     nio4r (2.7.3)
-    nokogiri (1.16.6)
+    nokogiri (1.16.7)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     oauth2 (2.0.9)
@@ -466,7 +466,7 @@ GEM
       activerecord (>= 6.1.0)
       devise (>= 4.0.0.rc1, < 5)
     timeout (0.4.1)
-    turbo-rails (2.0.5)
+    turbo-rails (2.0.6)
       actionpack (>= 6.0.0)
       activejob (>= 6.0.0)
       railties (>= 6.0.0)
