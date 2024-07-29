@@ -72,19 +72,17 @@ CREATE FUNCTION public.update_enrollments() RETURNS trigger
 declare
   current_enrollment_group_id int := null;
 BEGIN
+  -- Find the current group the student is enrolled in
   SELECT group_id into current_enrollment_group_id FROM enrollments e where e.student_id = new.id and e.inactive_since is null;
+  -- Insert a new enrollment if this is the first time the student is being enrolled
   if current_enrollment_group_id is null then
       insert into enrollments (student_id, group_id, active_since, inactive_since, created_at, updated_at)
       values (new.id, new.group_id, now(), null, now(), now());
   else if current_enrollment_group_id != new.group_id then
-      if (SELECT group_id from enrollments e where e.student_id = new.id and e.group_id = new.group_id) is null then
-        insert into enrollments (student_id, group_id, active_since, inactive_since, created_at, updated_at)
-        values (new.id, new.group_id, now(), null, now(), now());
-      else
-        update enrollments set inactive_since = null, active_since = now(), updated_at = now()
-        where group_id = new.group_id  and student_id = new.id;
-      end if;
-
+      -- Insert a new enrollment  if this is a different group the student is being enrolled in
+      insert into enrollments (student_id, group_id, active_since, inactive_since, created_at, updated_at)
+      values (new.id, new.group_id, now(), null, now(), now());
+      -- Update the previous enrollment for the student and make it inactive
       update enrollments set inactive_since = now(), updated_at = now()
       where inactive_since is null and group_id = current_enrollment_group_id and student_id = new.id;
   end if;
@@ -1417,6 +1415,13 @@ CREATE UNIQUE INDEX index_lessons_on_group_id_and_subject_id_and_date ON public.
 
 
 --
+-- Name: index_lessons_on_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_lessons_on_id ON public.lessons USING btree (id);
+
+
+--
 -- Name: index_lessons_on_subject_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1724,7 +1729,7 @@ CREATE OR REPLACE VIEW public.student_lesson_summaries AS
              JOIN public.grades ON (((grades.lesson_id = l.id) AND (grades.deleted_at IS NULL))))
              JOIN public.students s ON ((grades.student_id = s.id)))
              JOIN public.enrollments en ON ((s.id = en.student_id)))
-          WHERE (((en.active_since)::date <= l.date) AND ((en.inactive_since IS NULL) OR ((en.inactive_since)::date >= l.date)))
+          WHERE ((en.active_since < (l.date + 1)) AND ((en.inactive_since IS NULL) OR (en.inactive_since >= l.date)))
           GROUP BY s.id, l.id) united
      JOIN public.subject_summaries su ON ((united.subject_id = su.id)));
 

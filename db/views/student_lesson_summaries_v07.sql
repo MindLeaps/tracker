@@ -31,6 +31,6 @@ FROM (
                   JOIN grades ON (grades.lesson_id = l.id AND grades.deleted_at IS NULL)
                   JOIN students s ON grades.student_id = s.id
                   JOIN enrollments en ON s.id = en.student_id
-         WHERE en.active_since::date <= l.date AND ((en.inactive_since IS NULL) OR (en.inactive_since::date >= l.date))
+         WHERE en.active_since < l.date + 1 AND (en.inactive_since IS NULL OR en.inactive_since >= l.date)
          GROUP BY s.id, l.id
      ) united JOIN subject_summaries su on united.subject_id = su.id
