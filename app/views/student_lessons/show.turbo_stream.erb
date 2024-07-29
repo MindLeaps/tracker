@@ -11,7 +11,7 @@
                 <div class="p-2">
                   <%= g.hidden_field :skill_id, value: g.object.skill_id %>
                   <%= g.label :grade_descriptor_id, g.object.skill.skill_name, class: 'field-label' %>
-                  <%= g.collection_select :grade_descriptor_id, g.object.skill.grade_descriptors, :id, -> (o) { "#{o.mark} - #{o.grade_description}" }, { include_blank: true }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+                  <%= g.collection_select :grade_descriptor_id, g.object.skill.grade_descriptors, :id, -> (o) { "#{o.mark} - #{o.grade_description}" }, { include_blank: t(:ungraded) }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
                 </div>
               <% end %>
                 <div class="p-2">
