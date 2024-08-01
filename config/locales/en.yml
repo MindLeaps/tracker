@@ -82,6 +82,7 @@ en:
   delete_organization: Delete Organization
   restore_organization: Restore Deleted Organization
   average_performance_for_last_30_lessons: Average performance for last 30 lessons
+  average_performance_group_lifetime: Average performance for the group across lessons
   users: Users
   user_information: User Information
   new_user: New User
@@ -299,6 +300,9 @@ en:
   display_with_mlid: "%{name} (%{mlid})"
   first_name: First Name
   last_name: Last Name
+  first_lesson: First Lesson
+  middle_lesson: Middle Lesson
+  last_lesson: Last Lesson
   group_and_mlid: Group and MLID
 
   title_chart_2: Quantity of Data Collected By Month

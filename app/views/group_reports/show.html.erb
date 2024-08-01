@@ -1,7 +1,59 @@
-<h1>Lorem ipsum</h1>
+<div>
+ <div class="text-center">
+         <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Group report</h2>
+         <p class="mt-4 text-lg leading-8 text-gray-600">Group averages</p>
+       </div>
+  <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+    <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+      <dt class="mt-4 text-lg leading-8 text-gray-600">First lesson</dt>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">Lesson date: <%=@first_lesson[:lesson_date]%></dd>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">Average mark: <%=@first_lesson[:average_mark]%></dd>
+    </div>
+    <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+      <dt class="mt-4 text-lg leading-8 text-gray-600">Middle lesson</dt>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">Lesson date: <%=@middle_lesson[:lesson_date]%></dd>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">Average mark: <%=@middle_lesson[:average_mark]%></dd>
+    </div>
+    <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+      <dt class="mt-4 text-lg leading-8 text-gray-600">Last lesson</dt>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">Lesson date: <%=@last_lesson[:lesson_date]%></dd>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">Average mark: <%=@last_lesson[:average_mark]%></dd>
+    </div>
+  </dl>
+</div>
+
+ <section class="flex flex-wrap">
+   <div class="w-full md:w-1/2 p-2">
+     <%= render CommonComponents::Card.new(title: t(:average_performance_for_last_30_lessons).capitalize) do |card| %>
+       <% card.with_card_content do %>
+         <div id="last_30" class="ct-chart ct-octave bg-white"></div>
+       <% end %>
+     <% end %>
+   </div>
+   <div class="w-full md:w-1/2 p-2">
+     <%= render CommonComponents::Card.new(title: t(:group_history).capitalize) do |card| %>
+       <% card.with_card_content do %>
+         <div id="group_history" class="ct-chart ct-octave bg-white"></div>
+       <% end %>
+     <% end %>
+   </div>
+ </section>
+ <section>
+   <%= render CommonComponents::Card.new(title: t(:students_in_group).capitalize) do |card| %>
+     <% card.with_card_content do %>
+   <%= render @student_table_component %>
+       <% end %>
+     <% end %>
+ </section>
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    window.print();
+   window.print();
   });
+
+  function onChartsLoad() {
+      displayAveragesGraph && displayAveragesGraph('#last_30', '', <%= @lesson_summaries.to_json.html_safe %>)
+      displayAveragesGraph && displayAveragesGraph('#group_history', '', <%= @lesson_summaries_lifetime.to_json.html_safe %>)
+    }
 </script>
+<%= javascript_include_tag "charts", onload: 'onChartsLoad()' %>

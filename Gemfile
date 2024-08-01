@@ -36,6 +36,7 @@ gem 'stimulus-rails'
 gem 'tailwindcss-rails'
 gem 'tiddle'
 gem 'turbo-rails'
+gem 'tzinfo-data'
 gem 'view_component'
 
 group :production do
