@@ -46,7 +46,7 @@ FactoryBot.define do
     last_name { Faker::Name.last_name }
     dob { Faker::Time.between from: 20.years.ago.to_datetime, to: 10.years.ago.to_datetime }
     estimated_dob { Faker::Boolean.boolean true_ratio: 0.2 }
-    gender { %w[male female].sample }
+    gender { %w[male female nonbinary].sample }
     group { create :group }
     tags { create_list :tag, 3 }
     transient do

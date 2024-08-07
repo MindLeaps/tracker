@@ -1,6 +1,6 @@
 SELECT l.*, group_name, chapter_name,
        s.subject_name                                 AS subject_name,
-       COUNT(DISTINCT(l.id, slu.student_id))		   AS group_student_count,
+       COUNT(DISTINCT(l.id, slu.student_id))		  AS group_student_count,
        COUNT(CASE WHEN grade_count > 0 THEN 1 END)    AS graded_student_count,
        ROUND(CAST(AVG(average_mark) AS numeric), 2)   AS average_mark
 FROM lessons l

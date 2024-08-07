@@ -27,4 +27,28 @@ RSpec.describe Enrollment, type: :model do
     it { should belong_to :group }
     it { should belong_to :student }
   end
+
+  describe 'triggers' do
+    before :each do
+      @first_group = create :group
+      @second_group = create :group
+      @student = create :student, group: @first_group
+      @enrollment = create :enrollment, group: @first_group, student: @student
+    end
+
+    it 'the inactivity on student changing a group' do
+      @student.update(group: @second_group)
+
+      expect(@enrollment.reload.inactive_since).to be_within(1.second).of(Time.zone.now)
+    end
+
+    it 'a new enrollment on student changing a group' do
+      @student.update(group: @second_group)
+
+      @new_enrollment = Enrollment.find_by(student: @student, group: @second_group)
+
+      expect(@new_enrollment.active_since).to be_within(1.second).of(Time.zone.now)
+      expect(@new_enrollment.inactive_since).to be nil
+    end
+  end
 end
