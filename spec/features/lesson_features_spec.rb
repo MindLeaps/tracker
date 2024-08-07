@@ -24,7 +24,7 @@ RSpec.describe 'User interacts with lessons' do
       group = create :group
       student = create(:student, group:)
 
-      create(:enrollment, group:, student:)
+      create(:enrollment, group:, student:, active_since: 1.year.ago)
       create(:lesson, subject: sub, group:)
       create(:lesson, subject: sub, group:)
 
@@ -39,7 +39,7 @@ RSpec.describe 'User interacts with lessons' do
       first_student = create(:student, first_name: 'Marinko', last_name: 'Marinkovic', group:)
       second_student = create(:student, first_name: 'Ivan', last_name: 'Ivankovic', group:)
       deleted_student = create :student, first_name: 'Deleted', last_name: 'Deletovic', group:, deleted_at: Time.zone.now
-      [first_student, second_student, deleted_student].each { |s| create :enrollment, student: s, group: }
+      [first_student, second_student, deleted_student].each { |s| create :enrollment, student: s, group:, active_since: 1.year.ago }
       sub = create :subject, subject_name: 'Feature Testing III'
       create :skill_in_subject, subject: sub
       create(:lesson, subject: sub, group:)
@@ -61,7 +61,7 @@ RSpec.describe 'User interacts with lessons' do
 
       before :each do
         student = create(:student, first_name: 'Graden', last_name: 'Gradanovic', group:)
-        create(:enrollment, group:, student:)
+        create(:enrollment, group:, student:, active_since: 1.year.ago)
         skill1 = create(:skill_in_subject, skill_name: 'Featuring', subject:)
         skill2 = create(:skill_in_subject, skill_name: 'Testing', subject:)
 
