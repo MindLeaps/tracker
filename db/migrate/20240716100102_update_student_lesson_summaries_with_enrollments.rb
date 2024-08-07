@@ -6,7 +6,7 @@ class UpdateStudentLessonSummariesWithEnrollments < ActiveRecord::Migration[7.1]
     update_view :student_lesson_summaries, version: 7
 
     create_view :group_lesson_summaries, version: 4
-    create_view :lesson_table_rows, version: 3
+    create_view :lesson_table_rows, version: 4
     update_trigger
   end
 
