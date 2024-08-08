@@ -44,7 +44,7 @@ FactoryBot.define do
     sequence(:mlid, (0..99).to_a.cycle) { |n| "#{Faker::Lorem.characters(number: 1).upcase}#{n}" }
     first_name { Faker::Name.first_name }
     last_name { Faker::Name.last_name }
-    dob { Faker::Time.between from: 20.years.ago.to_datetime, to: 10.years.ago.to_datetime }
+    dob { Faker::Time.between from: 18.years.ago.to_datetime, to: 7.years.ago.to_datetime }
     estimated_dob { Faker::Boolean.boolean true_ratio: 0.2 }
     gender { %w[male female].sample }
     group { create :group }

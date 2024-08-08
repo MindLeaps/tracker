@@ -48,6 +48,7 @@ class Student < ApplicationRecord
 
   validates :first_name, :last_name, :dob, :gender, presence: true
   validates :mlid, uniqueness: { scope: :group_id }, length: { maximum: 3 }
+  validate :age_is_valid?
 
   enum gender: { M: 'male', F: 'female', NB: 'nonbinary' }
 
@@ -79,5 +80,16 @@ class Student < ApplicationRecord
      :guardian_name, :guardian_occupation, :guardian_contact, :family_members, :health_insurance,
      :health_issues, :hiv_tested, :name_of_school, :school_level_completed, :year_of_dropout,
      :reason_for_leaving, :notes, :organization_id, :profile_image_id, { student_images_attributes: [:image], student_tags_attributes: [:tag_id, :student_id, :_destroy] }]
+  end
+
+  def age_is_valid?
+    return false unless dob
+
+    min_student_age = 7
+    max_student_age = 18
+    now = Time.zone.now.to_date
+    age = now.year - dob.year - (now.month > dob.month || (now.month == dob.month && now.day >= dob.day) ? 0 : 1)
+
+    errors.add(:dob, 'is invalid, student age must be between 7 and 18') unless age.between?(min_student_age, max_student_age)
   end
 end
