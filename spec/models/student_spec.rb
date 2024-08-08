@@ -60,7 +60,7 @@ RSpec.describe Student, type: :model do
       Bullet.enable = false
     end
 
-    subject { create :student, mlid: 'TS1' }
+    subject { create :student, mlid: 'TS1', dob: 10.years.ago }
 
     describe 'student is valid' do
       it 'with first and last name, dob, and gender' do
@@ -122,6 +122,20 @@ RSpec.describe Student, type: :model do
 
     after :all do
       Bullet.enable = true
+    end
+
+    describe 'dob' do
+      before :each do
+        @young_student = build :student, dob: 6.years.ago
+        @old_student = build :student, dob: 19.years.ago
+      end
+
+      describe 'is invalid' do
+        it 'when student age is out of range' do
+          expect(@young_student).not_to be_valid
+          expect(@old_student).not_to be_valid
+        end
+      end
     end
   end
 
