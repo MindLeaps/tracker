@@ -1,6 +1,8 @@
 ## Unreleased
 - Added Count of Graded/absent/total students and total lesson average mark in lesson view
 - Changed Group lesson summaries to show average of students' averages
+- Blocked users from creating students not within age range
+- Fixed date of birth not showing student's value when editing
 
 ## 0.33.0 - Lesson UUIDs & Graphs
 - Added validation for existing tags in an organization
