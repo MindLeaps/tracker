@@ -34,7 +34,7 @@ RSpec.describe 'User interacts with Students' do
       fill_in 'First name', with: 'Rick'
       fill_in 'Last name', with: 'Sanchez'
       select('Antarctica', from: 'Country of nationality')
-      [{ option: (Date.today.year - 10).to_s, position: 1 }, { option: 'January', position: 2 }, { option: '1', position: 3 }].each do |i|
+      [{ option: (Time.zone.today.year - 10).to_s, position: 1 }, { option: 'January', position: 2 }, { option: '1', position: 3 }].each do |i|
         select(i[:option], from: "student_dob_#{i[:position]}i")
       end
       select(@group.chapter_group_name_with_full_mlid, from: 'student_group_id')
