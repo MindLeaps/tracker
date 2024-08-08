@@ -6,8 +6,10 @@ WITH group_student_counts AS (
              JOIN chapters c on gr.chapter_id = c.id
     GROUP BY gr.id, chapter_name
 )
-SELECT l.*, group_name, chapter_name, s.subject_name AS subject_name, student_count AS group_student_count,
-       COUNT(CASE WHEN grade_count>0 THEN 1 END) AS graded_student_count,
+SELECT l.*, group_name, chapter_name,
+       s.subject_name                               AS subject_name,
+       student_count                                AS group_student_count,
+       COUNT(CASE WHEN grade_count>0 THEN 1 END)    AS graded_student_count,
        ROUND(CAST(AVG(average_mark) AS numeric), 2) AS average_mark
 FROM lessons l
          JOIN subjects s ON l.subject_id = s.id
