@@ -1414,12 +1414,6 @@ CREATE INDEX index_lessons_on_group_id ON public.lessons USING btree (group_id);
 CREATE UNIQUE INDEX index_lessons_on_group_id_and_subject_id_and_date ON public.lessons USING btree (group_id, subject_id, date) WHERE (deleted_at IS NULL);
 
 
---
--- Name: index_lessons_on_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_lessons_on_id ON public.lessons USING btree (id);
-
 
 --
 -- Name: index_lessons_on_subject_id; Type: INDEX; Schema: public; Owner: -
