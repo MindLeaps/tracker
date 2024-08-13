@@ -51,4 +51,3 @@ RSpec.describe 'User interacts with enrollments' do
     end
   end
 end
-
