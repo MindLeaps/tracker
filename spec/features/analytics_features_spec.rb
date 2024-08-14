@@ -9,6 +9,7 @@ RSpec.describe 'User interacts with Analytics' do
       @group = create :group, chapter: @chapter
       create :graded_student, group: @group, grades: { 'Memorization' => [3, 4, 5, 6, 7], 'Grit' => [2, 3, 2, 4, 5] }
       @organization = @chapter.organization
+      Scenic.database.refresh_materialized_view('student_lesson_summaries')
     end
 
     it 'displays general, subject, and group analytics', js: true do
