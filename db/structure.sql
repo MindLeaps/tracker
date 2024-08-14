@@ -801,25 +801,6 @@ SELECT
 
 
 --
--- Name: student_lesson_summaries; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.student_lesson_summaries AS
-SELECT
-    NULL::integer AS student_id,
-    NULL::integer AS group_id,
-    NULL::character varying AS first_name,
-    NULL::character varying AS last_name,
-    NULL::timestamp without time zone AS deleted_at,
-    NULL::uuid AS lesson_id,
-    NULL::date AS lesson_date,
-    NULL::integer AS subject_id,
-    NULL::numeric AS average_mark,
-    NULL::bigint AS grade_count,
-    NULL::bigint AS skill_count;
-
-
---
 -- Name: students; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1132,6 +1113,73 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
+-- Name: lessons lessons_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.lessons
+    ADD CONSTRAINT lessons_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: students students_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.students
+    ADD CONSTRAINT students_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: student_lesson_summaries; Type: MATERIALIZED VIEW; Schema: public; Owner: -
+--
+
+CREATE MATERIALIZED VIEW public.student_lesson_summaries AS
+ SELECT united.student_id,
+    united.group_id,
+    united.first_name,
+    united.last_name,
+    united.deleted_at,
+    united.lesson_id,
+    united.lesson_date,
+    united.subject_id,
+    united.average_mark,
+    united.grade_count,
+    su.skill_count
+   FROM (( SELECT s.id AS student_id,
+            s.group_id,
+            s.first_name,
+            s.last_name,
+            s.deleted_at,
+            l.id AS lesson_id,
+            l.date AS lesson_date,
+            l.subject_id,
+            round(avg(grades.mark), 2) AS average_mark,
+            count(grades.mark) AS grade_count
+           FROM (((public.students s
+             JOIN public.groups g ON ((g.id = s.group_id)))
+             JOIN public.lessons l ON ((g.id = l.group_id)))
+             LEFT JOIN public.grades ON (((grades.student_id = s.id) AND (grades.lesson_id = l.id) AND (grades.deleted_at IS NULL))))
+          GROUP BY s.id, l.id
+        UNION
+         SELECT s.id AS student_id,
+            s.group_id,
+            s.first_name,
+            s.last_name,
+            s.deleted_at,
+            l.id AS lesson_id,
+            l.date AS lesson_date,
+            l.subject_id,
+            round(avg(grades.mark), 2) AS average_mark,
+            count(grades.mark) AS grade_count
+           FROM (((public.lessons l
+             JOIN public.groups g ON ((g.id = l.group_id)))
+             JOIN public.grades ON (((grades.lesson_id = l.id) AND (grades.deleted_at IS NULL))))
+             JOIN public.students s ON ((grades.student_id = s.id)))
+          GROUP BY s.id, l.id) united
+     JOIN public.subject_summaries su ON ((united.subject_id = su.id)))
+  WITH NO DATA;
+
+
+--
 -- Name: ar_internal_metadata ar_internal_metadata_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1204,14 +1252,6 @@ ALTER TABLE ONLY public.lessons
 
 
 --
--- Name: lessons lessons_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.lessons
-    ADD CONSTRAINT lessons_pkey PRIMARY KEY (id);
-
-
---
 -- Name: organizations organizations_mlid_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1257,14 +1297,6 @@ ALTER TABLE ONLY public.skills
 
 ALTER TABLE ONLY public.student_images
     ADD CONSTRAINT student_images_pkey PRIMARY KEY (id);
-
-
---
--- Name: students students_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.students
-    ADD CONSTRAINT students_pkey PRIMARY KEY (id);
 
 
 --
