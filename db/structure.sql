@@ -78,14 +78,13 @@ BEGIN
   if current_enrollment_group_id is null then
       insert into enrollments (student_id, group_id, active_since, inactive_since, created_at, updated_at)
       values (new.id, new.group_id, now(), null, now(), now());
-  else if current_enrollment_group_id != new.group_id then
+  elsif current_enrollment_group_id != new.group_id then
       -- Insert a new enrollment  if this is a different group the student is being enrolled in
       insert into enrollments (student_id, group_id, active_since, inactive_since, created_at, updated_at)
       values (new.id, new.group_id, now(), null, now(), now());
       -- Update the previous enrollment for the student and make it inactive
       update enrollments set inactive_since = now(), updated_at = now()
       where inactive_since is null and group_id = current_enrollment_group_id and student_id = new.id;
-  end if;
   end if;
   return new;
 END;
