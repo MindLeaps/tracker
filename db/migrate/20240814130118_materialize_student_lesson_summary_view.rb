@@ -6,6 +6,9 @@ class MaterializeStudentLessonSummaryView < ActiveRecord::Migration[7.1]
     create_dependent_views
 
     execute <<~SQL.squish
+      -- Create extension
+      CREATE EXTENSION pg_cron;
+
       -- Schedule refreshing the student lesson summary view every 6 hours
       SELECT cron.schedule('student_lesson_summaries', '0 */6 * * *',
         $CRON$ REFRESH MATERIALIZED VIEW student_lesson_summaries; $CRON$
@@ -21,6 +24,8 @@ class MaterializeStudentLessonSummaryView < ActiveRecord::Migration[7.1]
 
     execute <<~SQL.squish
       SELECT cron.unschedule('student_lesson_summaries');
+
+      DROP EXTENSION IF EXISTS pg_cron;
     SQL
   end
 

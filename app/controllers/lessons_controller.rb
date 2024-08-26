@@ -11,6 +11,7 @@ class LessonsController < HtmlController
   end
 
   def show
+    Scenic.database.refresh_materialized_view(:student_lesson_summaries, cascade: true)
     @lesson = Lesson.includes(:group, :subject).find(params[:id])
     authorize @lesson
     @pagy, @student_lesson_summaries = pagy apply_scopes(StudentLessonSummary.where(lesson_id: @lesson.id), student_lesson_order_scope)
