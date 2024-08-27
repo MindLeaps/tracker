@@ -2,7 +2,7 @@ class MaterializeStudentLessonSummaryView < ActiveRecord::Migration[7.1]
   def up
     drop_dependent_views
     drop_view :student_lesson_summaries
-    create_view :student_lesson_summaries, version: 6, materialized: true
+    create_view :student_lesson_summaries, version: 7, materialized: true
     create_dependent_views
 
     execute <<~SQL.squish
@@ -19,7 +19,7 @@ class MaterializeStudentLessonSummaryView < ActiveRecord::Migration[7.1]
   def down
     drop_dependent_views
     Scenic.database.drop_materialized_view('student_lesson_summaries')
-    create_view :student_lesson_summaries, version: 6, materialized: false
+    create_view :student_lesson_summaries, version: 7, materialized: false
     create_dependent_views
 
     execute <<~SQL.squish
@@ -31,7 +31,7 @@ class MaterializeStudentLessonSummaryView < ActiveRecord::Migration[7.1]
 
   def create_dependent_views
     create_view :group_lesson_summaries, version: 4
-    create_view :lesson_table_rows, version: 3
+    create_view :lesson_table_rows, version: 4
   end
 
   def drop_dependent_views
