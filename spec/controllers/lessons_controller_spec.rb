@@ -12,6 +12,7 @@ RSpec.describe LessonsController, type: :controller do
       before :each do
         @group = create :group
         @active_student1 = create :student, group: @group
+        create :enrollment, group: @group, student: @active_student1, active_since: 1.year.ago
         @lesson1 = create :lesson, group: @group
         @lesson2 = create :lesson, group: @group
         Scenic.database.refresh_materialized_view('student_lesson_summaries')
@@ -33,6 +34,7 @@ RSpec.describe LessonsController, type: :controller do
         @active_student1 = create :student, group: @group
         @active_student2 = create :student, group: @group
         @deleted_student = create :student, group: @group, deleted_at: Time.zone.now
+        [@active_student1, @active_student2, @deleted_student].each { |s| create :enrollment, student: s, group: @group, active_since: 1.year.ago }
 
         lesson = create :lesson, group: @group
         gd1 = create :grade_descriptor, skill: lesson.subject.skills[0], mark: 1

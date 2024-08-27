@@ -23,6 +23,8 @@ RSpec.describe StudentLessonSummary, type: :model do
         @group = create :group
         @abimz = create :student, last_name: 'Abimz', first_name: 'Zima', group: @group
         @zimba = create :student, last_name: 'Zimba', first_name: 'Azim', group: @group
+        [@abimz, @zimba].each { |s| create :enrollment, student: s, group: @group, active_since: 1.year.ago }
+
         create :lesson, group: @group
         Scenic.database.refresh_materialized_view('student_lesson_summaries')
       end
@@ -43,6 +45,7 @@ RSpec.describe StudentLessonSummary, type: :model do
       @group = create :group
       @lesson = create(:lesson, group: @group, subject:)
       @student = create :student, group: @group
+      create :enrollment, group: @group, student: @student
       Scenic.database.refresh_materialized_view('student_lesson_summaries')
     end
 
@@ -61,6 +64,7 @@ RSpec.describe StudentLessonSummary, type: :model do
       @lesson = create(:lesson, group: @group, subject:)
       @first_student = create :student, group: @group
       @second_student = create :student, group: @group
+      [@first_student, @second_student].each { |s| create :enrollment, student: s, group: @group, active_since: 1.year.ago }
 
       @first_skill = create(:skill_in_subject, subject:)
       @second_skill = create(:skill_in_subject, subject:)

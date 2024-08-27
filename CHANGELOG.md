@@ -1,6 +1,8 @@
 ## Unreleased
 - Added Count of Graded/absent/total students and total lesson average mark in lesson view
 - Changed Group lesson summaries to show average of students' averages
+- Modified enrollments trigger when updating students
+- Changed student lesson summaries and related views to include enrollments
 
 ## 0.33.0 - Lesson UUIDs & Graphs
 - Added validation for existing tags in an organization

@@ -17,7 +17,8 @@ RSpec.describe GroupLessonSummary, type: :model do
   describe '#readonly?' do
     before :each do
       @group = create :group
-      create :graded_student, group: @group, grades: { 'skill' => [1] }
+      @student = create :graded_student, group: @group, grades: { 'skill' => [1] }
+      create :enrollment, group: @group, student: @student, active_since: 1.year.ago
       Scenic.database.refresh_materialized_view('student_lesson_summaries')
     end
 
@@ -33,6 +34,7 @@ RSpec.describe GroupLessonSummary, type: :model do
         'Memorization' => [1, 2, 4],
         'Grit' => [2, 4]
       }
+      create :enrollment, group: @group, student: @student, active_since: 1.year.ago
       Scenic.database.refresh_materialized_view('student_lesson_summaries')
     end
 
@@ -54,10 +56,11 @@ RSpec.describe GroupLessonSummary, type: :model do
   describe '#around' do
     before :each do
       @group = create :group
-      create :graded_student, group: @group, grades: {
+      @student = create :graded_student, group: @group, grades: {
         'Memorization' => [1, 2, 1, 3, 2, 3, 4],
         'Grit' => [2, 3, 5, 3, 4, 5, 6]
       }
+      create :enrollment, group: @group, student: @student, active_since: 1.year.ago
       Scenic.database.refresh_materialized_view('student_lesson_summaries')
     end
 
@@ -120,6 +123,7 @@ RSpec.describe GroupLessonSummary, type: :model do
       @first_student = create :student, group: @group
       @second_student = create :student, group: @group
       @deleted_student = create :student, group: @group, deleted_at: Time.zone.now
+      [@first_student, @second_student, @deleted_student].each { |s| create :enrollment, student: s, group: @group, active_since: 1.year.ago }
 
       @first_skill = create(:skill_in_subject, subject:)
       @second_skill = create(:skill_in_subject, subject:)

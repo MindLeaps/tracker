@@ -22,7 +22,9 @@ RSpec.describe 'User interacts with lessons' do
     it 'lists all existing lessons' do
       sub = create :subject, subject_name: 'Feature Testing II'
       group = create :group
-      create(:student, group:)
+      student = create(:student, group:)
+
+      create(:enrollment, group:, student:, active_since: 1.year.ago)
       create(:lesson, subject: sub, group:)
       create(:lesson, subject: sub, group:)
       Scenic.database.refresh_materialized_view('student_lesson_summaries')
@@ -35,9 +37,10 @@ RSpec.describe 'User interacts with lessons' do
 
     it 'shows a specific lesson', js: true do
       group = create :group, group_name: 'Lesson Feature Test Group'
-      create(:student, first_name: 'Marinko', last_name: 'Marinkovic', group:)
-      create(:student, first_name: 'Ivan', last_name: 'Ivankovic', group:)
-      create :student, first_name: 'Deleted', last_name: 'Deletovic', group:, deleted_at: Time.zone.now
+      first_student = create(:student, first_name: 'Marinko', last_name: 'Marinkovic', group:)
+      second_student = create(:student, first_name: 'Ivan', last_name: 'Ivankovic', group:)
+      deleted_student = create :student, first_name: 'Deleted', last_name: 'Deletovic', group:, deleted_at: Time.zone.now
+      [first_student, second_student, deleted_student].each { |s| create :enrollment, student: s, group:, active_since: 1.year.ago }
       sub = create :subject, subject_name: 'Feature Testing III'
       create :skill_in_subject, subject: sub
       create(:lesson, subject: sub, group:)
@@ -59,7 +62,8 @@ RSpec.describe 'User interacts with lessons' do
       let(:subject) { create :subject, subject_name: 'Feature Testing III' }
 
       before :each do
-        create(:student, first_name: 'Graden', last_name: 'Gradanovic', group:)
+        student = create(:student, first_name: 'Graden', last_name: 'Gradanovic', group:)
+        create(:enrollment, group:, student:, active_since: 1.year.ago)
         skill1 = create(:skill_in_subject, skill_name: 'Featuring', subject:)
         skill2 = create(:skill_in_subject, skill_name: 'Testing', subject:)
 
