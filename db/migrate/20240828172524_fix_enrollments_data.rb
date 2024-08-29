@@ -41,4 +41,3 @@ class FixEnrollmentsData < ActiveRecord::Migration[7.1]
     Lesson.where(group_id: enrollment.group_id).where(date: enrollment.active_since...next_enrollment.active_since).order(:date)
   end
 end
-
