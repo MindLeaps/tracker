@@ -1,6 +1,6 @@
 //= require chartist
 
-function displayLessonGraph(containerId, lessonUid, data) {
+function displayLessonGraph(containerId, lessonId, data) {
   new Chartist.Line(containerId, {
     series: [
       {
@@ -33,7 +33,7 @@ function displayLessonGraph(containerId, lessonUid, data) {
       function(chart) {
         chart.on('draw', function (data) {
           if (data.type === 'point') {
-            if (data.meta.lesson_uid === lessonUid) {
+            if (data.meta.lesson_id === lessonId) {
               data.group.elem('circle', {
                 cx: data.x,
                 cy: data.y,
