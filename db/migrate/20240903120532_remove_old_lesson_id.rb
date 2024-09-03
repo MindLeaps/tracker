@@ -3,7 +3,7 @@ class RemoveOldLessonId < ActiveRecord::Migration[7.1]
     drop_view :lesson_table_rows
     remove_column :grades, :lesson_old_id
     remove_column :lessons, :old_id
-    create_view :lesson_table_rows, version: 3
+    create_view :lesson_table_rows, version: 4
   end
 
   def down
