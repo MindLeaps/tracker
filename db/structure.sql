@@ -1265,6 +1265,14 @@ ALTER TABLE ONLY public.lessons
 
 
 --
+-- Name: lessons lessons_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.lessons
+    ADD CONSTRAINT lessons_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: organizations organizations_mlid_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1450,7 +1458,6 @@ CREATE INDEX index_lessons_on_group_id ON public.lessons USING btree (group_id);
 CREATE UNIQUE INDEX index_lessons_on_group_id_and_subject_id_and_date ON public.lessons USING btree (group_id, subject_id, date) WHERE (deleted_at IS NULL);
 
 
-
 --
 -- Name: index_lessons_on_subject_id; Type: INDEX; Schema: public; Owner: -
 --
@@ -1546,6 +1553,93 @@ CREATE INDEX index_users_roles_on_user_id_and_role_id ON public.users_roles USIN
 -- Name: chapter_summaries _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
+CREATE OR REPLACE VIEW public.chapter_summaries AS
+ SELECT c.id,
+    c.chapter_name,
+    c.mlid AS chapter_mlid,
+    o.mlid AS organization_mlid,
+    concat(o.mlid, '-', c.mlid) AS full_mlid,
+    c.organization_id,
+    o.organization_name,
+    c.deleted_at,
+    (sum(
+        CASE
+            WHEN ((g.id IS NOT NULL) AND (g.deleted_at IS NULL)) THEN 1
+            ELSE 0
+        END))::integer AS group_count,
+    (COALESCE(sum(g.student_count), (0)::numeric))::integer AS student_count,
+    c.created_at,
+    c.updated_at
+   FROM ((public.chapters c
+     LEFT JOIN public.group_summaries g ON ((g.chapter_id = c.id)))
+     LEFT JOIN public.organizations o ON ((c.organization_id = o.id)))
+  GROUP BY c.id, o.id;
+
+
+--
+-- Name: group_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.group_summaries AS
+ SELECT g.id,
+    g.group_name,
+    g.deleted_at,
+    g.created_at,
+    g.chapter_id,
+    c.chapter_name,
+    o.id AS organization_id,
+    o.mlid AS organization_mlid,
+    c.mlid AS chapter_mlid,
+    g.mlid,
+    concat(o.mlid, '-', c.mlid, '-', g.mlid) AS full_mlid,
+    o.organization_name,
+    sum(
+        CASE
+            WHEN ((s.id IS NOT NULL) AND (s.deleted_at IS NULL)) THEN 1
+            ELSE 0
+        END) AS student_count
+   FROM (((public.groups g
+     LEFT JOIN public.students s ON ((g.id = s.group_id)))
+     LEFT JOIN public.chapters c ON ((g.chapter_id = c.id)))
+     LEFT JOIN public.organizations o ON ((c.organization_id = o.id)))
+  GROUP BY g.id, c.id, o.id;
+
+
+--
+-- Name: organization_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.organization_summaries AS
+ SELECT o.id,
+    o.organization_name,
+    o.mlid AS organization_mlid,
+    (sum(
+        CASE
+            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN 1
+            ELSE 0
+        END))::integer AS chapter_count,
+    (sum(
+        CASE
+            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN c.group_count
+            ELSE 0
+        END))::integer AS group_count,
+    (sum(
+        CASE
+            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN c.student_count
+            ELSE 0
+        END))::integer AS student_count,
+    o.updated_at,
+    o.created_at,
+    o.deleted_at
+   FROM (public.organizations o
+     LEFT JOIN public.chapter_summaries c ON ((c.organization_id = o.id)))
+  GROUP BY o.id;
+
+
+--
+-- Name: student_tag_table_rows _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
 CREATE OR REPLACE VIEW public.student_tag_table_rows AS
  SELECT t.id,
     t.tag_name,
@@ -1580,93 +1674,6 @@ CREATE OR REPLACE VIEW public.subject_summaries AS
      LEFT JOIN public.skills sk ON ((sk.id = a.skill_id)))
   WHERE (sk.deleted_at IS NULL)
   GROUP BY su.id;
-
-
---
--- Name: group_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.group_summaries AS
- SELECT g.id,
-    g.group_name,
-    g.deleted_at,
-    g.created_at,
-    g.chapter_id,
-    c.chapter_name,
-    o.id AS organization_id,
-    o.mlid AS organization_mlid,
-    c.mlid AS chapter_mlid,
-    g.mlid,
-    concat(o.mlid, '-', c.mlid, '-', g.mlid) AS full_mlid,
-    o.organization_name,
-    sum(
-        CASE
-            WHEN ((s.id IS NOT NULL) AND (s.deleted_at IS NULL)) THEN 1
-            ELSE 0
-        END) AS student_count
-   FROM (((public.groups g
-     LEFT JOIN public.students s ON ((g.id = s.group_id)))
-     LEFT JOIN public.chapters c ON ((g.chapter_id = c.id)))
-     LEFT JOIN public.organizations o ON ((c.organization_id = o.id)))
-  GROUP BY g.id, c.id, o.id;
-
-
---
--- Name: lesson_skill_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.chapter_summaries AS
- SELECT c.id,
-    c.chapter_name,
-    c.mlid AS chapter_mlid,
-    o.mlid AS organization_mlid,
-    concat(o.mlid, '-', c.mlid) AS full_mlid,
-    c.organization_id,
-    o.organization_name,
-    c.deleted_at,
-    (sum(
-        CASE
-            WHEN ((g.id IS NOT NULL) AND (g.deleted_at IS NULL)) THEN 1
-            ELSE 0
-        END))::integer AS group_count,
-    (COALESCE(sum(g.student_count), (0)::numeric))::integer AS student_count,
-    c.created_at,
-    c.updated_at
-   FROM ((public.chapters c
-     LEFT JOIN public.group_summaries g ON ((g.chapter_id = c.id)))
-     LEFT JOIN public.organizations o ON ((c.organization_id = o.id)))
-  GROUP BY c.id, o.id;
-
-
---
--- Name: organization_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.organization_summaries AS
- SELECT o.id,
-    o.organization_name,
-    o.mlid AS organization_mlid,
-    (sum(
-        CASE
-            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN 1
-            ELSE 0
-        END))::integer AS chapter_count,
-    (sum(
-        CASE
-            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN c.group_count
-            ELSE 0
-        END))::integer AS group_count,
-    (sum(
-        CASE
-            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN c.student_count
-            ELSE 0
-        END))::integer AS student_count,
-    o.updated_at,
-    o.created_at,
-    o.deleted_at
-   FROM (public.organizations o
-     LEFT JOIN public.chapter_summaries c ON ((c.organization_id = o.id)))
-  GROUP BY o.id;
 
 
 --
@@ -1713,7 +1720,7 @@ CREATE OR REPLACE VIEW public.lesson_skill_summaries AS
 
 
 --
--- Name: student_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+-- Name: student_lesson_details _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
 CREATE OR REPLACE VIEW public.student_lesson_details AS
@@ -1735,6 +1742,42 @@ CREATE OR REPLACE VIEW public.student_lesson_details AS
      LEFT JOIN public.skills ON ((skills.id = grades.skill_id)))
   GROUP BY s.id, l.id
   ORDER BY l.subject_id;
+
+
+--
+-- Name: student_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.student_lesson_summaries AS
+ SELECT united.student_id,
+    united.group_id,
+    united.first_name,
+    united.last_name,
+    united.deleted_at,
+    united.lesson_id,
+    united.lesson_date,
+    united.subject_id,
+    united.average_mark,
+    united.grade_count,
+    su.skill_count
+   FROM (( SELECT s.id AS student_id,
+            l.group_id,
+            s.first_name,
+            s.last_name,
+            s.deleted_at,
+            l.id AS lesson_id,
+            l.date AS lesson_date,
+            l.subject_id,
+            round(avg(grades.mark), 2) AS average_mark,
+            count(grades.mark) AS grade_count
+           FROM ((((public.students s
+             JOIN public.enrollments en ON ((s.id = en.student_id)))
+             JOIN public.groups g ON ((g.id = en.group_id)))
+             JOIN public.lessons l ON ((l.group_id = g.id)))
+             LEFT JOIN public.grades ON (((grades.student_id = s.id) AND (grades.lesson_id = l.id) AND (grades.deleted_at IS NULL))))
+          WHERE ((en.active_since < (l.date + 1)) AND ((en.inactive_since IS NULL) OR (en.inactive_since > (l.date - 1))))
+          GROUP BY s.id, l.id) united
+     JOIN public.subject_summaries su ON ((united.subject_id = su.id)));
 
 
 --
@@ -1988,6 +2031,7 @@ SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
 ('20240814130118'),
+('20240828172524'),
 ('20240716100102'),
 ('20240614142029'),
 ('20240610074002'),
