@@ -45,7 +45,7 @@ class StudentTableRow < ApplicationRecord
   has_many :student_tags, foreign_key: :student_id, inverse_of: :student, dependent: :restrict_with_exception
   has_many :tags, through: :student_tags
 
-  enum gender: { M: 'male', F: 'female', NB: 'nonbinary' }
+  enum :gender, { M: 'male', F: 'female', NB: 'nonbinary' }
 
   def readonly?
     true
