@@ -86,6 +86,9 @@ Style/FormatStringToken:
 Style/ClassAndModuleChildren:
   Enabled: false
 
+Style/SuperArguments:
+  Enabled: false
+
 Rails/ReversibleMigration:
   Exclude:
     - db/migrate/20160912004942_add_organization_to_students.rb

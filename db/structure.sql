@@ -72,11 +72,19 @@ CREATE FUNCTION public.update_enrollments() RETURNS trigger
 declare
   current_enrollment_group_id int := null;
 BEGIN
-  SELECT group_id into current_enrollment_group_id FROM enrollments e where e.student_id = new.id;
-  if current_enrollment_group_id is null or current_enrollment_group_id != new.group_id then
-    update enrollments set inactive_since = now() where inactive_since is null;
-    insert into enrollments (student_id, group_id, active_since, inactive_since, created_at, updated_at)
-    values (new.id, new.group_id, now(), null, now(), now());
+  -- Find the current group the student is enrolled in
+  SELECT group_id into current_enrollment_group_id FROM enrollments e where e.student_id = new.id and e.inactive_since is null;
+  -- Insert a new enrollment if this is the first time the student is being enrolled
+  if current_enrollment_group_id is null then
+      insert into enrollments (student_id, group_id, active_since, inactive_since, created_at, updated_at)
+      values (new.id, new.group_id, now(), null, now(), now());
+  elsif current_enrollment_group_id != new.group_id then
+      -- Insert a new enrollment  if this is a different group the student is being enrolled in
+      insert into enrollments (student_id, group_id, active_since, inactive_since, created_at, updated_at)
+      values (new.id, new.group_id, now(), null, now(), now());
+      -- Update the previous enrollment for the student and make it inactive
+      update enrollments set inactive_since = now(), updated_at = now()
+      where inactive_since is null and group_id = current_enrollment_group_id and student_id = new.id;
   end if;
   return new;
 END;
@@ -1667,56 +1675,6 @@ CREATE OR REPLACE VIEW public.lesson_skill_summaries AS
 
 
 --
--- Name: student_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.student_lesson_summaries AS
- SELECT united.student_id,
-    united.group_id,
-    united.first_name,
-    united.last_name,
-    united.deleted_at,
-    united.lesson_id,
-    united.lesson_date,
-    united.subject_id,
-    united.average_mark,
-    united.grade_count,
-    su.skill_count
-   FROM (( SELECT s.id AS student_id,
-            s.group_id,
-            s.first_name,
-            s.last_name,
-            s.deleted_at,
-            l.id AS lesson_id,
-            l.date AS lesson_date,
-            l.subject_id,
-            round(avg(grades.mark), 2) AS average_mark,
-            count(grades.mark) AS grade_count
-           FROM (((public.students s
-             JOIN public.groups g ON ((g.id = s.group_id)))
-             JOIN public.lessons l ON ((g.id = l.group_id)))
-             LEFT JOIN public.grades ON (((grades.student_id = s.id) AND (grades.lesson_id = l.id) AND (grades.deleted_at IS NULL))))
-          GROUP BY s.id, l.id
-        UNION
-         SELECT s.id AS student_id,
-            s.group_id,
-            s.first_name,
-            s.last_name,
-            s.deleted_at,
-            l.id AS lesson_id,
-            l.date AS lesson_date,
-            l.subject_id,
-            round(avg(grades.mark), 2) AS average_mark,
-            count(grades.mark) AS grade_count
-           FROM (((public.lessons l
-             JOIN public.groups g ON ((g.id = l.group_id)))
-             JOIN public.grades ON (((grades.lesson_id = l.id) AND (grades.deleted_at IS NULL))))
-             JOIN public.students s ON ((grades.student_id = s.id)))
-          GROUP BY s.id, l.id) united
-     JOIN public.subject_summaries su ON ((united.subject_id = su.id)));
-
-
---
 -- Name: student_lesson_details _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
@@ -1739,6 +1697,42 @@ CREATE OR REPLACE VIEW public.student_lesson_details AS
      LEFT JOIN public.skills ON ((skills.id = grades.skill_id)))
   GROUP BY s.id, l.id
   ORDER BY l.subject_id;
+
+
+--
+-- Name: student_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.student_lesson_summaries AS
+ SELECT united.student_id,
+    united.group_id,
+    united.first_name,
+    united.last_name,
+    united.deleted_at,
+    united.lesson_id,
+    united.lesson_date,
+    united.subject_id,
+    united.average_mark,
+    united.grade_count,
+    su.skill_count
+   FROM (( SELECT s.id AS student_id,
+            l.group_id,
+            s.first_name,
+            s.last_name,
+            s.deleted_at,
+            l.id AS lesson_id,
+            l.date AS lesson_date,
+            l.subject_id,
+            round(avg(grades.mark), 2) AS average_mark,
+            count(grades.mark) AS grade_count
+           FROM ((((public.students s
+             JOIN public.enrollments en ON ((s.id = en.student_id)))
+             JOIN public.groups g ON ((g.id = en.group_id)))
+             JOIN public.lessons l ON ((l.group_id = g.id)))
+             LEFT JOIN public.grades ON (((grades.student_id = s.id) AND (grades.lesson_id = l.id) AND (grades.deleted_at IS NULL))))
+          WHERE ((en.active_since < (l.date + 1)) AND ((en.inactive_since IS NULL) OR (en.inactive_since > (l.date - 1))))
+          GROUP BY s.id, l.id) united
+     JOIN public.subject_summaries su ON ((united.subject_id = su.id)));
 
 
 --
@@ -1767,16 +1761,6 @@ CREATE OR REPLACE VIEW public.group_lesson_summaries AS
 --
 
 CREATE OR REPLACE VIEW public.lesson_table_rows AS
- WITH group_student_counts AS (
-         SELECT gr.id AS group_id,
-            gr.group_name,
-            c.chapter_name,
-            COALESCE(count(s_1.id), (0)::bigint) AS student_count
-           FROM ((public.groups gr
-             LEFT JOIN public.students s_1 ON (((s_1.group_id = gr.id) AND (s_1.deleted_at IS NULL))))
-             JOIN public.chapters c ON ((gr.chapter_id = c.id)))
-          GROUP BY gr.id, c.chapter_name
-        )
  SELECT l.old_id,
     l.group_id,
     l.date,
@@ -1785,21 +1769,22 @@ CREATE OR REPLACE VIEW public.lesson_table_rows AS
     l.subject_id,
     l.deleted_at,
     l.id,
-    sc.group_name,
-    sc.chapter_name,
+    gr.group_name,
+    c.chapter_name,
     s.subject_name,
-    sc.student_count AS group_student_count,
+    count(DISTINCT ROW(l.id, slu.student_id)) AS group_student_count,
     count(
         CASE
             WHEN (slu.grade_count > 0) THEN 1
             ELSE NULL::integer
         END) AS graded_student_count,
     round(avg(slu.average_mark), 2) AS average_mark
-   FROM (((public.lessons l
+   FROM ((((public.lessons l
+     JOIN public.groups gr ON ((l.group_id = gr.id)))
+     JOIN public.chapters c ON ((gr.chapter_id = c.id)))
      JOIN public.subjects s ON ((l.subject_id = s.id)))
-     JOIN group_student_counts sc ON ((l.group_id = sc.group_id)))
-     JOIN public.student_lesson_summaries slu ON (((l.subject_id = slu.subject_id) AND (l.group_id = slu.group_id) AND (l.date = slu.lesson_date) AND (slu.deleted_at IS NULL))))
-  GROUP BY l.id, s.subject_name, sc.student_count, sc.group_name, sc.chapter_name;
+     JOIN public.student_lesson_summaries slu ON (((l.id = slu.lesson_id) AND (slu.deleted_at IS NULL))))
+  GROUP BY l.id, s.subject_name, gr.group_name, c.chapter_name;
 
 
 --
@@ -2000,6 +1985,8 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240828172524'),
+('20240716100102'),
 ('20240614142029'),
 ('20240610074002'),
 ('20240531115345'),
