@@ -7,6 +7,6 @@ class ReportsController < HtmlController
     @available_chapters = policy_scope Chapter.where(deleted_at: nil).order(:chapter_name)
     @available_groups = policy_scope Group.where(deleted_at: nil).order(:group_name)
 
-    authorize Group
+    authorize Group, :index?
   end
 end

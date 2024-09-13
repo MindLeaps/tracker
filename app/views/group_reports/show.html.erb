@@ -54,6 +54,6 @@
   function onChartsLoad() {
       displayAveragesGraph && displayAveragesGraph('#last_30', '', <%= @lesson_summaries.to_json.html_safe %>)
       displayAveragesGraph && displayAveragesGraph('#group_history', '', <%= @lesson_summaries_lifetime.to_json.html_safe %>)
-    }
+  }
 </script>
 <%= javascript_include_tag "charts", onload: 'onChartsLoad()' %>
