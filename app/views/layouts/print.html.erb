@@ -13,10 +13,17 @@
     <meta name="robots" content="noindex, nofollow">
     <link rel="canonical" href="https://mindleapstracker.org<%= request.path %>" />
   <% end %>
+  <style>
+    @media print {
+      .ct-chart {
+        min-height: 500px;
+      }
+    }
+  </style>
 </head>
 <body class="h-full bg-gray-200">
 <div class="h-full flex">
-  <div class="flex flex-col w-full overflow-auto p-3">
+  <div class="flex flex-col h-full w-full overflow-auto print:overflow-visible p-2">
     <%= yield %>
   </div>
 </div>

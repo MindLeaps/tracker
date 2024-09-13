@@ -5,24 +5,24 @@
        </div>
   <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
     <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
-      <dt class="mt-4 text-lg leading-8 text-gray-600">First lesson</dt>
-      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">Lesson date: <%=@first_lesson[:lesson_date]%></dd>
-      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">Average mark: <%=@first_lesson[:average_mark]%></dd>
+      <dt class="mt-4 text-lg leading-8 text-gray-600">Starting Point</dt>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-xl">Lesson date: <%=@first_lesson[:lesson_date]%></dd>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-xl">Average mark: <%=@first_lesson[:average_mark]%></dd>
     </div>
     <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
-      <dt class="mt-4 text-lg leading-8 text-gray-600">Middle lesson</dt>
-      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">Lesson date: <%=@middle_lesson[:lesson_date]%></dd>
-      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">Average mark: <%=@middle_lesson[:average_mark]%></dd>
+      <dt class="mt-4 text-lg leading-8 text-gray-600">Middle Point</dt>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-xl">Lesson date: <%=@middle_lesson[:lesson_date]%></dd>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-xl">Average mark: <%=@middle_lesson[:average_mark]%></dd>
     </div>
     <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
-      <dt class="mt-4 text-lg leading-8 text-gray-600">Last lesson</dt>
-      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">Lesson date: <%=@last_lesson[:lesson_date]%></dd>
-      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">Average mark: <%=@last_lesson[:average_mark]%></dd>
+      <dt class="mt-4 text-lg leading-8 text-gray-600">Final Point</dt>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-xl">Lesson date: <%=@last_lesson[:lesson_date]%></dd>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-xl">Average mark: <%=@last_lesson[:average_mark]%></dd>
     </div>
   </dl>
 </div>
 
- <section class="flex flex-wrap">
+ <section class="flex flex-wrap print:flex-col">
    <div class="w-full md:w-1/2 p-2">
      <%= render CommonComponents::Card.new(title: t(:average_performance_for_last_30_lessons).capitalize) do |card| %>
        <% card.with_card_content do %>
@@ -38,6 +38,7 @@
      <% end %>
    </div>
  </section>
+
  <section>
    <%= render CommonComponents::Card.new(title: t(:students_in_group).capitalize) do |card| %>
      <% card.with_card_content do %>
@@ -48,12 +49,12 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-   window.print();
+    window.print();
   });
 
   function onChartsLoad() {
-      displayAveragesGraph && displayAveragesGraph('#last_30', '', <%= @lesson_summaries.to_json.html_safe %>)
-      displayAveragesGraph && displayAveragesGraph('#group_history', '', <%= @lesson_summaries_lifetime.to_json.html_safe %>)
+    displayAveragesGraph && displayAveragesGraph('#last_30', '', <%= @lesson_summaries.to_json.html_safe %>)
+    displayAveragesGraph && displayAveragesGraph('#group_history', '', <%= @lesson_summaries_lifetime.to_json.html_safe %>)
   }
 </script>
 <%= javascript_include_tag "charts", onload: 'onChartsLoad()' %>

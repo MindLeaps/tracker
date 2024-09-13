@@ -85,11 +85,13 @@ function displayAveragesGraph(containerId, studentId, data) {
         chart.on('draw', function (data) {
           if (data.type === 'point') {
             if (data.meta.student_id === studentId) {
-              data.element.attr({
-                style: 'stroke: #4CAF50; stroke-width: 10px; fill: #4CAF50;'
+              data.group.elem('circle', {
+                cx: data.x,
+                cy: data.y,
+                r: 1,
+                style: 'fill: #9C27B0; stroke: #9C27B0;',
               });
             }
-            data.element._node.setAttribute('style', 'cursor: pointer');
           }
         });
       }
