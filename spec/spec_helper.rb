@@ -87,7 +87,7 @@ RSpec.configure do |config|
   # Capybara.register_driver :chrome do |app|
   #   version = Capybara::Selenium::Driver.load_selenium
   #   options_key = Capybara::Selenium::Driver::CAPS_VERSION.satisfied_by?(version) ? :capabilities : :options
-  #   browser_options = ::Selenium::WebDriver::Chrome::Options.new.tap do |opts|
+  #   browser_options = Selenium::WebDriver::Chrome::Options.new.tap do |opts|
   #     opts.add_argument('--headless') # Remove this to see tests running in a browser
   #     opts.add_argument('--window-size=2500,2500')
   #     # Workaround https://bugs.chromium.org/p/chromedriver/issues/detail?id=2650&q=load&sort=-id&colspec=ID%20Status%20Pri%20Owner%20Summary

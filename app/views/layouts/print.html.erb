@@ -15,15 +15,22 @@
   <% end %>
   <style>
     @media print {
+      @page {
+        size: auto;
+        margin: 0;
+      }
+
       .ct-chart {
-        min-height: 500px;
+        width: 100%;
+        min-width: 960px;
+        min-height: 500px ;
       }
     }
   </style>
 </head>
 <body class="h-full bg-gray-200">
 <div class="h-full flex">
-  <div class="flex flex-col h-full w-full overflow-auto print:overflow-visible p-2">
+  <div class="flex flex-col h-full w-full overflow-auto print:overflow-visible p-2 print:p-0">
     <%= yield %>
   </div>
 </div>

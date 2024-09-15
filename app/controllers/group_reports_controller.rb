@@ -2,7 +2,7 @@ class GroupReportsController < HtmlController
   skip_after_action :verify_policy_scoped
   layout 'print'
   def show
-    @group = Group.includes(:chapter).find params[:id]
+    @group = Group.find params[:id]
     authorize @group
 
     group_summaries = group_summaries_in_asceding_order

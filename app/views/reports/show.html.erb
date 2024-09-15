@@ -1,4 +1,4 @@
-<% content_for :title, t(:subject_analytics).capitalize %>
+<% content_for :title, t(:reports).capitalize %>
 <div class="overflow-x-scroll">
   <div class="p-4 filter-wrap flex items-center flex-1">
     <div class="p-4 filter-wrap flex items-center flex-1" data-controller="reports-filter" data-reports-filter-path-value="<%= reports_group_path(:placeholder) %>">
@@ -15,7 +15,7 @@
         <%= select_tag :group_select, options_from_collection_for_select(@available_groups, :id, :group_name), :class => 'mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md', 'data-reports-filter-target' => 'select', 'data-action' => 'reports-filter#updateFilter', 'data-name' => 'group_id', 'data-resources' => @available_groups.map { |g| { id: g.id, label: g.group_name, depend_id: g.chapter_id } }.to_json %>
       </div>
       <div class="pl-2 pt-5">
-        <%= render CommonComponents::ButtonComponent.new(label: t(:filter), options: { 'data-reports-filter-target' => 'anchor', 'target' => '_blank' })%>
+        <%= render CommonComponents::ButtonComponent.new(label: t(:generate_report), options: { 'data-reports-filter-target' => 'anchor', 'target' => '_blank' })%>
       </div>
     </div>
   </div>
