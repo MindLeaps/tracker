@@ -52,6 +52,14 @@ function displayLessonGraph(containerId, lessonId, data) {
 }
 
 function displayAveragesGraph(containerId, studentId, data) {
+  let responsiveOptions = [
+    ['print', {
+      width: 400,
+      height: 300,
+      stretch: true
+    }]
+  ];
+
   new Chartist.Line(containerId, {
     series: [
       {
@@ -96,7 +104,7 @@ function displayAveragesGraph(containerId, studentId, data) {
         });
       }
     ]
-  });
+  }, responsiveOptions);
 }
 
 
