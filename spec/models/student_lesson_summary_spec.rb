@@ -26,6 +26,7 @@ RSpec.describe StudentLessonSummary, type: :model do
         [@abimz, @zimba].each { |s| create :enrollment, student: s, group: @group, active_since: 1.year.ago }
 
         create :lesson, group: @group
+        Scenic.database.refresh_materialized_view('student_lesson_summaries')
       end
 
       it 'orders summaries by student last name' do
@@ -45,6 +46,7 @@ RSpec.describe StudentLessonSummary, type: :model do
       @lesson = create(:lesson, group: @group, subject:)
       @student = create :student, group: @group
       create :enrollment, group: @group, student: @student
+      Scenic.database.refresh_materialized_view('student_lesson_summaries')
     end
 
     it 'show the lesson date' do
@@ -72,6 +74,7 @@ RSpec.describe StudentLessonSummary, type: :model do
       @first_grade = create :grade, student: @first_student, lesson: @lesson, skill: @first_skill, mark: 1
       @second_grade = create :grade, student: @first_student, lesson: @lesson, skill: @second_skill, mark: 5
       @deleted_grade = create :grade, student: @first_student, lesson: @lesson, skill: @removed_skill, mark: 1, deleted_at: Time.zone.now
+      Scenic.database.refresh_materialized_view('student_lesson_summaries')
     end
 
     it 'only counts undeleted skills' do

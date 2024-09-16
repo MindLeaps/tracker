@@ -19,6 +19,7 @@ RSpec.describe GroupLessonSummary, type: :model do
       @group = create :group
       @student = create :graded_student, group: @group, grades: { 'skill' => [1] }
       create :enrollment, group: @group, student: @student, active_since: 1.year.ago
+      Scenic.database.refresh_materialized_view('student_lesson_summaries')
     end
 
     it 'returns false' do
@@ -34,6 +35,7 @@ RSpec.describe GroupLessonSummary, type: :model do
         'Grit' => [2, 4]
       }
       create :enrollment, group: @group, student: @student, active_since: 1.year.ago
+      Scenic.database.refresh_materialized_view('student_lesson_summaries')
     end
 
     it 'returns group lesson summaries with average marks and grade count' do
@@ -59,6 +61,7 @@ RSpec.describe GroupLessonSummary, type: :model do
         'Grit' => [2, 3, 5, 3, 4, 5, 6]
       }
       create :enrollment, group: @group, student: @student, active_since: 1.year.ago
+      Scenic.database.refresh_materialized_view('student_lesson_summaries')
     end
 
     it 'returns the target group lesson summary and 2 before and after it' do
@@ -131,6 +134,7 @@ RSpec.describe GroupLessonSummary, type: :model do
       @third_grade = create :grade, student: @second_student, lesson: @lesson, skill: @second_skill, mark: 1
       @grade_for_deleted_student = create :grade, student: @deleted_student, lesson: @lesson, skill: @first_skill, mark: 5
       @deleted_grade = create :grade, student: @first_student, lesson: @lesson, skill: @removed_skill, mark: 1, deleted_at: Time.zone.now
+      Scenic.database.refresh_materialized_view('student_lesson_summaries')
     end
 
     it 'returns a correct average mark' do

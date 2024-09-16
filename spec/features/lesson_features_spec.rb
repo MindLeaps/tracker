@@ -27,6 +27,7 @@ RSpec.describe 'User interacts with lessons' do
       create(:enrollment, group:, student:, active_since: 1.year.ago)
       create(:lesson, subject: sub, group:)
       create(:lesson, subject: sub, group:)
+      Scenic.database.refresh_materialized_view('student_lesson_summaries')
 
       visit '/'
       click_link 'Lessons'
@@ -43,6 +44,7 @@ RSpec.describe 'User interacts with lessons' do
       sub = create :subject, subject_name: 'Feature Testing III'
       create :skill_in_subject, subject: sub
       create(:lesson, subject: sub, group:)
+      Scenic.database.refresh_materialized_view('student_lesson_summaries')
 
       visit '/'
       click_link 'Lessons'
@@ -70,7 +72,8 @@ RSpec.describe 'User interacts with lessons' do
         create :grade_descriptor, mark: 1, grade_description: 'Mark One For Skill Two', skill: skill2
         create :grade_descriptor, mark: 2, grade_description: 'Mark Two For Skill Two', skill: skill2
 
-        @lesson = create :lesson, subject:, group:
+        @lesson = create(:lesson, subject:, group:)
+        Scenic.database.refresh_materialized_view('student_lesson_summaries')
       end
 
       it 'shows students grades in specific lesson', js: true do
@@ -92,6 +95,10 @@ RSpec.describe 'User interacts with lessons' do
         click_button 'Save Student Grades'
 
         expect(page).to have_content 'Student graded.'
+
+        Scenic.database.refresh_materialized_view('student_lesson_summaries')
+        visit "/lessons/#{@lesson.id}"
+
         expect(page).to have_content '2 / 2'
         expect(page).to have_content '1.5'
       end

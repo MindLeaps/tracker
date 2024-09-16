@@ -15,6 +15,7 @@ RSpec.describe LessonsController, type: :controller do
         create :enrollment, group: @group, student: @active_student1, active_since: 1.year.ago
         @lesson1 = create :lesson, group: @group
         @lesson2 = create :lesson, group: @group
+        Scenic.database.refresh_materialized_view('student_lesson_summaries')
 
         get :index
       end
@@ -45,6 +46,8 @@ RSpec.describe LessonsController, type: :controller do
         create :grade, lesson:, student: @active_student2, grade_descriptor: gd1
         create :grade, lesson:, student: @active_student2, grade_descriptor: gd2
         create :grade, lesson:, student: @active_student2, grade_descriptor: gd3
+        Scenic.database.refresh_materialized_view('student_lesson_summaries')
+
         get :show, params: { id: lesson.id }
       end
 

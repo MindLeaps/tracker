@@ -67,7 +67,9 @@ RSpec.configure do |config|
   config.disable_monkey_patching!
 
   config.default_formatter = :documentation
-
+  config.before(:suite) do
+    ActiveRecord::Base.connection.execute('REFRESH MATERIALIZED VIEW public.student_lesson_summaries;')
+  end
   # Print the 10 slowest examples and example groups at the
   # end of the spec run, to help surface which specs are running
   # particularly slow.

@@ -33,7 +33,10 @@ RUN if [[ APP_ENV = "dev" ]]; then \
     && apt-get -y install google-chrome-stable \
 ; fi
 
+RUN bundler install
+RUN bundle lock --add-platform x86_64-linux if [[ APP_ENV = "dev" ]];
 RUN bundle install
 RUN RAILS_ENV="production" SECRET_KEY_BASE="secret" RUBY_YJIT_ENABLE=1 bundle exec rake assets:precompile
 
 ENTRYPOINT ["./ENTRYPOINT.sh"]
+CMD ["run"]
