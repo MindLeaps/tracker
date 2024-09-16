@@ -48,13 +48,16 @@
  </section>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    window.print();
-  });
+  const handlePrint = () => {
+    window.print()
+    document.removeEventListener('DOMContentLoaded', handlePrint)
+  }
 
-  function onChartsLoad() {
+  const onChartsLoad = () => {
     displayAveragesGraph && displayAveragesGraph('#last_30', '', <%= @lesson_summaries.to_json.html_safe %>)
     displayAveragesGraph && displayAveragesGraph('#group_history', '', <%= @lesson_summaries_lifetime.to_json.html_safe %>)
+      
+    document.addEventListener('DOMContentLoaded', handlePrint)
   }
 </script>
 <%= javascript_include_tag "charts", onload: 'onChartsLoad()' %>

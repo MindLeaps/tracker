@@ -15,11 +15,6 @@ RSpec.describe 'User interacts with Reports' do
     it 'displays group and student averages', js: true do
       visit "/reports/groups/#{@group.id}"
 
-      page.execute_script('document.removeEventListener("DOMContentLoaded", function () {
-          window.print();
-        });
-      ')
-
       expect(page).to have_content('Group report')
       expect(page).to have_content('Group averages')
       expect(page).to have_selector('#group_history')
