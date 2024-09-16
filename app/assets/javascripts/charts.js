@@ -107,5 +107,49 @@ function displayAveragesGraph(containerId, studentId, data) {
   }, responsiveOptions);
 }
 
+function displayPercentagesGraph(containerId, data) {
+  let options = [
+      ['', {
+        width: '100%',
+        height: 500
+      }],
+
+    ['print', {
+      width: '100%',
+      height: 300,
+      stretch: true
+    }]
+  ];
+
+  new Chartist.Bar(containerId, {
+    series: [
+      {
+        name: 'Attendances',
+        data: data.map(function(e) {
+          return {
+            x: new Date(e.lesson_date).getTime(), // Convert to timestamp in milliseconds
+            y: e.attendance,
+          };
+        })
+      }
+    ]
+  }, {
+    axisX: {
+      type: Chartist.FixedScaleAxis,
+      divisor: 10,
+      labelInterpolationFnc: function (value) {
+        return new Date(value).toLocaleDateString('en-US'); // Convert timestamp back to date
+      }
+    },
+    axisY: {
+      low: 0,
+      high: 100,
+      labelInterpolationFnc: function (value) {
+        return `${value}%`  // Convert to string with %
+      }
+    }
+  }, options);
+}
+
 
 

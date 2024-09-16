@@ -19,6 +19,7 @@ RSpec.describe 'User interacts with Reports' do
       expect(page).to have_content('Group averages')
       expect(page).to have_selector('#group_history')
       expect(page).to have_selector('#last_30')
+      expect(page).to have_selector('#group_attendance')
       expect(page).to have_content(@student.first_name)
     end
   end
