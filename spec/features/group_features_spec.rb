@@ -133,7 +133,6 @@ RSpec.describe 'User interacts with Groups' do
     end
   end
 
-
   describe 'Group reporting', js: true do
     before :each do
       @group = create :group, group_name: 'Report Group'
