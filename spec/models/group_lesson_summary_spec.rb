@@ -2,6 +2,7 @@
 #
 # Table name: group_lesson_summaries
 #
+#  attendance         :float
 #  average_mark       :float
 #  grade_count        :bigint
 #  group_chapter_name :text
@@ -36,18 +37,21 @@ RSpec.describe GroupLessonSummary, type: :model do
       create :enrollment, group: @group, student: @student, active_since: 1.year.ago
     end
 
-    it 'returns group lesson summaries with average marks and grade count' do
+    it 'returns group lesson summaries with average marks and grade count and attendance' do
       result = GroupLessonSummary.all
       expect(result.size).to eq 3
 
       expect(result[0].grade_count).to eq 2
       expect(result[0].average_mark).to eq 1.5
+      expect(result[0].attendance).to eq 100.00
 
       expect(result[1].grade_count).to eq 2
       expect(result[1].average_mark).to eq 3
+      expect(result[0].attendance).to eq 100.00
 
       expect(result[2].grade_count).to eq 1
       expect(result[2].average_mark).to eq 4
+      expect(result[0].attendance).to eq 100.00
     end
   end
 
@@ -119,8 +123,9 @@ RSpec.describe GroupLessonSummary, type: :model do
       @lesson = create(:lesson, group: @group, subject:)
       @first_student = create :student, group: @group
       @second_student = create :student, group: @group
+      @ungraded_student = create :student, group: @group
       @deleted_student = create :student, group: @group, deleted_at: Time.zone.now
-      [@first_student, @second_student, @deleted_student].each { |s| create :enrollment, student: s, group: @group, active_since: 1.year.ago }
+      [@first_student, @second_student, @ungraded_student, @deleted_student].each { |s| create :enrollment, student: s, group: @group, active_since: 1.year.ago }
 
       @first_skill = create(:skill_in_subject, subject:)
       @second_skill = create(:skill_in_subject, subject:)
@@ -145,6 +150,12 @@ RSpec.describe GroupLessonSummary, type: :model do
       summary = GroupLessonSummary.find_by!(lesson_id: @lesson.id)
 
       expect(summary.grade_count).to eq 3
+    end
+
+    it 'returns the attendance percentage for the present students' do
+      summary = GroupLessonSummary.find_by!(lesson_id: @lesson.id)
+
+      expect(summary.attendance).to be_between(2.0 / 3 * 100, 67)
     end
   end
 end
