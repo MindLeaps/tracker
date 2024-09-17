@@ -12,13 +12,14 @@ RSpec.describe 'User interacts with Reports' do
       create :enrollment, group: @group, student: @student, active_since: 1.year.ago
     end
 
-    it 'displays group and student averages', js: true, skip: 'this spec hangs the rest of the feature specs' do
+    it 'displays group and student averages', js: true do
       visit "/reports/groups/#{@group.id}"
 
-      expect(page).to have_content('Group report')
+      expect(page).to have_content("Group Report - #{@group.group_name}")
       expect(page).to have_content('Group averages')
-      expect(page).to have_selector('#group_history')
-      expect(page).to have_selector('#last_30')
+      expect(page).to have_content('Average performance for last 30 lessons')
+      expect(page).to have_content('Group history')
+      expect(page).to have_content('Group attendance')
       expect(page).to have_content(@student.first_name)
     end
   end

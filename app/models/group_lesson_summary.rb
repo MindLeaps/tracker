@@ -2,6 +2,7 @@
 #
 # Table name: group_lesson_summaries
 #
+#  attendance         :float
 #  average_mark       :float
 #  grade_count        :bigint
 #  group_chapter_name :text
