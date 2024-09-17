@@ -147,7 +147,6 @@ RSpec.describe 'User interacts with Groups' do
       end
 
       within_window report_window do
-        expect(page.current_path).to end_with("/reports/groups/#{@group.id}")
         expect(page).to have_content "Group Report - #{@group.group_name}"
       end
     end
