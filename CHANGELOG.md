@@ -7,6 +7,7 @@
 - Fix for graph in single lesson view to properly highlight current lesson
 - Added Reports page for generating printable reports containing group and student summaries
 - Added attendance to Group Lesson view and attendance graph for Reports
+- Added button in group view that generates report
 
 ## 0.33.0 - Lesson UUIDs & Graphs
 - Added validation for existing tags in an organization
