@@ -270,7 +270,7 @@ en:
   lesson_for_student: Lesson %{date} - Student %{name}
   total: Total
   reports: Reports
-  generate_report: Generate report
+  generate_report: Generate Report
   analytics: Analytics
   general_analytics: General Analytics
   group_analytics: Group Analytics

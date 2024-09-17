@@ -132,4 +132,23 @@ RSpec.describe 'User interacts with Groups' do
       expect(page).to have_content 'Abisouena'
     end
   end
+
+  describe 'Group reporting', js: true do
+    before :each do
+      @group = create :group, group_name: 'Report Group'
+      @student = create :graded_student, group: @group, grades: { 'Memorization' => [3, 4, 5, 6, 7], 'Grit' => [2, 3, 2, 4, 5] }
+      create :enrollment, group: @group, student: @student, active_since: 1.year.ago
+    end
+
+    it 'goes to the group report page' do
+      visit "/groups/#{@group.id}"
+      report_window = window_opened_by do
+        click_link 'Generate Report'
+      end
+
+      within_window report_window do
+        expect(page).to have_content "Group Report - #{@group.group_name}"
+      end
+    end
+  end
 end
