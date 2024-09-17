@@ -5,6 +5,7 @@
 - Changed student lesson summaries and related views to include enrollments
 - Fixed Migration data with proper active_since and inactive_since values
 - Fix for graph in single lesson view to properly highlight current lesson
+- Added Reports page for generating printable reports containing group and student summaries
 
 ## 0.33.0 - Lesson UUIDs & Graphs
 - Added validation for existing tags in an organization

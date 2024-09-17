@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html class="h-full bg-gray-100 overflow-hidden">
+<head>
+  <title>Tracker<% if content_for? :title %><%= " - #{content_for :title}" %><% end %></title>
+  <meta name="turbo-cache-control" content="no-preview">
+  <meta content="notranslate" name="google" />
+  <%= favicon_link_tag 'favicon.ico' %>
+  <%= stylesheet_link_tag 'tailwind.css', media: 'all' %>
+  <%= javascript_importmap_tags %>
+  <%= yield :head_content %>
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
+  <% if staging_site? %>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="canonical" href="https://mindleapstracker.org<%= request.path %>" />
+  <% end %>
+  <style>
+    @media print {
+      @page {
+        size: auto;
+        margin: 0;
+      }
+
+      .ct-chart {
+        min-height: 300px;
+      }
+    }
+  </style>
+</head>
+<body class="h-full bg-gray-200">
+<div class="h-full flex">
+  <div class="flex flex-col h-full w-full overflow-auto print:overflow-visible p-2 print:p-0">
+    <%= yield %>
+  </div>
+</div>
+</body>
+</html>

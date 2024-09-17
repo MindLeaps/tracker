@@ -61,6 +61,9 @@ Rails.application.routes.draw do
 
   resources :student_tags, only: %i[index new create show edit update]
 
+  resource :reports, only: %i[show] do
+    resources :groups, controller: :group_reports, only: %i[show]
+  end
   resources :lessons, only: %i[index new create show] do
     resources :students, controller: :student_lessons, only: %i[show update]
   end

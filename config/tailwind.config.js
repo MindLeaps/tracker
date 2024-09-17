@@ -17,6 +17,9 @@ module.exports = {
         'primary': 'rgb(107 33 168/var(--tw-bg-opacity))',
         'focus': 'rgb(22 163 74/var(--tw-bg-opacity))',
         'current': 'currentColor'
+      },
+      screens: {
+        'print': { 'raw': 'print'}
       }
     },
   },
