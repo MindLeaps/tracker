@@ -1,5 +1,5 @@
 class GroupReportsController < HtmlController
-  include ApplicationHelper
+  include CollectionHelper
   skip_after_action :verify_policy_scoped
   layout 'print'
   def show
