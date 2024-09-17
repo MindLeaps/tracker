@@ -397,7 +397,8 @@ SELECT
     NULL::integer AS subject_id,
     NULL::text AS group_chapter_name,
     NULL::double precision AS average_mark,
-    NULL::bigint AS grade_count;
+    NULL::bigint AS grade_count,
+    NULL::double precision AS attendance;
 
 
 --
@@ -1736,27 +1737,6 @@ CREATE OR REPLACE VIEW public.student_lesson_summaries AS
 
 
 --
--- Name: group_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.group_lesson_summaries AS
- SELECT slu.lesson_id,
-    slu.lesson_date,
-    gr.id AS group_id,
-    gr.chapter_id,
-    slu.subject_id,
-    concat(gr.group_name, ' - ', c.chapter_name) AS group_chapter_name,
-    (round(avg(slu.average_mark), 2))::double precision AS average_mark,
-    (sum(slu.grade_count))::bigint AS grade_count
-   FROM ((public.student_lesson_summaries slu
-     JOIN public.groups gr ON ((slu.group_id = gr.id)))
-     JOIN public.chapters c ON ((gr.chapter_id = c.id)))
-  WHERE (slu.deleted_at IS NULL)
-  GROUP BY slu.lesson_id, gr.id, c.id, slu.subject_id, slu.lesson_date
-  ORDER BY slu.lesson_date;
-
-
---
 -- Name: lesson_table_rows _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
@@ -1785,6 +1765,32 @@ CREATE OR REPLACE VIEW public.lesson_table_rows AS
      JOIN public.subjects s ON ((l.subject_id = s.id)))
      JOIN public.student_lesson_summaries slu ON (((l.id = slu.lesson_id) AND (slu.deleted_at IS NULL))))
   GROUP BY l.id, s.subject_name, gr.group_name, c.chapter_name;
+
+
+--
+-- Name: group_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.group_lesson_summaries AS
+ SELECT slu.lesson_id,
+    slu.lesson_date,
+    gr.id AS group_id,
+    gr.chapter_id,
+    slu.subject_id,
+    concat(gr.group_name, ' - ', c.chapter_name) AS group_chapter_name,
+    (round(avg(slu.average_mark), 2))::double precision AS average_mark,
+    (sum(slu.grade_count))::bigint AS grade_count,
+    (round((((sum(
+        CASE
+            WHEN (slu.grade_count = 0) THEN 0
+            ELSE 1
+        END))::numeric / (count(slu.*))::numeric) * (100)::numeric), 2))::double precision AS attendance
+   FROM ((public.student_lesson_summaries slu
+     JOIN public.groups gr ON ((slu.group_id = gr.id)))
+     JOIN public.chapters c ON ((gr.chapter_id = c.id)))
+  WHERE (slu.deleted_at IS NULL)
+  GROUP BY slu.lesson_id, gr.id, c.id, slu.subject_id, slu.lesson_date
+  ORDER BY slu.lesson_date;
 
 
 --
@@ -1985,6 +1991,7 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20240917090713'),
 ('20240828172524'),
 ('20240716100102'),
 ('20240614142029'),
