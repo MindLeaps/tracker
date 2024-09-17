@@ -78,7 +78,7 @@ function displayAveragesGraph(containerId, studentId, data) {
   }, {
     axisX: {
       type: Chartist.FixedScaleAxis,
-      divisor: 5,
+      divisor: 10,
       labelInterpolationFnc: function (value) {
         return new Date(value).toLocaleDateString('en-US'); // Convert timestamp back to date
       }
