@@ -110,12 +110,10 @@ function displayAveragesGraph(containerId, studentId, data) {
 function displayPercentagesGraph(containerId, data) {
   let options = [
       ['', {
-        width: '100%',
         height: 500
       }],
 
     ['print', {
-      width: '100%',
       height: 300,
       stretch: true
     }]
