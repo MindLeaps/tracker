@@ -56,7 +56,10 @@ function displayAveragesGraph(containerId, studentId, data) {
     ['print', {
       width: 400,
       height: 300,
-      stretch: true
+      stretch: true,
+      axisX:{
+        divisor: 5
+      }
     }]
   ];
 
@@ -114,6 +117,7 @@ function displayPercentagesGraph(containerId, data) {
       }],
 
     ['print', {
+      width: 960,
       height: 300,
       stretch: true
     }]
