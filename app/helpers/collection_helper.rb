@@ -1,7 +1,7 @@
 module CollectionHelper
   def middle_from_array(arr)
     if arr.length.even?
-      arr[(arr.length / 2) - 1] + arr[arr.length / 2]
+      arr[(arr.length / 2) - 1]
     else
       arr[arr.length / 2]
     end
