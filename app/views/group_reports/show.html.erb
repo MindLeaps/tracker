@@ -1,23 +1,23 @@
 <div>
  <div class="text-center">
-         <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Group report - <%=@group.group_name%></h2>
+         <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl print:text-2xl">Group Report - <%=@group.group_name%></h2>
          <p class="mt-4 text-lg leading-8 text-gray-600">Group averages</p>
        </div>
   <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3 print:gap-1">
     <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
       <dt class="mt-4 text-lg leading-8 text-gray-600">Starting Point</dt>
-      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-lg">Lesson date: <%=@first_lesson[:lesson_date]%></dd>
-      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-lg">Average mark: <%=@first_lesson[:average_mark]%></dd>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Lesson date: <%=@first_lesson[:lesson_date]%></dd>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Average mark: <%=@first_lesson[:average_mark]%></dd>
     </div>
     <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
       <dt class="mt-4 text-lg leading-8 text-gray-600">Middle Point</dt>
-      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-lg">Lesson date: <%=@middle_lesson[:lesson_date]%></dd>
-      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-lg">Average mark: <%=@middle_lesson[:average_mark]%></dd>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Lesson date: <%=@middle_lesson[:lesson_date]%></dd>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Average mark: <%=@middle_lesson[:average_mark]%></dd>
     </div>
     <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
       <dt class="mt-4 text-lg leading-8 text-gray-600">Final Point</dt>
-      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-lg">Lesson date: <%=@last_lesson[:lesson_date]%></dd>
-      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-lg">Average mark: <%=@last_lesson[:average_mark]%></dd>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Lesson date: <%=@last_lesson[:lesson_date]%></dd>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Average mark: <%=@last_lesson[:average_mark]%></dd>
     </div>
   </dl>
 </div>
@@ -57,7 +57,9 @@
 
 <script>
   const handlePrint = () => {
-    window.print()
+    setTimeout(() => {
+       window.print()
+    }, 1000)
     document.removeEventListener('DOMContentLoaded', handlePrint)
   }
 
