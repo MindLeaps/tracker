@@ -136,6 +136,7 @@ RSpec.describe 'User interacts with Groups' do
   describe 'Group reporting', js: true do
     before :each do
       @group = create :group, group_name: 'Report Group'
+      @empty_group = create :group, group_name: 'Empty Group'
       @student = create :graded_student, group: @group, grades: { 'Memorization' => [3, 4, 5, 6, 7], 'Grit' => [2, 3, 2, 4, 5] }
       create :enrollment, group: @group, student: @student, active_since: 1.year.ago
     end
@@ -149,6 +150,12 @@ RSpec.describe 'User interacts with Groups' do
       within_window report_window do
         expect(page).to have_content "Group Report - #{@group.group_name}"
       end
+    end
+
+    it 'does not show generate report if empty' do
+      visit "/groups/#{@empty_group.id}"
+
+      expect(page).to_not have_content 'Generate Report'
     end
   end
 end

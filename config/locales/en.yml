@@ -28,6 +28,7 @@ en:
   mindleaps_tracker: MindLeaps Tracker
   mlid: MLID
   name: Name
+  full_name: Full Name
   undo: Undo
   created: Created
   organization_mlid_error_message: Organization MLID has to be 3 characters long and can only contain numbers and letters. No special characters.
@@ -39,6 +40,8 @@ en:
   student_deleted_at: Student deleted %{time} ago
   group_deleted_at: Group deleted %{time} ago
   date_of_birth: Date of Birth
+  join_date: Join Date
+  leave_date: Leave Date
   dob_estimated: DOB Estimated
   circa: "c. "
   global_role: Global Role
@@ -84,6 +87,7 @@ en:
   restore_organization: Restore Deleted Organization
   average_performance_for_last_30_lessons: Average performance for last 30 lessons
   average_performance_group_lifetime: Average performance for the group across lessons
+  average_performance_students_lifetime: Average performance for the students across lessons
   users: Users
   user_information: User Information
   new_user: New User

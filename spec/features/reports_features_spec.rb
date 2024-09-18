@@ -16,11 +16,13 @@ RSpec.describe 'User interacts with Reports' do
       visit "/reports/groups/#{@group.id}"
 
       expect(page).to have_content("Group Report - #{@group.group_name}")
-      expect(page).to have_content('Group averages')
+      expect(page).to have_content('Students')
       expect(page).to have_content('Average performance for last 30 lessons')
       expect(page).to have_content('Group history')
       expect(page).to have_content('Group attendance')
-      expect(page).to have_content(@student.first_name)
+      expect(page).to have_content('Average performance for the students across lessons')
+
+      expect(page).to have_content(@student.proper_name)
     end
   end
 end

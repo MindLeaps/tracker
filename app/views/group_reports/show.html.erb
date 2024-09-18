@@ -1,26 +1,32 @@
 <div>
- <div class="text-center">
-         <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl print:text-2xl">Group Report - <%=@group.group_name%></h2>
-         <p class="mt-4 text-lg leading-8 text-gray-600">Group averages</p>
-       </div>
-  <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3 print:gap-1">
-    <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
-      <dt class="mt-4 text-lg leading-8 text-gray-600">Starting Point</dt>
-      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Lesson date: <%=@group_lesson_summaries.first[:lesson_date]%></dd>
-      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Average mark: <%=@group_lesson_summaries.first[:average_mark]%></dd>
-    </div>
-    <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
-      <dt class="mt-4 text-lg leading-8 text-gray-600">Middle Point</dt>
-      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Lesson date: <%=middle_from_array(@group_lesson_summaries)[:lesson_date]%></dd>
-      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Average mark: <%=middle_from_array(@group_lesson_summaries)[:average_mark]%></dd>
-    </div>
-    <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
-      <dt class="mt-4 text-lg leading-8 text-gray-600">Final Point</dt>
-      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Lesson date: <%=@group_lesson_summaries.last[:lesson_date]%></dd>
-      <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Average mark: <%=@group_lesson_summaries.last[:average_mark]%></dd>
-    </div>
-  </dl>
-</div>
+  <h1 class="text-3xl font-bold tracking-tight text-center text-gray-900 sm:text-4xl print:text-2xl">Group Report - <%=@group.group_name%></h1>
+  <div>
+    <%= render CommonComponents::Card.new(title: t(:students).capitalize) do |card| %>
+      <% card.with_card_content do %>
+        <%= render @student_enrollments_component %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <div>
+    <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3 print:gap-1">
+      <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+        <dt class="mt-4 text-lg leading-8 text-gray-600">Starting Point</dt>
+        <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Lesson date: <%=@group_lesson_summaries.first[:lesson_date]%></dd>
+        <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Average mark: <%=@group_lesson_summaries.first[:average_mark]%></dd>
+      </div>
+      <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+        <dt class="mt-4 text-lg leading-8 text-gray-600">Middle Point</dt>
+        <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Lesson date: <%=middle_from_array(@group_lesson_summaries)[:lesson_date]%></dd>
+        <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Average mark: <%=middle_from_array(@group_lesson_summaries)[:average_mark]%></dd>
+      </div>
+      <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+        <dt class="mt-4 text-lg leading-8 text-gray-600">Final Point</dt>
+        <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Lesson date: <%=@group_lesson_summaries.last[:lesson_date]%></dd>
+        <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Average mark: <%=@group_lesson_summaries.last[:average_mark]%></dd>
+      </div>
+    </dl>
+  </div>
 
  <section class="flex flex-wrap print:flex-nowrap">
    <div class="w-full md:w-1/2 p-2">
@@ -48,9 +54,9 @@
   </div>
 
  <section>
-   <%= render CommonComponents::Card.new(title: t(:students_in_group).capitalize) do |card| %>
+   <%= render CommonComponents::Card.new(title: t(:average_performance_students_lifetime).capitalize) do |card| %>
      <% card.with_card_content do %>
-   <%= render @student_table_component %>
+   <%= render @student_summaries_component %>
        <% end %>
      <% end %>
  </section>
