@@ -8,6 +8,7 @@
 - Added Reports page for generating printable reports containing group and student summaries
 - Added attendance to Group Lesson view and attendance graph for Reports
 - Added button in group view that generates report
+- Added enrolled students table for group reports
 
 ## 0.33.0 - Lesson UUIDs & Graphs
 - Added validation for existing tags in an organization
