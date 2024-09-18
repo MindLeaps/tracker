@@ -2,9 +2,6 @@ class GroupReportsController < HtmlController
   include CollectionHelper
   skip_after_action :verify_policy_scoped
   layout 'print'
-
-  has_scope :table_order, type: :hash, default: { key: :full_name, order: :desc }, only: :show
-
   def show
     @group = Group.find params[:id]
     authorize @group
@@ -12,8 +9,8 @@ class GroupReportsController < HtmlController
     @enrollments_for_group = Enrollment.where(group_id: @group.id)
     @group_lesson_summaries = group_summaries_for_group.map { |summary| lesson_summary(summary) }
     @student_lesson_summaries = StudentLessonSummary.where(group_id: @group.id).order(lesson_date: :asc)
-    @student_summaries_component = TableComponents::Table.new(rows: student_row_reports, row_component: TableComponents::StudentRowReport)
-    @student_enrollments_component = TableComponents::Table.new(rows: enrolled_students, row_component: TableComponents::StudentEnrollmentReport)
+    @student_summaries_component = TableComponents::Table.new(rows: student_row_reports.sort_by { |e| e[:last_name] }, row_component: TableComponents::StudentRowReport)
+    @student_enrollments_component = TableComponents::Table.new(rows: enrolled_students.sort_by { |e| e[:full_name] }, row_component: TableComponents::StudentEnrollmentReport)
   end
 
   def enrolled_students
