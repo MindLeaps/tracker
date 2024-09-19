@@ -152,6 +152,3 @@ function displayPercentagesGraph(containerId, data) {
     }
   }, options);
 }
-
-
-
