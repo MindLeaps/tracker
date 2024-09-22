@@ -1,6 +1,6 @@
 class TableComponents::StudentRowReport < TableComponents::BaseRow
   erb_template <<~ERB
-    <div class="<%= 'shaded-row' if shaded? %> <%= 'deleted-row' if !@item[:first_lesson] && !@item[:middle_lesson] && !@item[:last_lesson] %> table-row-wrapper student-row">
+    <div class="<%= 'shaded-row' if shaded? %> table-row-wrapper student-row">
         <div class="text-right table-cell "><%= @item[:first_name] %></div>
         <div class="text-right table-cell "><%= @item[:last_name] %></div>
         <div class="text-right table-cell "><%= @item[:first_lesson] %></div>

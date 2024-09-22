@@ -54,7 +54,7 @@ function displayLessonGraph(containerId, lessonId, data) {
 function displayAveragesGraph(containerId, studentId, data) {
   let responsiveOptions = [
     ['print', {
-      width: 400,
+      width: 460,
       height: 300,
       stretch: true,
       axisX:{
