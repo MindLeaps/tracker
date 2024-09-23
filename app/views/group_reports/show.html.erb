@@ -81,6 +81,7 @@
     displayAveragesGraph && displayAveragesGraph('#last_30', '', <%= @group_lesson_summaries.last(30).to_json.html_safe %>)
     displayAveragesGraph && displayAveragesGraph('#group_history', '', <%= @group_lesson_summaries.to_json.html_safe %>)
     displayPercentagesGraph && displayPercentagesGraph('#group_attendance', <%= @group_lesson_summaries.to_json.html_safe %>)
+    displayTimelineGraph && displayTimelineGraph('#group_enrollments', <%= @enrollment_timelines.to_json.html_safe %>)
 
     document.addEventListener('DOMContentLoaded', handlePrint)
   }

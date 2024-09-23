@@ -152,3 +152,90 @@ function displayPercentagesGraph(containerId, data) {
     }
   }, options);
 }
+
+
+function displayTimelineGraph(containerId, data){
+  let dataSets = [{
+    name: 'Marko',
+    data: [
+      {x: new Date(Date.parse('2024-01-01')).getTime(), y: 123},
+      {x: new Date(Date.parse('2024-05-01')).getTime(), y: 123},
+      {x: null, y: 123},
+      {x: new Date(Date.parse('2024-07-01')).getTime(), y: 123},
+      {x: new Date(Date.parse('2024-11-01')).getTime(), y: 123}
+    ]
+  },
+    {
+      name: 'Someone else',
+      data: [
+        {x: new Date(Date.parse('2024-01-01')).getTime(), y: 124},
+        {x: new Date(Date.parse('2024-05-01')).getTime(), y: 124},
+        {x: null, y: 124},
+        {x: new Date(Date.parse('2024-07-01')).getTime(), y: 124},
+        {x: new Date(Date.parse('2024-11-01')).getTime(), y: 124}
+      ]
+    },
+    {
+      name: 'Another someone',
+      data: [
+        {x: new Date(Date.parse('2023-01-01')).getTime(), y: 125},
+        {x: new Date(Date.parse('2026-05-01')).getTime(), y: 125},
+        {x: null, y: 125},
+        {x: new Date(Date.parse('2028-07-01')).getTime(), y: 125},
+        {x: new Date(Date.parse('2030-11-01')).getTime(), y: 125}
+      ]
+    }
+  ]
+
+  // new Highcharts.Chart('group_enrollments', {
+  //   chart: {
+  //     type: 'line'
+  //   },
+  //   title: {
+  //     text: 'Student enrollments timeline'
+  //   },
+  //   yAxis:{
+  //     tickInterval: 1,
+  //     ticks: data.map(d => d.data[0].student_id),
+  //     startOnTick: true,
+  //     endOnTick: true,
+  //     labels: {
+  //       formatter: function() {
+  //         return 'Student Id: ' + this.value
+  //       }
+  //     }
+  //   },
+  //   xAxis:{
+  //     type: 'datetime',
+  //     labels: {
+  //       format: '{value:%Y-%m-%d}'
+  //     }
+  //   },
+  //   series: data.map(function(e) {
+  //       return {
+  //         name: e.name,
+  //         data: e.data.map(function (d) {
+  //           return {
+  //             x: new Date(Date.parse(d.date)).getTime(),
+  //             y: d.student_id
+  //           }
+  //         })
+  //       };
+  //     })
+  // });
+  //
+
+
+  let tasks = [
+    {
+      id: 'Task 1',
+      name: 'Redesign website',
+      start: '2016-12-28',
+      end: '2016-12-31',
+      progress: 20,
+      dependencies: 'Task 2, Task 3',
+      custom_class: 'bar-milestone' // optional
+    }
+  ]
+   new Gantt(containerId, tasks, {});
+}

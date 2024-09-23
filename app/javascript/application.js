@@ -5,6 +5,7 @@ import "@hotwired/turbo-rails"
 import 'material-design-lite'
 import 'mdl-selectfield'
 import 'awesomplete'
+import 'frappe-gantt'
 
 import 'controllers'
 // we don't want to enable turbo drive just yet until we finish the redesign
