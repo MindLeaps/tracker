@@ -17,6 +17,7 @@ RSpec.describe 'User interacts with Reports' do
 
       expect(page).to have_content("Group Report - #{@group.group_name}")
       expect(page).to have_content('Students')
+      expect(page).to have_content('Group enrollments')
       expect(page).to have_content('Average performance for last 30 lessons')
       expect(page).to have_content('Group history')
       expect(page).to have_content('Group attendance')

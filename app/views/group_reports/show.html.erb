@@ -1,17 +1,17 @@
 <div>
-  <div class="w-full p-2">
-    <%= render CommonComponents::Card.new(title: t(:group_enrollments).capitalize) do |card| %>
-      <% card.with_card_content do %>
-        <div id="group_enrollments" class="ct-chart-bar bg-white"></div>
-      <% end %>
-    <% end %>
-  </div>
-
   <h1 class="text-3xl font-bold tracking-tight text-center text-gray-900 sm:text-4xl print:text-2xl">Group Report - <%=@group.group_name%></h1>
   <div class="pagebreak">
     <%= render CommonComponents::Card.new(title: t(:students).capitalize) do |card| %>
       <% card.with_card_content do %>
         <%= render @student_enrollments_component %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <div class="w-full p-2">
+    <%= render CommonComponents::Card.new(title: t(:group_enrollments).capitalize) do |card| %>
+      <% card.with_card_content do %>
+        <div id="group_enrollments" class="ct-chart-bar bg-white"></div>
       <% end %>
     <% end %>
   </div>
@@ -73,7 +73,7 @@
 <script>
   const handlePrint = () => {
     setTimeout(() => {
-       window.print()
+       // window.print()
     }, 1000)
     document.removeEventListener('DOMContentLoaded', handlePrint)
   }

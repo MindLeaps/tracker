@@ -11,14 +11,15 @@ class GroupReportsController < HtmlController
     @student_lesson_summaries = StudentLessonSummary.where(group_id: @group.id).order(lesson_date: :asc)
     @student_summaries_component = TableComponents::Table.new(rows: student_row_reports.sort_by { |e| e[:last_name] }, row_component: TableComponents::StudentRowReport)
     @student_enrollments_component = TableComponents::Table.new(rows: enrolled_students.sort_by { |e| e[:full_name] }, row_component: TableComponents::StudentEnrollmentReport)
-    @enrollment_timelines = enrollment_timelines
+    @enrollment_timelines = []
+    populate_enrollment_timelines
   end
 
-  def enrollment_timelines
+  def populate_enrollment_timelines
     ordered_enrollments = @enrollments_for_group.order(:student_id, active_since: :asc)
-    timelines = []
+    @enrollment_timelines = []
     ordered_enrollments.each_with_index do |enrollment, i|
-      timelines.push(
+      @enrollment_timelines.push(
         {
           student_id: "#{enrollment.student_id} #{i}",
           student_name: Student.find_by(id: enrollment.student_id).proper_name,
@@ -28,7 +29,6 @@ class GroupReportsController < HtmlController
         }
       )
     end
-    timelines
   end
 
   def enrolled_students

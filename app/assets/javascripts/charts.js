@@ -155,6 +155,8 @@ function displayPercentagesGraph(containerId, data) {
 
 
 function displayTimelineGraph(containerId, data){
+ let inMultipleYears = data.some(d => new Date(d.active_since).getFullYear() !== new Date(Date.now()).getFullYear()
+     || new Date(d.inactive_since).getFullYear()  !== new Date(Date.now()).getFullYear())
  let timeline_pills = data.map( function(d, i) {
     return {
         id: d.student_id,
@@ -168,21 +170,22 @@ function displayTimelineGraph(containerId, data){
     }
   )
 
-   new Gantt(containerId, timeline_pills, {
+  let final_tasks = [...timeline_pills, {
+    id: 'Todays Date',
+    name: 'Todays Date',
+    start: new Date().toJSON(),
+    end: new Date().toJSON(),
+    progress: 0,
+    custom_class: 'timeline-pill today'
+  }]
+
+   new Gantt(containerId, final_tasks, {
      date_format: 'YYYY-MM-DD',
-     view_mode: 'Week',
-     header_height: 30,
-     step: 30,
+     view_mode: inMultipleYears ? 'Year' : 'Month',
+     header_height: 50,
      padding: 7,
      bar_height: 9,
      bar_corner_radius: 3,
-     arrow_curve: 5,
-     custom_popup_html: function (task) {
-       return ` <div class='timeline-popup'>
-          <h3>${task.name}</h3>
-          <p>Active since: ${task.start}</p>
-          <p>Inactive since: ${task.end}</p>
-        </div> `
-     }
+     arrow_curve: 5
    });
 }
