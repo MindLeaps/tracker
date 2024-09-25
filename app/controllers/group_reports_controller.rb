@@ -11,33 +11,24 @@ class GroupReportsController < HtmlController
     @student_lesson_summaries = StudentLessonSummary.where(group_id: @group.id).order(lesson_date: :asc)
     @student_summaries_component = TableComponents::Table.new(rows: student_row_reports.sort_by { |e| e[:last_name] }, row_component: TableComponents::StudentRowReport)
     @student_enrollments_component = TableComponents::Table.new(rows: enrolled_students.sort_by { |e| e[:full_name] }, row_component: TableComponents::StudentEnrollmentReport)
-    @enrollment_timelines = []
+    @enrollment_timelines = enrollment_timelines
   end
 
   def enrollment_timelines
-    datasets = []
-
-    student_ids = @enrollments_for_group.pluck(:student_id).uniq
-
-    student_ids.each do |id|
-      dataset = { name: Student.find_by(id: id).proper_name, data: [] }
-      single_student_enrollments_ascending = @enrollments_for_group.where(student_id: id).order(active_since: :asc)
-
-      single_student_enrollments_ascending.each do |s|
-        dataset[:data].push({ student_id: id, date: s.active_since })
-
-        if s.inactive_since.present?
-          dataset[:data].push({ student_id: id, date: s.inactive_since })
-          dataset[:data].push({ student_id: id, date: nil })
-        end
-      end
-
-      dataset[:data].push({ student_id: id, date: Time.now }) if single_student_enrollments_ascending.last.inactive_since.blank?
-
-      datasets.push(dataset)
+    ordered_enrollments = @enrollments_for_group.order(:student_id, active_since: :asc)
+    timelines = []
+    ordered_enrollments.each_with_index do |enrollment, i|
+      timelines.push(
+        {
+          student_id: "#{enrollment.student_id} #{i}",
+          student_name: Student.find_by(id: enrollment.student_id).proper_name,
+          active_since: enrollment.active_since,
+          inactive_since: enrollment.inactive_since || @group_lesson_summaries.last[:lesson_date],
+          dependent_on: ordered_enrollments[i - 1]&.student_id == enrollment.student_id ? "#{enrollment.student_id} #{i - 1}" : ''
+        }
+      )
     end
-
-    datasets
+    timelines
   end
 
   def enrolled_students

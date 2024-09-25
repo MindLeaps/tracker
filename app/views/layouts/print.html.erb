@@ -9,11 +9,29 @@
   <%= javascript_importmap_tags %>
   <%= yield :head_content %>
   <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/frappe-gantt/dist/frappe-gantt.css">
   <% if staging_site? %>
     <meta name="robots" content="noindex, nofollow">
     <link rel="canonical" href="https://mindleapstracker.org<%= request.path %>" />
   <% end %>
   <style>
+    #group_enrollments .side-header{
+        display: none;
+    }
+
+    #group_enrollments .gantt{
+        margin-top: 10px;
+    }
+
+    .timeline-pill .bar-label {
+        font-size: .7rem;
+    }
+
+    .timeline-pill .bar {
+        fill: #00c853 !important;
+        opacity: .5;
+    }
+
     @media print {
       @page {
         size: auto;
