@@ -136,6 +136,8 @@ function displayPercentagesGraph(containerId, data) {
       }
     ]
   }, {
+    fullWidth: true,
+    chartPadding: 30,
     axisX: {
       type: Chartist.FixedScaleAxis,
       divisor: 10,
@@ -144,8 +146,6 @@ function displayPercentagesGraph(containerId, data) {
       }
     },
     axisY: {
-      low: 0,
-      high: 100,
       labelInterpolationFnc: function (value) {
         return `${value}%`  // Convert to string with %
       }
@@ -161,8 +161,8 @@ function displayTimelineGraph(containerId, data){
     return {
         id: d.student_id,
         name: d.student_name,
-        start: d.active_since,
-        end: d.inactive_since,
+        start: new Date(d.active_since),
+        end: new Date(d.inactive_since),
         progress: 0,
         dependencies: d.dependent_on,
         custom_class: 'timeline-pill'
@@ -170,22 +170,15 @@ function displayTimelineGraph(containerId, data){
     }
   )
 
-  let final_tasks = [...timeline_pills, {
-    id: 'Todays Date',
-    name: 'Todays Date',
-    start: new Date().toJSON(),
-    end: new Date().toJSON(),
-    progress: 0,
-    custom_class: 'timeline-pill today'
-  }]
-
-   new Gantt(containerId, final_tasks, {
-     date_format: 'YYYY-MM-DD',
-     view_mode: inMultipleYears ? 'Year' : 'Month',
+   new Gantt(containerId, timeline_pills, {
+     view_mode: 'Month',
      header_height: 50,
-     padding: 7,
-     bar_height: 9,
+     column_width: 100,
+     padding: 10,
+     bar_height: 10,
      bar_corner_radius: 3,
-     arrow_curve: 5
+     arrow_curve: 5,
+     today_button: false,
+     popup: null
    });
 }

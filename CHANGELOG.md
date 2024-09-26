@@ -9,6 +9,7 @@
 - Added attendance to Group Lesson view and attendance graph for Reports
 - Added button in group view that generates report
 - Added enrolled students table for group reports
+- Added enrollment chart in group reports
 
 ## 0.33.0 - Lesson UUIDs & Graphs
 - Added validation for existing tags in an organization
