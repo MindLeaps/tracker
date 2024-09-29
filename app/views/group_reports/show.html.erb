@@ -11,7 +11,7 @@
   <div class="w-full p-2">
     <%= render CommonComponents::Card.new(title: t(:group_enrollments).capitalize) do |card| %>
       <% card.with_card_content do %>
-        <div id="group_enrollments" class="ct-chart-bar bg-white"></div>
+        <div id="group_enrollments" class="w-full ct-chart-bar bg-white flex justify-center"></div>
       <% end %>
     <% end %>
   </div>

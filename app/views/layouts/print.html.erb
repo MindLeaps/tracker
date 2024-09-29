@@ -15,8 +15,12 @@
     <link rel="canonical" href="https://mindleapstracker.org<%= request.path %>" />
   <% end %>
   <style>
+    #group_enrollments .gantt-container {
+        overflow: visible;
+    }
+
     #group_enrollments .gantt {
-        margin-top: 10px;
+        margin-top: 5px;
     }
 
     #group_enrollments .current-highlight,
@@ -24,8 +28,16 @@
         background-color: rgb(126 34 206/var(--tw-bg-opacity));
     }
 
+    .timeline-pill.today {
+        display: none;
+    }
+
+    .timeline-pill {
+        pointer-events: none;
+    }
+
     .timeline-pill .bar-label {
-        font-size: .8rem;
+        font-size: .75rem;
     }
 
     .timeline-pill .bar {
@@ -46,6 +58,10 @@
       .pagebreak {
           clear: both;
           page-break-after: always;
+      }
+
+      #group_enrollments .gantt-container {
+          width: 100%;
       }
     }
   </style>

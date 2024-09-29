@@ -156,7 +156,8 @@ function displayPercentagesGraph(containerId, data) {
 
 function displayTimelineGraph(containerId, data){
  let inMultipleYears = data.some(d => new Date(d.active_since).getFullYear() !== new Date(Date.now()).getFullYear()
-     || new Date(d.inactive_since).getFullYear()  !== new Date(Date.now()).getFullYear())
+      || new Date(d.inactive_since).getFullYear()  !== new Date(Date.now()).getFullYear())
+
  let timeline_pills = data.map( function(d, i) {
     return {
         id: d.student_id,
@@ -170,15 +171,32 @@ function displayTimelineGraph(containerId, data){
     }
   )
 
-   new Gantt(containerId, timeline_pills, {
-     view_mode: 'Month',
+  let dataToRender = [...timeline_pills, {
+    id: 'Today',
+    name: 'Today',
+    start: new Date(),
+    end: new Date(),
+    progress: 0,
+    custom_class: 'timeline-pill today'
+  }]
+
+
+  let container = document.getElementById(containerId.substring(1))
+  // Height is related to the options for the chart below
+  // items * (padding + bar_height + one extra row for today's date) + header_height
+  container.style.minHeight = `${(dataToRender.length * 25 + 50)}px`
+
+  new Gantt(containerId, dataToRender, {
+     date_format: 'YYYY-MM-DD',
+     view_mode: inMultipleYears ? 'Year' : 'Month',
      header_height: 50,
-     column_width: 100,
-     padding: 10,
-     bar_height: 10,
+     padding: 12,
+     bar_height: 12,
      bar_corner_radius: 3,
-     arrow_curve: 5,
+     arrow_curve: 10,
      today_button: false,
-     popup: null
-   });
+     popup: null,
+     gantt_start: data[0].first_lesson,
+     gantt_end: data[0].last_lesson
+  });
 }
