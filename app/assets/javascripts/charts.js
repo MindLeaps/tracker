@@ -111,15 +111,22 @@ function displayAveragesGraph(containerId, studentId, data) {
 }
 
 function displayPercentagesGraph(containerId, data) {
+  let firstLesson = new Date(data[0].lesson_date)
+  let dayBeforeFirstLesson = new Date(firstLesson.getTime())
+  dayBeforeFirstLesson.setDate(firstLesson.getDate() - 1)
+
   let options = [
       ['', {
         height: 500
       }],
 
     ['print', {
-      width: 960,
+      width: 780,
       height: 300,
-      stretch: true
+      stretch: true,
+      axisX: {
+        divisor: 10
+      }
     }]
   ];
 
@@ -136,11 +143,11 @@ function displayPercentagesGraph(containerId, data) {
       }
     ]
   }, {
-    fullWidth: true,
-    chartPadding: 30,
+    chartPadding: 20,
     axisX: {
       type: Chartist.FixedScaleAxis,
-      divisor: 10,
+      low: dayBeforeFirstLesson.getTime(),
+      divisor: 20,
       labelInterpolationFnc: function (value) {
         return new Date(value).toLocaleDateString('en-US'); // Convert timestamp back to date
       }
