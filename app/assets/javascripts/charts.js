@@ -54,7 +54,7 @@ function displayLessonGraph(containerId, lessonId, data) {
 function displayAveragesGraph(containerId, studentId, data) {
   let responsiveOptions = [
     ['print', {
-      width: 460,
+      width: 580,
       height: 300,
       stretch: true,
       axisX:{
@@ -121,7 +121,7 @@ function displayPercentagesGraph(containerId, data) {
       }],
 
     ['print', {
-      width: 780,
+      width: 1200,
       height: 300,
       stretch: true,
       axisX: {
@@ -143,6 +143,7 @@ function displayPercentagesGraph(containerId, data) {
       }
     ]
   }, {
+    fullWidth: true,
     chartPadding: 20,
     axisX: {
       type: Chartist.FixedScaleAxis,
@@ -201,7 +202,6 @@ function displayTimelineGraph(containerId, data){
      bar_height: 12,
      bar_corner_radius: 3,
      arrow_curve: 10,
-     today_button: false,
      popup: null,
      gantt_start: data[0].first_lesson,
      gantt_end: data[0].last_lesson
