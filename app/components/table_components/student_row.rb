@@ -6,6 +6,7 @@ class TableComponents::StudentRow < TableComponents::BaseRow
         <div class="table-cell "><span class=""><%= "\#{@item.organization_mlid}-\#{@item.chapter_mlid}-\#{@item.group_mlid}-" %></span><%= @item.mlid %></div>
         <div class="text-right table-cell "><%= @item.last_name %></div>
         <div class="text-right table-cell "><%= @item.first_name %></div>
+        <div class="text-right table-cell "><%= @item.gender %></div>
         <div class="table-cell "><%= "\#{@item.estimated_dob ? t(:circa) : ''}\#{@item.dob}" %></div>
         <div class="text-right table-cell "><% @item.tags.each do |tag|%><span class="mdl-chip"><span class="mdl-chip__text"><%= tag.tag_name %></span></span><% end %></div>
         <div class="text-right table-cell truncate "><%= helpers.student_group_name @item %></div>
@@ -25,6 +26,7 @@ class TableComponents::StudentRow < TableComponents::BaseRow
       { order_key: :full_mlid, column_name: I18n.t(:mlid), numeric: true },
       { order_key: :last_name, column_name: I18n.t(:last_name) },
       { order_key: :first_name, column_name: I18n.t(:first_name) },
+      { order_key: :gender, column_name: I18n.t(:gender) },
       { order_key: :dob, column_name: I18n.t(:date_of_birth), numeric: true },
       { column_name: I18n.t(:tags) },
       { order_key: :group_name, column_name: I18n.t(:group) },
