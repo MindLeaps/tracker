@@ -223,6 +223,12 @@
           series: <%= @gender_performance_change.html_safe %>
       });
 
+      // Map series and trendlines for average group performance
+      let average_performance_series = <%= @average_group_performance.html_safe %>;
+      let average_performance_datasets = average_performance_series.map(s => getDatasetFromSeries(s));
+      let average_performance_trendlines = average_performance_series.length <= 3 ?
+          average_performance_series.map(s => getTrendLineForSeries(s)) : [];
+
       Highcharts.chart('average-performance-per-group', {
           chart: {
               type: 'scatter',
@@ -290,9 +296,68 @@
               }
             }
           },
-          series: <%= @average_group_performance.html_safe %>
-      });
+          series: [...average_performance_datasets, ...average_performance_trendlines]
+      })
   }
+
+  function getDatasetFromSeries(series) {
+      return {
+          type: 'scatter',
+          name: series.name,
+          data: series.data
+      }
+  }
+
+  function getTrendLineForSeries(series) {
+      return {
+          type: 'line',
+          name: `Trend for ${series.name}`,
+          data: calculateTrendLineData(series.data),
+          lineWidth: 1,
+          marker: {
+              enabled: false
+          },
+          enableMouseTracking: false
+      }
+  }
+
+  function calculateTrendLineData(data) {
+      const n = data.length;
+
+      let sumX = 0,
+          sumY = 0,
+          sumXY = 0,
+          sumX2 = 0;
+
+      // Calculate the sums needed for linear regression
+      for (let i = 0; i < n; i++) {
+          const {x, y} = data[i];
+          sumX += x;
+          sumY += y;
+          sumXY += x * y;
+          sumX2 += x ** 2;
+      }
+
+      // Calculate the slope of the trend line
+      const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX ** 2);
+
+      // Calculate the intercept of the trend line
+      const intercept = (sumY - slope * sumX) / n;
+
+      const trendline = []; // Array to store the trend line data points
+
+      // Find the minimum and maximum x-values from the scatter plot data
+      const minX = Math.min(...data.map(({x}) => x));
+      const maxX = Math.max(...data.map(({x}) => x));
+
+      // Calculate the corresponding y-values for the trend line using the slope
+      // and intercept
+      trendline.push([minX, minX * slope + intercept]);
+      trendline.push([maxX, maxX * slope + intercept]);
+
+      return trendline;
+  }
+
 
   function pollForHighcharts (cb) {
     if (window.Highcharts) {
