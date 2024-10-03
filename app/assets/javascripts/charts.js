@@ -1,4 +1,5 @@
 //= require chartist
+//= require frappe-gantt
 
 function displayLessonGraph(containerId, lessonId, data) {
   new Chartist.Line(containerId, {
@@ -190,14 +191,14 @@ function displayTimelineGraph(containerId, data){
 
 
   let container = document.getElementById(containerId.substring(1))
-  // Height is related to the options for the chart below
-  // items * (padding + bar_height + one extra row for today's date) + header_height
+  // Height is set in accordance with the options for the chart below plus some extra spacing
+  // items * (padding + bar_height + one extra row for today's date) + header_height + 10
   container.style.minHeight = `${(dataToRender.length * 25 + 50)}px`
 
   new Gantt(containerId, dataToRender, {
      date_format: 'YYYY-MM-DD',
      view_mode: inMultipleYears ? 'Year' : 'Month',
-     header_height: 50,
+     header_height: 40,
      padding: 12,
      bar_height: 12,
      bar_corner_radius: 3,

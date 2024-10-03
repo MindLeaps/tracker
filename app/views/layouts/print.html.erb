@@ -16,6 +16,7 @@
   <% end %>
   <style>
     #group_enrollments .gantt-container {
+        height: fit-content;
         overflow: visible;
     }
 
@@ -28,8 +29,14 @@
         background-color: rgb(126 34 206/var(--tw-bg-opacity));
     }
 
-    .timeline-pill.today {
+    .timeline-pill.today,
+    #group_enrollments .side-header,
+    #group_enrollments .popup-wrapper {
         display: none;
+    }
+
+    #group_enrollments .grid-header {
+        position: static;
     }
 
     .timeline-pill {
