@@ -270,8 +270,10 @@
               title: {
                   text: '<%= t(:performance) %>'
               },
+              allowDecimals: false,
+              endOnTick: false,
+              tickPositions: [0, 1, 2, 3, 4, 5, 6, 7],
               max: 7,
-              endOnTick: false
           },
           plotOptions: {
             series: {
@@ -288,8 +290,23 @@
               }
             }
           },
-          series: <%= @average_group_performance.html_safe %>
-      });
+          series: (<%= @average_group_performance.html_safe %>).map(s => getDatasetFromSeries(s))
+      })
+  }
+
+  function getDatasetFromSeries(series) {
+      return {
+          type: 'scatter',
+          name: series.name,
+          data: series.data,
+          regression: (<%= @average_group_performance.html_safe %>).length <= 3,
+          regressionSettings: {
+            type: 'polynomial',
+            order: 4,
+            name: `${series.name} - Regression`,
+            lineWidth: 1
+          }
+      }
   }
 
   function pollForHighcharts (cb) {
