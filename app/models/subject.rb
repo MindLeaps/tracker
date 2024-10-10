@@ -39,4 +39,8 @@ class Subject < ApplicationRecord
     removed_skill_ids.each { |id| return Skill.find(id).skill_name if grades_in_skill?(id) }
     false
   end
+
+  def duplicate_skills?
+    assignments.map(&:skill_id).uniq.length != assignments.length
+  end
 end

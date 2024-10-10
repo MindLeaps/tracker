@@ -267,9 +267,11 @@ en:
   skill_restored_text: Skill "%{skill_name}" restored.
   unable_to_delete_skill: Unable to delete skill
   unable_to_remove_skill_from_subject: Unable to remove skill "%{skill_name}" from subject
+  unable_to_update_subject: Unable to update subject
   skill_not_removed_because_grades: Skill not removed because it has grades associated with it. You cannot remove a graded skill.
   skill_not_deleted_because_subject: Skill not deleted because it belongs to a subject. Remove it from the subject before deleting.
   skill_not_deleted_because_grades: Skill not deleted because it has grades associated with it. You cannot delete a graded skill.
+  subject_has_duplicate_skills: Subject should not contain duplicate skills.
   student_does_not_belong_to_group: Student does not belong to this group anymore.
   lesson_for_student: Lesson %{date} - Student %{name}
   total: Total

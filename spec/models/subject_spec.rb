@@ -87,5 +87,31 @@ RSpec.describe Subject, type: :model do
         expect(@some_other_subject.graded_skill_name).to be false
       end
     end
+
+    describe 'duplicate_skills?' do
+      before :each do
+        @subject_with_duplicates = create :subject
+        @subject_without_duplicates = create :subject
+        @empty_subject = create :subject
+        @first_skill = create :skill
+        @second_skill = create :skill
+        create :assignment, subject: @subject_with_duplicates, skill: @first_skill
+        create :assignment, subject: @subject_with_duplicates, skill: @first_skill
+        create :assignment, subject: @subject_without_duplicates, skill: @first_skill
+        create :assignment, subject: @subject_without_duplicates, skill: @second_skill
+      end
+
+      it 'returns true if subject contains duplicate skills' do
+        expect(@subject_with_duplicates.duplicate_skills?).to be true
+      end
+
+      it 'returns false if subject does not contain duplicate skills' do
+        expect(@subject_without_duplicates.duplicate_skills?).to be false
+      end
+
+      it 'returns false if subject does not contain any skills' do
+        expect(@empty_subject.duplicate_skills?).to be false
+      end
+    end
   end
 end
