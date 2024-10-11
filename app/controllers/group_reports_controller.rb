@@ -9,10 +9,25 @@ class GroupReportsController < HtmlController
     @enrollments_for_group = Enrollment.where(group_id: @group.id)
     @group_lesson_summaries = group_summaries_for_group.map { |summary| lesson_summary(summary) }
     @student_lesson_summaries = StudentLessonSummary.where(group_id: @group.id).order(lesson_date: :asc)
-    @student_summaries_component = TableComponents::Table.new(rows: student_row_reports.sort_by { |e| e[:last_name] }, row_component: TableComponents::StudentRowReport)
     @student_enrollments_component = TableComponents::Table.new(rows: enrolled_students.sort_by { |e| e[:full_name] }, row_component: TableComponents::StudentEnrollmentReport)
     @enrollment_timelines = []
+    @reports = []
     populate_enrollment_timelines
+    populate_reports
+  end
+
+  def populate_reports
+    grouped_student_summaries = student_row_reports.group_by { |summary| summary[:subject_id] }
+
+    @group_lesson_summaries.group_by { |summary| summary[:subject_id] }.each do |subject_id, summaries|
+      report_to_add = {}
+      report_to_add[:subject_id] = subject_id
+      report_to_add[:subject_name] = Subject.find(subject_id).subject_name
+      report_to_add[:group_summaries] = summaries
+      report_to_add[:student_summaries] = grouped_student_summaries[subject_id].sort_by { |e| e[:last_name] }
+
+      @reports.push(report_to_add)
+    end
   end
 
   def populate_enrollment_timelines
@@ -78,20 +93,21 @@ class GroupReportsController < HtmlController
   end
 
   def lesson_summary(summary)
-    { lesson_date: summary.lesson_date, average_mark: summary.average_mark, attendance: summary.attendance }
+    { lesson_date: summary.lesson_date, average_mark: summary.average_mark, attendance: summary.attendance, subject_id: summary.subject_id }
   end
 
   def student_row_reports
-    students = @student_lesson_summaries.pluck(:student_id, :first_name, :last_name).uniq
+    students = @student_lesson_summaries.pluck(:student_id, :first_name, :last_name, :subject_id).uniq
     students.map do |student|
-      summaries_for_student = @student_lesson_summaries.where(student_id: student[0])
+      summaries_for_student = @student_lesson_summaries.where(student_id: student[0], subject_id: student[3])
 
       {
         first_name: student[1],
         last_name: student[2],
         first_lesson: summaries_for_student.first.average_mark,
         middle_lesson: middle_from_rel(summaries_for_student).average_mark,
-        last_lesson: summaries_for_student.last.average_mark
+        last_lesson: summaries_for_student.last.average_mark,
+        subject_id: summaries_for_student.first.subject_id
       }
     end
   end
