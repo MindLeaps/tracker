@@ -11,6 +11,17 @@ class GroupReportsController < HtmlController
     @student_lesson_summaries = StudentLessonSummary.where(group_id: @group.id).order(lesson_date: :asc)
     @student_summaries_component = TableComponents::Table.new(rows: student_row_reports.sort_by { |e| e[:last_name] }, row_component: TableComponents::StudentRowReport)
     @student_enrollments_component = TableComponents::Table.new(rows: enrolled_students.sort_by { |e| e[:full_name] }, row_component: TableComponents::StudentEnrollmentReport)
+    @enrollment_timelines = []
+    populate_enrollment_timelines
+  end
+
+  def populate_enrollment_timelines
+    ordered_enrollments = @enrollments_for_group.order(:student_id, active_since: :asc)
+    @enrollment_timelines = []
+
+    ordered_enrollments.each_with_index do |enrollment, i|
+      @enrollment_timelines.push(enrollment_timeline(ordered_enrollments, enrollment, i))
+    end
   end
 
   def enrolled_students
@@ -27,6 +38,18 @@ class GroupReportsController < HtmlController
     end
 
     enrolled_students
+  end
+
+  def enrollment_timeline(ordered_enrollments, enrollment, pos)
+    {
+      student_id: "#{enrollment.student_id} #{pos}",
+      student_name: Student.find_by(id: enrollment.student_id).proper_name,
+      active_since: enrollment.active_since,
+      inactive_since: enrollment.inactive_since || @group_lesson_summaries.last[:lesson_date],
+      dependent_on: ordered_enrollments[pos - 1]&.student_id == enrollment.student_id ? "#{enrollment.student_id} #{pos - 1}" : '',
+      first_lesson: @group_lesson_summaries.first[:lesson_date],
+      last_lesson: @group_lesson_summaries.last[:lesson_date]
+    }
   end
 
   def single_enrollment(multiple_enrollments)

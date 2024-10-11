@@ -6,6 +6,7 @@
   <meta content="notranslate" name="google" />
   <%= favicon_link_tag 'favicon.ico' %>
   <%= stylesheet_link_tag 'tailwind.css', media: 'all' %>
+  <%= stylesheet_link_tag 'frappe-gantt.css' %>
   <%= javascript_importmap_tags %>
   <%= yield :head_content %>
   <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
@@ -14,6 +15,43 @@
     <link rel="canonical" href="https://mindleapstracker.org<%= request.path %>" />
   <% end %>
   <style>
+    #group_enrollments .gantt-container {
+        height: fit-content;
+        overflow: visible;
+    }
+
+    #group_enrollments .gantt {
+        margin-top: 5px;
+    }
+
+    #group_enrollments .current-highlight,
+    #group_enrollments .current-date-highlight {
+        background-color: rgb(126 34 206/var(--tw-bg-opacity));
+    }
+
+    .timeline-pill.today,
+    #group_enrollments .side-header,
+    #group_enrollments .popup-wrapper {
+        display: none;
+    }
+
+    #group_enrollments .grid-header {
+        position: static;
+    }
+
+    .timeline-pill {
+        pointer-events: none;
+    }
+
+    .timeline-pill .bar-label {
+        font-size: .75rem;
+    }
+
+    .timeline-pill .bar {
+        fill: #4CAF50 !important;
+        opacity: .5;
+    }
+
     @media print {
       @page {
         size: auto;
@@ -27,6 +65,10 @@
       .pagebreak {
           clear: both;
           page-break-after: always;
+      }
+
+      #group_enrollments .gantt-container {
+          width: 100%;
       }
     }
   </style>
