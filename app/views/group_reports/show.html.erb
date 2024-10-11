@@ -20,18 +20,18 @@
     <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3 print:gap-1">
       <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
         <dt class="mt-4 text-lg leading-8 text-gray-600">Starting Point</dt>
-        <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Lesson date: <%=@group_lesson_summaries.first[:lesson_date]%></dd>
-        <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Average mark: <%=@group_lesson_summaries.first[:average_mark]%></dd>
+        <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Lesson date: <%=@group_lesson_summaries.first&.[](:lesson_date) || ''%></dd>
+        <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Average mark: <%=@group_lesson_summaries.first&.[](:average_mark) || ''%></dd>
       </div>
       <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
         <dt class="mt-4 text-lg leading-8 text-gray-600">Middle Point</dt>
-        <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Lesson date: <%=middle_from_array(@group_lesson_summaries)[:lesson_date]%></dd>
-        <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Average mark: <%=middle_from_array(@group_lesson_summaries)[:average_mark]%></dd>
+        <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Lesson date: <%=middle_from_array(@group_lesson_summaries)&.[](:lesson_date) || ''%></dd>
+        <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Average mark: <%=middle_from_array(@group_lesson_summaries)&.[](:average_mark) || ''%></dd>
       </div>
       <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
         <dt class="mt-4 text-lg leading-8 text-gray-600">Final Point</dt>
-        <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Lesson date: <%=@group_lesson_summaries.last[:lesson_date]%></dd>
-        <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Average mark: <%=@group_lesson_summaries.last[:average_mark]%></dd>
+        <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Lesson date: <%=@group_lesson_summaries.last&.[](:lesson_date) || ''%></dd>
+        <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Average mark: <%=@group_lesson_summaries.last&.[](:average_mark) || ''%></dd>
       </div>
     </dl>
   </div>
