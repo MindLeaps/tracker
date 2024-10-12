@@ -1331,6 +1331,13 @@ CREATE INDEX index_assignments_on_subject_id ON public.assignments USING btree (
 
 
 --
+-- Name: index_assignments_on_subject_id_and_skill_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_assignments_on_subject_id_and_skill_id ON public.assignments USING btree (subject_id, skill_id);
+
+
+--
 -- Name: index_authentication_tokens_on_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1991,6 +1998,7 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20241012105115'),
 ('20240917090713'),
 ('20240828172524'),
 ('20240716100102'),
