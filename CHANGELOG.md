@@ -13,6 +13,7 @@
 - Added enrollment chart in group reports
 - Group reports are now split according to subject
 - Removed old lesson Ids
+- Fixed missing data for groups with only one lesson in group analytics
 
 ## 0.33.0 - Lesson UUIDs & Graphs
 - Added validation for existing tags in an organization
