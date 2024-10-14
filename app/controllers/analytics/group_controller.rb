@@ -22,7 +22,7 @@ module Analytics
           group_series << {
             name: summaries[0].group_chapter_name,
             data: summaries.map.with_index { |summary, i| { x: i + 1, y: summary.average_mark, date: summary.lesson_date, lesson_url: lesson_path(summary.lesson_id), grade_count: summary.grade_count } },
-            regression: true,
+            regression: summaries.length > 1,
             color: get_color(0),
             regressionSettings: {
               type: 'polynomial',
