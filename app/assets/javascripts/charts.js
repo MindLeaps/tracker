@@ -172,7 +172,7 @@ function displayTimelineGraph(containerId, data){
         id: d.student_id,
         name: d.student_name,
         start: new Date(d.active_since),
-        end: new Date(d.inactive_since),
+        end: d.inactive_since ? new Date(d.inactive_since) : new Date(),
         progress: 0,
         dependencies: d.dependent_on,
         custom_class: 'timeline-pill'

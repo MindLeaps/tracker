@@ -58,7 +58,7 @@ class GroupReportsController < HtmlController
       student_id: "#{enrollment.student_id} #{pos}",
       student_name: Student.find_by(id: enrollment.student_id).proper_name,
       active_since: enrollment.active_since,
-      inactive_since: enrollment.inactive_since || @group_lesson_summaries.last&.[](:lesson_date) || Time.zone.now,
+      inactive_since: enrollment.inactive_since? || @group_lesson_summaries.last&.[](:lesson_date),
       dependent_on: ordered_enrollments[pos - 1]&.student_id == enrollment.student_id ? "#{enrollment.student_id} #{pos - 1}" : '',
       first_lesson: @group_lesson_summaries.first&.[](:lesson_date),
       last_lesson: @group_lesson_summaries.last&.[](:lesson_date)
