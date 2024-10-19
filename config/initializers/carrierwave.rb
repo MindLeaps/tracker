@@ -9,11 +9,11 @@ unless File.basename($PROGRAM_NAME) == 'rake' # we don't want to setup this stuf
       config.fog_provider = 'fog/aws'
       config.fog_credentials = {
         provider: 'AWS',
-        aws_access_key_id: ENV["AWS_ACCESS_KEY_ID"],
-        aws_secret_access_key: ENV["AWS_SECRET_ACCESS_KEY"],
-        region: ENV["AWS_REGION"]
+        aws_access_key_id: ENV.fetch('AWS_ACCESS_KEY_ID', nil),
+        aws_secret_access_key: ENV.fetch('AWS_SECRET_ACCESS_KEY', nil),
+        region: ENV.fetch('AWS_REGION', nil)
       }
-      config.fog_directory = ENV["AWS_BUCKET_NAME"]
+      config.fog_directory = ENV.fetch('AWS_BUCKET_NAME', nil)
       config.fog_public = true
       config.fog_use_ssl_for_aws = true
       config.storage = :fog
