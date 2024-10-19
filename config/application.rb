@@ -30,8 +30,8 @@ module Tracker
     config.autoload_paths += %W[#{config.root}/lib]
 
     # Google OAuth settings
-    config.google_client_id = ENV.fetch('GOOGLE_CLIENT_ID', nil)
-    config.google_client_secret = ENV.fetch('GOOGLE_CLIENT_SECRET', nil)
+    config.google_client_id = Rails.application.credentials.google_client_id
+    config.google_client_secret = Rails.application.credentials.google_client_secret
     config.google_token_info_url = 'https://www.googleapis.com/oauth2/v3/tokeninfo'
 
     config.log_tags = {
