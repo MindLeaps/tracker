@@ -1,6 +1,5 @@
 class StudentImageUploader < CarrierWave::Uploader::Base
   include CarrierWave::MiniMagick
-  include CarrierWave::ImageOptimizer
   include CarrierWave::BombShelter
 
   # Provide a default URL as a default if there hasn't been a file uploaded:
@@ -21,12 +20,10 @@ class StudentImageUploader < CarrierWave::Uploader::Base
   # Create different versions of your uploaded files:
   version :medium do
     process resize_to_fill: [250, 250]
-    process optimize: [{ quality: 70 }]
   end
 
   version :mini_thumb, from_version: :medium do
     process resize_to_fill: [32, 32]
-    process optimize: [{ quality: 70 }]
   end
 
   def store_dir

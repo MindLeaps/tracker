@@ -1,4 +1,5 @@
 class MembershipsController < HtmlController
+  skip_after_action :verify_policy_scoped
   def update
     @user = User.find params.require :user_id
     role = params.require(:membership).require(:role).to_sym
