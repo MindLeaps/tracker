@@ -59,7 +59,7 @@ RSpec.describe SubjectsController, type: :controller do
             organization_id: @subject.organization_id,
             assignments_attributes: {
               0 => { id: @subject.assignments[0].id, skill_id: @subject.assignments[0].skill_id, _destroy: false },
-              1 => { id: @subject.assignments[0].id, skill_id: @subject.assignments[1].skill_id, _destroy: false },
+              1 => { id: @subject.assignments[1].id, skill_id: @subject.assignments[1].skill_id, _destroy: false },
               2 => { skill_id: @new_skill.id }
             }
           } }

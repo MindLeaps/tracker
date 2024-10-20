@@ -11,8 +11,9 @@
 #
 # Indexes
 #
-#  index_assignments_on_skill_id    (skill_id)
-#  index_assignments_on_subject_id  (subject_id)
+#  index_assignments_on_skill_id                 (skill_id)
+#  index_assignments_on_subject_id               (subject_id)
+#  index_assignments_on_subject_id_and_skill_id  (subject_id,skill_id) UNIQUE
 #
 # Foreign Keys
 #

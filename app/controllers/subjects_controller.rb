@@ -59,6 +59,7 @@ class SubjectsController < HtmlController
     graded_skill = @subject.graded_skill_name
 
     return failure(title: t(:unable_to_remove_skill_from_subject, skill_name: graded_skill), text: t(:skill_not_removed_because_grades)) if graded_skill
+    return failure(title: t(:unable_to_update_subject), text: t(:subject_has_duplicate_skills)) if @subject.duplicate_skills?
     return success(title: t(:subject_updated), text: t(:subject_updated_text, subject: @subject.subject_name)) if @subject.save
 
     false
