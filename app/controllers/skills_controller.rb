@@ -13,7 +13,7 @@ class SkillsController < HtmlController
 
   def show
     @skill = Skill.includes(:organization).find params[:id]
-    @average = Grade.where(skill_id: @skill.id).average(:mark)
+    @average = scoped_grades(Grade.where(skill_id: @skill.id)).average(:mark)
     @pagy, @subjects = pagy SubjectPolicy::Scope.new(current_user, skill_subjects).resolve
     @pagy_grades, @grade_descriptors = pagy apply_scopes(@skill.grade_descriptors, table_order_grades: params['table_order_grades'] || { key: :mark, order: :asc })
     @skill_mark_counts = []
@@ -68,12 +68,16 @@ class SkillsController < HtmlController
 
   private
 
+  def scoped_grades(grades)
+    GradePolicy::Scope.new(current_user, grades).resolve
+  end
+
   def populate_skill_mark_counts
-    grades_using_skill_count = Grade.where(skill_id: @skill.id).count
+    grades_using_skill_count = scoped_grades(Grade.where(skill_id: @skill.id)).count
     @skill.grade_descriptors.each do |desc|
       @skill_mark_counts << {
         mark: desc.mark,
-        average: (Grade.where(grade_descriptor_id: desc.id).count / grades_using_skill_count.to_f)
+        average: scoped_grades(Grade.where(grade_descriptor_id: desc.id)).count / grades_using_skill_count.to_f
       }
     end
   end
