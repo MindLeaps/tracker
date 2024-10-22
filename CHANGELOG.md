@@ -1,3 +1,6 @@
+# Unreleased
+- Upgraded to Rails 7.2
+
 ## 0.34.0 - Group Reports
 - Added Count of Graded/absent/total students and total lesson average mark in lesson view
 - Changed Group lesson summaries to show average of students' averages
