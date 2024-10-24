@@ -77,7 +77,7 @@ class SkillsController < HtmlController
     @skill.grade_descriptors.each do |desc|
       @skill_mark_counts << {
         mark: desc.mark,
-        average: scoped_grades(Grade.where(grade_descriptor_id: desc.id)).count / grades_using_skill_count.to_f
+        average: scoped_grades(Grade.where(skill_id: @skill.id).where(grade_descriptor_id: desc.id)).count / grades_using_skill_count.to_f
       }
     end
   end

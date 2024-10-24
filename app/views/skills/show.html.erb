@@ -55,8 +55,8 @@ end %>
 </div>
 
 <script>
-  const showMarkAverages = () => {
+  function onChartsLoad() {
     displayMarkAveragesGraph && displayMarkAveragesGraph(`#mark_percentages`, <%= @skill_mark_counts.to_json.html_safe %>)
   }
 </script>
-<%= javascript_include_tag "charts", onload: 'showMarkAverages()' %>
+<%= javascript_include_tag "charts", onload: 'onChartsLoad()' %>

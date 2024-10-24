@@ -37,7 +37,7 @@ RSpec.describe 'User interacts with skills', js: true do
       click_link 'Add Skill'
 
       fill_in 'Skill name', with: 'Feature Test Skill'
-      fill_in 'Skill description', with: 'This skill is usefull only for testing.'
+      fill_in 'Skill description', with: 'This skill is useful only for testing.'
       select 'Skill Feature Organization', from: 'skill_organization_id'
 
       click_button 'Add Grade'
