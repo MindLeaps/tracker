@@ -245,6 +245,8 @@ en:
   mark: Mark
   average: Average
   average_grade: Average Grade
+  average_mark_for_skill: Average Mark for Skill
+  mark_percentages: Mark Percentages
   graded_of_skills: Graded / Skills
   grade_count: Grade Count
   ungraded: Ungraded

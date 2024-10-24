@@ -6,7 +6,7 @@
   (CommonComponents::ButtonComponent.new(label: t(:add_skill), href: new_skill_path) if policy(Skill).new?)
 ].compact) %>
 
-<%= render TableComponents::Table.new(pagy: @pagy, rows: @skills, row_component: TableComponents::SkillRow) do |t|
+<%= render TableComponents::Table.new(pagy: @pagy, rows: @skills.uniq, row_component: TableComponents::SkillRow) do |t|
 t.with_left do %>
 <div class="flex items-center justify-between">
   <div class="flex-1">

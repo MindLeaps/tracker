@@ -22,6 +22,9 @@ end %>
             <ul>
               <li><%= t(:skill_name) %>: <%= @skill.skill_name %></li>
               <li><%= t(:skill_description) %>: <%= @skill.skill_description %></li>
+              <% if @average.present? %>
+                <li><%= t(:average_mark_for_skill) %>: <%= @average.round(0) %></li>
+              <% end %>
             </ul>
           </div>
         <% end %>
@@ -31,6 +34,11 @@ end %>
         <div class="bg-white">
           <%= render TableComponents::Table.new(rows: @grade_descriptors, row_component: TableComponents::GradeDescriptorRow, options: { no_pagination: true }, order_scope_name: :table_order_grades) %>
         </div>
+        <% end %>
+      <% end %>
+      <%= render CommonComponents::Card.new(title: t(:mark_percentages).capitalize) do |card| %>
+        <% card.with_card_content do %>
+          <div id="mark_percentages" class="ct-chart-bar bg-white"></div>
         <% end %>
       <% end %>
     </section>
@@ -45,3 +53,10 @@ end %>
     </section>
   </div>
 </div>
+
+<script>
+  function onChartsLoad() {
+    displayMarkAveragesGraph && displayMarkAveragesGraph(`#mark_percentages`, <%= @skill_mark_counts.to_json.html_safe %>)
+  }
+</script>
+<%= javascript_include_tag "charts", onload: 'onChartsLoad()' %>
