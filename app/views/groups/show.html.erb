@@ -31,9 +31,42 @@ end %>
 <section>
   <%= render CommonComponents::Card.new(title: t(:students_in_group).capitalize) do |card| %>
     <% card.with_card_content do %>
-  <%= render @student_table_component %>
-      <% end %>
+      <%= render @student_table_component %>
     <% end %>
+  <% end %>
+</section>
+<style>
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
+
+    .table {
+        display: grid;
+        grid-template-columns: repeat(4, 2fr) 1fr;
+        column-gap: 2rem;
+        align-items: bottom;
+        padding: 1rem;
+        border: 1px solid #ccc;
+        border-bottom: none;
+        border-collapse: collapse;
+    }
+
+    turbo-frame:last-child .table {
+        border-bottom: 1px solid #ccc;
+    }
+
+    turbo-frame:nth-child(even) .table {
+        background: #fafafa;
+    }
+
+    .datefield {
+        line-height: 1.12;
+    }
+</style>
+<section>
+  <div id="students">
+    <%= render @students %>
+  </div>
 </section>
 
 <%= javascript_tag do %>

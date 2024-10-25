@@ -21,6 +21,8 @@ class GroupsController < HtmlController
         average_mark: summary.average_mark
       }
     end
+
+    @students = Student.where(group_id: @group.id)
   end
 
   def new
