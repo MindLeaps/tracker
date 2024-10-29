@@ -1,8 +1,11 @@
 <%= turbo_frame_tag student do %>
   <div class="table min-w-full">
-    <div><%= student.proper_name %></div>
-    <div><%= student.dob %></div>
+    <div><%= student.mlid %></div>
+    <div><%= student.last_name %></div>
+    <div><%= student.first_name %></div>
     <div><%= student.gender %></div>
+    <div><%= student.dob %></div>
+    <div><%= student.created_at.strftime('%F') %></div>
     <div>
         <%= link_to edit_student_path(student) do %>
           <svg class="inline-block w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>

@@ -25,6 +25,35 @@ class GroupsController < HtmlController
     @students = Student.where(group_id: @group.id)
   end
 
+  def new_student
+    @group = Group.find params.require :id
+    authorize @group
+
+    @student = Student.new
+    @student.group = Group.find params.require :id
+    @student
+  end
+
+  def create_new_student
+    @group = Group.find params.require :id
+    authorize @group
+
+    @student = Student.new(inline_student_params)
+    @student.group = Group.find params.require :id
+
+    if @student.save
+      flash.now[:notice] = t(:student_added)
+      render turbo_stream: [
+        turbo_stream.prepend('students', @student),
+        turbo_stream.replace(
+          'form_student', partial: 'form', locals: { student: Student.new }
+        )
+      ]
+    else
+      render :new_student, status: :unprocessable_entity
+    end
+  end
+
   def new
     authorize Group
     @group = populate_new_group
@@ -82,6 +111,11 @@ class GroupsController < HtmlController
   end
 
   private
+
+  def inline_student_params
+    p = params.require(:student)
+    p.permit(*Student.permitted_params)
+  end
 
   def group_params
     params.require(:group).permit :group_name, :mlid, :chapter_id

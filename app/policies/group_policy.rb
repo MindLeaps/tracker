@@ -11,6 +11,14 @@ class GroupPolicy < ApplicationPolicy
     destroy?
   end
 
+  def new_student?
+    user.administrator?(record&.chapter&.organization) || user.is_teacher_of?(record.chapter.organization)
+  end
+
+  def create_new_student?
+    user.administrator?(record&.chapter&.organization) || user.is_teacher_of?(record.chapter.organization)
+  end
+
   class Scope
     attr_reader :user, :scope
 

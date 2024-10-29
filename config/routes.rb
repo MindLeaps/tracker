@@ -52,6 +52,8 @@ Rails.application.routes.draw do
   end
   resources :groups, only: %i[index new create show edit update destroy] do
     member { post :undelete }
+    member { get :new_student }
+    member { post :create_new_student }
   end
 
   resources :students, only: %i[index new create show edit update destroy] do
