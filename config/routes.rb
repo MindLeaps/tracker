@@ -54,6 +54,9 @@ Rails.application.routes.draw do
     member { post :undelete }
     member { get :new_student }
     member { post :create_new_student }
+    member { post :edit_student }
+    member { patch :update_student }
+    member { delete :delete_student }
   end
 
   resources :students, only: %i[index new create show edit update destroy] do

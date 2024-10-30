@@ -33,14 +33,14 @@ end %>
   <%= render CommonComponents::Card.new(title: t(:students_in_group).capitalize) do |card| %>
     <% card.with_card_content do %>
         <div class="min-w-full">
-          <div class="table min-w-full">
-            <div>MLID</div>
-            <div>Last Name</div>
-            <div>First Name</div>
-            <div>Gender</div>
-            <div>Date of Birth</div>
-            <div>Created</div>
-            <div>Actions</div>
+          <div class="table min-w-full bg-gray-50 px-4 border-b border-gray-200">
+            <div class="table-cell uppercase"><%= t(:mlid) %></div>
+            <div class="table-cell uppercase"><%= t(:last_name) %></div>
+            <div class="table-cell uppercase"><%= t(:first_name) %></div>
+            <div class="table-cell uppercase"><%= t(:gender) %></div>
+            <div class="table-cell uppercase"><%= t(:date_of_birth) %></div>
+            <div class="table-cell uppercase"><%= t(:created) %></div>
+            <div class="table-cell uppercase"><%= t(:actions) %></div>
           </div>
           <%= turbo_frame_tag "new-student-form", src: new_student_group_path %>
           <div id="students">
@@ -70,21 +70,9 @@ end %>
         grid-template-columns: repeat(6, 2fr) 1fr;
         column-gap: 1rem;
         align-items: center;
-        padding: 1em;
-        border: 1px solid #ccc;
-        border-bottom: none;
-        border-collapse: collapse;
     }
 
-    turbo-frame:last-child .table {
-        border-bottom: 1px solid #ccc;
-    }
-
-    turbo-frame:nth-child(even) .table {
-        background: #fafafa;
-    }
-
-    .datefield {
-        line-height: 1.12;
+    turbo-frame:nth-child(odd) .table {
+        background-color: rgb(241 245 249/var(--tw-bg-opacity));
     }
 </style>
