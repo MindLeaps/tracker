@@ -13,16 +13,13 @@ class GroupsController < HtmlController
   def show
     @group = Group.includes(:chapter).find params[:id]
     authorize @group
-    @pagy, @student_rows = pagy apply_scopes(StudentTableRow.where(group_id: @group.id).includes(:tags, :group))
-    @student_table_component = TableComponents::Table.new(pagy: @pagy, rows: @student_rows, row_component: TableComponents::StudentRow)
+    @students = Student.where(group_id: @group.id).where(deleted_at: nil).order(last_name: :asc)
     @group_summaries = GroupLessonSummary.where(group_id: @group.id).where.not(average_mark: nil).order(lesson_date: :asc).last(30).map do |summary|
       {
         lesson_date: summary.lesson_date,
         average_mark: summary.average_mark
       }
     end
-
-    @students = Student.where(group_id: @group.id).where(deleted_at: nil).order(last_name: :asc)
   end
 
   def new
@@ -91,53 +88,47 @@ class GroupsController < HtmlController
   def create_new_student
     @group = Group.find params.require :id
     authorize @group
-
     @student = Student.new(inline_student_params)
     @student.group = @group
 
     if @student.save
-      success(title: t(:student_added), text: t(:student_name_added, name: @student.proper_name))
+      success_now(title: t(:student_added), text: t(:student_name_added, name: @student.proper_name))
       render turbo_stream: [
         turbo_stream.prepend('students', @student),
-        turbo_stream.replace(
-          'form_student', partial: 'form', locals: { student: Student.new, url: create_new_student_group_path }
-        )
+        turbo_stream.replace('form_student', partial: 'form', locals: { student: Student.new, url: create_new_student_group_path })
       ]
     else
-      failure(title: t(:student_invalid), text: t(:fix_form_errors))
       render :new_student, status: :unprocessable_entity
     end
   end
 
   def delete_student
-    skip_authorization
-
     @student = Student.find_by(id: params.require(:id))
-    @student.deleted_at = Time.zone.now
+    authorize @student
 
+    @student.deleted_at = Time.zone.now
     return unless @student.save
 
-    render turbo_stream: [
-      turbo_stream.remove(@student)
-    ]
-
-    success(title: t(:student_deleted), text: t(:student_deleted_text, student: @student.proper_name))
+    render turbo_stream: [turbo_stream.remove(@student)]
+    success_now(title: t(:student_deleted), text: t(:student_deleted_text, student: @student.proper_name))
   end
 
   def edit_student
-    skip_authorization
-
     @student = Student.find_by(id: params.require(:id))
+    authorize @student
   end
 
   def update_student
+    @student = Student.find_by(id: params.require(:id))
+    authorize @student
+
     if @student.update(inline_student_params)
-      success(title: t(:student_updated), text: t(:student_name_updated, name: @student.proper_name))
+      success_now(title: t(:student_updated), text: t(:student_name_updated, name: @student.proper_name))
       render turbo_stream: [
         turbo_stream.replace(@student, @student)
       ]
     else
-      failure(title: t(:student_invalid), text: t(:fix_form_errors))
+      failure_now(title: t(:student_invalid), text: t(:fix_form_errors))
       render :edit_student, status: :unprocessable_entity
     end
   end

@@ -50,14 +50,6 @@ end %>
     <% end %>
   <% end %>
 </section>
-
-<section>
-  <%= render CommonComponents::Card.new(title: t(:students_in_group).capitalize) do |card| %>
-    <% card.with_card_content do %>
-      <%= render @student_table_component %>
-    <% end %>
-  <% end %>
-</section>
 <%= javascript_tag do %>
   function onChartsLoad() {
     displayAveragesGraph && displayAveragesGraph('.ct-chart', '', <%= @group_summaries.to_json.html_safe %>);
@@ -74,5 +66,9 @@ end %>
 
     turbo-frame:nth-child(odd) .table {
         background-color: rgb(241 245 249/var(--tw-bg-opacity));
+    }
+
+    turbo-frame:nth-child(odd) .table:hover {
+        background-color: rgb(187 247 208/var(--tw-bg-opacity))
     }
 </style>
