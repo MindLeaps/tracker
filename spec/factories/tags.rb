@@ -15,7 +15,7 @@
 #
 FactoryBot.define do
   factory :tag do
-    tag_name { Faker::Games::Pokemon.name }
+    tag_name { Faker::Lorem.unique.characters }
     organization { create :organization }
     shared { true }
   end

@@ -55,6 +55,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
+    FactoryBot.rewind_sequences
     Capybara.raise_server_errors = true
   end
 
