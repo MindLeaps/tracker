@@ -37,7 +37,7 @@ RSpec.describe 'User interacts with skills', js: true do
       click_link 'Add Skill'
 
       fill_in 'Skill name', with: 'Feature Test Skill'
-      fill_in 'Skill description', with: 'This skill is usefull only for testing.'
+      fill_in 'Skill description', with: 'This skill is useful only for testing.'
       select 'Skill Feature Organization', from: 'skill_organization_id'
 
       click_button 'Add Grade'
@@ -52,10 +52,13 @@ RSpec.describe 'User interacts with skills', js: true do
 
     it 'shows a skill' do
       org = create :organization, organization_name: 'Skill Feature Show Organization'
+      group = create :group, group_name: 'Skill Feature Group'
       desc1 = create :grade_descriptor, mark: 1, grade_description: 'Show Skill Feature Test Grade One'
       desc2 = create :grade_descriptor, mark: 2, grade_description: 'Show Skill Feature Test Grade Two'
       skill = create :skill_in_subject, skill_name: 'Some Skill', skill_description: 'This is a skill for feature testing',
                                         organization: org, grade_descriptors: [desc1, desc2]
+      student = create :graded_student, group: group, grades: { 'Some Skill' => [1, 2, 1] }, subject: skill.subjects.first
+      create :enrollment, group: group, student: student, active_since: 1.year.ago
       additional_subject = create :subject, organization: org
       skill.subjects << additional_subject
       skill.save!
@@ -74,6 +77,8 @@ RSpec.describe 'User interacts with skills', js: true do
       expect(page).to have_content 'Subjects with this skill'
       expect(page).to have_content skill.subjects[0].subject_name
       expect(page).to have_content skill.subjects[1].subject_name
+      expect(page).to have_content "Average Mark for Skill: #{(1 + 2 + 1) / 3}"
+      expect(page).to have_content 'Mark percentages'
     end
 
     describe 'Skill Deletion' do
