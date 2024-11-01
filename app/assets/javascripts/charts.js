@@ -208,3 +208,29 @@ function displayTimelineGraph(containerId, data){
      gantt_end: data[0].last_lesson
   });
 }
+
+function displayMarkAveragesGraph(containerId, data) {
+  let xAxisTicks = data.map(d => d.mark)
+
+  new Chartist.Bar(containerId, {
+    labels: xAxisTicks,
+    series: [
+      {
+        name: 'Mark Averages',
+        data: data.map(function(e) {
+          return {
+            x: e.mark,
+            y: e.average
+          };
+        })
+      }
+    ]
+  }, {
+    fullWidth: true,
+    axisY: {
+      labelInterpolationFnc: function (value) {
+        return `${value * 100}%`  // Convert to string with %
+      }
+    }
+  });
+}
