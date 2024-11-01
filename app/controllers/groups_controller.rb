@@ -80,11 +80,6 @@ class GroupsController < HtmlController
 
   private
 
-  def inline_student_params
-    p = params.require(:student)
-    p.permit(*Student.permitted_params)
-  end
-
   def group_params
     params.require(:group).permit :group_name, :mlid, :chapter_id
   end
