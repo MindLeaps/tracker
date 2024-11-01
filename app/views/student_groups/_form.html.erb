@@ -1,6 +1,9 @@
-<%= form_with url: url, model: student, id: dom_id(student, 'form'), class: "flex items-center justify-between min-w-full bg-gray-50 px-4 border-b border-gray-200" do |form| %>
+<%= form_with url: url, model: student, id: dom_id(student, 'form'), class: "table min-w-full bg-gray-50 px-4 border-b border-gray-200" do |form| %>
   <div class="p-4">
-    <%= form.text_field :mlid, class: "block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm" %>
+    <div class="flex items-center">
+      <span class="inline-block whitespace-nowrap text-sm font-medium text-gray-700"><%= @group.full_mlid %>-</span>
+      <%= form.text_field :mlid, class: "inline-block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm" %>
+    </div>
     <%= render ValidationErrorComponent.new(model: @student, key: :mlid) %>
   </div>
   <div class="p-4">
@@ -31,7 +34,7 @@
     <label class="text-xs font-medium text-gray-700 cursor-pointer"><%= t(:dob_estimated) %></label>
     <%= render ValidationErrorComponent.new(model: @student, key: :dob) %>
   </div>
-  <div></div>
+  <div class="p-4"></div>
   <div class="p-4">
     <%= form.submit class: "px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 cursor-pointer" %>
   </div>

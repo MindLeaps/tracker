@@ -1,0 +1,3 @@
+<%= turbo_frame_tag "new-student-form", class: "w-full" do %>
+  <%= render "form", student: @student, url: group_students_path(@group) %>
+<% end %>

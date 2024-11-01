@@ -78,61 +78,6 @@ class GroupsController < HtmlController
     redirect_to group_path
   end
 
-  def new_student
-    @group = Group.find params.require :id
-    authorize @group
-
-    @student = Student.new(group: @group)
-  end
-
-  def create_new_student
-    @group = Group.find params.require :id
-    authorize @group
-    @student = Student.new(inline_student_params)
-    @student.group = @group
-
-    if @student.save
-      success_now(title: t(:student_added), text: t(:student_name_added, name: @student.proper_name))
-      render turbo_stream: [
-        turbo_stream.prepend('students', @student),
-        turbo_stream.replace('form_student', partial: 'form', locals: { student: Student.new, url: create_new_student_group_path })
-      ]
-    else
-      render :new_student, status: :unprocessable_entity
-    end
-  end
-
-  def delete_student
-    @student = Student.find_by(id: params.require(:id))
-    authorize @student
-
-    @student.deleted_at = Time.zone.now
-    return unless @student.save
-
-    render turbo_stream: [turbo_stream.remove(@student)]
-    success_now(title: t(:student_deleted), text: t(:student_deleted_text, student: @student.proper_name))
-  end
-
-  def edit_student
-    @student = Student.find_by(id: params.require(:id))
-    authorize @student
-  end
-
-  def update_student
-    @student = Student.find_by(id: params.require(:id))
-    authorize @student
-
-    if @student.update(inline_student_params)
-      success_now(title: t(:student_updated), text: t(:student_name_updated, name: @student.proper_name))
-      render turbo_stream: [
-        turbo_stream.replace(@student, @student)
-      ]
-    else
-      failure_now(title: t(:student_invalid), text: t(:fix_form_errors))
-      render :edit_student, status: :unprocessable_entity
-    end
-  end
-
   private
 
   def inline_student_params

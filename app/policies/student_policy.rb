@@ -19,18 +19,6 @@ class StudentPolicy < ApplicationPolicy
     destroy?
   end
 
-  def delete_student?
-    user.administrator?(record&.group&.chapter&.organization) || user.is_teacher_of?(record.group.chapter.organization)
-  end
-
-  def edit_student?
-    user.administrator?(record&.group&.chapter&.organization) || user.is_teacher_of?(record.group.chapter.organization)
-  end
-
-  def update_student?
-    user.administrator?(record&.group&.chapter&.organization) || user.is_teacher_of?(record.group.chapter.organization)
-  end
-
   class Scope
     attr_reader :user, :scope
 

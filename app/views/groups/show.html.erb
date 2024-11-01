@@ -42,7 +42,7 @@ end %>
             <div class="table-cell uppercase"><%= t(:created) %></div>
             <div class="table-cell uppercase"><%= t(:actions) %></div>
           </div>
-          <%= turbo_frame_tag "new-student-form", src: new_student_group_path %>
+          <%= turbo_frame_tag "new-student-form", src: new_group_student_path(@group.id) %>
           <div id="students">
             <%= render @students %>
           </div>
