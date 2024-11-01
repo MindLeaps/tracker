@@ -35,7 +35,7 @@ RSpec.describe LessonsController, type: :controller do
         @deleted_student = create :student, group: @group, deleted_at: Time.zone.now
         [@active_student1, @active_student2, @deleted_student].each { |s| create :enrollment, student: s, group: @group, active_since: 1.year.ago }
 
-        lesson = create :lesson, group: @group
+        lesson = create :lesson, group: @group, date: Time.zone.today
         gd1 = create :grade_descriptor, skill: lesson.subject.skills[0], mark: 1
         gd2 = create :grade_descriptor, skill: lesson.subject.skills[1], mark: 2
         gd3 = create :grade_descriptor, skill: lesson.subject.skills[2], mark: 3
@@ -96,7 +96,7 @@ RSpec.describe LessonsController, type: :controller do
           expect(created_lesson.subject).to eq @subject
         end
       end
-      context 'Tries to create an existing lesson' do
+      context 'Tries to create an already existing lesson' do
         before :each do
           @group = create :group
           @subject = create :subject
@@ -110,9 +110,11 @@ RSpec.describe LessonsController, type: :controller do
           } }
         end
 
-        it { should render_template :new }
-        it { should respond_with :unprocessable_entity }
-        it { should set_flash[:failure_notice] }
+        it do
+          should render_template :new
+          should respond_with :unprocessable_entity
+          should set_flash[:failure_notice]
+        end
       end
     end
   end

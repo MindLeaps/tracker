@@ -1,6 +1,7 @@
 ## Unreleased
 - Added average mark info and mark counts chart in skill view
 - Fixed duplicate skills showing in skill index
+- Upgraded to Rails 7.2
 
 ## 0.34.0 - Group Reports
 - Added Count of Graded/absent/total students and total lesson average mark in lesson view

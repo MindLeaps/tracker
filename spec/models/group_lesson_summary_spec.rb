@@ -120,12 +120,12 @@ RSpec.describe GroupLessonSummary, type: :model do
     before :each do
       subject = create :subject
       @group = create :group
-      @lesson = create(:lesson, group: @group, subject:)
+      @lesson = create(:lesson, group: @group, subject:, date: Time.zone.now)
       @first_student = create :student, group: @group
       @second_student = create :student, group: @group
       @ungraded_student = create :student, group: @group
       @deleted_student = create :student, group: @group, deleted_at: Time.zone.now
-      [@first_student, @second_student, @ungraded_student, @deleted_student].each { |s| create :enrollment, student: s, group: @group, active_since: 1.year.ago }
+      [@first_student, @second_student, @ungraded_student, @deleted_student]
 
       @first_skill = create(:skill_in_subject, subject:)
       @second_skill = create(:skill_in_subject, subject:)

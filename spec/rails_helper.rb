@@ -49,17 +49,17 @@ RSpec.configure do |config|
   # Filter lines from Rails gems in backtraces.
   config.filter_rails_from_backtrace!
   config.before(:suite) do
-    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.strategy = :truncation
     DatabaseCleaner.clean_with :truncation
     # FactoryBot.lint
   end
 
   config.before(:each) do
+    FactoryBot.rewind_sequences
     Capybara.raise_server_errors = true
   end
 
   config.around(:each) do |example|
-    DatabaseCleaner.strategy = example.metadata[:js] ? :truncation : :transaction
     DatabaseCleaner.cleaning do
       example.run
     end
