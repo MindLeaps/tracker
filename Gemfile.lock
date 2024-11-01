@@ -150,7 +150,7 @@ GEM
     enum_help (0.0.19)
       activesupport (>= 3.0.0)
     erubi (1.13.0)
-    excon (0.112.0)
+    excon (1.1.1)
     factory_bot (6.4.6)
       activesupport (>= 5.0.0)
     factory_bot_rails (6.4.3)
@@ -165,14 +165,14 @@ GEM
       net-http
     fastimage (2.2.4)
     ffi (1.17.0)
-    fog-aws (3.28.0)
+    fog-aws (3.29.0)
       base64 (~> 0.2.0)
-      fog-core (~> 2.1)
+      fog-core (~> 2.6)
       fog-json (~> 1.1)
       fog-xml (~> 0.1)
-    fog-core (2.5.0)
+    fog-core (2.6.0)
       builder
-      excon (~> 0.71)
+      excon (~> 1.0)
       formatador (>= 0.2, < 2.0)
       mime-types
     fog-json (1.2.0)
