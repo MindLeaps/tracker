@@ -13,7 +13,8 @@ class GroupsController < HtmlController
   def show
     @group = Group.includes(:chapter).find params[:id]
     authorize @group
-    @students = Student.where(group_id: @group.id).where(deleted_at: nil).order(last_name: :asc)
+    @pagy, @students = pagy Student.where(group_id: @group.id).where(deleted_at: nil).includes(:group)
+    @student_table_component = TableComponents::Table.new(pagy: @pagy, options: { no_pagination: true }, rows: @students, row_component: TableComponents::StudentTurboRow)
     @group_summaries = GroupLessonSummary.where(group_id: @group.id).where.not(average_mark: nil).order(lesson_date: :asc).last(30).map do |summary|
       {
         lesson_date: summary.lesson_date,

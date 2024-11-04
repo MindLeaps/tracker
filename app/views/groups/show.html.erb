@@ -29,27 +29,39 @@ end %>
     </div>
 </section>
 
+<!--<section>-->
+  <%#= render CommonComponents::Card.new(title: t(:students_in_group).capitalize) do |card| %>
+    <%# card.with_card_content do %>
+<!--        <div class="min-w-full">-->
+<!--          <div class="table min-w-full bg-gray-50 px-4 border-b border-gray-200">-->
+<!--            <div class="table-cell uppercase"><%#= t(:mlid) %></div>-->
+<!--            <div class="table-cell uppercase"><%#= t(:last_name) %></div>-->
+<!--            <div class="table-cell uppercase"><%#= t(:first_name) %></div>-->
+<!--            <div class="table-cell uppercase"><%#= t(:gender) %></div>-->
+<!--            <div class="table-cell uppercase"><%#= t(:date_of_birth) %></div>-->
+<!--            <div class="table-cell uppercase"><%#= t(:created) %></div>-->
+<!--            <div class="table-cell uppercase"><%#= t(:actions) %></div>-->
+<!--          </div>-->
+          <%#= turbo_frame_tag "new-student-form", src: new_group_student_path(@group.id) %>
+<!--          <div id="students">-->
+            <%#= render @students %>
+<!--          </div>-->
+<!--        </div>-->
+    <%# end %>
+  <%# end %>
+<!--</section>-->
+
 <section>
   <%= render CommonComponents::Card.new(title: t(:students_in_group).capitalize) do |card| %>
     <% card.with_card_content do %>
-        <div class="min-w-full">
-          <div class="table min-w-full bg-gray-50 px-4 border-b border-gray-200">
-            <div class="table-cell uppercase"><%= t(:mlid) %></div>
-            <div class="table-cell uppercase"><%= t(:last_name) %></div>
-            <div class="table-cell uppercase"><%= t(:first_name) %></div>
-            <div class="table-cell uppercase"><%= t(:gender) %></div>
-            <div class="table-cell uppercase"><%= t(:date_of_birth) %></div>
-            <div class="table-cell uppercase"><%= t(:created) %></div>
-            <div class="table-cell uppercase"><%= t(:actions) %></div>
-          </div>
-          <%= turbo_frame_tag "new-student-form", src: new_group_student_path(@group.id) %>
-          <div id="students">
-            <%= render @students %>
-          </div>
-        </div>
+      <%= turbo_frame_tag "new-student-form", src: new_group_student_path(@group.id) %>
+      <div id="students">
+        <%= render @student_table_component %>
+      </div>
     <% end %>
   <% end %>
 </section>
+
 <%= javascript_tag do %>
   function onChartsLoad() {
     displayAveragesGraph && displayAveragesGraph('.ct-chart', '', <%= @group_summaries.to_json.html_safe %>);
