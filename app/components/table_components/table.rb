@@ -13,8 +13,14 @@ class TableComponents::Table < ViewComponent::Base
       </div>
       <div class="overflow-x-scroll bg-white">
         <div class="grid" style="<%= grid_columns %>">
-        <%= render TableComponents::Column.with_collection(@row_component::columns(**@column_arguments), order_scope_name: @order_scope_name) %>
-        <%= render @row_component.with_collection(@rows, pagy: @pagy, **@row_arguments) %>
+          <%= render TableComponents::Column.with_collection(@row_component::columns(**@column_arguments), order_scope_name: @order_scope_name) %>
+          <%= render @row_component.with_collection(@rows, pagy: @pagy, **@row_arguments) unless @options[:is_turbo] %>
+        </div>
+        <% if @options[:is_turbo] %>
+          <div id="<%= @options[:turbo_id]%>">
+            <%= render @rows %>
+          </div>
+        <% end %>
       </div>
     </div>
   ERB

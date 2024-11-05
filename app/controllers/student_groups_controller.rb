@@ -1,4 +1,5 @@
 class StudentGroupsController < HtmlController
+  include Pagy::Backend
   skip_after_action :verify_policy_scoped
 
   def new
@@ -18,12 +19,11 @@ class StudentGroupsController < HtmlController
   def create
     @group = Group.find params.require :group_id
     authorize @group
-
+    @pagy, @students = pagy Student.where(group_id: @group.id).where(deleted_at: nil).includes(:group)
     @student = Student.new(inline_student_params)
     @student.group = @group
 
     if @student.save
-      success_now(title: t(:student_added), text: t(:student_name_added, name: @student.proper_name))
       render turbo_stream: [
         turbo_stream.prepend('students', @student),
         turbo_stream.replace('form_student', partial: 'form', locals: { student: Student.new, url: group_students_path(@group) })
@@ -34,16 +34,16 @@ class StudentGroupsController < HtmlController
   end
 
   def update
+    @group = Group.find params.require :group_id
     @student = Student.find_by(id: params.require(:id))
+    @pagy, @students = pagy Student.where(group_id: @group.id).where(deleted_at: nil).includes(:group)
     authorize @student
 
     if @student.update(inline_student_params)
-      success(title: t(:student_updated), text: t(:student_name_updated, name: @student.proper_name))
       render turbo_stream: [
         turbo_stream.replace(@student, @student)
       ]
     else
-      failure(title: t(:student_invalid), text: t(:fix_form_errors))
       render :edit, status: :unprocessable_entity
     end
   end
@@ -58,8 +58,6 @@ class StudentGroupsController < HtmlController
     render turbo_stream: [
       turbo_stream.remove(@student)
     ]
-
-    success(title: t(:student_deleted), text: t(:student_deleted_text, student: @student.proper_name))
   end
 
   private

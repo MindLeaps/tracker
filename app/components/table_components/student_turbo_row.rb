@@ -1,7 +1,6 @@
 class TableComponents::StudentTurboRow < TableComponents::BaseRow
   def self.columns
     [
-      { column_name: '#', numeric: true },
       { order_key: :full_mlid, column_name: I18n.t(:mlid), numeric: true },
       { order_key: :last_name, column_name: I18n.t(:last_name) },
       { order_key: :first_name, column_name: I18n.t(:first_name) },
@@ -10,5 +9,11 @@ class TableComponents::StudentTurboRow < TableComponents::BaseRow
       { order_key: :created_at, column_name: I18n.t(:created), numeric: true },
       { column_name: I18n.t(:actions) }
     ]
+  end
+
+  def self.style
+    " display: grid;
+      grid-template-columns: repeat(#{TableComponents::StudentTurboRow.columns.count}, auto);
+    "
   end
 end

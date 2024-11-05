@@ -55,9 +55,7 @@ end %>
   <%= render CommonComponents::Card.new(title: t(:students_in_group).capitalize) do |card| %>
     <% card.with_card_content do %>
       <%= turbo_frame_tag "new-student-form", src: new_group_student_path(@group.id) %>
-      <div id="students">
-        <%= render @student_table_component %>
-      </div>
+      <%= render @student_table_component %>
     <% end %>
   <% end %>
 </section>
@@ -68,19 +66,3 @@ end %>
   }
 <% end %>
 <%= javascript_include_tag "charts", onload: 'onChartsLoad()' %>
-<style>
-    .table {
-        display: grid;
-        grid-template-columns: repeat(6, 2fr) 1fr;
-        column-gap: 1rem;
-        align-items: center;
-    }
-
-    turbo-frame:nth-child(odd) .table {
-        background-color: rgb(241 245 249/var(--tw-bg-opacity));
-    }
-
-    turbo-frame:nth-child(odd) .table:hover {
-        background-color: rgb(187 247 208/var(--tw-bg-opacity))
-    }
-</style>

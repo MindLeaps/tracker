@@ -1,4 +1,5 @@
-<%= form_with url: url, model: student, id: dom_id(student, 'form'), class: "table min-w-full bg-gray-50 px-4 border-b border-gray-200" do |form| %>
+<%= form_with url: url, model: student, id: dom_id(student, 'form'), class: "min-w-full bg-gray-50 px-4 border-b border-gray-200",
+    :html => { :style => TableComponents::StudentTurboRow.style } do |form| %>
   <div class="p-4">
     <div class="flex items-center">
       <span class="inline-block whitespace-nowrap text-sm font-medium text-gray-700"><%= @group.full_mlid %>-</span>
