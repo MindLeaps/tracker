@@ -83,7 +83,7 @@ class GroupsController < HtmlController
 
   def group_student_order_scope
     {
-      table_order: params['table_order'] || { key: :created_at, order: :desc },
+      table_order: params['table_order'] || { key: :created_at, order: :desc }
     }
   end
 
