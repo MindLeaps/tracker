@@ -17,7 +17,7 @@ class TableComponents::Table < ViewComponent::Base
           <%= render @row_component.with_collection(@rows, pagy: @pagy, **@row_arguments) unless @options[:is_turbo] %>
         </div>
         <% if @options[:is_turbo] %>
-          <div id="<%= @options[:turbo_id]%>">
+          <div id="<%= @options[:turbo_id]%>" class="w-full" style="<%= grid_columns %>">
             <%= render @rows %>
           </div>
         <% end %>

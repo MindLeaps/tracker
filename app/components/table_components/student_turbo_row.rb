@@ -11,9 +11,7 @@ class TableComponents::StudentTurboRow < TableComponents::BaseRow
     ]
   end
 
-  def self.style
-    " display: grid;
-      grid-template-columns: repeat(#{TableComponents::StudentTurboRow.columns.count}, auto);
-    "
+  def self.row_style
+    "grid-template-columns: repeat(#{TableComponents::StudentTurboRow.columns.count}, auto);"
   end
 end
