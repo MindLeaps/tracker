@@ -19,14 +19,15 @@ class StudentGroupsController < HtmlController
   def create
     @group = Group.find params.require :group_id
     authorize @group
-    @pagy, @students = pagy Student.where(group_id: @group.id).where(deleted_at: nil).includes(:group)
     @student = Student.new(inline_student_params)
     @student.group = @group
 
     if @student.save
+      @pagy, @students = pagy Student.where(group_id: @group.id).where(deleted_at: nil)
       render turbo_stream: [
-        turbo_stream.prepend('students', @student),
-        turbo_stream.replace('form_student', partial: 'form', locals: { student: Student.new, url: group_students_path(@group) })
+        turbo_stream.before_all('#students turbo-frame', TableComponents::StudentTurboRow.new(item: @student, item_counter:  @students.find_index(@student), pagy: @pagy)),
+        turbo_stream.replace('form_student', partial: 'form', locals:
+          { student: Student.new, url: group_students_path(@group), form_class: 'w-full flex items-center justify-between bg-gray-50 px-4 border-b border-gray-200' })
       ]
     else
       render :new, status: :unprocessable_entity
@@ -36,12 +37,12 @@ class StudentGroupsController < HtmlController
   def update
     @group = Group.find params.require :group_id
     @student = Student.find_by(id: params.require(:id))
-    @pagy, @students = pagy Student.where(group_id: @group.id).where(deleted_at: nil).includes(:group)
     authorize @student
 
     if @student.update(inline_student_params)
+      @pagy, @students = pagy Student.where(group_id: @group.id).where(deleted_at: nil)
       render turbo_stream: [
-        turbo_stream.replace(@student, @student)
+        turbo_stream.replace(@student, TableComponents::StudentTurboRow.new(item: @student, item_counter: @students.find_index(@student), pagy: @pagy))
       ]
     else
       render :edit, status: :unprocessable_entity

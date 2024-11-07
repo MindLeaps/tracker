@@ -12,15 +12,10 @@ class TableComponents::Table < ViewComponent::Base
       <%= render CommonComponents::PaginationComponent.new(pagy: @pagy) unless @options[:no_pagination] || @pagy.nil? %>
       </div>
       <div class="overflow-x-scroll bg-white">
-        <div class="grid" style="<%= grid_columns %>">
+        <div id="<%= @options[:turbo_id] %>" class="grid" style="<%= grid_columns %>">
           <%= render TableComponents::Column.with_collection(@row_component::columns(**@column_arguments), order_scope_name: @order_scope_name) %>
-          <%= render @row_component.with_collection(@rows, pagy: @pagy, **@row_arguments) unless @options[:is_turbo] %>
+          <%= render @row_component.with_collection(@rows, pagy: @pagy, **@row_arguments) %>
         </div>
-        <% if @options[:is_turbo] %>
-          <div id="<%= @options[:turbo_id]%>" class="w-full" style="<%= grid_columns %>">
-            <%= render @rows %>
-          </div>
-        <% end %>
       </div>
     </div>
   ERB

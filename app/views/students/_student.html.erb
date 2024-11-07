@@ -1,3 +1,0 @@
-<%= turbo_frame_tag dom_id(student), class: 'grid w-full', style: TableComponents::StudentTurboRow.row_style do %>
-  <%= render TableComponents::StudentTurboRow.new(item: student, item_counter: @students.find_index(student), pagy: @pagy) %>
-<% end %>
