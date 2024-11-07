@@ -26,7 +26,7 @@ class StudentGroupsController < HtmlController
     if @student.save
       render turbo_stream: [
         turbo_stream.after('turbo-separator', student_turbo_row(@student, 0, @pagy)),
-        turbo_stream.replace('new_student', partial: 'form', locals: { student: Student.new, url: group_students_path(@group), is_edit: false, form_class: TableComponents::StudentTurboRow.new_form_class }),
+        turbo_stream.replace('new_student', partial: 'form', locals: { student: Student.new, url: group_students_path(@group), is_edit: false, form_class: TableComponents::StudentTurboRow.new_form_class })
       ]
     else
       render :new, status: :unprocessable_entity
