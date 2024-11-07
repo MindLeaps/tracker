@@ -14,6 +14,7 @@ class TableComponents::Table < ViewComponent::Base
       <div class="overflow-x-scroll bg-white">
         <div id="<%= @options[:turbo_id] %>" class="grid" style="<%= grid_columns %>">
           <%= render TableComponents::Column.with_collection(@row_component::columns(**@column_arguments), order_scope_name: @order_scope_name) %>
+          <% if @options[:turbo_id] %> <div id="turbo-separator" class='h-px' style="grid-column: 1/-1;"></div> <% end %>
           <%= render @row_component.with_collection(@rows, pagy: @pagy, **@row_arguments) %>
         </div>
       </div>

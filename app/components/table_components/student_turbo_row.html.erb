@@ -8,12 +8,8 @@
     <div class="table-cell"><%= @item.created_at.strftime('%F') %></div>
     <div class="table-cell text-right">
       <% if can_update? %>
-        <a class="table-action-link" href="<%= helpers.edit_group_student_path(@item.group, @item) %>">
-          <%= t(:edit) %>
-        </a>
-
-        <%= render CommonComponents::DangerousFormButtonComponent.new( :options => { form_class: 'p-8'},
-          label: t(:delete), method: :delete, path: helpers.group_student_path(@item.group, @item)) %>
+        <%= render CommonComponents::ButtonComponent.new(label: t(:edit), href: helpers.edit_group_student_path(@item.group, @item)) %>
+        <%= render CommonComponents::DangerousFormButtonComponent.new(label: t(:delete), method: :delete, path: helpers.group_student_path(@item.group, @item)) %>
       <% end %>
     </div>
   </a>

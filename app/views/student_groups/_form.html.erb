@@ -1,4 +1,4 @@
-<%= form_with url: url, model: student, id: dom_id(student, 'form'), class: form_class do |form| %>
+<%= form_with url: url, model: student, id: dom_id(student), class: form_class do |form| %>
   <div class="table-cell">
     <span class="inline-block whitespace-nowrap text-sm font-medium text-gray-700"><%= @group.full_mlid %>-</span>
     <%= form.text_field :mlid, class: "w-20 inline-block rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm" %>
@@ -35,5 +35,8 @@
   <div class="table-cell"></div>
   <div class="table-cell">
     <%= form.submit class: "px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 cursor-pointer" %>
+    <% if is_edit %>
+      <%= render CommonComponents::FormButtonComponent.new(label: t(:cancel), method: 'post', path: cancel_group_student_path(@group.id, @student)) %>
+    <% end %>
   </div>
 <% end %>

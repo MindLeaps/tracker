@@ -56,6 +56,7 @@ Rails.application.routes.draw do
 
     resources :students, controller: :student_groups, only: %i[new create update destroy] do
       member { get :edit }
+      member { post :cancel }
     end
   end
 
