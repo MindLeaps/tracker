@@ -36,7 +36,9 @@
   <div class="table-cell">
     <%= form.submit class: "px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 cursor-pointer" %>
     <% if is_edit %>
-      <%= render CommonComponents::FormButtonComponent.new(label: t(:cancel), method: 'post', path: cancel_group_student_path(@group.id, @student)) %>
+      <a id="cancel-link-<%= @student.id %>" class="table-action-link ml-2" href="<%= cancel_group_student_path(@group.id, @student) %>" data-turbo-prefetch="false">
+        <%= t(:cancel) %>
+      </a>
     <% end %>
   </div>
 <% end %>
