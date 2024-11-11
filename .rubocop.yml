@@ -89,6 +89,11 @@ Style/ClassAndModuleChildren:
 Style/SuperArguments:
   Enabled: false
 
+# This cop fails in CI, but not locally. It is not supposed to do anything if schema.rb does not exist.
+# Since we do not use schemra.rb but structure.sql this cop should not run
+Rails/UniqueValidationWithoutIndex:
+  Enabled: false
+
 Rails/ReversibleMigration:
   Exclude:
     - db/migrate/20160912004942_add_organization_to_students.rb
