@@ -73,7 +73,6 @@ RSpec.describe StudentGroupsController, type: :controller do
           gender: 'NB'
         } }
 
-
         student.reload
         expect(response).to be_successful
         expect(student.first_name).to eql 'Updated Student'
