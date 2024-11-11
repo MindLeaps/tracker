@@ -65,7 +65,7 @@ class StudentGroupsController < HtmlController
     @student.deleted_at = Time.zone.now
     return unless @student.save
 
-    success_now title: t(:student_deleted), text: t(:student_deleted_text, name: @student.proper_name)
+    success_now title: t(:student_deleted), text: t(:student_deleted_text, student: @student.proper_name)
     render turbo_stream: [
       turbo_stream.remove(@student),
       turbo_stream.update('flashes', partial: 'shared/flashes')
