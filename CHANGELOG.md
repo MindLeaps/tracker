@@ -1,7 +1,6 @@
 ## Unreleased
 - Added average mark info and mark counts chart in skill view
 - Fixed duplicate skills showing in skill index
-- Added inline student creating & editing in Group view
 - Upgraded to Rails 7.2
 - Added inline student creating & editing in Group view
 
