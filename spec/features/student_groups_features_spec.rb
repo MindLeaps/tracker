@@ -50,8 +50,8 @@ RSpec.describe 'User interacts with students in Group', js: true do
       expect(student.gender).to eq('NB')
 
       click_link 'Edit'
-      fill_in "student_#{student.id} #student_first_name", with: 'Updated'
-      find("student_#{student.id} #student_gender_m").click
+      find("#student_#{student.id} #student_first_name").fill_in with: 'Updated'
+      find("#student_#{student.id} #student_gender_m").click
       click_button 'Update Student'
 
       expect(page).to have_content 'Updated'
