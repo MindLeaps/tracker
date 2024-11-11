@@ -11,7 +11,7 @@ RSpec.describe 'User interacts with students in Group', js: true do
     it 'displays a list of students with a form to create new ones' do
       visit "/groups/#{@group.id}"
 
-      expect(page).to have_selector("#new-student-form")
+      expect(page).to have_selector('#new-student-form')
       expect(page).to have_content 'Students currently enrolled in this group'
     end
   end
@@ -31,9 +31,10 @@ RSpec.describe 'User interacts with students in Group', js: true do
       expect(page).to have_content "First name can't be blank"
     end
 
-    it 'renders new student when form is submitted' do
+    it 'renders a new student and updates when form is submitted' do
       visit "/groups/#{@group.id}"
 
+      expect(page).to have_selector('#new-student-form')
       fill_in 'student_mlid', with: '1A'
       fill_in 'student_last_name', with: 'Student'
       fill_in 'student_first_name', with: 'New'
@@ -45,28 +46,20 @@ RSpec.describe 'User interacts with students in Group', js: true do
       expect(page).to have_content 'New'
       expect(page).to have_content 'NB'
 
-      created_student = Student.find_by! first_name: 'New', last_name: 'Student'
-      expect(created_student.gender).to eq('NB')
-    end
-
-    it 'renders updated student when edit form is submitted' do
-      visit "/groups/#{@group.id}"
-
-      fill_in 'student_mlid', with: '1A'
-      fill_in 'student_last_name', with: 'Student'
-      fill_in 'student_first_name', with: 'New'
-      find('#student_gender_nb').click
-
-      click_button 'Create Student'
-      expect(page).to have_content "#{@group.full_mlid}-1A"
+      student = Student.find_by! first_name: 'New', last_name: 'Student'
+      expect(student.gender).to eq('NB')
 
       click_link 'Edit'
-      fill_in 'student_first_name', with: 'Updated'
-      find('#student_gender_m').click
+      fill_in "student_#{student.id} #student_first_name", with: 'Updated'
+      find("student_#{student.id} #student_gender_m").click
       click_button 'Update Student'
 
       expect(page).to have_content 'Updated'
       expect(page).to have_content 'M'
+
+      student.reload
+      expect(student.first_name).to eq('Updated')
+      expect(student.gender).to eq('M')
     end
   end
 end
