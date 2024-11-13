@@ -2,6 +2,7 @@
 - Added average mark info and mark counts chart in skill view
 - Fixed duplicate skills showing in skill index
 - Upgraded to Rails 7.2
+- Upgraded Ruby to 3.3.6
 - Added inline student creating & editing in Group view
 
 ## 0.34.0 - Group Reports
