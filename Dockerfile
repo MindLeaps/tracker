@@ -1,4 +1,4 @@
-FROM ruby:3.3.1 as base
+FROM ruby:3.3.6 as base
 
 ARG APP_ENV=prod
 ARG MINDLEAPS_HOME=/mindleaps
