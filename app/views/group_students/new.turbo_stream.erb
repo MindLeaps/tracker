@@ -1,0 +1,2 @@
+<%= turbo_stream.replace(@student, StudentTableForm.new(student: @student, group: @group, is_edit: false)) %>
+<%= turbo_stream.update('flashes', partial: 'shared/flashes') %>

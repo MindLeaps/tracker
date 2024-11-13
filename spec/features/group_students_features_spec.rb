@@ -7,13 +7,6 @@ RSpec.describe 'User interacts with students in Group', js: true do
     before :each do
       @group = create :group, group_name: 'Group One'
     end
-
-    it 'displays a list of students with a form to create new ones' do
-      visit "/groups/#{@group.id}"
-
-      expect(page).to have_selector('#new-student-form')
-      expect(page).to have_content 'Students currently enrolled in this group'
-    end
   end
 
   describe 'Student creation and editing' do
@@ -34,7 +27,6 @@ RSpec.describe 'User interacts with students in Group', js: true do
     it 'renders a new student and updates when form is submitted' do
       visit "/groups/#{@group.id}"
 
-      expect(page).to have_selector('#new-student-form')
       fill_in 'student_mlid', with: '1A'
       fill_in 'student_last_name', with: 'Student'
       fill_in 'student_first_name', with: 'New'

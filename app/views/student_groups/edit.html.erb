@@ -1,3 +1,0 @@
-<%= turbo_frame_tag @student do %>
-  <%= render "form", student: @student, url: group_student_path(@student.group, @student), form_class: TableComponents::StudentTurboRow.edit_form_class, is_edit: true %>
-<% end %>

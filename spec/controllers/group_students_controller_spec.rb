@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe StudentGroupsController, type: :controller do
+RSpec.describe GroupStudentsController, type: :controller do
   let(:group_a) { create :group, group_name: 'Group A' }
 
   context 'logged in as a global administrator' do
@@ -12,7 +12,7 @@ RSpec.describe StudentGroupsController, type: :controller do
 
     describe '#new' do
       it 'returns a student form to populate' do
-        response = get :new, params: { group_id: group_a.id }
+        response = get :new, as: :turbo_stream, params: { group_id: group_a.id }
 
         expect(response).to be_successful
         expect(response).to render_template('new')
@@ -31,11 +31,11 @@ RSpec.describe StudentGroupsController, type: :controller do
 
     describe '#create' do
       it 'creates a student when passed valid params' do
-        post :create, params: { group_id: group_a.id, student: {
+        post :create, as: :turbo_stream, params: { group_id: group_a.id, student: {
           mlid: '6I',
           first_name: 'Stoic',
           last_name: 'Henderson',
-          'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
+          'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => '17',
           gender: 'M',
           estimated_dob: true
         } }
@@ -49,11 +49,11 @@ RSpec.describe StudentGroupsController, type: :controller do
       end
 
       it 'does not create a student when passed invalid params' do
-        post :create, params: { group_id: group_a.id, student: {
+        post :create, as: :turbo_stream, params: { group_id: group_a.id, student: {
           mlid: '12345',
           first_name: 'Stoic',
           last_name: 'Henderson',
-          'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
+          'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => '17',
           gender: 'M',
           estimated_dob: true
         } }
@@ -68,7 +68,7 @@ RSpec.describe StudentGroupsController, type: :controller do
     describe '#update' do
       it 'updates a student when passed valid params' do
         student = create :student, group: group_a, first_name: 'Student', gender: 'M'
-        post :update, params: { group_id: group_a.id, id: student.id, student: {
+        post :update, as: :turbo_stream, params: { group_id: group_a.id, id: student.id, student: {
           first_name: 'Updated Student',
           gender: 'NB'
         } }
@@ -81,7 +81,7 @@ RSpec.describe StudentGroupsController, type: :controller do
 
       it 'does not update a student when passed invalid params' do
         student = create :student, group: group_a, first_name: 'Student', gender: 'M'
-        post :create, params: { group_id: group_a.id, student: {
+        post :create, as: :turbo_stream, params: { group_id: group_a.id, student: {
           first_name: ''
         } }
 
@@ -91,21 +91,11 @@ RSpec.describe StudentGroupsController, type: :controller do
       end
     end
 
-    describe '#destroy' do
-      it 'marks the student as deleted' do
-        student = create :student, group: group_a
-        response = post :destroy, params: { group_id: group_a.id, id: student.id }
-
-        expect(response).to be_successful
-        expect(student.reload.deleted_at).not_to be_nil
-      end
-    end
-
     describe '#cancel' do
       it 'returns a student successfully without updating' do
         student = create :student, group: group_a, first_name: 'Student'
         get :edit, params: { id: student.id, group_id: group_a.id }
-        response = get :cancel, params: { id: student.id, group_id: group_a.id }
+        response = get :cancel_edit, as: :turbo_stream, params: { id: student.id, group_id: group_a.id }
 
         expect(response).to be_successful
         expect(student.reload.first_name).to eq('Student')

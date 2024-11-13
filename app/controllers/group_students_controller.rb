@@ -1,4 +1,4 @@
-class StudentGroupsController < HtmlController
+class GroupStudentsController < HtmlController
   include Pagy::Backend
   skip_after_action :verify_policy_scoped
 
@@ -21,11 +21,11 @@ class StudentGroupsController < HtmlController
     authorize @group
     @student = Student.new(inline_student_params)
     @student.group = @group
-    @pagy, @students = pagy(group_students)
 
     if @student.save
-      handle_successful_create_response
+      success_now title: t(:student_added), text: t(:student_name_added, name: @student.proper_name)
     else
+      failure_now title: t(:student_invalid), text: t(:fix_form_errors)
       render :new, status: :unprocessable_entity
     end
   end
@@ -38,24 +38,17 @@ class StudentGroupsController < HtmlController
 
     if @student.update(inline_student_params)
       success_now title: t(:student_updated), text: t(:student_name_updated, name: @student.proper_name)
-      render turbo_stream: [
-        turbo_stream.replace(@student, student_turbo_row(@student, @students.find_index(@student), @pagy)),
-        turbo_stream.update('flashes', partial: 'shared/flashes')
-      ]
     else
+      failure_now title: t(:student_invalid), text: t(:fix_form_errors)
       render :edit, status: :unprocessable_entity
     end
   end
 
-  def cancel
-    skip_authorization
+  def cancel_edit
     @group = Group.find params.require :group_id
-    @student = Student.find_by(id: params.require(:id))
+    authorize @group, :show?
+    @student = Student.find(params.require(:id))
     @pagy, @students = pagy(group_students)
-
-    render turbo_stream: [
-      turbo_stream.replace(@student, student_turbo_row(@student, @students.find_index(@student), @pagy))
-    ]
   end
 
   def destroy
@@ -72,24 +65,13 @@ class StudentGroupsController < HtmlController
     ]
   end
 
-  private
-
-  def handle_successful_create_response
-    success_now title: t(:student_added), text: t(:student_name_added, name: @student.proper_name)
-    render turbo_stream: [
-      turbo_stream.after('turbo-separator', student_turbo_row(@student, 0, @pagy)),
-      turbo_stream.replace('new_student', partial: 'form', locals: { student: Student.new, url: group_students_path(@group), is_edit: false, form_class: TableComponents::StudentTurboRow.new_form_class }),
-      turbo_stream.update('flashes', partial: 'shared/flashes')
-    ]
-  end
-
-  def student_turbo_row(student, counter, pagy)
-    TableComponents::StudentTurboRow.new(item: student, item_counter: counter, pagy: pagy)
-  end
-
   def group_students
-    Student.where(group_id: @group.id).where(deleted_at: nil)
+    Student.where(group_id: @group.id).includes(:group).where(deleted_at: nil)
   end
+
+  helper_method :group_students
+
+  private
 
   def inline_student_params
     p = params.require(:student)

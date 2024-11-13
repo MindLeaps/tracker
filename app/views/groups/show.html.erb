@@ -28,15 +28,9 @@ end %>
        <% end %>
     </div>
 </section>
-
-<section>
-  <%= render CommonComponents::Card.new(title: t(:students_in_group).capitalize) do |card| %>
-    <% card.with_card_content do %>
-      <%= turbo_frame_tag "new-student-form", src: new_group_student_path(@group.id) %>
-      <%= render @student_table_component %>
-    <% end %>
-  <% end %>
-</section>
+<turbo-frame id="students-table">
+  <%= render GroupEnrolledStudentsComponent.new(students: @students, group: @group, new_student: Student.new(group: @group)) %>
+</turbo-frame>
 
 <%= javascript_tag do %>
   function onChartsLoad() {

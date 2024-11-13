@@ -14,7 +14,6 @@ class GroupsController < HtmlController
     @group = Group.includes(:chapter).find params[:id]
     authorize @group
     @pagy, @students = pagy apply_scopes(Student.where(group_id: @group.id).includes(:group))
-    @student_table_component = TableComponents::Table.new(pagy: @pagy, options: { no_pagination: true, turbo_id: 'students' }, rows: @students, row_component: TableComponents::StudentTurboRow)
     @group_summaries = GroupLessonSummary.where(group_id: @group.id).where.not(average_mark: nil).order(lesson_date: :asc).last(30).map do |summary|
       {
         lesson_date: summary.lesson_date,

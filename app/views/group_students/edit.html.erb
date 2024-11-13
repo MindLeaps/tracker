@@ -1,0 +1,4 @@
+<turbo-frame id="<%= dom_id(@student) %>">
+  <%= render StudentTableForm.new(student: @student, group: @group, is_edit: true) %>
+  <%= turbo_stream.update('flashes', partial: 'shared/flashes') %>
+</turbo-frame>
