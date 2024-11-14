@@ -54,4 +54,8 @@ class StudentTableRow < ApplicationRecord
   def self.policy_class
     StudentPolicy
   end
+
+  def organization
+    Organization.joins(chapters: :groups).find_by('groups.id = ?', group_id)
+  end
 end
