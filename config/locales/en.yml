@@ -143,6 +143,7 @@ en:
   restore_group: Restore Deleted Group
   edit_group: Edit Group
   edit: Edit
+  delete: Delete
   chapter_added: Chapter Added
   chapter_added_text: Chapter "%{chapter}" added.
   chapter_invalid: Chapter Invalid

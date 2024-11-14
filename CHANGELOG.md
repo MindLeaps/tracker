@@ -3,6 +3,7 @@
 - Fixed duplicate skills showing in skill index
 - Upgraded to Rails 7.2
 - Upgraded Ruby to 3.3.6
+- Added inline student creating & editing in Group view
 
 ## 0.34.0 - Group Reports
 - Added Count of Graded/absent/total students and total lesson average mark in lesson view

@@ -1,0 +1,1 @@
+<%= turbo_stream.replace(@student, TableComponents::StudentTurboRow.new(item: @student, item_counter: @students.find_index(@student), pagy: @pagy)) %>
