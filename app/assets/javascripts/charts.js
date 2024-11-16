@@ -163,7 +163,7 @@ function displayPercentagesGraph(containerId, data) {
 }
 
 
-function displayTimelineGraph(containerId, data){
+function displayTimelineGraph(containerId, data, summaries){
  let inMultipleYears = data.some(d => new Date(d.active_since).getFullYear() !== new Date(Date.now()).getFullYear()
       || new Date(d.inactive_since).getFullYear()  !== new Date(Date.now()).getFullYear())
 
@@ -172,7 +172,7 @@ function displayTimelineGraph(containerId, data){
         id: d.student_id,
         name: d.student_name,
         start: new Date(d.active_since),
-        end: d.inactive_since ? new Date(d.inactive_since) : new Date(),
+        end: new Date(d.inactive_since),
         progress: 0,
         dependencies: d.dependent_on,
         custom_class: 'timeline-pill'
@@ -204,8 +204,8 @@ function displayTimelineGraph(containerId, data){
      bar_corner_radius: 3,
      arrow_curve: 10,
      popup: null,
-     gantt_start: data[0].first_lesson,
-     gantt_end: data[0].last_lesson
+     gantt_start: summaries.first().lesson_date,
+     gantt_end: summaries.last().lesson_date
   });
 }
 
