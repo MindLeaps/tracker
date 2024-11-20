@@ -6,8 +6,8 @@ class UpdateEnrollmentsAccordingToGrades < ActiveRecord::Migration[7.2]
       AS $$
       BEGIN
         -- Find enrollments to fix
-        with tofix_enrollments as 
-        ( select s.id as student_id, s.group_id, min(l.date) as earliest_lesson, min(en.active_since) as enrollment_date, en.id as enrollment_id 
+        with tofix_enrollments as
+        ( select s.id as student_id, s.group_id, min(l.date) as earliest_lesson, min(en.active_since) as enrollment_date, en.id as enrollment_id
         from grades as g
         join students s on s.id = g.student_id
         join lessons l on g.lesson_id = l.id
