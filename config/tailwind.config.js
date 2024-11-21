@@ -20,9 +20,6 @@ module.exports = {
       },
       screens: {
         'print': { 'raw': 'print'}
-      },
-      variants: {
-        stroke: ['hover']
       }
     },
   },
