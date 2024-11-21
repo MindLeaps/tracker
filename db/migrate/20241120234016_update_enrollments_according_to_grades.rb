@@ -22,7 +22,6 @@ class UpdateEnrollmentsAccordingToGrades < ActiveRecord::Migration[7.2]
         where en.id = tfe.enrollment_id;
       END;
       $$;
-      CALL update_enrollments_by_grades();
     SQL
   end
 
