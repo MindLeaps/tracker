@@ -18,7 +18,6 @@ class TableComponents::Table < ViewComponent::Base
           <%= render @row_component.with_collection(@rows, pagy: @pagy, **@row_arguments) %>
         </div>
       </div>
-    </div>
   ERB
 
   # rubocop:disable Metrics/ParameterLists
