@@ -5,16 +5,15 @@ class UpdateEnrollmentsAccordingToGrades < ActiveRecord::Migration[7.2]
       LANGUAGE plpgsql
       AS $$
       BEGIN
-        -- Find enrollments to fix
+        -- Find enrollments to fix (ignore grades that reference lessons from more than 3 years ago)
         with tofix_enrollments as
         ( select s.id as student_id, s.group_id, min(l.date) as earliest_lesson, min(en.active_since) as enrollment_date, en.id as enrollment_id
-        from grades as g
-        join students s on s.id = g.student_id
-        join lessons l on g.lesson_id = l.id
-        join groups gr on gr.id = l.group_id
-        join enrollments en on en.student_id = s.id and en.group_id = gr.id and en.active_since > l.date
-        where l.date > now() - '3 years'::interval
-        group by s.id, s.group_id, en.id
+          from grades as gr
+          join students s on s.id = gr.student_id
+          join lessons l on gr.lesson_id = l.id
+          join enrollments en on en.student_id = s.id and en.group_id = s.group_id and en.active_since::date > l.date
+          where l.date > now() - '3 years'::interval
+          group by s.id, s.group_id, en.id
         )
 
         -- Update found enrollments
