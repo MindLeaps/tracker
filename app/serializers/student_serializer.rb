@@ -46,4 +46,8 @@ class StudentSerializer < ActiveModel::Serializer
 
   belongs_to :group
   belongs_to :organization
+
+  def group_id
+    Enrollment.where(student_id: object.id, inactive_since: nil).order(active_since: :desc).first.group_id
+  end
 end

@@ -9,7 +9,9 @@ RSpec.describe 'Student API', type: :request do
   describe 'GET /students/:id' do
     before :each do
       @group = create :group
+      @current_group = create :group
       @student = create :student, group: @group, deleted_at: Time.zone.now
+      create :enrollment, student: @student, group: @current_group, inactive_since: nil
     end
 
     it 'responds with a specific student' do
@@ -31,6 +33,13 @@ RSpec.describe 'Student API', type: :request do
       get_with_token student_path(@student), params: { include: 'group' }, as: :json
 
       expect(student['group']['group_name']).to eq @group.group_name
+    end
+
+    it "responds with the student's group id as the one where its enrolled" do
+      get_with_token student_path(@student), as: :json
+
+      expect(student['group_id']).to_not eq @group.id
+      expect(student['group_id']).to eq @current_group.id
     end
   end
 
