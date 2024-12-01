@@ -845,7 +845,7 @@ CREATE TABLE public.students (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     estimated_dob boolean DEFAULT true NOT NULL,
-    group_id integer,
+    old_group_id integer,
     gender public.gender NOT NULL,
     quartier character varying,
     health_insurance text,
@@ -863,7 +863,8 @@ CREATE TABLE public.students (
     mlid character varying NOT NULL,
     deleted_at timestamp without time zone,
     profile_image_id integer,
-    country_of_nationality text
+    country_of_nationality text,
+    organization_id bigint
 );
 
 
@@ -876,7 +877,7 @@ CREATE VIEW public.student_lessons AS
     l.id AS lesson_id
    FROM ((public.lessons l
      JOIN public.groups g ON ((l.group_id = g.id)))
-     JOIN public.students s ON ((g.id = s.group_id)));
+     JOIN public.students s ON ((g.id = s.old_group_id)));
 
 
 --
@@ -891,7 +892,7 @@ CREATE VIEW public.student_table_rows AS
     s.created_at,
     s.updated_at,
     s.estimated_dob,
-    s.group_id,
+    s.old_group_id AS group_id,
     s.gender,
     s.quartier,
     s.health_insurance,
@@ -916,7 +917,7 @@ CREATE VIEW public.student_table_rows AS
     g.mlid AS group_mlid,
     concat(o.mlid, '-', c.mlid, '-', g.mlid, '-', s.mlid) AS full_mlid
    FROM (((public.students s
-     JOIN public.groups g ON ((s.group_id = g.id)))
+     JOIN public.groups g ON ((s.old_group_id = g.id)))
      JOIN public.chapters c ON ((g.chapter_id = c.id)))
      JOIN public.organizations o ON ((c.organization_id = o.id)));
 
@@ -1469,10 +1470,17 @@ CREATE INDEX index_student_tags_on_tag_id ON public.student_tags USING btree (ta
 
 
 --
--- Name: index_students_on_group_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_students_on_old_group_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_students_on_group_id ON public.students USING btree (group_id);
+CREATE INDEX index_students_on_old_group_id ON public.students USING btree (old_group_id);
+
+
+--
+-- Name: index_students_on_organization_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_students_on_organization_id ON public.students USING btree (organization_id);
 
 
 --
@@ -1560,7 +1568,7 @@ CREATE OR REPLACE VIEW public.group_summaries AS
             ELSE 0
         END) AS student_count
    FROM (((public.groups g
-     LEFT JOIN public.students s ON ((g.id = s.group_id)))
+     LEFT JOIN public.students s ON ((g.id = s.old_group_id)))
      LEFT JOIN public.chapters c ON ((g.chapter_id = c.id)))
      LEFT JOIN public.organizations o ON ((c.organization_id = o.id)))
   GROUP BY g.id, c.id, o.id;
@@ -1657,7 +1665,7 @@ CREATE OR REPLACE VIEW public.student_lesson_details AS
     count(grades.mark) AS grade_count,
     COALESCE(jsonb_object_agg(grades.skill_id, jsonb_build_object('mark', grades.mark, 'grade_descriptor_id', grades.grade_descriptor_id, 'skill_name', skills.skill_name)) FILTER (WHERE (skills.skill_name IS NOT NULL)), '{}'::jsonb) AS skill_marks
    FROM ((((public.students s
-     JOIN public.groups g ON ((g.id = s.group_id)))
+     JOIN public.groups g ON ((g.id = s.old_group_id)))
      JOIN public.lessons l ON ((g.id = l.group_id)))
      LEFT JOIN public.grades ON (((grades.student_id = s.id) AND (grades.lesson_id = l.id))))
      LEFT JOIN public.skills ON ((skills.id = grades.skill_id)))
@@ -1798,13 +1806,6 @@ CREATE OR REPLACE VIEW public.lesson_table_rows AS
 
 
 --
--- Name: students update_enrollments_on_student_group_change_trigger; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER update_enrollments_on_student_group_change_trigger AFTER INSERT OR UPDATE ON public.students FOR EACH ROW EXECUTE FUNCTION public.update_enrollments();
-
-
---
 -- Name: assignments assignments_skill_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1842,6 +1843,14 @@ ALTER TABLE ONLY public.enrollments
 
 ALTER TABLE ONLY public.student_tags
     ADD CONSTRAINT fk_rails_21aa011b2b FOREIGN KEY (tag_id) REFERENCES public.tags(id);
+
+
+--
+-- Name: students fk_rails_2c3c300d44; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.students
+    ADD CONSTRAINT fk_rails_2c3c300d44 FOREIGN KEY (organization_id) REFERENCES public.organizations(id);
 
 
 --
@@ -1961,7 +1970,7 @@ ALTER TABLE ONLY public.student_images
 --
 
 ALTER TABLE ONLY public.students
-    ADD CONSTRAINT students_group_id_fk FOREIGN KEY (group_id) REFERENCES public.groups(id);
+    ADD CONSTRAINT students_group_id_fk FOREIGN KEY (old_group_id) REFERENCES public.groups(id);
 
 
 --
@@ -1995,6 +2004,8 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20241130190757'),
+('20241130044851'),
 ('20241120234016'),
 ('20241012105115'),
 ('20241011120532'),

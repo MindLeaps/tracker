@@ -26,18 +26,21 @@
 #  year_of_dropout        :integer
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  group_id               :integer
+#  old_group_id           :integer
+#  organization_id        :bigint
 #  profile_image_id       :integer
 #
 # Indexes
 #
-#  index_students_on_group_id          (group_id)
+#  index_students_on_old_group_id      (old_group_id)
+#  index_students_on_organization_id   (organization_id)
 #  index_students_on_profile_image_id  (profile_image_id)
 #
 # Foreign Keys
 #
+#  fk_rails_...          (organization_id => organizations.id)
 #  fk_rails_...          (profile_image_id => student_images.id)
-#  students_group_id_fk  (group_id => groups.id)
+#  students_group_id_fk  (old_group_id => groups.id)
 #
 class Student < ApplicationRecord
   include PgSearch::Model
@@ -51,18 +54,16 @@ class Student < ApplicationRecord
 
   enum :gender, { M: 'male', F: 'female', NB: 'nonbinary' }
 
-  belongs_to :group
   has_many :grades, dependent: :restrict_with_error
   has_many :student_images, dependent: :restrict_with_error
   has_many :enrollments, dependent: :destroy
+  has_many :groups, through: :enrollments
   belongs_to :profile_image, class_name: 'StudentImage', optional: true, inverse_of: :student
   has_many :student_tags, dependent: :destroy
   has_many :tags, through: :student_tags
   accepts_nested_attributes_for :grades
   accepts_nested_attributes_for :student_images
   accepts_nested_attributes_for :student_tags
-
-  delegate :group_name, to: :group, allow_nil: true
 
   scope :by_group, ->(group_id) { where group_id: }
 

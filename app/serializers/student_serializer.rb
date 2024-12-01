@@ -26,18 +26,21 @@
 #  year_of_dropout        :integer
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  group_id               :integer
+#  old_group_id           :integer
+#  organization_id        :bigint
 #  profile_image_id       :integer
 #
 # Indexes
 #
-#  index_students_on_group_id          (group_id)
+#  index_students_on_old_group_id      (old_group_id)
+#  index_students_on_organization_id   (organization_id)
 #  index_students_on_profile_image_id  (profile_image_id)
 #
 # Foreign Keys
 #
+#  fk_rails_...          (organization_id => organizations.id)
 #  fk_rails_...          (profile_image_id => student_images.id)
-#  students_group_id_fk  (group_id => groups.id)
+#  students_group_id_fk  (old_group_id => groups.id)
 #
 class StudentSerializer < ActiveModel::Serializer
   attributes :mlid, :id, :first_name, :last_name, :dob, :estimated_dob, :group_id, :gender, :quartier, :guardian_name, :guardian_occupation,
