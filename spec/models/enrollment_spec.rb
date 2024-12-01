@@ -28,27 +28,23 @@ RSpec.describe Enrollment, type: :model do
     it { should belong_to :student }
   end
 
-  describe 'triggers' do
-    before :each do
-      @first_group = create :group
-      @second_group = create :group
-      @student = create :student, group: @first_group
-      @enrollment = create :enrollment, group: @first_group, student: @student
+  describe 'validations' do
+    it { should validate_presence_of :active_since }
+    it 'validates that inactive_since is greater than active_since' do
+      enrollment = Enrollment.build student: create(:student), group: create(:group), active_since: Time.zone.now
+      expect(enrollment.valid?).to be true
+      enrollment.inactive_since = 1.day.ago
+      expect(enrollment.valid?).to be false
+      expect(enrollment.errors[:inactive_since]).to eq [I18n.t(:enrollment_end_before_start)]
     end
 
-    it 'the inactivity on student changing a group' do
-      @student.update(group: @second_group)
-
-      expect(@enrollment.reload.inactive_since).to be_within(1.second).of(Time.zone.now)
-    end
-
-    it 'a new enrollment on student changing a group' do
-      @student.update(group: @second_group)
-
-      @new_enrollment = Enrollment.find_by(student: @student, group: @second_group)
-
-      expect(@new_enrollment.active_since).to be_within(1.second).of(Time.zone.now)
-      expect(@new_enrollment.inactive_since).to be nil
+    it 'validates uniqueness of active enrollment for student and group' do
+      existing_enrollment = Enrollment.create student: create(:student), group: create(:group), active_since: Time.zone.now
+      duplicate_enrollment = Enrollment.create student: existing_enrollment.student, group: existing_enrollment.group, active_since: Time.zone.now
+      expect(duplicate_enrollment.valid?).to be false
+      expect(duplicate_enrollment.errors[:student]).to eq [I18n.t(:enrollment_duplicate)]
+      duplicate_enrollment.group = create(:group)
+      expect(duplicate_enrollment.valid?).to be true
     end
   end
 end
