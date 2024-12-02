@@ -14,7 +14,7 @@ class StudentsController < HtmlController
   end
 
   def show
-    @student = Student.includes(:profile_image, group: { chapter: [:organization] }).find params.require(:id)
+    @student = Student.includes(:profile_image, :organization).find params.require(:id)
     authorize @student
     @student_lessons_details_by_subject = apply_scopes(StudentLessonDetail.where(student_id: params[:id])).all.group_by(&:subject_id)
     @subjects = policy_scope(Subject).includes(:skills).where(id: @student_lessons_details_by_subject.keys)
