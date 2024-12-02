@@ -46,7 +46,8 @@ class Student < ApplicationRecord
   include PgSearch::Model
   include Mlid
   pg_search_scope :search, against: [:first_name, :last_name, :mlid], associated_against: {
-    tags: :tag_name
+    tags: :tag_name,
+    organization: :organization_name
   }, using: { tsearch: { prefix: true } }
 
   validates :first_name, :last_name, :dob, :gender, presence: true

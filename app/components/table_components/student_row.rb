@@ -3,13 +3,13 @@ class TableComponents::StudentRow < TableComponents::BaseRow
     <div class="<%= 'shaded-row' if shaded? %> <%= 'deleted-row' if @item.deleted_at? %> table-row-wrapper student-row">
       <a target="_top" href="<%= helpers.student_path @item %>" class="<%= 'shaded-row' if shaded? %> <%= 'deleted-row' if @item.deleted_at? %> table-row-wrapper">
         <div class="table-cell "><%= @pagy.from + @item_counter %></div>
-        <div class="table-cell "><span class=""><%= "\#{@item.organization_mlid}-\#{@item.chapter_mlid}-\#{@item.group_mlid}-" %></span><%= @item.mlid %></div>
+        <div class="table-cell "><%= @item.mlid %></div>
         <div class="text-right table-cell "><%= @item.last_name %></div>
         <div class="text-right table-cell "><%= @item.first_name %></div>
         <div class="text-right table-cell "><%= @item.gender %></div>
         <div class="table-cell "><%= "\#{@item.estimated_dob ? t(:circa) : ''}\#{@item.dob}" %></div>
         <div class="text-right table-cell "><% @item.tags.each do |tag|%><span class="mdl-chip"><span class="mdl-chip__text"><%= tag.tag_name %></span></span><% end %></div>
-        <div class="text-right table-cell truncate "><%= helpers.student_group_name @item %></div>
+        <div class="text-right table-cell"><%= @item.organization.organization_name %></div>
         <div class="table-cell "><%= @item.created_at.strftime('%F') %></div>
         <div class="text-right table-cell ">
           <% if can_update? %>
@@ -29,7 +29,7 @@ class TableComponents::StudentRow < TableComponents::BaseRow
       { order_key: :gender, column_name: I18n.t(:gender) },
       { order_key: :dob, column_name: I18n.t(:date_of_birth), numeric: true },
       { column_name: I18n.t(:tags) },
-      { order_key: :group_name, column_name: I18n.t(:group) },
+      { order_key: :organization_name, column_name: I18n.t(:organization) },
       { order_key: :created_at, column_name: I18n.t(:created), numeric: true },
       { column_name: I18n.t(:actions) }
     ]
