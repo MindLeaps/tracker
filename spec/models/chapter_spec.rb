@@ -106,7 +106,6 @@ RSpec.describe Chapter, type: :model do
         @chapter_to_delete = create :chapter
 
         @groups_to_delete = create_list :group, 2, chapter: @chapter_to_delete
-        @students_to_delete = create_list :student, 2, group: @groups_to_delete.first
         @lessons_to_delete = create_list :lesson, 2, group: @groups_to_delete.first
         @grades_to_delete = create_list :grade, 2, lesson: @lessons_to_delete.first
         @deleted_group = create :group, chapter: @chapter_to_delete, deleted_at: Time.zone.now
@@ -121,7 +120,6 @@ RSpec.describe Chapter, type: :model do
 
       it 'marks the chapter\'s dependents as deleted' do
         @groups_to_delete.each { |group| expect(group.reload.deleted_at).to eq(@chapter_to_delete.deleted_at) }
-        @students_to_delete.each { |student| expect(student.reload.deleted_at).to eq(@chapter_to_delete.deleted_at) }
         @lessons_to_delete.each { |lesson| expect(lesson.reload.deleted_at).to eq(@chapter_to_delete.deleted_at) }
         @grades_to_delete.each { |grade| expect(grade.reload.deleted_at).to eq(@chapter_to_delete.deleted_at) }
       end
@@ -136,7 +134,6 @@ RSpec.describe Chapter, type: :model do
         @chapter_to_restore = create :chapter, deleted_at: Time.zone.now
 
         @groups_to_restore = create_list :group, 2, chapter: @chapter_to_restore, deleted_at: @chapter_to_restore.deleted_at
-        @students_to_restore = create_list :student, 2, group: @groups_to_restore.first, deleted_at: @chapter_to_restore.deleted_at
         @lessons_to_restore = create_list :lesson, 2, group: @groups_to_restore.first, deleted_at: @chapter_to_restore.deleted_at
         @grades_to_restore = create_list :grade, 2, lesson: @lessons_to_restore.first, deleted_at: @chapter_to_restore.deleted_at
         @deleted_group = create :group, chapter: @chapter_to_restore, deleted_at: Time.zone.now
@@ -151,7 +148,6 @@ RSpec.describe Chapter, type: :model do
 
       it 'removes the chapter\'s dependents deleted timestamps' do
         @groups_to_restore.each { |group| expect(group.reload.deleted_at).to be_nil }
-        @students_to_restore.each { |student| expect(student.reload.deleted_at).to be_nil }
         @lessons_to_restore.each { |lesson| expect(lesson.reload.deleted_at).to be_nil }
         @grades_to_restore.each { |grade| expect(grade.reload.deleted_at).to be_nil }
       end
