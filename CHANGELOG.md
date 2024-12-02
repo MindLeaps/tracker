@@ -4,10 +4,12 @@
 - Upgraded to Rails 7.2
 - Upgraded Ruby to 3.3.6
 - Added inline student creating & editing in Group view
-- Added database procedure which updates enrollments according to earliest grades
+- Added database procedure which updates enrollments according to the earliest grades
 - Modified Student API to return group_id according to Enrollments
+- Students now belong to an organization instead of a group
 - Deleting a group will no longer delete students since students can belong to many groups
 - Deleting a chapter will no longer delete students since students can belong to many groups
+- Deleting an organization deletes all students belonging to an organization
 
 ## 0.34.0 - Group Reports
 - Added Count of Graded/absent/total students and total lesson average mark in lesson view

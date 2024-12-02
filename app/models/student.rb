@@ -54,7 +54,7 @@ class Student < ApplicationRecord
 
   enum :gender, { M: 'male', F: 'female', NB: 'nonbinary' }
 
-  belongs_to :organization
+  belongs_to :organization, inverse_of: :students
   has_many :grades, dependent: :restrict_with_error
   has_many :student_images, dependent: :restrict_with_error
   has_many :enrollments, dependent: :destroy
