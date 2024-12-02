@@ -144,6 +144,8 @@ en:
   edit_group: Edit Group
   edit: Edit
   delete: Delete
+  enrollment_end_before_start: Enrollment cannot end before it started
+  enrollment_duplicate: Active enrollment for this student and group already exists
   chapter_added: Chapter Added
   chapter_added_text: Chapter "%{chapter}" added.
   chapter_invalid: Chapter Invalid

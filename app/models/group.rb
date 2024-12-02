@@ -29,7 +29,8 @@ class Group < ApplicationRecord
   validates :mlid, uniqueness: { scope: :chapter_id }, length: { maximum: 2 }
 
   belongs_to :chapter
-  has_many :students, dependent: :restrict_with_error
+  has_many :enrollments, dependent: :restrict_with_error
+  has_many :students, through: :enrollments
   has_many :lessons, dependent: :restrict_with_error
 
   delegate :chapter_name, to: :chapter, allow_nil: true

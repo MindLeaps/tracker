@@ -50,11 +50,26 @@ FactoryBot.define do
     dob { Faker::Time.between from: 20.years.ago.to_datetime, to: 10.years.ago.to_datetime }
     estimated_dob { Faker::Boolean.boolean true_ratio: 0.2 }
     gender { %w[male female nonbinary].sample }
-    group { create :group }
+    enrollments { [] }
+    organization
     tags { create_list :tag, 3 }
     transient do
       grades { {} }
       subject { nil }
+    end
+
+    factory :enrolled_student do
+      transient do
+        groups { [] }
+      end
+
+      after(:create) do |student, evaluator|
+        unless evaluator.groups.empty?
+          evaluator.groups.each do |group|
+            student.enrollments << create(:enrollment, group: group, student: student)
+          end
+        end
+      end
     end
 
     factory :graded_student do

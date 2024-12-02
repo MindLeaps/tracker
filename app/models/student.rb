@@ -50,10 +50,11 @@ class Student < ApplicationRecord
   }, using: { tsearch: { prefix: true } }
 
   validates :first_name, :last_name, :dob, :gender, presence: true
-  validates :mlid, uniqueness: { scope: :group_id }, length: { maximum: 3 }
+  validates :mlid, uniqueness: { scope: :organization_id }, length: { maximum: 3 }
 
   enum :gender, { M: 'male', F: 'female', NB: 'nonbinary' }
 
+  belongs_to :organization
   has_many :grades, dependent: :restrict_with_error
   has_many :student_images, dependent: :restrict_with_error
   has_many :enrollments, dependent: :destroy
@@ -65,14 +66,8 @@ class Student < ApplicationRecord
   accepts_nested_attributes_for :student_images
   accepts_nested_attributes_for :student_tags
 
-  scope :by_group, ->(group_id) { where group_id: }
-
   def proper_name
     "#{last_name}, #{first_name}"
-  end
-
-  def organization
-    Organization.joins(chapters: :groups).find_by('groups.id = ?', group_id)
   end
 
   def self.permitted_params
