@@ -22,6 +22,7 @@ Rails.application.routes.draw do
     resources :skills, only: %i[index show]
     resources :grade_descriptors, only: %i[index show]
     resources :assignments, only: %i[index show]
+    resources :enrollments, only: %i[index show]
 
     put '/grades', action: :put_v2, controller: 'grades', as: :put_grade_v2
     delete '/grades/student/:student_id/lesson/:lesson_id/skill/:skill_id', action: :destroy_v2, controller: 'grades', as: :destroy_grade_v2

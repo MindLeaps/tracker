@@ -20,12 +20,9 @@
 #  fk_rails_...  (group_id => groups.id) ON DELETE => cascade
 #  fk_rails_...  (student_id => students.id) ON DELETE => cascade
 #
-class Enrollment < ApplicationRecord
+class EnrollmentSerializer < ActiveModel::Serializer
+  attributes :id, :active_since, :inactive_since, :created_at, :updated_at, :group_id, :student_id
+
   belongs_to :student
   belongs_to :group
-
-  scope :by_student, ->(student_id) { where student_id: }
-  scope :by_group, ->(group_id) { where group_id: }
-
-  delegate :organization, to: :student, allow_nil: true
 end

@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+
+  "$id": "file:/enrollments/index.json#",
+  "type": "object",
+  "properties": {
+    "enrollments" : {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string", "format": "uuid"},
+          "active_since": {"type": ["string"], "format": "date-time"},
+          "inactive_since": {"type": ["string", "null"], "format": "date-time"},
+          "created_at": {"type": ["string"], "format": "date-time"},
+          "updated_at": {"type": ["string"], "format": "date-time"},
+          "group_id": {"type": "number"},
+          "student_id": {"type": "number"}
+        },
+        "required": ["id", "active_since", "inactive_since", "created_at", "updated_at", "group_id", "student_id"],
+        "additionalProperties": false
+      }
+    },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "timestamp": {"type": "string", "format": "date-time"}
+      },
+      "required": ["timestamp"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["enrollments", "meta"],
+  "additionalProperties": false
+}
