@@ -28,6 +28,6 @@ class Enrollment < ApplicationRecord
   scope :by_group, ->(group_id) { where group_id: }
 
   def organization
-    group&.chapter.organization
+    group.chapter.organization
   end
 end

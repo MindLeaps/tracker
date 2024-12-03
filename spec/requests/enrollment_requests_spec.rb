@@ -59,7 +59,7 @@ RSpec.describe 'Enrollments API', type: :request do
 
     it 'responds only with enrollments created or updated after a certain time' do
       create :enrollment, created_at: 10.minutes.ago, updated_at: 6.minutes.ago
-      create :enrollment, created_at: 1.month.ago, updated_at: 1.minutes.ago
+      create :enrollment, created_at: 1.month.ago, updated_at: 1.minute.ago
 
       get_with_token api_enrollments_path, params: { after_timestamp: 5.minutes.ago }, as: :json
 
