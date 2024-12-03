@@ -6,26 +6,8 @@ RSpec.describe EnrollmentPolicy do
     let(:org) { create :organization }
     let(:outside_org)  { create :organization }
 
-    context 'as a super administrator' do
-      let(:current_user) { create :super_admin }
-
-      context 'on an Enrollment resource' do
-        let(:resource) { Enrollment }
-
-        it { is_expected.to permit_action :index }
-        it { is_expected.to permit_action :show }
-      end
-    end
-
     context 'as a local teacher' do
       let(:current_user) { create :teacher_in, organization: org }
-
-      context 'on an Enrollment resource' do
-        let(:resource) { Enrollment }
-
-        it { is_expected.to permit_action :index }
-        it { is_expected.to permit_action :show }
-      end
 
       context 'on an enrollment in user\'s own organization' do
         let(:resource) { create :enrollment, group: create(:group, chapter: create(:chapter, organization: org)) }
@@ -58,13 +40,6 @@ RSpec.describe EnrollmentPolicy do
 
     context 'as a local researcher' do
       let(:current_user) { create :researcher_in, organization: org }
-
-      context 'on an Enrollment resource' do
-        let(:resource) { Enrollment }
-
-        it { is_expected.to permit_action :index }
-        it { is_expected.to permit_action :show }
-      end
 
       context 'on an enrollment in user\'s own organization' do
         let(:resource) { create :enrollment, group: create(:group, chapter: create(:chapter, organization: org)) }

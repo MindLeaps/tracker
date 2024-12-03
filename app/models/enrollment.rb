@@ -27,5 +27,7 @@ class Enrollment < ApplicationRecord
   scope :by_student, ->(student_id) { where student_id: }
   scope :by_group, ->(group_id) { where group_id: }
 
-  delegate :organization, to: :student, allow_nil: true
+  def organization
+    group&.chapter.organization
+  end
 end
