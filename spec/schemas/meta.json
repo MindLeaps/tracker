@@ -1,10 +1,11 @@
 {
   "$schema": "http://json-schema.org/schema#",
 
-  "$id": "file:/meta.json",
+  "id": "file:/meta.json#",
   "type": "object",
   "properties": {
     "timestamp": {"type": "string", "format": "date-time"}
   },
-  "required": ["timestamp"]
+  "required": ["timestamp"],
+  "additionalProperties": false
 }

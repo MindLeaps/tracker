@@ -1,12 +1,12 @@
 {
   "$schema": "http://json-schema.org/schema#",
 
-  "id": "file:/grades/index.json#",
+  "id": "file:/grades/show.json#",
   "type": "object",
   "definitions": {
-    "grades": {
-      "description": "A collection of grades",
-      "type": "array",
+    "grade": {
+      "description": "A grade object",
+      "type": "object",
       "items": { "$ref": "file:/grade.json#" }
     },
     "meta": {
@@ -16,9 +16,9 @@
     }
   },
   "properties": {
-    "grades" : { "$ref": "#/definitions/grades" },
+    "grade" : { "$ref": "#/definitions/grade" },
     "meta": { "$ref": "#/definitions/meta" }
   },
-  "required": ["grades", "meta"],
+  "required": ["grade", "meta"],
   "additionalProperties": false
 }

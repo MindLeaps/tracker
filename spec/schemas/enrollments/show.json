@@ -1,13 +1,13 @@
 {
   "$schema": "http://json-schema.org/schema#",
 
-  "id": "file:/grades/index.json#",
+  "id": "file:/enrollments/show.json#",
   "type": "object",
   "definitions": {
-    "grades": {
-      "description": "A collection of grades",
-      "type": "array",
-      "items": { "$ref": "file:/grade.json#" }
+    "enrollment": {
+      "description": "An enrollment object",
+      "type": "object",
+      "items": { "$ref": "file:/enrollment.json#" }
     },
     "meta": {
       "description": "An object containing metadata",
@@ -16,9 +16,9 @@
     }
   },
   "properties": {
-    "grades" : { "$ref": "#/definitions/grades" },
+    "enrollment" : { "$ref": "#/definitions/enrollment" },
     "meta": { "$ref": "#/definitions/meta" }
   },
-  "required": ["grades", "meta"],
+  "required": ["enrollment", "meta"],
   "additionalProperties": false
 }

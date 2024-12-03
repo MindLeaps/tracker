@@ -29,7 +29,7 @@ RSpec.describe Api::EnrollmentsController, type: :controller do
 
     it { should respond_with 200 }
     it 'should match enrollment json schema' do
-      expect(response).to match_json_schema('enrollments/enrollment')
+      expect(response).to match_json_schema('enrollments/show')
     end
   end
 end
