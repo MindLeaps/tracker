@@ -229,7 +229,7 @@ RSpec.describe 'Grade API', type: :request do
       end
 
       it 'responds with a grade' do
-        expect(response).to match_json_schema 'grade'
+        expect(response).to match_json_schema 'grades/show'
       end
     end
 
@@ -246,7 +246,7 @@ RSpec.describe 'Grade API', type: :request do
       end
 
       it 'responds with a grade' do
-        expect(response).to match_json_schema 'grade'
+        expect(response).to match_json_schema 'grades/show'
       end
     end
 

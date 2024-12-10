@@ -6,6 +6,7 @@
 - Added inline student creating & editing in Group view
 - Added database procedure which updates enrollments according to earliest grades
 - Modified Student API to return group_id according to Enrollments
+- Implemented Enrollments API
 
 ## 0.34.0 - Group Reports
 - Added Count of Graded/absent/total students and total lesson average mark in lesson view

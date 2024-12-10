@@ -16,6 +16,9 @@ RSpec.describe Api::GradesController, type: :controller do
     end
 
     it { should respond_with 200 }
+    it 'should match grades json schema' do
+      expect(response).to match_json_schema('grades/index')
+    end
   end
 
   describe 'show' do
@@ -25,6 +28,9 @@ RSpec.describe Api::GradesController, type: :controller do
     end
 
     it { should respond_with 200 }
+    it 'should match grade json schema' do
+      expect(response).to match_json_schema('grades/show')
+    end
   end
 
   describe 'create' do
