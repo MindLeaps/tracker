@@ -18,9 +18,9 @@ class GroupStudentsController < HtmlController
 
   def create
     @group = Group.find params.require :group_id
-    authorize @group
     @student = Student.new(inline_student_params)
     @student.group = @group
+    authorize @student
 
     if @student.save
       success_now title: t(:student_added), text: t(:student_name_added, name: @student.proper_name)
