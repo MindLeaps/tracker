@@ -3,7 +3,7 @@ class GroupEnrolledStudentsComponent < ViewComponent::Base
   erb_template <<~ERB
     <%= render CommonComponents::Card.new(title: t(:students_in_group).capitalize) do |card| %>
       <% card.with_card_content do %>
-        <%= render StudentTableForm.new(student: @new_student, group: @group, is_edit: false) %>
+        <%= render StudentTableForm.new(student: @new_student, group: @group, is_edit: false) if helpers.policy(@new_student).create? %>
         <%= render TableComponents::Table.new(pagy: @pagy, options: { no_pagination: true, turbo_id: 'students' }, rows: @students, row_component: TableComponents::StudentTurboRow) %>
       <% end %>
     <% end %>
