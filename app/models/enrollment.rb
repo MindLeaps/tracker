@@ -29,6 +29,10 @@ class Enrollment < ApplicationRecord
   validates :student, uniqueness: { scope: :group_id, conditions: -> { where(inactive_since: nil) }, message: I18n.t(:enrollment_duplicate) }
   validate :validate_student_and_group_in_same_org
 
+  def chapter_group_name_with_full_mlid
+    "#{group.chapter_name} - #{group.group_name}: #{group.full_mlid}"
+  end
+
   def validate_student_and_group_in_same_org
     if student.present? && group.present?
       errors.add(:student, I18n.t(:enrollment_not_same_org)) if student.organization_id != group.chapter.organization_id

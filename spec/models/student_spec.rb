@@ -137,19 +137,18 @@ RSpec.describe Student, type: :model do
 
   describe 'scopes' do
     before :each do
-      @org1 = create :organization
-      @org2 = create :organization
+      @org = create :organization
 
-      @group1 = create :group, group_name: 'A Group'
-      @group2 = create :group, group_name: 'B Group'
+      @group1 = create :group, group_name: 'A Group', org: @org
+      @group2 = create :group, group_name: 'B Group', org: @org
 
-      @student1 = create :enrolled_student, first_name: 'Emberto', groups: [@group1]
-      @student2 = create :enrolled_student, first_name: 'Amberto', groups: [@group1]
-      @student3 = create :enrolled_student, first_name: 'Omberto', groups: [@group1]
+      @student1 = create :enrolled_student, first_name: 'Emberto', groups: [@group1], organization: @org
+      @student2 = create :enrolled_student, first_name: 'Amberto', groups: [@group1], organization: @org
+      @student3 = create :enrolled_student, first_name: 'Omberto', groups: [@group1], organization: @org
 
 
-      @student4 = create :enrolled_student, first_name: 'Ambuba', groups: [@group2]
-      @student5 = create :enrolled_student, first_name: 'Ombuba', groups: [@group2]
+      @student4 = create :enrolled_student, first_name: 'Ambuba', groups: [@group2], organization: @org
+      @student5 = create :enrolled_student, first_name: 'Ombuba', groups: [@group2], organization: @org
     end
 
     describe 'table_order' do

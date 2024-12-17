@@ -41,12 +41,16 @@ class StudentsController < HtmlController
   def create
     @student = Student.new student_params
     authorize @student
-    if @student.save
-      success(title: :student_added, text: t(:student_name_added, name: @student.proper_name), link_text: t(:create_another), link_path: new_student_path(group_id: @student.group_id))
-      return redirect_to(flash[:redirect] || student_path(@student))
+    if params[:add_group]
+      @student.enrollments.build
+      render :new, status: :ok
+    elsif @student.save
+      success(title: :student_added, text: t(:student_name_added, name: @student.proper_name), link_text: t(:create_another), link_path: new_student_path)
+      redirect_to(flash[:redirect] || student_path(@student))
+    else
+      failure_now(title: t(:student_invalid), text: t(:fix_form_errors))
+      render :new, status: :unprocessable_entity
     end
-    failure_now(title: t(:student_invalid), text: t(:fix_form_errors))
-    render :new, status: :unprocessable_entity
   end
 
   def update

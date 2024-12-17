@@ -52,14 +52,14 @@
   <div class="bg-white px-4 py-5 shadow sm:p-4">
     <div class="md:grid md:grid-cols-4 md:gap-6">
       <div class="md:col-span-1">
-        <h3 class="text-lg font-medium leading-6 text-gray-900"><%= t(:group_and_mlid) %></h3>
+        <h3 class="text-lg font-medium leading-6 text-gray-900"><%= t(:organization_and_mlid) %></h3>
       </div>
       <div class="mt-5 md:col-span-3 md:mt-0">
         <div class="grid grid-cols-6 gap-4">
           <div class="col-span-6 lg:col-span-2">
-            <%= f.label :group_id, class: 'field-label' %>
-            <%= f.grouped_collection_select :group_id, @chapter_groups, :groups, :chapter_display, :id, :chapter_group_name_with_full_mlid, { include_blank: true }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
-            <%= render ValidationErrorComponent.new(model: @student, key: :group) %>
+            <%= f.label :organization, class: 'field-label' %>
+            <%= f.collection_select :organization_id, @permitted_organizations, :id, :organization_name, {}, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            <%= render ValidationErrorComponent.new(model: @student, key: :organization) %>
           </div>
           <div class="col-span-6 lg:col-span-2">
             <%= f.label :mlid, class: 'field-label' %>
@@ -67,6 +67,46 @@
             <%= render ValidationErrorComponent.new(model: @student, key: :mlid) %>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+  <div class="bg-white px-4 py-5 shadow sm:p-4">
+    <div class="md:grid md:grid-cols-4 md:gap-6">
+      <div class="md:col-span-1">
+        <h3 class="text-lg font-medium leading-6 text-gray-900"><%= t(:enrollments) %></h3>
+      </div>
+      <div class="mt-5 md:col-span-3 md:mt-0">
+        <%= turbo_frame_tag f.field_id(:enrollments) do %>
+          <div id="groups" class="divide-y divide-gray-200" data-controller="association">
+            <%= f.fields_for :enrollments, include_id: false do |ef| %>
+              <% id = SecureRandom.uuid %>
+              <div class="grid grid-cols-8 gap-4 [&:not(:last-child)]:pb-4 [&:not(:first-child)]:pt-4 <%= if ef.object.marked_for_destruction? then 'hidden' else '' end %>" data-association-target="removable" id="<%= id %>">
+                <div class="col-span-6 lg:col-span-2">
+                  <%= ef.hidden_field :id %>
+                  <%= ef.label :group_id, class: 'block text-sm font-medium text-gray-700' %>
+                  <%= ef.grouped_collection_select :group_id, @chapter_groups, :groups, :chapter_display, :id, :chapter_group_name_with_full_mlid, { include_blank: false }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+                  <%= render ValidationErrorComponent.new(model: ef.object, key: :student) %>
+                  <%= render ValidationErrorComponent.new(model: ef.object, key: :group) %>
+                </div>
+                <div class="col-span-6 lg:col-span-2">
+                  <%= ef.label :active_since, t(:enrolled_since),class: 'field-label' %>
+                  <%= ef.date_select :active_since, { start_year: 2012, end_year: Date.today.year, selected: Date.new(Date.current.year, 1, 1), use_short_month: true }, class: 'mt-1 rounded-md border-purple-500 text-sm focus:border-green-600 focus:outline-none focus:ring-green-600' %>
+                  <%= render ValidationErrorComponent.new(model: ef.object, key: :active_since) %>
+                </div>
+                <div class="col-span-6 lg:col-span-2">
+                  <%= ef.label :inactive_since, t(:enrolled_until),class: 'field-label' %>
+                  <%= ef.date_select :inactive_since, { start_year: 2012, include_blank: true, selected: nil, use_short_month: true }, class: 'mt-1 rounded-md border-purple-500 text-sm focus:border-green-600 focus:outline-none focus:ring-green-600' %>
+                  <%= render ValidationErrorComponent.new(model: ef.object, key: :inactive_since) %>
+                </div>
+                <div class="col-span-2 relative">
+                  <%= ef.check_box :_destroy, class: 'hidden', 'data-association-target': 'checkable', 'data-association-id': id %>
+                  <button class="dangerous-button cursor-pointer relative top-5 mt-[2px]" data-action="association#remove" data-association-remove-id-param="<%= id %>"><%= t(:delete_enrollment) %></button>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          <%= f.submit t(:add_group), class: 'normal-button mt-4', name: :add_group, data: { turbo_frame: f.field_id(:enrollments) } %>
+        <% end %>
       </div>
     </div>
   </div>

@@ -144,9 +144,13 @@ en:
   edit_group: Edit Group
   edit: Edit
   delete: Delete
+  enrollments: Enrollments
   enrollment_end_before_start: Enrollment cannot end before it started
   enrollment_duplicate: Active enrollment for this student and group already exists
   enrollment_not_same_org: Student and Group have to belong to the same organization
+  enrolled_since: Enrolled Since
+  enrolled_until: Enrolled Until
+  delete_enrollment: Delete Enrollment
   chapter_added: Chapter Added
   chapter_added_text: Chapter "%{chapter}" added.
   chapter_invalid: Chapter Invalid
@@ -318,7 +322,7 @@ en:
   first_lesson: First Lesson
   middle_lesson: Middle Lesson
   last_lesson: Last Lesson
-  group_and_mlid: Group and MLID
+  organization_and_mlid: Organization and MLID
 
   title_chart_2: Quantity of Data Collected By Month
   title_chart_4: Histogram of student performance values
