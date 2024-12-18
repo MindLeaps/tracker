@@ -10,6 +10,20 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
+-- Name: btree_gist; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS btree_gist WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION btree_gist; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION btree_gist IS 'support for indexing common datatypes in GiST';
+
+
+--
 -- Name: pg_stat_statements; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -1220,6 +1234,14 @@ ALTER TABLE ONLY public.lessons
 
 
 --
+-- Name: enrollments non_overlapping_enrollments; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.enrollments
+    ADD CONSTRAINT non_overlapping_enrollments EXCLUDE USING gist (student_id WITH =, group_id WITH =, tsrange(active_since, inactive_since) WITH &&);
+
+
+--
 -- Name: organizations organizations_mlid_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2004,6 +2026,7 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20241218232926'),
 ('20241130190757'),
 ('20241130044851'),
 ('20241120234016'),
