@@ -49,6 +49,62 @@ RSpec.describe Enrollment, type: :model do
       expect(duplicate_enrollment.valid?).to be true
     end
 
+    it 'validates no overlap with an existing closed enrollment' do
+      student = create(:student)
+      existing_enrollment = Enrollment.create student:, group: create(:group, org: student.organization), active_since: 1.day.ago, inactive_since: Time.zone.now
+
+      overlapping_enrollment = Enrollment.build student: existing_enrollment.student, group: existing_enrollment.group, active_since: 1.hour.ago
+      expect(overlapping_enrollment.valid?).to be false
+      expect(overlapping_enrollment.errors[:student]).to eq [I18n.t(:enrollment_overlap)]
+
+      overlapping_enrollment = Enrollment.build student: existing_enrollment.student, group: existing_enrollment.group, active_since: 1.hour.ago, inactive_since: 2.days.from_now
+      expect(overlapping_enrollment.valid?).to be false
+      expect(overlapping_enrollment.errors[:student]).to eq [I18n.t(:enrollment_overlap)]
+
+      overlapping_enrollment = Enrollment.build student: existing_enrollment.student, group: existing_enrollment.group, active_since: 1.month.ago, inactive_since: 1.hour.ago
+      expect(overlapping_enrollment.valid?).to be false
+      expect(overlapping_enrollment.errors[:student]).to eq [I18n.t(:enrollment_overlap)]
+
+      overlapping_enrollment = Enrollment.build student: existing_enrollment.student, group: existing_enrollment.group, active_since: 1.month.ago, inactive_since: 1.month.from_now
+      expect(overlapping_enrollment.valid?).to be false
+      expect(overlapping_enrollment.errors[:student]).to eq [I18n.t(:enrollment_overlap)]
+
+      overlapping_enrollment = Enrollment.build student: existing_enrollment.student, group: existing_enrollment.group, active_since: 2.hours.ago, inactive_since: 1.hour.ago
+      expect(overlapping_enrollment.valid?).to be false
+      expect(overlapping_enrollment.errors[:student]).to eq [I18n.t(:enrollment_overlap)]
+
+      non_overlapping_enrollment = Enrollment.build student: existing_enrollment.student, group: existing_enrollment.group, active_since: 1.hour.from_now, inactive_since: 1.month.from_now
+      expect(non_overlapping_enrollment.valid?).to be true
+
+      non_overlapping_enrollment = Enrollment.build student: existing_enrollment.student, group: existing_enrollment.group, active_since: 1.hour.from_now
+      expect(non_overlapping_enrollment.valid?).to be true
+    end
+
+    it 'validates no overlap with an existing open enrollment' do
+      student = create(:student)
+      existing_enrollment = Enrollment.create student:, group: create(:group, org: student.organization), active_since: 1.day.ago
+
+      overlapping_enrollment = Enrollment.build student: existing_enrollment.student, group: existing_enrollment.group, active_since: 1.hour.ago, inactive_since: 2.days.from_now
+      expect(overlapping_enrollment.valid?).to be false
+      expect(overlapping_enrollment.errors[:student]).to eq [I18n.t(:enrollment_overlap)]
+
+      overlapping_enrollment = Enrollment.build student: existing_enrollment.student, group: existing_enrollment.group, active_since: 1.month.ago, inactive_since: 1.hour.ago
+      expect(overlapping_enrollment.valid?).to be false
+      expect(overlapping_enrollment.errors[:student]).to eq [I18n.t(:enrollment_overlap)]
+
+      overlapping_enrollment = Enrollment.build student: existing_enrollment.student, group: existing_enrollment.group, active_since: 1.month.ago, inactive_since: 1.month.from_now
+      expect(overlapping_enrollment.valid?).to be false
+      expect(overlapping_enrollment.errors[:student]).to eq [I18n.t(:enrollment_overlap)]
+
+      overlapping_enrollment = Enrollment.build student: existing_enrollment.student, group: existing_enrollment.group, active_since: 2.hours.ago, inactive_since: 1.hour.ago
+      expect(overlapping_enrollment.valid?).to be false
+      expect(overlapping_enrollment.errors[:student]).to eq [I18n.t(:enrollment_overlap)]
+
+      non_overlapping_enrollment = Enrollment.build student: existing_enrollment.student, group: existing_enrollment.group, active_since: 1.hour.from_now, inactive_since: 1.month.from_now
+      expect(non_overlapping_enrollment.valid?).to be false
+      expect(overlapping_enrollment.errors[:student]).to eq [I18n.t(:enrollment_overlap)]
+    end
+
     it 'validates that student and group belong to the same organization' do
       student = create(:student)
       enrollment = Enrollment.build student:, group: create(:group), active_since: Time.zone.now

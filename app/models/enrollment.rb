@@ -26,16 +26,34 @@ class Enrollment < ApplicationRecord
 
   validates :active_since, presence: true
   validates :inactive_since, comparison: { greater_than: :active_since, message: I18n.t(:enrollment_end_before_start) }, allow_nil: true
-  validates :student, uniqueness: { scope: :group_id, conditions: -> { where(inactive_since: nil) }, message: I18n.t(:enrollment_duplicate) }
+  validates :student, uniqueness: { scope: [:group_id, :inactive_since], message: I18n.t(:enrollment_duplicate), if: :open? }
   validate :validate_student_and_group_in_same_org
+  validate :validate_enrollments_do_not_overlap
 
   def chapter_group_name_with_full_mlid
     "#{group.chapter_name} - #{group.group_name}: #{group.full_mlid}"
   end
 
   def validate_student_and_group_in_same_org
-    if student.present? && group.present?
-      errors.add(:student, I18n.t(:enrollment_not_same_org)) if student.organization_id != group.chapter.organization_id
-    end
+    errors.add(:student, I18n.t(:enrollment_not_same_org)) if student.present? && group.present? && student.organization_id != (group.chapter.organization_id)
   end
+
+  def validate_enrollments_do_not_overlap
+    errors.add(:student, I18n.t(:enrollment_overlap)) if student.present? && group.present? && overlapping_enrollment?
+  end
+
+  def open?
+    inactive_since.nil?
+  end
+
+  private
+
+  # rubocop:disable Metrics/AbcSize
+  def overlapping_enrollment?
+    Enrollment.exists?(student_id: student.id, group_id: group.id, active_since: active_since..inactive_since) ||
+      Enrollment.exists?(student_id: student.id, group_id: group.id, inactive_since: active_since..inactive_since) ||
+      (inactive_since.present? && Enrollment.exists?(student_id: student.id, group_id: group.id, active_since: ..active_since, inactive_since: inactive_since..)) ||
+      Enrollment.exists?(student_id: student.id, group_id: group.id, active_since: ..active_since, inactive_since: nil)
+  end
+  # rubocop:enable Metrics/AbcSize
 end
