@@ -56,13 +56,17 @@ class StudentsController < HtmlController
   def update
     @student = Student.find params[:id]
     authorize @student
-    if update_student @student
+    @student.assign_attributes student_params
+    if params[:add_group]
+      @student.enrollments.build
+      render :new, status: :ok
+    elsif @student.save
       success title: t(:student_updated), text: t(:student_name_updated, name: @student.proper_name)
-      return redirect_to(flash[:redirect] || student_path(@student))
+      redirect_to(flash[:redirect] || student_path(@student))
+    else
+      failure title: t(:student_invalid), text: t(:fix_form_errors)
+      render :edit, status: :unprocessable_entity
     end
-
-    failure title: t(:student_invalid), text: t(:fix_form_errors)
-    render :edit, status: :unprocessable_entity
   end
 
   def destroy

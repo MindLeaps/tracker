@@ -52,6 +52,7 @@ class Student < ApplicationRecord
 
   validates :first_name, :last_name, :dob, :gender, presence: true
   validates :mlid, uniqueness: { scope: :organization_id }, length: { maximum: 3 }
+  validates_associated :enrollments
 
   enum :gender, { M: 'male', F: 'female', NB: 'nonbinary' }
 
@@ -77,6 +78,6 @@ class Student < ApplicationRecord
      :guardian_name, :guardian_occupation, :guardian_contact, :family_members, :health_insurance,
      :health_issues, :hiv_tested, :name_of_school, :school_level_completed, :year_of_dropout,
      :reason_for_leaving, :notes, :organization_id, :profile_image_id, { student_images_attributes: [:image], student_tags_attributes: [:tag_id, :student_id, :_destroy] },
-     { enrollments_attributes: [:enrollment_id, :student_id, :group_id, :active_since, :inactive_since, :_destroy] }]
+     { enrollments_attributes: [:id, :student_id, :group_id, :active_since, :inactive_since, :_destroy] }]
   end
 end

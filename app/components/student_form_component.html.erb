@@ -78,7 +78,7 @@
       <div class="mt-5 md:col-span-3 md:mt-0">
         <%= turbo_frame_tag f.field_id(:enrollments) do %>
           <div id="groups" class="divide-y divide-gray-200" data-controller="association">
-            <%= f.fields_for :enrollments, include_id: false do |ef| %>
+            <%= f.fields_for :enrollments do |ef| %>
               <% id = SecureRandom.uuid %>
               <div class="grid grid-cols-8 gap-4 [&:not(:last-child)]:pb-4 [&:not(:first-child)]:pt-4 <%= if ef.object.marked_for_destruction? then 'hidden' else '' end %>" data-association-target="removable" id="<%= id %>">
                 <div class="col-span-6 lg:col-span-2">
