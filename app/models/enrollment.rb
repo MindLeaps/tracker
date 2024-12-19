@@ -51,10 +51,10 @@ class Enrollment < ApplicationRecord
 
   # rubocop:disable Metrics/AbcSize
   def overlapping_enrollment?
-    Enrollment.exists?(student_id: student.id, group_id: group.id, active_since: active_since..inactive_since) ||
-      Enrollment.exists?(student_id: student.id, group_id: group.id, inactive_since: active_since..inactive_since) ||
-      (inactive_since.present? && Enrollment.exists?(student_id: student.id, group_id: group.id, active_since: ..active_since, inactive_since: inactive_since..)) ||
-      Enrollment.exists?(student_id: student.id, group_id: group.id, active_since: ..active_since, inactive_since: nil)
+    Enrollment.excluding(self).exists?(student_id: student.id, group_id: group.id, active_since: active_since..inactive_since) ||
+      Enrollment.excluding(self).exists?(student_id: student.id, group_id: group.id, inactive_since: active_since..inactive_since) ||
+      (inactive_since.present? && Enrollment.excluding(self).exists?(student_id: student.id, group_id: group.id, active_since: ..active_since, inactive_since: inactive_since..)) ||
+      Enrollment.excluding(self).exists?(student_id: student.id, group_id: group.id, active_since: ..active_since, inactive_since: nil)
   end
   # rubocop:enable Metrics/AbcSize
 end
