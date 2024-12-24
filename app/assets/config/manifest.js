@@ -4,6 +4,7 @@
 //= link application.js
 //= link charts.js
 //= link analytics.js
+//= link datepickers.js
 //= link frappe-gantt.css
 //= link_tree ../images
 //= link_tree ../../javascript .js
