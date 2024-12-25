@@ -1,4 +1,6 @@
 <%- content_for :title, t(:new_student)%>
+<% content_for :head_content, javascript_include_tag('datepickers') %>
+<%= stylesheet_link_tag 'pikaday.css' %>
 
 <%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
   {title: t(:new_student), href: '' },
