@@ -1,12 +1,14 @@
 class Datepicker < ViewComponent::Base
+  renders_one :input_field
+
   erb_template <<~ERB
-    <div class="date-picker-container inline-block" data-controller="datepicker" data-datepicker-date-value=<%= @date %>>
-      <input id="datepicker" class="<%= @custom_class %>">
+    <div class="inline-block" data-controller="datepicker" data-datepicker-date-value=<%= @date %> data-datepicker-id-value=<%= @field_id %>>
+      <%= input_field %>
     </div/>
   ERB
 
-  def initialize(date:, custom_class:)
+  def initialize(date:, field_id:)
     @date = date
-    @custom_class = custom_class
+    @field_id = field_id
   end
 end
