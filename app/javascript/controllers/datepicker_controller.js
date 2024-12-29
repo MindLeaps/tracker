@@ -27,8 +27,5 @@ export default class extends Controller {
                return new Date(year, month, day);
            }
        });
-
-       // setting the default date to be shown
-       picker.setDate(this.dateValue)
     }
 }
