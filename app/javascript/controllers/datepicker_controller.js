@@ -3,10 +3,11 @@ import * as pikaday from 'pikaday'
 
 // Connects to data-controller="datepicker"
 export default class extends Controller {
-    static values = { date: String, id: String }
+    static values = { date: String }
+    static targets = [ "picker" ]
     connect() {
        const picker = new Pikaday({
-           field: document.getElementById(this.idValue),
+           field: this.pickerTarget,
            minDate: new Date(Date.parse('1970-01-01')),
            maxDate: new Date(),
            defaultDate: this.dateValue,
