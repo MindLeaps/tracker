@@ -7,6 +7,7 @@
 - Added database procedure which updates enrollments according to earliest grades
 - Modified Student API to return group_id according to Enrollments
 - Implemented Enrollments API
+- Added Datepicker component and modified forms with dates to use it
 
 ## 0.34.0 - Group Reports
 - Added Count of Graded/absent/total students and total lesson average mark in lesson view
