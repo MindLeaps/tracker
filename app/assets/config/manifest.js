@@ -4,7 +4,7 @@
 //= link application.js
 //= link charts.js
 //= link analytics.js
-//= link datepickers.js
+//= link pikaday.js
 //= link frappe-gantt.css
 //= link pikaday.css
 //= link_tree ../images
