@@ -22,6 +22,7 @@ RSpec.describe 'User interacts with students in Group', js: true do
       expect(page).to have_content "MLID can't be blank"
       expect(page).to have_content "Last name can't be blank"
       expect(page).to have_content "First name can't be blank"
+      expect(page).to have_content "Dob can't be blank"
     end
 
     it 'renders a new student and updates when form is submitted' do
@@ -30,6 +31,7 @@ RSpec.describe 'User interacts with students in Group', js: true do
       fill_in 'student_mlid', with: '1A'
       fill_in 'student_last_name', with: 'Student'
       fill_in 'student_first_name', with: 'New'
+      fill_in 'student_dob', with: '2024-01-01'
       find('#student_gender_nb').click
       click_button 'Create Student'
 
