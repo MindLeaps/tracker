@@ -10,8 +10,6 @@ export default class extends Controller {
            field: this.pickerTarget,
            minDate: new Date(Date.parse('1970-01-01')),
            maxDate: new Date(),
-           defaultDate: this.dateValue,
-           setDefaultDate: true,
            format: 'YYYY-MM-DD',
            toString(date, format) {
                // showing the date here in the format defined above
