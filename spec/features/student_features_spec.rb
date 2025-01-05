@@ -33,6 +33,7 @@ RSpec.describe 'User interacts with Students' do
       fill_in 'student_mlid', with: '1A'
       fill_in 'First name', with: 'Rick'
       fill_in 'Last name', with: 'Sanchez'
+      fill_in 'Date of Birth', with: '1943-01-15'
       select('Antarctica', from: 'Country of nationality')
       select(@group.chapter_group_name_with_full_mlid, from: 'student_group_id')
       click_button 'Create'
