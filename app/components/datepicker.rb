@@ -4,7 +4,8 @@ class Datepicker < ViewComponent::Base
   erb_template <<~ERB
     <div class="inline-block" data-controller="datepicker" data-datepicker-date-value=<%= @date %>  >
       <% if @form %>
-        <%= @form.text_field @target, data: { 'datepicker-target' => 'picker' }, class: 'mt-1 rounded-md border-purple-500 text-sm focus:border-green-600 focus:outline-none focus:ring-green-600' %>
+        <%= @form.text_field @target, data: { 'datepicker-target' => 'picker' },
+         class: 'mt-1 rounded-md border-purple-500 text-sm focus:border-green-600 focus:outline-none focus:ring-green-600', autocomplete: 'disabled' %>
       <% else %>
         <%= input_field %>
       <% end %>
