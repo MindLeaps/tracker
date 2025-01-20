@@ -1,4 +1,4 @@
-<div>
+<div class="w-full">
   <h1 class="text-3xl mb-2 font-bold tracking-tight text-center text-gray-900 sm:text-4xl print:text-2xl">Group Report - <%=@group.group_name%></h1>
 
   <div class="break-after-page pagebreak-after">
@@ -28,7 +28,7 @@
   <% else %>
     <% @reports.each do |report| %>
       <div>
-        <h1 class="text-2xl font-bold tracking-tight text-center text-gray-900 sm:text-4xl print:text-xl"><%=report[:subject_name]%></h1>
+        <h1 class="text-2xl font-bold tracking-tight text-center text-gray-900 sm:text-4xl print:text-xl break-before-page pagebreak-before"><%=report[:subject_name]%></h1>
 
         <div>
           <dl class="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
