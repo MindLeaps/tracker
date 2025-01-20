@@ -95,7 +95,7 @@
 <script>
   const handlePrint = () => {
     setTimeout(() => {
-       //window.print()
+       window.print()
     }, 1000)
     document.removeEventListener('DOMContentLoaded', handlePrint)
   }
@@ -108,10 +108,9 @@
     })
 
     let enrollmentTimelines = <%= @enrollment_timelines.to_json.html_safe %>;
-    let lessonSummaries = <%= @group_lesson_summaries.to_json.html_safe %>
 
     if(enrollmentTimelines.length > 0) {
-      displayTimelineGraph && displayTimelineGraph('#group_enrollments', enrollmentTimelines, lessonSummaries)
+      displayTimelineGraph && displayTimelineGraph('#group_enrollments', enrollmentTimelines)
     }
 
     document.addEventListener('DOMContentLoaded', handlePrint)
