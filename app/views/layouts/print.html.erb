@@ -16,40 +16,49 @@
   <% end %>
   <style>
     #group_enrollments .gantt-container {
-        height: fit-content;
-        overflow: visible;
+      height: fit-content;
+      overflow: visible;
     }
 
     #group_enrollments .gantt {
-        margin-top: 5px;
+      margin-top: 5px;
     }
 
     #group_enrollments .current-highlight,
     #group_enrollments .current-date-highlight {
-        background-color: rgb(126 34 206/var(--tw-bg-opacity));
+      background-color: rgb(126 34 206/var(--tw-bg-opacity));
     }
 
     .timeline-pill.today,
     #group_enrollments .side-header,
     #group_enrollments .popup-wrapper {
-        display: none;
+      display: none;
     }
 
     #group_enrollments .grid-header {
-        position: static;
+      position: static;
     }
 
     .timeline-pill {
-        pointer-events: none;
+      pointer-events: none;
     }
 
     .timeline-pill .bar-label {
-        font-size: .75rem;
+      font-size: .75rem;
     }
 
     .timeline-pill .bar {
-        fill: #4CAF50 !important;
-        opacity: .5;
+      fill: #4CAF50 !important;
+      opacity: .5;
+    }
+
+    .grid a img {
+      display: none;
+    }
+
+    * {
+      box-shadow: none !important;
+      text-shadow: none !important;
     }
 
     @media print {
@@ -58,17 +67,23 @@
         margin: 0;
       }
 
+      body {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+
       .ct-chart, .ct-chart-bar {
         min-height: 300px;
       }
 
-      .pagebreak {
-          clear: both;
-          page-break-after: always;
+      .pagebreak-before {
+        clear: both;
+        break-before: page;
       }
 
-      #group_enrollments .gantt-container {
-          width: 100%;
+      .pagebreak-after {
+        clear: both;
+        break-after: page;
       }
     }
   </style>
