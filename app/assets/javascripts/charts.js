@@ -55,11 +55,10 @@ function displayLessonGraph(containerId, lessonId, data) {
 function displayAveragesGraph(containerId, studentId, data) {
   let responsiveOptions = [
     ['print', {
-      width: 580,
       height: 300,
       stretch: true,
       axisX:{
-        divisor: 5
+        divisor: 10
       }
     }]
   ];
@@ -122,7 +121,6 @@ function displayPercentagesGraph(containerId, data) {
       }],
 
     ['print', {
-      width: 1200,
       height: 300,
       stretch: true,
       axisX: {
@@ -163,7 +161,7 @@ function displayPercentagesGraph(containerId, data) {
 }
 
 
-function displayTimelineGraph(containerId, data, summaries){
+function displayTimelineGraph(containerId, data){
  let inMultipleYears = data.some(d => new Date(d.active_since).getFullYear() !== new Date(Date.now()).getFullYear()
       || new Date(d.inactive_since).getFullYear()  !== new Date(Date.now()).getFullYear())
 
@@ -204,8 +202,8 @@ function displayTimelineGraph(containerId, data, summaries){
      bar_corner_radius: 3,
      arrow_curve: 10,
      popup: null,
-     gantt_start: summaries.first().lesson_date,
-     gantt_end: summaries.last().lesson_date
+     gantt_start: data[0].active_since,
+     gantt_end: data[data.length - 1].active_since
   });
 }
 

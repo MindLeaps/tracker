@@ -1,7 +1,7 @@
-<div>
+<div class="w-full">
   <h1 class="text-3xl mb-2 font-bold tracking-tight text-center text-gray-900 sm:text-4xl print:text-2xl">Group Report - <%=@group.group_name%></h1>
 
-  <div class="pagebreak">
+  <div class="break-after-page pagebreak-after">
     <% if @enrollment_timelines.empty? %>
       <h1 class="text-xl font-bold tracking-tight text-center text-gray-800 print:text-xl">There are no students in this group</h1>
     <% else %>
@@ -27,22 +27,22 @@
     <h1 class="text-xl font-bold tracking-tight text-center text-gray-800 print:text-xl">There is no data for this group yet</h1>
   <% else %>
     <% @reports.each do |report| %>
-      <div class="pagebreak">
-        <h1 class="text-2xl font-bold tracking-tight text-center text-gray-900 sm:text-4xl print:text-xl"><%=report[:subject_name]%></h1>
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight text-center text-gray-900 sm:text-4xl print:text-xl break-before-page pagebreak-before"><%=report[:subject_name]%></h1>
 
         <div>
-          <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3 print:gap-1">
-            <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+          <dl class="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div class="overflow-hidden rounded-lg bg-white px-4 py-5 sm:p-6 border border-black">
               <dt class="mt-4 text-lg leading-8 text-gray-600">Starting Point</dt>
               <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Lesson date: <%=report[:group_summaries].first&.[](:lesson_date) || ''%></dd>
               <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Average mark: <%=report[:group_summaries].first&.[](:average_mark) || ''%></dd>
             </div>
-            <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+            <div class="overflow-hidden rounded-lg bg-white px-4 py-5 sm:p-6 border border-black">
               <dt class="mt-4 text-lg leading-8 text-gray-600">Middle Point</dt>
               <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Lesson date: <%=middle_from_array(report[:group_summaries])&.[](:lesson_date) || ''%></dd>
               <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Average mark: <%=middle_from_array(report[:group_summaries])&.[](:average_mark) || ''%></dd>
             </div>
-            <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+            <div class="overflow-hidden rounded-lg bg-white px-4 py-5 sm:p-6 border border-black">
               <dt class="mt-4 text-lg leading-8 text-gray-600">Final Point</dt>
               <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Lesson date: <%=report[:group_summaries].last&.[](:lesson_date) || ''%></dd>
               <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900 print:text-base">Average mark: <%=report[:group_summaries].last&.[](:average_mark) || ''%></dd>
@@ -50,21 +50,26 @@
           </dl>
         </div>
 
-        <section class="flex flex-wrap print:flex-nowrap">
-          <div class="w-full md:w-1/2 p-2">
-            <%= render CommonComponents::Card.new(title: t(:average_performance_for_last_30_lessons).capitalize) do |card| %>
-              <% card.with_card_content do %>
-                <div id="subject-<%= report[:subject_id] %>-last_30" class="ct-chart ct-octave bg-white"></div>
+        <section>
+          <% if report[:group_summaries].any? %>
+            <div class="w-full p-2">
+              <%= render CommonComponents::Card.new(title: t(:group_history).capitalize) do |card| %>
+                <% card.with_card_content do %>
+                  <div id="subject-<%= report[:subject_id] %>-group_history" class="ct-chart ct-octave bg-white"></div>
+                <% end %>
               <% end %>
-            <% end %>
-          </div>
-          <div class="w-full md:w-1/2 p-2">
-            <%= render CommonComponents::Card.new(title: t(:group_history).capitalize) do |card| %>
-              <% card.with_card_content do %>
-                <div id="subject-<%= report[:subject_id] %>-group_history" class="ct-chart ct-octave bg-white"></div>
+            </div>
+          <% end %>
+
+          <% if report[:group_summaries].any? && report[:group_summaries].length >= 30 %>
+            <div class="w-full p-2">
+              <%= render CommonComponents::Card.new(title: t(:average_performance_for_last_30_lessons).capitalize) do |card| %>
+                <% card.with_card_content do %>
+                  <div id="subject-<%= report[:subject_id] %>-last_30" class="ct-chart ct-octave bg-white"></div>
+                <% end %>
               <% end %>
-            <% end %>
-          </div>
+            </div>
+          <% end %>
         </section>
 
         <div class="w-full p-2">
@@ -75,7 +80,7 @@
           <% end %>
         </div>
 
-        <section>
+        <section class="break-before-page pagebreak-before">
           <%= render CommonComponents::Card.new(title: t(:average_performance_students_lifetime).capitalize) do |card| %>
             <% card.with_card_content do %>
               <%= render TableComponents::Table.new(rows: report[:student_summaries], row_component: TableComponents::StudentRowReport) %>
@@ -103,10 +108,9 @@
     })
 
     let enrollmentTimelines = <%= @enrollment_timelines.to_json.html_safe %>;
-    let lessonSummaries = <%= @group_lesson_summaries.to_json.html_safe %>
 
     if(enrollmentTimelines.length > 0) {
-      displayTimelineGraph && displayTimelineGraph('#group_enrollments', enrollmentTimelines, lessonSummaries)
+      displayTimelineGraph && displayTimelineGraph('#group_enrollments', enrollmentTimelines)
     }
 
     document.addEventListener('DOMContentLoaded', handlePrint)
