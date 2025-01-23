@@ -18,12 +18,20 @@ end %>
 
 <div class="overflow-auto">
   <section class="">
+    <div class="w-1/2">
+      <%= render CommonComponents::Card.new(title: 'New chart') do |card| %>
+        <% card.with_card_content do %>
+          <canvas id="myChart"></canvas>
+        <% end %>
+      <% end %>
+      <a id="myChartLink" class="block bg-purple-700 rounded-md text-white text-center bold" >Download Chart</a>
+    </div>
    <div class="w-1/2">
        <%= render CommonComponents::Card.new(title: t(:average_performance_for_last_30_lessons).capitalize) do |card| %>
-             <% card.with_card_content do %>
-               <div class="ct-chart ct-octave bg-white full-width"></div>
-             <% end %>
+           <% card.with_card_content do %>
+             <div class="ct-chart ct-octave bg-white full-width"></div>
            <% end %>
+       <% end %>
     </div>
       <%= render CommonComponents::Card.new(title: t(:student_details)) do |card| %>
         <% card.with_card_content do %>
@@ -147,3 +155,79 @@ end %>
   }
 <% end %>
 <%= javascript_include_tag "charts", onload: 'onChartsLoad()' %>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const summaryData = <%= @lesson_summaries.to_json.html_safe %>;
+    const student = <%= @student.to_json.html_safe %>
+    const labels = summaryData.map(x => x.lesson_date)
+    const values = summaryData.map(x => x.average_mark)
+    const canvasToDrawChart = document.getElementById('myChart');
+
+    const plugin = {
+        id: 'customCanvasBackgroundColor',
+        beforeDraw: (chart, args, options) => {
+            const {ctx} = chart;
+            ctx.save();
+            ctx.globalCompositeOperation = 'destination-over';
+            ctx.fillStyle = options.color || '#99ffff';
+            ctx.fillRect(0, 0, chart.width, chart.height);
+            ctx.restore();
+        }
+    };
+
+    const myChart = new Chart(canvasToDrawChart, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+              data: values,
+              fill: false,
+              borderColor: 'rgba(126, 34, 206, .75)',
+              borderWidth: 4,
+              tension: 0.2
+          }]
+        },
+        options: {
+            clip: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                customCanvasBackgroundColor: {
+                    color: 'white',
+                }
+            },
+            scales: {
+                x: {
+                  ticks: {
+                      padding: 10,
+                      font: {
+                          size: 16
+                      },
+                  }
+                },
+                y: {
+                    beginAtZero: true,
+                    min: 1,
+                    max: 7,
+                    ticks: {
+                        padding: 10,
+                        font: {
+                            size: 18
+                        }
+                    }
+                }
+            },
+            animation: {
+                onComplete: function () {
+                    const downloadAnchor = document.getElementById('myChartLink')
+                    downloadAnchor.href = myChart.toBase64Image();
+                    downloadAnchor.download = `${student.first_name}_${student.last_name}_Performance_Chart.png`;
+                }
+            }
+        },
+        plugins: [plugin]
+    });
+
+</script>
