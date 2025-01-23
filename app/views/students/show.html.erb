@@ -200,22 +200,33 @@ end %>
             },
             scales: {
                 x: {
-                  ticks: {
-                      padding: 10,
+                  title:{
+                      display: true,
+                      text: 'Lesson Date',
                       font: {
-                          size: 16
+                          size: 20
+                      }
+                  },
+                  ticks: {
+                      padding: 8,
+                      font: {
+                          size: 14
                       },
                   }
                 },
                 y: {
+                    title:{
+                        display: true,
+                        text: 'Score',
+                        font: {
+                            size: 20
+                        }
+                    },
                     beginAtZero: true,
                     min: 1,
                     max: 7,
                     ticks: {
-                        padding: 10,
-                        font: {
-                            size: 18
-                        }
+                        padding: 5,
                     }
                 }
             },
