@@ -127,22 +127,24 @@ end %>
 
     <%= render CommonComponents::Card.new(title: 'Student Average Marks') do |card| %>
       <% card.with_card_content do %>
-        <% @subjects_with_marks.each do |s| %>
-          <div class="bg-white px-4 py-5">
-            <h1 class="font-bold text-2xl text-center mb-2"> <%= s[:subject] %> </h1>
-            <div class="flex justify-between gap-4">
-              <% s[:marks].each do |skill, marks| %>
-                <div class="w-full overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
-                  <dt class="truncate text-sm font-medium text-gray-500"><%= skill %> Avg.</dt>
-                  <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
-                    <%= average_from_array(marks).round(2) %>
-                  </dd>
-                </div>
-              <% end %>
-            </div>
-          </div>
-
-        <% end %>
+        <div class="bg-white px-4 py-5">
+          <% if @skill_averages.blank? %>
+            <h1 class="font-medium text-2xl text-center">Student has not been graded yet</h1>
+          <% end %>
+          <% @skill_averages.each do |subject, marks| %>
+              <h1 class="font-bold text-2xl text-center mb-2"> <%= subject %> </h1>
+              <div class="flex justify-between gap-4 mb-2">
+                <% marks.each do |mark| %>
+                  <div class="w-full overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+                    <dt class="truncate text-sm font-medium text-gray-500"><%= mark[:skill] %> Avg.</dt>
+                    <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
+                      <%= mark[:average] %>
+                    </dd>
+                  </div>
+                <% end %>
+              </div>
+          <% end %>
+        </div>
       <% end %>
     <% end %>
   </section>
@@ -154,6 +156,3 @@ end %>
   }
 <% end %>
 <%= javascript_include_tag "charts", onload: 'onChartsLoad()' %>
-<script>
-  console.log(<%= @subjects_with_marks.to_json.html_safe %>);
-</script>
