@@ -1,5 +1,6 @@
 class StudentsController < HtmlController
   include Pagy::Backend
+  include CollectionHelper
   has_scope :exclude_deleted, only: :index, type: :boolean, default: true
   has_scope :exclude_empty, only: :performance, type: :boolean, default: true
   has_scope :table_order, only: [:index], type: :hash, default: { key: :created_at, order: :desc }
@@ -16,13 +17,27 @@ class StudentsController < HtmlController
   def show
     @student = Student.includes(:profile_image, group: { chapter: [:organization] }).find params.require(:id)
     authorize @student
-    @student_lessons_details_by_subject = apply_scopes(StudentLessonDetail.where(student_id: params[:id])).all.group_by(&:subject_id)
-    @subjects = policy_scope(Subject).includes(:skills).where(id: @student_lessons_details_by_subject.keys)
     @lesson_summaries = StudentLessonSummary.where(student_id: @student.id).where.not(average_mark: nil).order(lesson_date: :asc).last(30).map do |summary|
       {
         lesson_date: summary.lesson_date,
         average_mark: summary.average_mark
       }
+    end
+    @average_marks = {}
+    populate_skill_marks
+  end
+
+  def populate_skill_marks
+    student_lessons_details_by_subject = StudentLessonDetail.where(student_id: @student.id).group_by(&:subject_id)
+    @subjects_with_marks = []
+    student_lessons_details_by_subject.each do |subject_id, details|
+      @skill_marks = details.map(&:skill_names_marks).reject(&:empty?)
+      @skill_marks.each do |skill_mark|
+        skill_mark.each do |skill, mark|
+          @average_marks[skill.to_s] ? @average_marks[skill.to_s].push(mark) : @average_marks[skill.to_s] = []
+        end
+      end
+      @subjects_with_marks.push({ subject: Subject.find_by(id: subject_id).subject_name, marks: @average_marks })
     end
   end
 
