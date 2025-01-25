@@ -202,7 +202,7 @@ RSpec.describe StudentsController, type: :controller do
       it { should render_template :edit }
     end
 
-    describe '#performance' do
+    describe '#show' do
       before :each do
         @student = create :graded_student, grades: {
           'Memorization' => [1, 2, 3],
@@ -213,27 +213,14 @@ RSpec.describe StudentsController, type: :controller do
 
       it { should respond_with 200 }
 
-      it 'assigns the correct marks in skills by lesson' do
-        lessons = assigns[:student_lessons_details_by_subject].values.first.sort_by(&:date)
-        expect(lessons[0].skill_marks.values.map { |l| l.slice('skill_name', 'mark') }).to eq [
-          { 'skill_name' => 'Memorization', 'mark' => 1 }, { 'skill_name' => 'Grit', 'mark' => 3 }
-        ]
-        expect(lessons[1].skill_marks.values.map { |l| l.slice('skill_name', 'mark') }).to eq [
-          { 'skill_name' => 'Memorization', 'mark' => 2 }, { 'skill_name' => 'Grit', 'mark' => 5 }
-        ]
-        expect(lessons[2].skill_marks.values.map { |l| l.slice('skill_name', 'mark') }).to eq [
-          { 'skill_name' => 'Memorization', 'mark' => 3 }, { 'skill_name' => 'Grit', 'mark' => 6 }
-        ]
-      end
+      it 'assigns the correct averages for each skill' do
+        averages = assigns[:skill_averages].values[0]
+        averages.sort_by { |a| a['skill'] }
 
-      it 'calculates the correct average mark for each lesson' do
-        lessons = assigns[:student_lessons_details_by_subject].values.first.sort_by(&:date)
-        expect(lessons.map { |l| l.average_mark.to_s }).to eq %w[2.0 3.5 4.5]
-      end
-
-      it 'assigns the subjects with the skills' do
-        expect(assigns[:subjects].first.skills.map(&:skill_name)).to include 'Memorization', 'Grit'
-        expect(assigns[:subjects].first.skills.length).to eq 2
+        expect(averages[0][:skill]).to eq('Grit')
+        expect(averages[0][:average]).to be_within(0.01).of 4.66
+        expect(averages[1][:skill]).to eq('Memorization')
+        expect(averages[1][:average]).to be_within(0.01).of 2.0
       end
     end
 
