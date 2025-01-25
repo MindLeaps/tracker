@@ -158,7 +158,7 @@ end %>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    const summaryData = <%= @lesson_summaries.to_json.html_safe %>;
+    let summaryData = <%= @lesson_summaries.to_json.html_safe %>;
     const student = <%= @student.to_json.html_safe %>
     const labels = summaryData.map(x => x.lesson_date)
     const values = summaryData.map(x => x.average_mark)
