@@ -22,7 +22,7 @@ class StudentsController < HtmlController
   end
 
   def populate_skill_averages
-    StudentAverage.where(student_id: @student.id).each do |average|
+    StudentAverage.where(student_id: @student.id).load.each do |average|
       @skill_averages[(average[:subject_name]).to_s] = [] unless @skill_averages[(average[:subject_name]).to_s]
       @skill_averages[(average[:subject_name]).to_s].push({ skill: average[:skill_name], average: average[:average_mark] })
     end
