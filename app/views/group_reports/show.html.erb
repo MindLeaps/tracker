@@ -1,7 +1,20 @@
 <div>
   <h1 class="text-3xl mb-2 font-bold tracking-tight text-center text-gray-900 sm:text-4xl print:text-2xl">Group Report - <%=@group.group_name%></h1>
 
-  <div class="pagebreak">
+  <section id="report-controls" class="print:hidden">
+    <div class="w-full bg-white shadow p-2">
+      <div class="w-full flex gap-2 items-center">
+        <div class="flex gap-2 items-center">
+          <p class="text-sm tracking-tight text-gray-900">Student Enrollments</p>
+          <div id="studentEnrollmentsToggle" class="border border-black px-2 py-3 rounded-2xl w-20 relative cursor-pointer">
+            <span class="toggle block w-4 h-4 rounded-full bg-purple-700 opacity-40 active"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="studentEnrollments" class="pagebreak">
     <% if @enrollment_timelines.empty? %>
       <h1 class="text-xl font-bold tracking-tight text-center text-gray-800 print:text-xl">There are no students in this group</h1>
     <% else %>
@@ -90,7 +103,7 @@
 <script>
   const handlePrint = () => {
     setTimeout(() => {
-       window.print()
+      // window.print()
     }, 1000)
     document.removeEventListener('DOMContentLoaded', handlePrint)
   }
@@ -115,3 +128,29 @@
   const takeLast = (arr, n = 1) => n === 0 ? [] : arr.slice(-n);
 </script>
 <%= javascript_include_tag "charts", onload: 'onChartsLoad()' %>
+<script>
+  let toggle = document.getElementById('studentEnrollmentsToggle')
+  let enrollments = document.getElementById('studentEnrollments')
+
+  toggle.addEventListener('click', () => {
+    let child = toggle.getElementsByTagName('span')[0]
+    child.classList.toggle('active')
+
+    !child.classList.contains('active') ? enrollments.style.display = 'none' : enrollments.style.display = 'block'
+  })
+</script>
+
+<style>
+  .toggle {
+    position: absolute;
+    top: 50%;
+    left: 5%;
+    transform: translateY(-50%);
+    transition: all .5s ease-in-out;
+  }
+
+  .toggle.active {
+    left: calc(100% - 1rem - .5rem);
+    opacity: 1;
+  }
+</style>
