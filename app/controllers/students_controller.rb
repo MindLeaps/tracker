@@ -22,8 +22,7 @@ class StudentsController < HtmlController
   end
 
   def populate_skill_averages
-    @student_averages = StudentAverage.where(student_id: @student.id)
-    @student_averages.each do |average|
+    StudentAverage.where(student_id: @student.id).each do |average|
       @skill_averages[(average[:subject_name]).to_s] = [] unless @skill_averages[(average[:subject_name]).to_s]
       @skill_averages[(average[:subject_name]).to_s].push({ skill: average[:skill_name], average: average[:average_mark] })
     end
@@ -89,10 +88,7 @@ class StudentsController < HtmlController
   private
 
   def lesson_summary(summary)
-    {
-      lesson_date: summary.lesson_date,
-      average_mark: summary.average_mark
-    }
+    { lesson_date: summary.lesson_date, average_mark: summary.average_mark }
   end
 
   def student_params
