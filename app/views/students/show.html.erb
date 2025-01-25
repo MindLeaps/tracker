@@ -125,7 +125,7 @@ end %>
         <% end %>
       <% end %>
 
-    <%= render CommonComponents::Card.new(title: 'Student Average Marks') do |card| %>
+    <%= render CommonComponents::Card.new(title: t(:student_average_marks)) do |card| %>
       <% card.with_card_content do %>
         <div class="bg-white px-4 py-5">
           <% if @skill_averages.blank? %>
