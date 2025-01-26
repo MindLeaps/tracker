@@ -129,7 +129,7 @@ end %>
       <% card.with_card_content do %>
         <div class="bg-white px-4 py-5">
           <% if @skill_averages.blank? %>
-            <h1 class="font-medium text-2xl text-center">Student has not been graded yet</h1>
+            <h1 class="font-medium text-xl text-gray-900 text-center">Student has not been graded yet</h1>
           <% end %>
           <% @skill_averages.each do |subject, marks| %>
               <h1 class="font-bold text-2xl text-center mb-2"> <%= subject %> </h1>
@@ -149,13 +149,12 @@ end %>
     <% end %>
 
     <% @student_lessons_details_by_subject.each do |subject_id, lessons_details| subject = @subjects.find(subject_id) %>
-      <%= render CommonComponents::Card.new(title: t(:student_grades)) do |card| %>
+      <%= render CommonComponents::Card.new(title: t(:student_grades) + " (#{subject.subject_name})") do |card| %>
         <% card.with_card_content do %>
-          <div class="bg-white px-6 border-b border-gray-200 flex items-center justify-center">
-            <span class="border-b-2 border-transparent inline-flex font-medium text-gray-600 py-4 text-sm"><%= subject.subject_name %></span>
-          </div>
           <% if lessons_details.map(&:grade_count).uniq.length == 1 && lessons_details.map(&:grade_count)[0] == 0 %>
-            <h1 class="font-medium text-2xl text-center">Student has not been graded yet</h1>
+            <div class="bg-white px-4 py-5">
+              <h1 class="font-medium text-xl text-gray-900 text-center">Student has not been graded yet</h1>
+            </div>
           <% else %>
             <%= render TableComponents::Table.new(rows: lessons_details, row_component: TableComponents::StudentPerformanceRow, column_arguments: { skills: subject.skills }, row_arguments: { skill_ids: subject.skills.map { |s| s.id.to_s } }, order_scope_name: :student_lesson_order) %>
           <% end %>
