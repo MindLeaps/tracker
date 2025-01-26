@@ -230,6 +230,7 @@ RSpec.describe StudentsController, type: :controller do
           'Memorization' => [1, 2, 3],
           'Grit' => [3, 5, 6]
         }
+        create :enrollment, group: @student.group, student: @student, active_since: 1.year.ago
         get :show, params: { id: @student.id }
       end
 
