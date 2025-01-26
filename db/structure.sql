@@ -99,15 +99,16 @@ CREATE PROCEDURE public.update_enrollments_by_grades()
     LANGUAGE plpgsql
     AS $$
 BEGIN
-  -- Find enrollments to fix (ignore grades that reference lessons from more than 3 years ago)
-  with tofix_enrollments as
-  ( select s.id as student_id, s.group_id, min(l.date) as earliest_lesson, min(en.active_since) as enrollment_date, en.id as enrollment_id
-    from grades as gr
-    join students s on s.id = gr.student_id
-    join lessons l on gr.lesson_id = l.id
-    join enrollments en on en.student_id = s.id and en.group_id = s.group_id and en.active_since::date > l.date
-    where l.date > now() - '3 years'::interval
-    group by s.id, s.group_id, en.id
+  -- Find enrollments to fix
+  with tofix_enrollments as 
+  ( select s.id as student_id, s.group_id, min(l.date) as earliest_lesson, min(en.active_since) as enrollment_date, en.id as enrollment_id 
+  from grades as g
+  join students s on s.id = g.student_id
+  join lessons l on g.lesson_id = l.id
+  join groups gr on gr.id = l.group_id
+  join enrollments en on en.student_id = s.id and en.group_id = gr.id and en.active_since > l.date
+  where l.date > now() - '3 years'::interval
+  group by s.id, s.group_id, en.id
   )
 
   -- Update found enrollments
@@ -1657,31 +1658,6 @@ CREATE OR REPLACE VIEW public.performance_per_group_per_skill_per_lessons AS
 
 
 --
--- Name: student_lesson_details _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.student_lesson_details AS
- SELECT s.id AS student_id,
-    s.first_name,
-    s.last_name,
-    s.deleted_at AS student_deleted_at,
-    l.id AS lesson_id,
-    l.date,
-    l.deleted_at AS lesson_deleted_at,
-    l.subject_id,
-    round(avg(grades.mark), 2) AS average_mark,
-    count(grades.mark) AS grade_count,
-    COALESCE(jsonb_object_agg(grades.skill_id, jsonb_build_object('mark', grades.mark, 'grade_descriptor_id', grades.grade_descriptor_id, 'skill_name', skills.skill_name)) FILTER (WHERE (skills.skill_name IS NOT NULL)), '{}'::jsonb) AS skill_marks
-   FROM ((((public.students s
-     JOIN public.groups g ON ((g.id = s.group_id)))
-     JOIN public.lessons l ON ((g.id = l.group_id)))
-     LEFT JOIN public.grades ON (((grades.student_id = s.id) AND (grades.lesson_id = l.id))))
-     LEFT JOIN public.skills ON ((skills.id = grades.skill_id)))
-  GROUP BY s.id, l.id
-  ORDER BY l.subject_id;
-
-
---
 -- Name: student_tag_table_rows _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
@@ -1833,6 +1809,33 @@ CREATE OR REPLACE VIEW public.student_averages AS
      JOIN public.subjects su ON ((su.id = a.subject_id)))
      JOIN public.lessons l ON (((l.id = g.lesson_id) AND (l.subject_id = su.id))))
   GROUP BY s.id, su.id, sk.skill_name;
+
+
+--
+-- Name: student_lesson_details _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.student_lesson_details AS
+ SELECT s.id AS student_id,
+    s.first_name,
+    s.last_name,
+    s.deleted_at AS student_deleted_at,
+    l.id AS lesson_id,
+    l.date,
+    l.deleted_at AS lesson_deleted_at,
+    l.subject_id,
+    round(avg(g.mark), 2) AS average_mark,
+    count(g.mark) AS grade_count,
+    COALESCE(jsonb_object_agg(g.skill_id, jsonb_build_object('mark', g.mark, 'grade_descriptor_id', g.grade_descriptor_id, 'skill_name', sk.skill_name)) FILTER (WHERE (sk.skill_name IS NOT NULL)), '{}'::jsonb) AS skill_marks
+   FROM (((((public.students s
+     JOIN public.groups gr ON ((gr.id = s.group_id)))
+     JOIN public.lessons l ON ((gr.id = l.group_id)))
+     JOIN public.enrollments en ON ((s.id = en.student_id)))
+     LEFT JOIN public.grades g ON (((g.student_id = s.id) AND (g.lesson_id = l.id) AND (g.deleted_at IS NULL))))
+     LEFT JOIN public.skills sk ON ((sk.id = g.skill_id)))
+  WHERE ((en.active_since < (l.date + 1)) AND ((en.inactive_since IS NULL) OR (en.inactive_since > (l.date - 1))))
+  GROUP BY s.id, l.id
+  ORDER BY l.subject_id;
 
 
 --
@@ -2033,6 +2036,7 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250125235507'),
 ('20250124144809'),
 ('20241120234016'),
 ('20241012105115'),

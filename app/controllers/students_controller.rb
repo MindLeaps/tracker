@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class StudentsController < HtmlController
   include Pagy::Backend
   has_scope :exclude_deleted, only: :index, type: :boolean, default: true
@@ -16,6 +17,8 @@ class StudentsController < HtmlController
   def show
     @student = Student.includes(:profile_image, group: { chapter: [:organization] }).find params.require(:id)
     authorize @student
+    @student_lessons_details_by_subject = apply_scopes(StudentLessonDetail.where(student_id: params[:id])).all.group_by(&:subject_id)
+    @subjects = policy_scope(Subject).includes(:skills).where(id: @student_lessons_details_by_subject.keys)
     @lesson_summaries = StudentLessonSummary.where(student_id: @student.id).where.not(average_mark: nil).order(lesson_date: :asc).last(30).map { |s| lesson_summary(s) }
     @skill_averages = {}
     populate_skill_averages
@@ -121,3 +124,4 @@ class StudentsController < HtmlController
     student.update p
   end
 end
+# rubocop:enable Metrics/ClassLength

@@ -224,6 +224,36 @@ RSpec.describe StudentsController, type: :controller do
       end
     end
 
+    describe '#performance' do
+      before :each do
+        @student = create :graded_student, grades: {
+          'Memorization' => [1, 2, 3],
+          'Grit' => [3, 5, 6]
+        }
+        get :show, params: { id: @student.id }
+      end
+
+      it { should respond_with 200 }
+
+      it 'assigns the correct marks in skills by lesson' do
+        lessons = assigns[:student_lessons_details_by_subject].values.first.sort_by(&:date)
+        expect(lessons[0].skill_marks.values.map { |l| l.slice('skill_name', 'mark') }).to eq [
+          { 'skill_name' => 'Memorization', 'mark' => 1 }, { 'skill_name' => 'Grit', 'mark' => 3 }
+        ]
+        expect(lessons[1].skill_marks.values.map { |l| l.slice('skill_name', 'mark') }).to eq [
+          { 'skill_name' => 'Memorization', 'mark' => 2 }, { 'skill_name' => 'Grit', 'mark' => 5 }
+        ]
+        expect(lessons[2].skill_marks.values.map { |l| l.slice('skill_name', 'mark') }).to eq [
+          { 'skill_name' => 'Memorization', 'mark' => 3 }, { 'skill_name' => 'Grit', 'mark' => 6 }
+        ]
+      end
+
+      it 'calculates the correct average mark for each lesson' do
+        lessons = assigns[:student_lessons_details_by_subject].values.first.sort_by(&:date)
+        expect(lessons.map { |l| l.average_mark.to_s }).to eq %w[2.0 3.5 4.5]
+      end
+    end
+
     describe '#update' do
       let(:student) { create :student }
       let(:image) { create :student_image, student: }
