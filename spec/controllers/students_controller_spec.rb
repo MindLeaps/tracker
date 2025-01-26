@@ -252,6 +252,11 @@ RSpec.describe StudentsController, type: :controller do
         lessons = assigns[:student_lessons_details_by_subject].values.first.sort_by(&:date)
         expect(lessons.map { |l| l.average_mark.to_s }).to eq %w[2.0 3.5 4.5]
       end
+
+      it 'assigns the subjects with the skills' do
+        expect(assigns[:subjects].first.skills.map(&:skill_name)).to include 'Memorization', 'Grit'
+        expect(assigns[:subjects].first.skills.length).to eq 2
+      end
     end
 
     describe '#update' do

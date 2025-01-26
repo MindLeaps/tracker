@@ -171,6 +171,3 @@ end %>
   }
 <% end %>
 <%= javascript_include_tag "charts", onload: 'onChartsLoad()' %>
-<script>
-  console.log(<%= @student_lessons_details_by_subject.to_json.html_safe %>);
-</script>
