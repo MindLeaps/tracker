@@ -1,21 +1,38 @@
-<div class="w-full print:overflow-visible overflow-x-hidden">
-  <h1 class="text-3xl mb-2 font-bold tracking-tight text-center text-gray-900 sm:text-4xl print:text-2xl">Group Report - <%=@group.group_name%></h1>
+<%
+  @components = [
+    { id: 'students', name: 'Student Enrollments' },
+    { id: 'enrollmentTimelines', name: 'Enrollment Timelines' },
+    { id: 'pointAverages', name: 'Points Averages' },
+    { id: 'groupHistory', name: 'Group History' },
+    { id: 'groupHistory30', name: 'Group History (Last 30 Lessons)' },
+    { id: 'groupAttendance', name: 'Attendance' },
+    { id: 'averagePerformanceStudents', name: 'Student Average Performance' }
+  ]
+%>
 
-  <section id="report-controls" class="print:hidden">
-    <div class="w-full bg-white shadow p-2">
-      <div class="w-full flex gap-2 items-center">
-        <div class="flex gap-2 items-center">
-          <p class="text-sm tracking-tight text-gray-900">Student Enrollments</p>
-          <div id="studentEnrollmentsToggle" class="border border-black px-2 py-3 rounded-2xl w-20 relative cursor-pointer">
-            <span class="toggle block w-4 h-4 rounded-full bg-purple-700 opacity-40 active"></span>
+<div class="w-full print:overflow-visible overflow-x-hidden">
+  <section class="w-full print:hidden">
+    <%= render CommonComponents::Card.new(title: 'Report Controls') do |card| %>
+      <% card.with_card_content do %>
+        <div class="w-full bg-white p-4">
+          <div class="w-full flex gap-4 items-center justify-center">
+              <% @components.each do |c| %>
+                <div class="flex gap-2 items-center">
+                  <p class="text-md font-bold tracking-tight text-gray-900"><%= c[:name] %></p>
+                  <div id="<%= c[:id] %>Toggle" class="border border-black px-2 py-3 rounded-2xl w-20 relative cursor-pointer">
+                    <span class="toggle block w-4 h-4 rounded-full bg-purple-700 opacity-40 active"></span>
+                  </div>
+                </div>
+              <% end %>
           </div>
         </div>
-      </div>
-    </div>
+      <% end %>
+    <% end %>
   </section>
 
-  <div id="studentEnrollments" class="pagebreak">
-  <div class="break-after-page pagebreak-after">
+  <h1 class="text-3xl mb-2 font-bold tracking-tight text-center text-gray-900 sm:text-4xl print:text-2xl">Group Report - <%=@group.group_name%></h1>
+
+  <div id="students" class="break-after-page pagebreak-after">
     <% if @enrollment_timelines.empty? %>
       <h1 class="text-xl font-bold tracking-tight text-center text-gray-800 print:text-xl">There are no students in this group</h1>
     <% else %>
@@ -27,7 +44,7 @@
     <% end %>
   </div>
 
-  <div class="w-full p-2">
+  <div id="enrollmentTimelines" class="w-full p-2">
     <% if @enrollment_timelines.any? %>
       <%= render CommonComponents::Card.new(title: t(:group_enrollments).capitalize) do |card| %>
         <% card.with_card_content do %>
@@ -44,7 +61,7 @@
       <div>
         <h1 class="text-2xl font-bold tracking-tight text-center text-gray-900 sm:text-4xl print:text-xl break-before-page pagebreak-before"><%=report[:subject_name]%></h1>
 
-        <div class="w-full">
+        <div id="pointAverages" class="w-full">
           <dl class="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div class="overflow-hidden rounded-lg bg-white px-4 py-5 sm:p-6 border border-black">
               <dt class="mt-4 text-lg leading-8 text-gray-600">Starting Point</dt>
@@ -66,7 +83,7 @@
 
         <section class="w-full px-2">
           <% if report[:group_summaries].any? %>
-            <div class="w-full">
+            <div id="groupHistory" class="w-full">
               <%= render CommonComponents::Card.new(title: t(:group_history).capitalize) do |card| %>
                 <% card.with_card_content do %>
                   <div id="subject-<%= report[:subject_id] %>-group_history" class="ct-chart ct-octave bg-white"></div>
@@ -76,7 +93,7 @@
           <% end %>
 
           <% if report[:group_summaries].any? && report[:group_summaries].length >= 30 %>
-            <div class="w-full">
+            <div id="groupHistory30" class="w-full">
               <%= render CommonComponents::Card.new(title: t(:average_performance_for_last_30_lessons).capitalize) do |card| %>
                 <% card.with_card_content do %>
                   <div id="subject-<%= report[:subject_id] %>-last_30" class="ct-chart ct-octave bg-white"></div>
@@ -86,7 +103,7 @@
           <% end %>
         </section>
 
-        <div class="w-full">
+        <div id="groupAttendance" class="w-full">
           <%= render CommonComponents::Card.new(title: t(:group_attendance).capitalize) do |card| %>
             <% card.with_card_content do %>
               <div id="subject-<%= report[:subject_id] %>-group_attendance" class="ct-chart-bar bg-white"></div>
@@ -94,7 +111,7 @@
           <% end %>
         </div>
 
-        <section class="break-before-page pagebreak-before">
+        <section id="averagePerformanceStudents" class="break-before-page pagebreak-before">
           <%= render CommonComponents::Card.new(title: t(:average_performance_students_lifetime).capitalize) do |card| %>
             <% card.with_card_content do %>
               <%= render TableComponents::Table.new(rows: report[:student_summaries], row_component: TableComponents::StudentRowReport) %>
@@ -107,9 +124,10 @@
 </div>
 
 <script>
+  const takeLast = (arr, n = 1) => n === 0 ? [] : arr.slice(-n);
   const handlePrint = () => {
     setTimeout(() => {
-      // window.print()
+      window.print()
     }, 1000)
     document.removeEventListener('DOMContentLoaded', handlePrint)
   }
@@ -123,27 +141,29 @@
 
     let enrollmentTimelines = <%= @enrollment_timelines.to_json.html_safe %>;
 
-    if(enrollmentTimelines.length > 0) {
-      displayTimelineGraph && displayTimelineGraph('#group_enrollments', enrollmentTimelines)
-    }
+    if(enrollmentTimelines.length > 0) { displayTimelineGraph && displayTimelineGraph('#group_enrollments', enrollmentTimelines) }
 
     document.addEventListener('DOMContentLoaded', handlePrint)
   }
 
-  const takeLast = (arr, n = 1) => n === 0 ? [] : arr.slice(-n);
+  const enableComponentToggles = () => {
+    const components = <%= @components.to_json.html_safe %>;
+    components.forEach(c => {
+        let component = document.getElementById(c.id)
+        let toggle = document.getElementById(`${c.id}Toggle`)
+
+        toggle.addEventListener('click', () => {
+            let child = toggle.getElementsByTagName('span')[0]
+
+            child.classList.toggle('active')
+            !child.classList.contains('active') ? component.style.display = 'none' : component.style.display = 'block'
+        })
+    })
+  }
+
+  enableComponentToggles();
 </script>
 <%= javascript_include_tag "charts", onload: 'onChartsLoad()' %>
-<script>
-  let toggle = document.getElementById('studentEnrollmentsToggle')
-  let enrollments = document.getElementById('studentEnrollments')
-
-  toggle.addEventListener('click', () => {
-    let child = toggle.getElementsByTagName('span')[0]
-    child.classList.toggle('active')
-
-    !child.classList.contains('active') ? enrollments.style.display = 'none' : enrollments.style.display = 'block'
-  })
-</script>
 
 <style>
   .toggle {
