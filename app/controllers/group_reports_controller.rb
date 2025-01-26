@@ -65,6 +65,7 @@ class GroupReportsController < HtmlController
 
   def enrollment_end(enrollment)
     return enrollment.inactive_since if enrollment.inactive_since.present?
+    return Time.zone.now if @group_lesson_summaries.empty?
     return Time.zone.now if @group_lesson_summaries.last && (enrollment.active_since.to_date > @group_lesson_summaries.last&.[](:lesson_date))
 
     @group_lesson_summaries.last&.[](:lesson_date)
