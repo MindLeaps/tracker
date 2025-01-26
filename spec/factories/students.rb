@@ -54,15 +54,12 @@ FactoryBot.define do
     organization
     tags { create_list :tag, 3 }
     transient do
+      groups { [] }
       grades { {} }
       subject { nil }
     end
 
     factory :enrolled_student do
-      transient do
-        groups { [] }
-      end
-
       after(:create) do |student, evaluator|
         unless evaluator.groups.empty?
           evaluator.groups.each do |group|
@@ -74,15 +71,24 @@ FactoryBot.define do
 
     factory :graded_student do
       after :create do |student, evaluator|
+        if evaluator.groups.empty?
+          group = create :group, org: student.organization
+          student.enrollments << create(:enrollment, group: group, student: student)
+        else
+          evaluator.groups.each do |group|
+            student.enrollments << create(:enrollment, group: group, student: student)
+          end
+        end
+
         unless evaluator.grades.empty?
           subject = evaluator.subject || create(
             :subject_with_skills,
             skill_names: evaluator.grades.keys,
-            organization: student.group.chapter.organization
+            organization: student.organization
           )
           (0..evaluator.grades.values.map(&:length).max - 1).each do |i|
             date = 1.year.ago.to_date + i.days
-            existing_lesson = Lesson.find_by(subject_id: subject.id, group_id: student.group.id, date:)
+            existing_lesson = Lesson.find_by(subject_id: subject.id, group_id: student.enrollments[0].group.id, date:)
             skill_marks = evaluator.grades.transform_values { |v| v[i] }
             if existing_lesson
               skill_marks.each do |skill_name, mark|
@@ -94,7 +100,7 @@ FactoryBot.define do
               create(
                 :lesson_with_grades,
                 subject:,
-                group: student.group,
+                group: student.enrollments[0].group,
                 date:,
                 student_grades: { student.id => skill_marks }
               )

@@ -104,7 +104,13 @@ class StudentsController < HtmlController
 
   def populate_new_student
     student = Student.new
-    student.group = Group.find(new_params[:group_id]) if new_params[:group_id]
+    if new_params[:group_id]
+      group = Group.includes(:chapter).find new_params[:group_id]
+      if group
+        student.enrollments.build(group: group)
+        student.organization_id = group.chapter.organization_id
+      end
+    end
     student
   end
 

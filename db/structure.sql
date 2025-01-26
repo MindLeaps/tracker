@@ -777,6 +777,22 @@ ALTER SEQUENCE public.skills_id_seq OWNED BY public.skills.id;
 
 
 --
+-- Name: student_averages; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.student_averages AS
+SELECT
+    NULL::integer AS student_id,
+    NULL::character varying AS first_name,
+    NULL::character varying AS last_name,
+    NULL::timestamp without time zone AS student_deleted_at,
+    NULL::integer AS subject_id,
+    NULL::character varying AS subject_name,
+    NULL::character varying AS skill_name,
+    NULL::numeric AS average_mark;
+
+
+--
 -- Name: student_images; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1828,6 +1844,28 @@ CREATE OR REPLACE VIEW public.lesson_table_rows AS
 
 
 --
+-- Name: student_averages _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.student_averages AS
+ SELECT s.id AS student_id,
+    s.first_name,
+    s.last_name,
+    s.deleted_at AS student_deleted_at,
+    su.id AS subject_id,
+    su.subject_name,
+    sk.skill_name,
+    round(avg(g.mark), 2) AS average_mark
+   FROM (((((public.students s
+     JOIN public.grades g ON (((g.student_id = s.id) AND (g.deleted_at IS NULL))))
+     JOIN public.skills sk ON ((sk.id = g.skill_id)))
+     JOIN public.assignments a ON ((a.skill_id = sk.id)))
+     JOIN public.subjects su ON ((su.id = a.subject_id)))
+     JOIN public.lessons l ON (((l.id = g.lesson_id) AND (l.subject_id = su.id))))
+  GROUP BY s.id, su.id, sk.skill_name;
+
+
+--
 -- Name: assignments assignments_skill_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2026,6 +2064,7 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250124144809'),
 ('20241218232926'),
 ('20241130190757'),
 ('20241130044851'),

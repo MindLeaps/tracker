@@ -1,10 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe StudentsController, type: :controller do
-  let(:group_a) { create :group, group_name: 'Group A' }
+  let(:organization) { create :organization }
+  let(:chapter) { create :chapter, organization: organization }
+  let(:group_a) { create :group, group_name: 'Group A', chapter: chapter }
 
   context 'logged in as a global administrator' do
-    let(:organization) { create :organization }
     let(:signed_in_user) { create :global_admin }
     before :each do
       sign_in signed_in_user
@@ -16,8 +17,9 @@ RSpec.describe StudentsController, type: :controller do
           mlid: '1M',
           first_name: 'Trevor',
           last_name: 'Noah',
-          'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
-          group_id: group_a.id,
+          'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => '17',
+          organization_id: organization.id,
+          enrollments_attributes: [{ group_id: group_a.id, 'active_since(1i)': '2024', 'active_since(2i)': '01', 'active_since(3i)': '01' }],
           gender: 'M',
           quartier: 'He lives somewhere...',
           estimated_dob: true
@@ -26,7 +28,8 @@ RSpec.describe StudentsController, type: :controller do
         student = Student.last
         expect(student.first_name).to eql 'Trevor'
         expect(student.last_name).to eql 'Noah'
-        expect(student.group.group_name).to eql 'Group A'
+        expect(student.organization.id).to eql organization.id
+        expect(student.groups[0].group_name).to eql 'Group A'
         expect(student.gender).to eql 'M'
         expect(student.quartier).to eql 'He lives somewhere...'
       end
@@ -36,9 +39,9 @@ RSpec.describe StudentsController, type: :controller do
           mlid: '1F',
           first_name: 'Ami',
           last_name: 'Ayola',
-          'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
+          'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => '17',
+          organization_id: organization.id,
           gender: 'F',
-          group_id: group_a.id,
           estimated_dob: true
         } }
         student = Student.last
@@ -52,9 +55,9 @@ RSpec.describe StudentsController, type: :controller do
           mlid: '1G',
           first_name: 'Guardianed',
           last_name: 'Guard',
-          'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
+          'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => '17',
           gender: 'F',
-          group_id: group_a.id,
+          organization_id: organization.id,
           guardian_name: 'Guardian Omonzu',
           guardian_occupation: 'Moto driver',
           guardian_contact: '123-123-123 or email@example.com',
@@ -76,7 +79,7 @@ RSpec.describe StudentsController, type: :controller do
           last_name: 'Health',
           'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
           gender: 'F',
-          group_id: group_a.id,
+          organization_id: organization.id,
           estimated_dob: true,
           health_insurance: 'HEALTH123',
           health_issues: 'In perfect health',
@@ -97,7 +100,7 @@ RSpec.describe StudentsController, type: :controller do
           last_name: 'Dropout',
           'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
           gender: 'F',
-          group_id: group_a.id,
+          organization_id: organization.id,
           name_of_school: 'Super School',
           school_level_completed: 'B2-1',
           year_of_dropout: 1995,
@@ -119,7 +122,7 @@ RSpec.describe StudentsController, type: :controller do
           last_name: 'Noted',
           'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
           gender: 'F',
-          group_id: group_a.id,
+          organization_id: organization.id,
           notes: 'Prime is showing great promise despite the initial learning difficulties.'
         } }
         student = Student.last
@@ -178,8 +181,7 @@ RSpec.describe StudentsController, type: :controller do
 
     describe '#new' do
       before :each do
-        @group = create :group
-        get :new, params: { group_id: @group.id }
+        get :new, params: { group_id: group_a.id }
       end
 
       it { should respond_with :ok }
@@ -187,8 +189,8 @@ RSpec.describe StudentsController, type: :controller do
       it { should set_flash[:redirect] }
 
       it 'prepopulates the student with the correct group' do
-        expect(assigns(:student).group.id).to eq @group.id
-        expect(assigns(:student).group.group_name).to eq @group.group_name
+        expect(assigns(:student).enrollments[0].group_id).to eq group_a.id
+        expect(assigns(:student).organization_id).to eq organization.id
       end
     end
 
