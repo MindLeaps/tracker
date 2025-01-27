@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="w-full h-full bg-gray-100 overflow-hidden">
+<html class="w-full h-full bg-gray-100">
 <head>
   <title>Tracker<% if content_for? :title %><%= " - #{content_for :title}" %><% end %></title>
   <meta name="turbo-cache-control" content="no-preview">
@@ -63,8 +63,11 @@
 
     @media print {
       @page {
-        size: auto;
         margin: 0;
+      }
+
+      .ct-label {
+        font-size: 12px !important;
       }
 
       html {
@@ -99,10 +102,10 @@
   </style>
 </head>
 <body class="w-full h-full bg-gray-200">
-<div class="w-full h-full flex">
-  <div class="flex flex-col h-full w-full overflow-auto print:overflow-visible p-2">
-    <%= yield %>
+  <div class="w-full h-full flex">
+    <div class="flex flex-col h-full w-full p-2">
+      <%= yield %>
+    </div>
   </div>
-</div>
 </body>
 </html>

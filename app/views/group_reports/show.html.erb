@@ -1,4 +1,4 @@
-<div class="w-full">
+<div class="w-full print:overflow-visible overflow-x-hidden">
   <h1 class="text-3xl mb-2 font-bold tracking-tight text-center text-gray-900 sm:text-4xl print:text-2xl">Group Report - <%=@group.group_name%></h1>
 
   <div class="break-after-page pagebreak-after">
@@ -30,7 +30,7 @@
       <div>
         <h1 class="text-2xl font-bold tracking-tight text-center text-gray-900 sm:text-4xl print:text-xl break-before-page pagebreak-before"><%=report[:subject_name]%></h1>
 
-        <div>
+        <div class="w-full">
           <dl class="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div class="overflow-hidden rounded-lg bg-white px-4 py-5 sm:p-6 border border-black">
               <dt class="mt-4 text-lg leading-8 text-gray-600">Starting Point</dt>
@@ -50,9 +50,9 @@
           </dl>
         </div>
 
-        <section>
+        <section class="w-full px-2">
           <% if report[:group_summaries].any? %>
-            <div class="w-full p-2">
+            <div class="w-full">
               <%= render CommonComponents::Card.new(title: t(:group_history).capitalize) do |card| %>
                 <% card.with_card_content do %>
                   <div id="subject-<%= report[:subject_id] %>-group_history" class="ct-chart ct-octave bg-white"></div>
@@ -62,7 +62,7 @@
           <% end %>
 
           <% if report[:group_summaries].any? && report[:group_summaries].length >= 30 %>
-            <div class="w-full p-2">
+            <div class="w-full">
               <%= render CommonComponents::Card.new(title: t(:average_performance_for_last_30_lessons).capitalize) do |card| %>
                 <% card.with_card_content do %>
                   <div id="subject-<%= report[:subject_id] %>-last_30" class="ct-chart ct-octave bg-white"></div>
@@ -72,7 +72,7 @@
           <% end %>
         </section>
 
-        <div class="w-full p-2">
+        <div class="w-full">
           <%= render CommonComponents::Card.new(title: t(:group_attendance).capitalize) do |card| %>
             <% card.with_card_content do %>
               <div id="subject-<%= report[:subject_id] %>-group_attendance" class="ct-chart-bar bg-white"></div>
