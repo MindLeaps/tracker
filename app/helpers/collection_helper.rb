@@ -10,4 +10,8 @@ module CollectionHelper
   def middle_from_rel(rel)
     rel.offset(rel.size / 2).first
   end
+
+  def average_from_array(arr)
+    arr.sum.to_f / arr.size
+  end
 end
