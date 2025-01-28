@@ -1,0 +1,14 @@
+<div class="flex items-center">
+  <button id="<%= @id %>" data-checked="true" type="button" class="group data-[checked=true]:bg-purple-700 bg-gray-200 border border-2 relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2">
+    <span aria-hidden="true" class="group-data-[checked=true]:translate-x-5 translate-x-0 pointer-events-none inline-block size-5 translate-x-0 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
+  </button>
+  <span class="ml-3 text-sm">
+    <span class="font-medium text-gray-900"><%= @text %></span>
+  </span>
+</div>
+
+<script defer>
+    <%= "#{@id}" %>.addEventListener('click', () => {
+        <%= "#{@id}" %>.getAttribute('data-checked') ? <%= "#{@id}" %>.removeAttribute('data-checked') : <%= "#{@id}" %>.setAttribute('data-checked', true)
+    })
+</script>
