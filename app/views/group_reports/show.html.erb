@@ -148,7 +148,7 @@
         let componentToggle = document.getElementById(`${c.id}Toggle`)
 
         componentToggle.addEventListener('click', () => {
-            !componentToggle.getAttribute('data-checked') ? component.style.display = 'none' : component.style.display = 'block'
+            !componentToggle.getAttribute('data-toggled') ? component.style.display = 'none' : component.style.display = 'block'
         })
     })
   }
