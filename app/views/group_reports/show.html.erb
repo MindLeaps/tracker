@@ -14,7 +14,7 @@
   <section class="w-full print:hidden">
     <%= render CommonComponents::Card.new(title: 'Report Controls') do |card| %>
       <% card.with_card_content do %>
-        <div class="w-full bg-white p-4 flex gap-4 items-center justify-center">
+        <div class="w-full bg-white p-4 flex gap-12 items-center justify-center">
             <% @components.each do |c| %>
               <%= render CommonComponents::ToggleComponent.new(id: "#{c[:id]}Toggle", text: c[:name]) %>
             <% end %>
@@ -127,7 +127,9 @@
 
   const onChartsLoad = () => {
     (<%= @reports.to_json.html_safe %>).forEach(r => {
-      displayAveragesGraph && displayAveragesGraph(`#subject-${r.subject_id}-last_30`, '', takeLast(r.group_summaries, 30))
+      if(r.group_summaries.length >= 30){
+        displayAveragesGraph && displayAveragesGraph(`#subject-${r.subject_id}-last_30`, '', takeLast(r.group_summaries, 30))
+      }
       displayAveragesGraph && displayAveragesGraph(`#subject-${r.subject_id}-group_history`, '', r.group_summaries)
       displayPercentagesGraph && displayPercentagesGraph(`#subject-${r.subject_id}-group_attendance`, r.group_summaries)
     })
