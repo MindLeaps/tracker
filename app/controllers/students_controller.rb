@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class StudentsController < HtmlController
   include Pagy::Backend
   has_scope :exclude_deleted, only: :index, type: :boolean, default: true
@@ -18,11 +19,15 @@ class StudentsController < HtmlController
     authorize @student
     @student_lessons_details_by_subject = apply_scopes(StudentLessonDetail.where(student_id: params[:id])).all.group_by(&:subject_id)
     @subjects = policy_scope(Subject).includes(:skills).where(id: @student_lessons_details_by_subject.keys)
-    @lesson_summaries = StudentLessonSummary.where(student_id: @student.id).where.not(average_mark: nil).order(lesson_date: :asc).last(30).map do |summary|
-      {
-        lesson_date: summary.lesson_date,
-        average_mark: summary.average_mark
-      }
+    @lesson_summaries = StudentLessonSummary.where(student_id: @student.id).where.not(average_mark: nil).order(lesson_date: :asc).last(30).map { |s| lesson_summary(s) }
+    @skill_averages = {}
+    populate_skill_averages
+  end
+
+  def populate_skill_averages
+    StudentAverage.where(student_id: @student.id).load.each do |average|
+      @skill_averages[(average[:subject_name]).to_s] = [] unless @skill_averages[(average[:subject_name]).to_s]
+      @skill_averages[(average[:subject_name]).to_s].push({ skill: average[:skill_name], average: average[:average_mark] })
     end
   end
 
@@ -85,6 +90,10 @@ class StudentsController < HtmlController
 
   private
 
+  def lesson_summary(summary)
+    { lesson_date: summary.lesson_date, average_mark: summary.average_mark }
+  end
+
   def student_params
     p = params.require(:student)
     p[:student_tags_attributes] = p.fetch(:tag_ids, []).map { |tag_id| { tag_id: } }
@@ -115,3 +124,4 @@ class StudentsController < HtmlController
     student.update p
   end
 end
+# rubocop:enable Metrics/ClassLength

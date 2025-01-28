@@ -17,13 +17,13 @@
 end %>
 
 <div class="overflow-auto">
-  <section class="">
-   <div class="w-1/2">
+  <section>
+    <div class="w-1/2">
        <%= render CommonComponents::Card.new(title: t(:average_performance_for_last_30_lessons).capitalize) do |card| %>
-             <% card.with_card_content do %>
-               <div class="ct-chart ct-octave bg-white full-width"></div>
-             <% end %>
-           <% end %>
+         <% card.with_card_content do %>
+           <div class="ct-chart ct-octave bg-white full-width"></div>
+         <% end %>
+       <% end %>
     </div>
       <%= render CommonComponents::Card.new(title: t(:student_details)) do |card| %>
         <% card.with_card_content do %>
@@ -124,19 +124,42 @@ end %>
             </div>
         <% end %>
       <% end %>
-    </section>
-  <section class="overflow-hidden my-6">
-    <% @student_lessons_details_by_subject.each do |subject_id, lessons_details|
-      subject = @subjects.find(subject_id)
-    %>
-      <%= render CommonComponents::Card.new(title: t(:student_grades)) do |card| %>
+
+    <%= render CommonComponents::Card.new(title: t(:student_average_marks)) do |card| %>
+      <% card.with_card_content do %>
+        <div class="bg-white px-4 py-5">
+          <% if @skill_averages.blank? %>
+            <h1 class="font-medium text-xl text-gray-900 text-center">Student has not been graded yet</h1>
+          <% end %>
+          <% @skill_averages.each do |subject, marks| %>
+              <h1 class="font-bold text-2xl text-center mb-2"> <%= subject %> </h1>
+              <div class="flex justify-between gap-4 mb-2">
+                <% marks.each do |mark| %>
+                  <div class="w-full overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+                    <dt class="truncate text-sm font-medium text-gray-500"><%= mark[:skill] %> Avg.</dt>
+                    <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900">
+                      <%= mark[:average].round(2) %>
+                    </dd>
+                  </div>
+                <% end %>
+              </div>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+
+    <% @student_lessons_details_by_subject.each do |subject_id, lessons_details| subject = @subjects.find(subject_id) %>
+      <%= render CommonComponents::Card.new(title: t(:student_grades) + " (#{subject.subject_name})") do |card| %>
         <% card.with_card_content do %>
-    <div class="bg-white px-6 border-b border-gray-200 flex items-center justify-center">
-      <span class="border-b-2 border-transparent inline-flex font-medium text-gray-600 py-4 text-sm"><%= subject.subject_name %></span>
-    </div>
-      <%= render TableComponents::Table.new(rows: lessons_details, row_component: TableComponents::StudentPerformanceRow, column_arguments: { skills: subject.skills }, row_arguments: { skill_ids: subject.skills.map { |s| s.id.to_s } }, order_scope_name: :student_lesson_order) %>
+          <% if lessons_details.map(&:grade_count).uniq.length == 1 && lessons_details.map(&:grade_count)[0] == 0 %>
+            <div class="bg-white px-4 py-5">
+              <h1 class="font-medium text-xl text-gray-900 text-center">Student has not been graded yet</h1>
+            </div>
+          <% else %>
+            <%= render TableComponents::Table.new(rows: lessons_details, row_component: TableComponents::StudentPerformanceRow, column_arguments: { skills: subject.skills }, row_arguments: { skill_ids: subject.skills.map { |s| s.id.to_s } }, order_scope_name: :student_lesson_order) %>
           <% end %>
         <% end %>
+      <% end %>
     <% end %>
   </section>
 </div>
