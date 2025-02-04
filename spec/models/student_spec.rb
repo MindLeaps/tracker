@@ -190,8 +190,8 @@ RSpec.describe Student, type: :model do
       before :each do
         @zombarato = create :student, first_name: 'Zombarato', last_name: 'Agustato', mlid: 'Z31'
         @zombanavo = create :student, first_name: 'Zombanavo', last_name: 'Domboklat', mlid: 'Z32'
-        @zombaruto = create :student, first_name: 'Zombaruto', last_name: 'Agurat'
-        @zomzovato = create :student, first_name: 'Zomzovato', last_name: 'Domovat'
+        @zombaruto = create :student, first_name: 'Zombaruto', last_name: 'Agurat', mlid: '55'
+        @zomzovato = create :student, first_name: 'Zomzovato', last_name: 'Domovat', mlid: '66'
       end
 
       it 'finds the student by the first name match' do
