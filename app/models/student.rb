@@ -40,6 +40,7 @@
 #  students_group_id_fk  (group_id => groups.id)
 #
 class Student < ApplicationRecord
+  require 'csv'
   include PgSearch::Model
   include Mlid
   pg_search_scope :search, against: [:first_name, :last_name, :mlid], associated_against: {
@@ -79,5 +80,15 @@ class Student < ApplicationRecord
      :guardian_name, :guardian_occupation, :guardian_contact, :family_members, :health_insurance,
      :health_issues, :hiv_tested, :name_of_school, :school_level_completed, :year_of_dropout,
      :reason_for_leaving, :notes, :organization_id, :profile_image_id, { student_images_attributes: [:image], student_tags_attributes: [:tag_id, :student_id, :_destroy] }]
+  end
+
+  def self.to_csv(collection)
+    CSV.generate(col_sep: ',') do |csv|
+      # Define headers for exported attributes
+      csv << [:id, :first_name, :last_name, :dob, :country_of_nationality, :gender]
+      collection.find_each do |record|
+        csv << record.attributes.fetch_values('id', 'first_name', 'last_name', 'dob', 'country_of_nationality', 'gender')
+      end
+    end
   end
 end

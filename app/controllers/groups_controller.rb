@@ -78,6 +78,20 @@ class GroupsController < HtmlController
     redirect_to group_path
   end
 
+  def export_students
+    @group = Group.find params.require :id
+    skip_authorization
+
+    @students = @group.students
+    respond_to do |format|
+      format.html
+      format.csv do
+        filename = ["#{@group.group_name} - Students", Time.zone.today.to_s].join(' ')
+        send_data Student.to_csv(@students), filename:, content_type: 'text/csv'
+      end
+    end
+  end
+
   private
 
   def group_params
