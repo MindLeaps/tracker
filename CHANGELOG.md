@@ -1,4 +1,5 @@
 ## Unreleased
+- Enabled teachers to create and edit groups/students
 - Added toggle buttons in group reports
 - Added averages for each skill when viewing students
 - Added average mark info and mark counts chart in skill view
