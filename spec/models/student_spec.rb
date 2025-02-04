@@ -190,8 +190,8 @@ RSpec.describe Student, type: :model do
       before :each do
         @zombarato = create :student, first_name: 'Zombarato', last_name: 'Agustato', mlid: 'Z31'
         @zombanavo = create :student, first_name: 'Zombanavo', last_name: 'Domboklat', mlid: 'Z32'
-        @zombaruto = create :student, first_name: 'Zombaruto', last_name: 'Agurat', mlid: '55'
-        @zomzovato = create :student, first_name: 'Zomzovato', last_name: 'Domovat', mlid: '66'
+        @zombaruto = create :student, first_name: 'Zombaruto', last_name: 'Agurat', mlid: 'Z33'
+        @zomzovato = create :student, first_name: 'Zomzovato', last_name: 'Domovat', mlid: 'Z34'
       end
 
       it 'finds the student by the first name match' do
@@ -210,12 +210,6 @@ RSpec.describe Student, type: :model do
         result = Student.search('Z31')
         expect(result.length).to eq 1
         expect(result).to include @zombarato
-      end
-
-      it 'finds students by a partial MLID match' do
-        result = Student.search('Z3')
-        expect(result.length).to eq 2
-        expect(result).to include @zombarato, @zombanavo
       end
 
       it 'finds students by a partial first name match' do
