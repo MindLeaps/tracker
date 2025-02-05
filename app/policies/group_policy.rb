@@ -4,7 +4,7 @@ class GroupPolicy < ApplicationPolicy
   end
 
   def create?
-    user.administrator? record.chapter.organization
+    user.administrator?(record.chapter.organization) || user.is_teacher_of?(record.chapter.organization)
   end
 
   def undelete?

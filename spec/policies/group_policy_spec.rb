@@ -109,7 +109,7 @@ RSpec.describe GroupPolicy do
 
     context 'as a Local Teacher' do
       let(:org) { create :organization }
-      let(:current_user) { create :admin_of, organization: org }
+      let(:current_user) { create :teacher_in, organization: org }
 
       context 'on an existing group in own organization' do
         let(:chapter) { create :chapter, organization: org }
