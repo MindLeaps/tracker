@@ -2,6 +2,7 @@ class GroupReportsController < HtmlController
   include CollectionHelper
   skip_after_action :verify_policy_scoped
   layout 'print'
+  require 'csv'
   def show
     @group = Group.find params[:id]
     authorize @group
@@ -14,6 +15,30 @@ class GroupReportsController < HtmlController
     @reports = []
     populate_enrollment_timelines
     populate_reports
+  end
+
+  def export_student_averages
+    @group = Group.find params[:id]
+    skip_authorization
+
+    @student_lesson_summaries = StudentLessonSummary.where(group_id: @group.id).order(lesson_date: :asc)
+    @to_export = student_row_reports
+
+    file = CSV.generate(col_sep: ',') do |csv|
+      # Define headers for exported attributes
+      csv << [:first_name, :last_name, :first_lesson, :middle_lesson, :last_lesson, :subject_id]
+      @to_export.each do |item|
+        csv << item.values
+      end
+    end
+
+    respond_to do |format|
+      format.html
+      format.csv do
+        filename = ["#{@group.group_name} - Student Averages", Time.zone.today.to_s].join(' ')
+        send_data file, filename:, content_type: 'text/csv'
+      end
+    end
   end
 
   def populate_reports
