@@ -25,4 +25,12 @@ class EnrollmentSerializer < ActiveModel::Serializer
 
   belongs_to :student
   belongs_to :group
+
+  def active_since
+    object.active_since.to_datetime.iso8601
+  end
+
+  def inactive_since
+    object.inactive_since.present? ? object.inactive_since.to_datetime.iso8601 : nil
+  end
 end
