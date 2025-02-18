@@ -1,4 +1,5 @@
 class GroupReportsController < HtmlController
+  include MiscHelper
   include CollectionHelper
   skip_after_action :verify_policy_scoped
   layout 'print'
@@ -17,28 +18,73 @@ class GroupReportsController < HtmlController
     populate_reports
   end
 
-  def export_student_averages
+  def export_data
     @group = Group.find params[:id]
     skip_authorization
 
-    @student_lesson_summaries = StudentLessonSummary.where(group_id: @group.id).order(lesson_date: :asc)
-    @to_export = student_row_reports
+    @data_to_export = TemporarySummary.all
+    formatted_data = format_temporary_summaries
 
     file = CSV.generate(col_sep: ',') do |csv|
       # Define headers for exported attributes
-      csv << [:first_name, :last_name, :first_lesson, :middle_lesson, :last_lesson, :subject_id]
-      @to_export.each do |item|
-        csv << item.values
+      csv << formatted_data.first.keys
+      formatted_data.each do |record|
+        csv << record.values
       end
     end
 
     respond_to do |format|
       format.html
       format.csv do
-        filename = ["#{@group.group_name} - Student Averages", Time.zone.today.to_s].join(' ')
+        filename = ['MindLeaps Averages Exported Data', Time.zone.today.to_s].join(' ')
         send_data file, filename:, content_type: 'text/csv'
       end
     end
+  end
+
+  def format_temporary_summaries
+    formatted_data = []
+    students = @data_to_export.pluck(:student_id).uniq
+
+    students.each do |student_id|
+      student_summaries = @data_to_export.where(student_id: student_id).order(:lesson_date)
+
+      student_summary = {
+        full_mlid: student_summaries.first.full_mlid,
+        student_id: student_id,
+        age: get_age(student_summaries.first[:dob]),
+        gender: student_summaries.first[:gender],
+        country_of_nationality: student_summaries.first[:country_of_nationality],
+        group_id: student_summaries.first[:group_id],
+        group_name: student_summaries.first[:group_name],
+        first_lesson_average: student_summaries.first[:lesson_average_mark],
+        middle_lesson_average: middle_from_rel(student_summaries).lesson_average_mark,
+        last_lesson_average: student_summaries.last.lesson_average_mark,
+        first_group_lesson: student_summaries.first[:first_group_lesson],
+        last_group_lesson: student_summaries.first[:last_group_lesson],
+        number_of_lessons_for_group: student_summaries.first[:number_of_lessons_for_group]
+      }
+
+      first_lesson_marks = student_summaries.first.skill_marks
+      middle_lesson_marks = middle_from_rel(student_summaries).skill_marks
+      last_lessson_marks = student_summaries.last.skill_marks
+
+      first_lesson_marks.each do |skill, mark|
+        student_summary["first_mark_#{skill}"] = mark
+      end
+
+      middle_lesson_marks.each do |skill, mark|
+        student_summary["middle_mark_#{skill}"] = mark
+      end
+
+      last_lessson_marks.each do |skill, mark|
+        student_summary["last_mark_#{skill}"] = mark
+      end
+
+      formatted_data << student_summary
+    end
+
+    formatted_data
   end
 
   def populate_reports

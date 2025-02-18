@@ -1046,6 +1046,27 @@ CREATE TABLE public.tags (
 
 
 --
+-- Name: temporary_summaries; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.temporary_summaries AS
+SELECT
+    NULL::text AS full_mlid,
+    NULL::integer AS student_id,
+    NULL::date AS dob,
+    NULL::public.gender AS gender,
+    NULL::text AS country_of_nationality,
+    NULL::integer AS group_id,
+    NULL::character varying AS group_name,
+    NULL::date AS lesson_date,
+    NULL::numeric AS lesson_average_mark,
+    NULL::date AS first_group_lesson,
+    NULL::date AS last_group_lesson,
+    NULL::bigint AS number_of_lessons_for_group,
+    NULL::jsonb AS skill_marks;
+
+
+--
 -- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -1839,6 +1860,68 @@ CREATE OR REPLACE VIEW public.student_lesson_details AS
 
 
 --
+-- Name: temporary_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.temporary_summaries AS
+ WITH student_group_summaries AS (
+         SELECT concat(o.mlid, '-', c.mlid, '-', g.mlid, '-', s.mlid) AS full_mlid,
+            s.id AS student_id,
+            s.dob,
+            s.gender,
+            s.country_of_nationality,
+            g.group_name,
+            g.id AS group_id,
+            min(gls.lesson_date) AS first_group_lesson,
+            max(gls.lesson_date) AS last_group_lesson,
+            count(gls.lesson_date) AS number_of_lessons_for_group
+           FROM ((((public.students s
+             JOIN public.group_lesson_summaries gls ON ((gls.group_id = s.group_id)))
+             JOIN public.groups g ON ((g.id = gls.group_id)))
+             JOIN public.chapters c ON ((gls.chapter_id = c.id)))
+             JOIN public.organizations o ON ((c.organization_id = o.id)))
+          WHERE ((gls.lesson_date >= '2021-09-01'::date) AND (gls.lesson_date <= '2024-08-31'::date))
+          GROUP BY (concat(o.mlid, '-', c.mlid, '-', g.mlid, '-', s.mlid)), s.id, g.id
+        ), student_group_lesson_summaries AS (
+         SELECT sgs.full_mlid,
+            sgs.student_id,
+            sgs.dob,
+            sgs.gender,
+            sgs.country_of_nationality,
+            sgs.group_name,
+            sgs.group_id,
+            sgs.first_group_lesson,
+            sgs.last_group_lesson,
+            sgs.number_of_lessons_for_group,
+            slu.average_mark AS lesson_average_mark,
+            slu.lesson_id,
+            slu.lesson_date,
+            slu.subject_id
+           FROM (public.student_lesson_summaries slu
+             JOIN student_group_summaries sgs ON (((slu.student_id = sgs.student_id) AND (slu.group_id = sgs.group_id))))
+        )
+ SELECT sgls.full_mlid,
+    sgls.student_id,
+    sgls.dob,
+    sgls.gender,
+    sgls.country_of_nationality,
+    sgls.group_id,
+    sgls.group_name,
+    sgls.lesson_date,
+    sgls.lesson_average_mark,
+    sgls.first_group_lesson,
+    sgls.last_group_lesson,
+    sgls.number_of_lessons_for_group,
+    COALESCE(jsonb_object_agg(sk.skill_name, gr.mark), '{}'::jsonb) AS skill_marks
+   FROM (((student_group_lesson_summaries sgls
+     JOIN public.assignments a ON ((a.subject_id = sgls.subject_id)))
+     LEFT JOIN public.skills sk ON ((sk.id = a.skill_id)))
+     LEFT JOIN public.grades gr ON (((gr.student_id = sgls.student_id) AND (gr.lesson_id = sgls.lesson_id) AND (gr.skill_id = sk.id) AND (gr.deleted_at IS NULL))))
+  WHERE (sk.id = ANY (ARRAY[1, 2, 3, 4, 5, 6, 7]))
+  GROUP BY sgls.full_mlid, sgls.student_id, sgls.dob, sgls.gender, sgls.country_of_nationality, sgls.group_id, sgls.group_name, sgls.lesson_date, sgls.lesson_average_mark, sgls.first_group_lesson, sgls.last_group_lesson, sgls.number_of_lessons_for_group;
+
+
+--
 -- Name: students update_enrollments_on_student_group_change_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -2036,6 +2119,7 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250216183143'),
 ('20250125235507'),
 ('20250124144809'),
 ('20241120234016'),

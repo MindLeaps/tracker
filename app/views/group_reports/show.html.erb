@@ -114,6 +114,10 @@
       </div>
     <% end %>
   <% end %>
+
+  <div>
+    <%= render CommonComponents::ButtonComponent.new(label: 'Export Students', href: export_data_reports_group_url(group_id: @group.id)) %>
+  </div>
 </div>
 
 <script>
