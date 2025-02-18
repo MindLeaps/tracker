@@ -3,8 +3,8 @@
 # Table name: enrollments
 #
 #  id             :uuid             not null, primary key
-#  active_since   :datetime         not null
-#  inactive_since :datetime
+#  active_since   :date             not null
+#  inactive_since :date
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #  group_id       :bigint           not null
