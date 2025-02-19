@@ -30,6 +30,7 @@ Rails.application.routes.draw do
 
   scope module: :analytics, path: :analytics do
     get '' => redirect('analytics/general')
+    get 'new' => 'new#index', as: :new_analytics
     get 'general' => 'general#index', as: :general_analytics
     get 'subject' => 'subject#index', as: :subject_analytics
     get 'group' => 'group#index', as: :group_analytics

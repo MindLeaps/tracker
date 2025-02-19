@@ -284,6 +284,7 @@ en:
   generate_report: Generate Report
   analytics: Analytics
   general_analytics: General Analytics
+  new_analytics: New Analytics
   group_analytics: Group Analytics
   subject_analytics: Subject Analytics
   actions: Actions

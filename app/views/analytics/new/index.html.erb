@@ -1,0 +1,110 @@
+<% content_for :title, t(:general_analytics).capitalize %>
+<% content_for :head_content, javascript_include_tag('analytics') %>
+
+
+<div class="w-full h-full bg-white p-2">
+  <h1 class="text-center text-4xl font-bold">Analytics</h1>
+  <div class="w-full flex items-center justify-between">
+    <div class="w-1/2">
+      <canvas id="myChart"></canvas>
+    </div>
+
+    <div class="w-1/2" id="controls">
+
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+    let summaryData = <%= @first_group_summaries.to_json.html_safe %>;
+    let values = []
+    let labels = []
+
+    summaryData.forEach((item,index) => {
+        console.log(item, index)
+        values.push(item.average_mark)
+        labels.push(index + 1)
+    })
+    const canvasToDrawChart = document.getElementById('myChart');
+
+    const plugin = {
+        id: 'customCanvasBackgroundColor',
+        beforeDraw: (chart, args, options) => {
+            const {ctx} = chart;
+            ctx.save();
+            ctx.globalCompositeOperation = 'destination-over';
+            ctx.fillStyle = options.color || '#99ffff';
+            ctx.fillRect(0, 0, chart.width, chart.height);
+            ctx.restore();
+        }
+    };
+
+    const myChart = new Chart(canvasToDrawChart, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: values,
+                fill: false,
+                borderColor: 'rgba(126, 34, 206, .75)',
+                borderWidth: 4,
+                tension: 0.2
+            }]
+        },
+        options: {
+            clip: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                customCanvasBackgroundColor: {
+                    color: 'white',
+                }
+            },
+            scales: {
+                x: {
+                    title:{
+                        display: true,
+                        text: 'Number of Lessons',
+                        font: {
+                            size: 20
+                        }
+                    },
+                    ticks: {
+                        padding: 8,
+                        font: {
+                            size: 14
+                        },
+                    }
+                },
+                y: {
+                    title:{
+                        display: true,
+                        text: 'Score',
+                        font: {
+                            size: 20
+                        }
+                    },
+                    beginAtZero: true,
+                    min: 1,
+                    max: 7,
+                    ticks: {
+                        padding: 5,
+                    }
+                }
+            },
+            animation: {
+                onComplete: function () {
+                    const downloadAnchor = document.getElementById('myChartLink')
+                    downloadAnchor.href = myChart.toBase64Image();
+                    downloadAnchor.download = `${student.first_name}_${student.last_name}_Performance_Chart.png`;
+                }
+            }
+        },
+        plugins: [plugin]
+    });
+
+</script>
