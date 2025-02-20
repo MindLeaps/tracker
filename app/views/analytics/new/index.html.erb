@@ -3,32 +3,66 @@
 
 
 <div class="w-full h-full bg-white p-2">
-  <h1 class="text-center text-4xl font-bold">Analytics</h1>
-  <div class="w-full flex items-center justify-between">
-    <div class="w-1/2">
+  <h1 class="text-center text-6xl font-bold mb-6">Analytics</h1>
+
+  <div class="w-full flex justify-between gap-24">
+    <div class="w-full max-w-10xl border border-2 border-gray-400 rounded-md p-2 shadow">
       <canvas id="myChart"></canvas>
     </div>
 
-    <div class="w-1/2" id="controls">
-
+    <div class="w-1/2 flex-col" data-controller="analytics-filter">
+      <div class="mb-2">
+        <%= label_tag :organization_label, "Organization", class: 'block text-2xl text-right font-medium text-gray-700' %>
+        <%= select_tag :organization_select, options_from_collection_for_select(@available_organizations, :id, :organization_name, @selected_organization_id), :class => 'mt-4 block w-full shadow border-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md', :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'organization_id', 'data-dependents' => ['chapter_id'].to_json, 'data-resources' => @available_organizations.map { |o| { id: o.id, label: o.organization_name} }.to_json %>
+      </div>
+      <div class="my-2">
+        <%= label_tag :chapter_label, "Chapter", class: 'block text-2xl text-right font-medium text-gray-700' %>
+        <%= select_tag :chapter_select, options_from_collection_for_select(@available_chapters, :id, :chapter_name, @selected_chapter_id), :class => 'mt-4 block w-full shadow border-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md', :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'chapter_id', 'data-dependents' => ['group_id'].to_json, 'data-resources' => @available_chapters.map { |c| { id: c.id, label: c.chapter_name, depend_id: c.organization_id } }.to_json %>
+      </div>
+      <div class="my-2">
+        <%= label_tag :group_label, "Group", class: 'block text-2xl text-right font-medium text-gray-700' %>
+        <%= select_tag :group_select, options_from_collection_for_select(@available_groups, :id, :group_name, @selected_group_id), :class => 'mt-4 block w-full shadow border-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md', :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'group_id', 'data-dependents' => ['student_id'].to_json, 'data-resources' => @available_groups.map { |g| { id: g.id, label: g.group_name, depend_id: g.chapter_id } }.to_json %>
+      </div>
+      <div class="my-2">
+        <%= label_tag :student_label, "Student", class: 'block text-2xl text-right font-medium text-gray-700' %>
+        <%= select_tag :student_select, options_from_collection_for_select(@available_students, :id, :proper_name, @selected_student_id), :class => 'mt-4 block w-full shadow border-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md', :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'student_id', 'data-resources' => @available_students.map { |s| { id: s.id, label: s.proper_name, depend_id: s.group_id } }.to_json %>
+      </div>
+      <div class="flex justify-between items-stretch gap-4 mt-6">
+        <%= render CommonComponents::ButtonComponent.new(label: t(:filter), options: { 'data-analytics-filter-target' => 'anchor', 'data' => { turbo: false } })%>
+        <%= render CommonComponents::ButtonComponent.new(label: 'Download Chart', options: { 'id' => 'myChartLink' })%>
+      </div>
     </div>
   </div>
-
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    let colors = ['red', 'blue', 'green', 'yellow', 'purple']
+    let allSummaries = <%= @selected_group_summaries.to_json.html_safe %>;
+    let dataSets = []
+    let maxIndex = 0
 
-    let summaryData = <%= @first_group_summaries.to_json.html_safe %>;
-    let values = []
-    let labels = []
+    allSummaries.forEach((s, index) => {
+        let numberOfPoints = s.series[0].data.length
+        dataSets.push({
+            label: s.group,
+            data: s.series[0].data.map(dataPoint => ({ x: dataPoint.x, y: dataPoint.y, date: dataPoint.date, url: dataPoint.lesson_url })),
+            fill: false,
+            borderColor: colors[index],
+            borderWidth: 4,
+            tension: 0.2,
+            tooltip: {
+                callbacks: {
+                    footer: (item) => {
+                        console.log(item)
+                        return item.parsed.y
+                    }
+                }
+            }
+        })
 
-    summaryData.forEach((item,index) => {
-        console.log(item, index)
-        values.push(item.average_mark)
-        labels.push(index + 1)
+        if(numberOfPoints > maxIndex) maxIndex = numberOfPoints
     })
-    const canvasToDrawChart = document.getElementById('myChart');
 
     const plugin = {
         id: 'customCanvasBackgroundColor',
@@ -42,26 +76,45 @@
         }
     };
 
-    const myChart = new Chart(canvasToDrawChart, {
+    let myChart = new Chart(document.getElementById('myChart'), {
         type: 'line',
         data: {
-            labels: labels,
-            datasets: [{
-                data: values,
-                fill: false,
-                borderColor: 'rgba(126, 34, 206, .75)',
-                borderWidth: 4,
-                tension: 0.2
-            }]
+            labels: Array.from({ length: maxIndex }, (x, i) => i + 1),
+            datasets: dataSets
         },
         options: {
-            clip: false,
-            plugins: {
+           clip: false,
+           plugins: {
+                title: {
+                    display: true,
+                    text: 'Average Performance versus Time Passed',
+                    fullSize: true,
+                    padding: 20,
+                    font: {
+                        size: 20
+                    }
+                },
                 legend: {
-                    display: false
+                    display: true,
+                    position: 'bottom',
                 },
                 customCanvasBackgroundColor: {
                     color: 'white',
+                },
+                tooltip: {
+                    enabled: true,
+                    callbacks: {
+                        title: () => '',
+                        label: (item) => {
+                            return item.dataset.label
+                        },
+                        beforeFooter: (item) => {
+                            return 'Lesson Date: ' + item[0].raw.date
+                        },
+                        footer: (item) => {
+                            return 'Average Mark: ' + item[0].formattedValue
+                        }
+                    }
                 }
             },
             scales: {
@@ -100,11 +153,10 @@
                 onComplete: function () {
                     const downloadAnchor = document.getElementById('myChartLink')
                     downloadAnchor.href = myChart.toBase64Image();
-                    downloadAnchor.download = `${student.first_name}_${student.last_name}_Performance_Chart.png`;
+                    downloadAnchor.download = 'Performance_Chart.png';
                 }
-            }
+            },
         },
         plugins: [plugin]
     });
-
 </script>
