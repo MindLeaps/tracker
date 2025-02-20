@@ -12,6 +12,7 @@ RSpec.describe Api::EnrollmentsController, type: :controller do
   describe '#index' do
     before :each do
       create_list :enrollment, 3
+      @request.env['HTTP_ACCEPT'] = 'application/json, version=3'
       get :index, format: :json
     end
 

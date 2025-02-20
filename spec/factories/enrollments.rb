@@ -3,8 +3,8 @@
 # Table name: enrollments
 #
 #  id             :uuid             not null, primary key
-#  active_since   :datetime         not null
-#  inactive_since :datetime
+#  active_since   :date             not null
+#  inactive_since :date
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #  group_id       :bigint           not null
@@ -24,6 +24,6 @@ FactoryBot.define do
   factory :enrollment do
     student { create :student }
     group { create :group }
-    active_since { Time.zone.now }
+    active_since { Time.zone.today }
   end
 end
