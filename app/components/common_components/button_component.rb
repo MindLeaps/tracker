@@ -3,6 +3,6 @@ class CommonComponents::ButtonComponent < ViewComponent::Base
   def initialize(label:, href: nil, options: {})
     @label = label
     @href = href
-    @options = options.merge({ type: 'button', class: 'normal-button' })
+    @options = { type: 'button', class: 'normal-button' }.merge(options)
   end
 end
