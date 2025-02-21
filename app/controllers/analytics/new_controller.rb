@@ -1,8 +1,6 @@
 module Analytics
   class NewController < AnalyticsController
     def index
-
-
       @selected_summaries = fetch_summaries
     end
 
@@ -13,8 +11,10 @@ module Analytics
                              GroupLessonSummary.where(group_id: @selected_group_id)
                            elsif selected_param_present_but_not_all?(@selected_chapter_id)
                              GroupLessonSummary.where(chapter_id: @selected_chapter_id)
-                           else
+                           elsif selected_param_present_but_not_all?(@selected_organization_id)
                              GroupLessonSummary.joins(:chapter).where(chapters: { organization_id: @selected_organization_id })
+                           else
+                             GroupLessonSummary.joins(:chapter).where(chapters: { organization_id: @available_organizations })
                            end
 
       create_series(filtered_summaries)
