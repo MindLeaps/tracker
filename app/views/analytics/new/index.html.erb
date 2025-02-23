@@ -5,29 +5,50 @@
 
   <div class="w-full flex justify-between gap-24">
     <div class="w-full max-w-10xl border border-2 border-gray-400 rounded-md p-2 shadow">
+
       <canvas id="myChart"></canvas>
     </div>
 
     <div class="w-1/2 flex-col" data-controller="analytics-filter">
       <div class="mb-2">
-        <%= label_tag :organization_label, "Organization", class: 'block text-2xl text-right font-medium text-gray-700' %>
+        <%= label_tag :organization_label, t(:organization), class: 'block text-2xl text-right font-medium text-gray-700' %>
         <%= select_tag :organization_select, options_from_collection_for_select(@available_organizations, :id, :organization_name, @selected_organization_id), :class => 'mt-4 block w-full text-xl shadow border-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md', :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'organization_id', 'data-dependents' => ['chapter_id'].to_json, 'data-resources' => @available_organizations.map { |o| { id: o.id, label: o.organization_name} }.to_json %>
       </div>
       <div class="my-2">
-        <%= label_tag :chapter_label, "Chapter", class: 'block text-2xl text-right font-medium text-gray-700' %>
+        <%= label_tag :chapter_label, t(:chapter), class: 'block text-2xl text-right font-medium text-gray-700' %>
         <%= select_tag :chapter_select, options_from_collection_for_select(@available_chapters, :id, :chapter_name, @selected_chapter_id), :class => 'mt-4 block w-full text-xl shadow border-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500rounded-md', :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'chapter_id', 'data-dependents' => ['group_id'].to_json, 'data-resources' => @available_chapters.map { |c| { id: c.id, label: c.chapter_name, depend_id: c.organization_id } }.to_json %>
       </div>
       <div class="my-2">
-        <%= label_tag :group_label, "Group", class: 'block text-2xl text-right font-medium text-gray-700' %>
+        <%= label_tag :group_label, t(:group), class: 'block text-2xl text-right font-medium text-gray-700' %>
         <%= select_tag :group_select, options_from_collection_for_select(@available_groups, :id, :group_name, @selected_group_id), :class => 'mt-4 block w-full text-xl shadow border-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md', :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'group_id', 'data-dependents' => ['student_id'].to_json, 'data-resources' => @available_groups.map { |g| { id: g.id, label: g.group_name, depend_id: g.chapter_id } }.to_json %>
       </div>
       <div class="my-2">
-        <%= label_tag :student_label, "Student", class: 'block text-2xl text-right font-medium text-gray-700' %>
+        <%= label_tag :student_label, t(:student), class: 'block text-2xl text-right font-medium text-gray-700' %>
         <%= select_tag :student_select, options_from_collection_for_select(@available_students, :id, :proper_name, @selected_student_id), :class => 'mt-4 block w-full text-xl shadow border-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md', :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'student_id', 'data-resources' => @available_students.map { |s| { id: s.id, label: s.proper_name, depend_id: s.group_id } }.to_json %>
+      </div>
+      <div class="my-4">
+        <div class="flex justify-between w-full">
+          <%= render Datepicker.new(date: @selected_summaries.first&.[](:lesson_date) || Date.new(Date.current.year - 1, 1, 1).to_s, target: 'from') do |d| %>
+            <%= d.with_input_field do %>
+              <div>
+                <%= label_tag :from, t(:from), class: 'block text-2xl text-left font-medium text-gray-700' %>
+                <input id="from" data-name="from" data-action="blur->analytics-filter#updateFilter" data-analytics-filter-target="date" value="<%= @from || Date.new(Date.current.year - 1, 1, 1).to_s %>" data-datepicker-target="picker" class="mt-4 w-full text-xl shadow border-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md" >
+              </div>
+            <% end %>
+          <% end %>
+          <%= render Datepicker.new(date: @selected_summaries.last&.[](:lesson_date) || Date.today.to_s, target: 'to') do |d| %>
+            <%= d.with_input_field do %>
+              <div>
+                <%= label_tag :to, t(:to), class: 'block text-2xl text-right font-medium text-gray-700' %>
+                <input id="to" data-name="to" data-action="blur->analytics-filter#updateFilter" data-analytics-filter-target="date" value="<%= @to || Date.today.to_s %>" data-datepicker-target="picker" class="mt-4 w-full text-xl shadow border-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md" >
+              </div>
+            <% end %>
+          <% end %>
+        </div>
       </div>
       <div class="flex justify-between gap-4 mt-6">
         <%= render CommonComponents::ButtonComponent.new(label: t(:filter), options: { 'data-analytics-filter-target' => 'anchor', 'data' => { turbo: false }, class: '!text-xl normal-button w-full justify-center !m-0' })%>
-        <%= render CommonComponents::ButtonComponent.new(label: 'Download Chart', options: { 'id' => 'myChartLink', class: '!text-xl normal-button w-full justify-center !m-0' })%>
+        <%= render CommonComponents::ButtonComponent.new(label: t(:download_chart), options: { 'id' => 'myChartLink', class: '!text-xl normal-button w-full justify-center !m-0' })%>
       </div>
     </div>
   </div>

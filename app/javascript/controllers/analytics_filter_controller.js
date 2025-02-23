@@ -11,7 +11,7 @@ function createOption(label, value) {
 }
 
 export default class extends Controller {
-  static targets = ['select', 'anchor']
+  static targets = ['select', 'anchor', 'date']
 
   connect() {
     this.updateFilter()
@@ -19,15 +19,18 @@ export default class extends Controller {
 
   updateFilter() {
     this.updateDropdown(this.selectTargets[0], JSON.parse(this.selectTargets[0].dataset.resources))
-    this.anchorTarget.href = this.selectTargets.reduce((acc, e) => {
+
+    let targets = [...this.selectTargets, ...this.dateTargets]
+    this.anchorTarget.href = targets.reduce((acc, e) => {
       return acc + e.getAttribute('data-name') + '=' + this.toId(e.value) + '&'
     }, '?')
   }
 
   toId(value) {
-    if (Number.isNaN(Number(value))) {
+    if (Number.isNaN(Number(value)) && !Date.parse(value)) {
       return ''
     }
+
     return value
   }
 

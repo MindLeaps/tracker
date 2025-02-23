@@ -1,6 +1,8 @@
 module Analytics
   class NewController < AnalyticsController
     def index
+      @from = params[:from] || Date.new(Date.current.year - 1, 1, 1).to_s
+      @to = params[:to] || Date.today.to_s
       @selected_summaries = fetch_summaries
     end
 
@@ -16,6 +18,8 @@ module Analytics
                            else
                              GroupLessonSummary.joins(:chapter).where(chapters: { organization_id: @available_organizations })
                            end
+
+      filtered_summaries = filtered_summaries.where(lesson_date: @from..@to)
 
       create_series(filtered_summaries)
     end

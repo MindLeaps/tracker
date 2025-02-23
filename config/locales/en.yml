@@ -339,6 +339,9 @@ en:
   below_regression: Below average performance
   regression_curve: Historical ML Regression
   filter: Filter
+  from: From
+  to: To
+  download_chart: Download Chart
 
   student: Student
   group: Group
