@@ -5,8 +5,8 @@
 
   <div class="w-full flex justify-between gap-24">
     <div class="w-full max-w-10xl border border-2 border-gray-400 rounded-md p-2 shadow">
-
-      <canvas id="myChart"></canvas>
+      <canvas id="performanceChart"></canvas>
+      <canvas id="attendanceChart"></canvas>
     </div>
 
     <div class="w-1/2 flex-col" data-controller="analytics-filter">
@@ -56,7 +56,8 @@
 <script>
     const onChartsLoad = () => {
         let series = <%= @selected_summaries.to_json.html_safe %>;
-        generatePerformanceChart && generatePerformanceChart(series)
+        generatePerformanceChart && generatePerformanceChart(series, 'performanceChart')
+        generateAttendanceChart && generateAttendanceChart(series, 'attendanceChart')
     }
 </script>
 <%= javascript_include_tag 'newCharts', onload: 'onChartsLoad()' %>

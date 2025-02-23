@@ -24,15 +24,27 @@ module Analytics
       create_series(filtered_summaries)
     end
 
+    # rubocop:disable Metrics/MethodLength
     def create_series(summaries)
       summaries.group_by(&:group_id).map do |id, entries|
         series = []
+        is_student_summary = entries[0].is_a?(StudentLessonSummary)
         series << {
-          name: entries[0].is_a?(StudentLessonSummary) ? "#{entries[0].first_name} #{entries[0].last_name}" : entries[0].group_chapter_name,
-          data: entries.map.with_index { |entry, i| { x: i + 1, y: entry.average_mark, date: entry.lesson_date, lesson_url: lesson_path(entry.lesson_id), grade_count: entry.grade_count } }
+          name: is_student_summary ? "#{entries[0].first_name} #{entries[0].last_name}" : entries[0].group_chapter_name,
+          is_student_series: is_student_summary,
+          data: entries.map.with_index { |entry, i|
+            { x: i + 1, y: entry.average_mark, date: entry.lesson_date, lesson_url: lesson_path(entry.lesson_id), grade_count: entry.grade_count,
+              attendance: if is_student_summary
+                            entry.grade_count.positive? ? 100 : 0
+                          else
+                            entry.attendance
+                          end
+            }
+          }
         }
         { series: series, id: }
       end
     end
+    # rubocop:disable Metrics/MethodLength
   end
 end
