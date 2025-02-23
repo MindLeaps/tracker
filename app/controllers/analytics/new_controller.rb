@@ -2,7 +2,7 @@ module Analytics
   class NewController < AnalyticsController
     def index
       @from = params[:from] || Date.new(Date.current.year - 1, 1, 1).to_s
-      @to = params[:to] || Date.today.to_s
+      @to = params[:to] || Time.zone.today.to_s
       @selected_summaries = fetch_summaries
     end
 

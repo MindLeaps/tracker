@@ -36,11 +36,11 @@
               </div>
             <% end %>
           <% end %>
-          <%= render Datepicker.new(date: @selected_summaries.last&.[](:lesson_date) || Date.today.to_s, target: 'to') do |d| %>
+          <%= render Datepicker.new(date: @selected_summaries.last&.[](:lesson_date) || Time.zone.today.to_s, target: 'to') do |d| %>
             <%= d.with_input_field do %>
               <div>
                 <%= label_tag :to, t(:to), class: 'block text-2xl text-right font-medium text-gray-700' %>
-                <input id="to" data-name="to" data-action="blur->analytics-filter#updateFilter" data-analytics-filter-target="date" value="<%= @to || Date.today.to_s %>" data-datepicker-target="picker" class="mt-4 w-full text-xl shadow border-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md" >
+                <input id="to" data-name="to" data-action="blur->analytics-filter#updateFilter" data-analytics-filter-target="date" value="<%= @to || Time.zone.today.to_s %>" data-datepicker-target="picker" class="mt-4 w-full text-xl shadow border-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md" >
               </div>
             <% end %>
           <% end %>
