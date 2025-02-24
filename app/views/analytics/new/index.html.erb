@@ -4,12 +4,22 @@
   <h1 class="text-center text-6xl font-bold mb-6">Analytics</h1>
 
   <div class="w-full flex justify-between gap-24">
-    <div class="w-full max-w-10xl border border-2 border-gray-400 rounded-md p-2 shadow">
-      <canvas id="performanceChart"></canvas>
-      <canvas id="attendanceChart"></canvas>
+    <div id="chartContainer" class="w-full max-w-10xl border border-2 border-gray-400 rounded-md shadow relative h-fit group is_performance">
+      <% if @selected_summaries.length.positive? %>
+        <canvas id="attendanceChart" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full group-[.is_attendance]:hidden"></canvas>
+        <canvas id="performanceChart" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full group-[.is_performance]:hidden"></canvas>
+        <div id="chartControls" class="absolute -bottom-12 left-1/2 -translate-x-1/2">
+          <div id="performanceButton" class="normal-button"><%= t(:performance) %></div>
+          <div id="attendanceButton" class="normal-button"><%= t(:attendance) %></div>
+          <%= render CommonComponents::ButtonComponent.new(label: 'Download Performance Chart', options: { 'id' => 'performanceDownloadLink' })%>
+          <%= render CommonComponents::ButtonComponent.new(label: 'Donwload Attendance Chart', options: { 'id' => 'attendanceDownloadLink' })%>
+        </div>
+      <% else %>
+        <h3 class="text-center text-2xl text-gray-700">No Data to be shown</h3>
+      <% end %>
     </div>
 
-    <div class="w-1/2 flex-col" data-controller="analytics-filter">
+    <div class="w-1/2 max-w-3xl flex-col" data-controller="analytics-filter">
       <div class="mb-2">
         <%= label_tag :organization_label, t(:organization), class: 'block text-2xl text-right font-medium text-gray-700' %>
         <%= select_tag :organization_select, options_from_collection_for_select(@available_organizations, :id, :organization_name, @selected_organization_id), :class => 'mt-4 block w-full text-xl shadow border-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md', :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'organization_id', 'data-dependents' => ['chapter_id'].to_json, 'data-resources' => @available_organizations.map { |o| { id: o.id, label: o.organization_name} }.to_json %>
@@ -48,16 +58,38 @@
       </div>
       <div class="flex justify-between gap-4 mt-6">
         <%= render CommonComponents::ButtonComponent.new(label: t(:filter), options: { 'data-analytics-filter-target' => 'anchor', 'data' => { turbo: false }, class: '!text-xl normal-button w-full justify-center !m-0' })%>
-        <%= render CommonComponents::ButtonComponent.new(label: t(:download_chart), options: { 'id' => 'myChartLink', class: '!text-xl normal-button w-full justify-center !m-0' })%>
       </div>
     </div>
   </div>
 </div>
 <script>
+    const addEventListeners = () => {
+        const chartContainer = document.getElementById('chartContainer')
+        const performanceChart = document.getElementById('performanceChart')
+        const attendanceChart = document.getElementById('attendanceChart')
+        const performanceButton = document.getElementById('performanceButton')
+        const attendanceButton = document.getElementById('attendanceButton')
+
+        performanceButton.addEventListener('click', () => {
+          chartContainer.classList.toggle('is_performance', true)
+          chartContainer.classList.remove('is_attendance')
+        })
+
+        attendanceButton.addEventListener('click', () => {
+          chartContainer.classList.toggle('is_attendance', true)
+          chartContainer.classList.remove('is_performance')
+        })
+    }
+
     const onChartsLoad = () => {
         let series = <%= @selected_summaries.to_json.html_safe %>;
-        generatePerformanceChart && generatePerformanceChart(series, 'performanceChart')
-        generateAttendanceChart && generateAttendanceChart(series, 'attendanceChart')
+
+        if(series.length> 0)
+        {
+          generatePerformanceChart && generatePerformanceChart(series, 'performanceChart')
+          generateAttendanceChart && generateAttendanceChart(series, 'attendanceChart')
+          addEventListeners()
+        }
     }
 </script>
 <%= javascript_include_tag 'newCharts', onload: 'onChartsLoad()' %>

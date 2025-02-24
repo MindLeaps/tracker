@@ -32,7 +32,7 @@ const generatePerformanceChart = (dataSeries, chartId) => {
         if(numberOfPoints > maxIndex) maxIndex = numberOfPoints
     })
 
-    let myChart = new Chart(document.getElementById(chartId), {
+    let performanceChart = new Chart(document.getElementById(chartId), {
         type: 'line',
         data: {
             labels: Array.from({ length: maxIndex }, (x, i) => i + 1),
@@ -107,14 +107,16 @@ const generatePerformanceChart = (dataSeries, chartId) => {
             },
             animation: {
                 onComplete: () => {
-                    const downloadAnchor = document.getElementById('myChartLink')
-                    downloadAnchor.href = myChart.toBase64Image();
+                    const downloadAnchor = document.getElementById('performanceDownloadLink')
+                    downloadAnchor.href = performanceChart.toBase64Image();
                     downloadAnchor.download = 'Performance_Chart.png';
                 }
             }
         },
         plugins: [whiteBackgroundOnDownload]
     });
+
+    updateChartContainerDimensions(chartId)
 }
 
 const generateAttendanceChart = (dataSeries, chartId) => {
@@ -134,7 +136,7 @@ const generateAttendanceChart = (dataSeries, chartId) => {
         })
     })
 
-    let myChart = new Chart(document.getElementById(chartId), {
+    let attendanceChart = new Chart(document.getElementById(chartId), {
         type: (dataSeries.length === 1 && dataSeries[0].series[0].is_student_series) ? 'line' : 'bar',
         data: {
             datasets: dataSets
@@ -207,12 +209,22 @@ const generateAttendanceChart = (dataSeries, chartId) => {
             },
             animation: {
                 onComplete: () => {
-                    const downloadAnchor = document.getElementById('myChartLink')
-                    downloadAnchor.href = myChart.toBase64Image();
+                    const downloadAnchor = document.getElementById('attendanceDownloadLink')
+                    downloadAnchor.href = attendanceChart.toBase64Image();
                     downloadAnchor.download = 'Attendance_Chart.png';
                 }
             }
         },
         plugins: [whiteBackgroundOnDownload]
     });
+
+    updateChartContainerDimensions(chartId)
+}
+
+
+const updateChartContainerDimensions = (chartId) => {
+    const chart = document.getElementById(chartId)
+    const container = document.getElementById('chartContainer')
+
+    container.style.height = chart.style.height
 }

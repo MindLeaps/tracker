@@ -342,6 +342,8 @@ en:
   from: From
   to: To
   download_chart: Download Chart
+  attendance: Attendance
+  average_performance: Average Performance
 
   student: Student
   group: Group
