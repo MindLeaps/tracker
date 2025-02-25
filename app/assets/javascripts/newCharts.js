@@ -219,12 +219,9 @@ const generateAttendanceChart = (dataSeries, chartId) => {
     updateChartContainerDimensions(chartId)
 }
 
-const generateSkillChart = (dataSeries, chartId) => {
+const generateSkillChart = (dataSeries, chartId, skillName) => {
     let dataSets = []
-    let skill = dataSeries[0].skill
     let maxIndex = 0
-
-    dataSeries = dataSeries[0].series
 
     dataSeries.forEach(s => {
         let numberOfPoints = s.data.length
@@ -241,7 +238,7 @@ const generateSkillChart = (dataSeries, chartId) => {
         if(numberOfPoints > maxIndex) maxIndex = numberOfPoints
     })
 
-    let skillChart = new Chart(document.getElementById(chartId), {
+    new Chart(document.getElementById(chartId), {
         type: 'line',
         data: {
             labels: Array.from({ length: maxIndex }, (x, i) => i + 1),
@@ -252,7 +249,7 @@ const generateSkillChart = (dataSeries, chartId) => {
             plugins: {
                 title: {
                     display: true,
-                    text: skill,
+                    text: skillName,
                     fullSize: true,
                     padding: 20,
                     font: {
@@ -315,11 +312,7 @@ const generateSkillChart = (dataSeries, chartId) => {
                 }
             },
             animation: {
-                onComplete: () => {
-                    const downloadAnchor = document.getElementById('skillDownloadLink')
-                    downloadAnchor.href = skillChart.toBase64Image();
-                    downloadAnchor.download = 'Skill_Chart.png';
-                }
+
             }
         },
         plugins: [whiteBackgroundOnDownload]
@@ -333,4 +326,10 @@ const updateChartContainerDimensions = (chartId) => {
     const container = document.getElementById('chartContainer')
 
     container.style.height = chart.style.height
+}
+
+const setDownloadLink = () => {
+    const downloadAnchor = document.getElementById('skillDownloadLink')
+    downloadAnchor.href = skillChart.toBase64Image();
+    downloadAnchor.download = 'Skill_Chart.png';
 }
