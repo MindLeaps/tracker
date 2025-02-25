@@ -127,7 +127,7 @@ const generateAttendanceChart = (dataSeries, chartId) => {
 
         dataSets.push({
             label: s.series[0].name,
-            data: s.series[0].data.map(dataPoint => ({ x: dataPoint.date, y: dataPoint.attendance, date: dataPoint.date, url: dataPoint.lesson_url })),
+            data: s.series[0].data.map(dataPoint => ({ x: dataPoint.date, y: dataPoint.attendance === true ? 100 : dataPoint.attendance, date: dataPoint.date, url: dataPoint.lesson_url })),
             backgroundColor:  seriesColor,
             borderColor: seriesColor,
             barPercentage: 0.5,
@@ -137,7 +137,7 @@ const generateAttendanceChart = (dataSeries, chartId) => {
     })
 
     let attendanceChart = new Chart(document.getElementById(chartId), {
-        type: (dataSeries.length === 1 && dataSeries[0].series[0].is_student_series) ? 'line' : 'bar',
+        type: dataSeries[0].series[0].is_student_series ? 'line' : 'bar',
         data: {
             datasets: dataSets
         },

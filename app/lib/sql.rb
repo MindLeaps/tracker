@@ -73,4 +73,48 @@ class Sql
       group by l.id;
     SQL
   end
+
+  def self.performance_in_student_lessons(student_id, from = '1970-01-01', to = 'current_date')
+    <<~SQL.squish
+        SELECT s.id               AS student_id,
+               l.group_id          AS group_id,
+               s.first_name        AS first_name,
+               s.last_name         AS last_name,
+               g.group_name        AS group_name,
+               l.id                AS lesson_id,
+               l.date              AS lesson_date,
+               round(AVG(mark), 2) AS average_mark,
+               COUNT(mark)		  AS grade_count,
+               CASE WHEN COUNT(mark) > 0 THEN true ELSE false END AS attendance
+          FROM students s
+          JOIN enrollments en ON s.id = en.student_id
+          JOIN groups g ON g.id = en.group_id
+          JOIN lessons l ON l.group_id = g.id
+          LEFT JOIN grades ON (grades.student_id = s.id AND grades.lesson_id = l.id AND grades.deleted_at IS NULL)
+      WHERE en.active_since <= l.date AND (en.inactive_since IS NULL OR en.inactive_since >= l.date) AND s.id = #{student_id} AND l.date BETWEEN '#{from}' AND '#{to}'
+      GROUP BY s.id, l.id, g.id
+      ORDER BY g.id, lesson_date
+    SQL
+  end
+
+  def self.performance_in_group_lessons(groups, from = '1970-01-01', to = 'current_date')
+    <<~SQL.squish
+        SELECT g.id                AS group_id,
+               g.group_name        AS group_name,
+               CONCAT(g.group_name, ' - ', c.chapter_name) 	AS group_chapter_name,
+               l.id                AS lesson_id,
+               l.date              AS lesson_date,
+               round(AVG(mark), 2) AS average_mark,
+               COUNT(mark)		     AS grade_count,
+               ROUND(COUNT(DISTINCT(gr.student_id))::numeric / COUNT(DISTINCT(en.student_id)) * 100, 2)::FLOAT AS attendance
+        FROM groups g
+        JOIN enrollments en ON g.id = en.group_id
+        JOIN chapters c ON g.chapter_id = c.id
+        JOIN lessons l ON l.group_id = g.id
+        LEFT JOIN grades gr ON (gr.student_id = en.student_id AND gr.lesson_id = l.id AND gr.deleted_at IS NULL)
+      WHERE en.active_since <= l.date AND (en.inactive_since IS NULL OR en.inactive_since >= l.date) AND g.id IN (#{groups.length.positive? ? groups.join(', ') : 'null'}) AND l.date BETWEEN '#{from}' AND '#{to}'
+      GROUP BY g.id, l.id, c.id, l.date
+      ORDER BY lesson_date
+    SQL
+  end
 end
