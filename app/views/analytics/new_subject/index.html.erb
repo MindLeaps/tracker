@@ -1,34 +1,30 @@
-<% content_for :title, t(:general_analytics).capitalize %>
+<% content_for :title, t(:subject_analytics).capitalize %>
 
 <div class="w-full h-full bg-white p-6">
-  <h1 class="text-center text-6xl font-bold mb-6">General Analytics</h1>
+  <h1 class="text-center text-6xl font-bold mb-6">Subject Analytics</h1>
 
   <div class="w-full flex gap-4 my-4">
     <div class="w-full rounded-md bg-white px-4 py-5 shadow border border-2 border-gray-400">
       <dt class="text-lg font-medium text-gray-500"><%= t(:number_of_datapoints) %></dt>
       <dd class="mt-1 text-3xl font-semibold text-gray-900 text-right">
-        <%= number_with_delimiter @number_of_data_points %>
+        Maybe average mark given?
       </dd>
     </div>
 
     <div class="w-full rounded-md bg-white px-4 py-5 shadow border border-2 border-gray-400">
       <dt class="text-lg font-medium text-gray-500"><%= t(:average_performance) %></dt>
       <dd class="mt-1 text-3xl font-semibold text-gray-900 text-right">
-        <%= @number_of_data_points.positive? ? @total_average&.round(2) : 'No scores yet' %>
+        Maybe highest rated skill?
       </dd>
     </div>
   </div>
 
   <div class="w-full flex justify-between gap-24">
     <div id="chartContainer" class="w-full max-w-10xl border border-2 border-gray-400 rounded-md shadow relative h-fit group is-performance">
-      <% if @selected_summaries.length.positive? %>
-        <canvas id="attendanceChart" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full group-[.is-attendance]:opacity-1 group-[:not(.is-attendance)]:opacity-0 group-[:not(.is-attendance)]:pointer-events-none transition-all duration-200"></canvas>
-        <canvas id="performanceChart" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full group-[.is-performance]:opacity-1 group-[:not(.is-performance)]:opacity-0 group-[:not(.is-performance)]:pointer-events-none transition-all duration-200"></canvas>
+      <% if @subject_series.length.positive? %>
+        <canvas id="skillChart" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full group-[.is-performance]:opacity-1 group-[:not(.is-performance)]:opacity-0 group-[:not(.is-performance)]:pointer-events-none transition-all duration-200"></canvas>
         <div id="chartControls" class="absolute -bottom-12 left-1/2 -translate-x-1/2">
-          <div id="performanceButton" class="normal-button"><%= t(:performance) %></div>
-          <div id="attendanceButton" class="normal-button"><%= t(:attendance) %></div>
-          <%= render CommonComponents::ButtonComponent.new(label: 'Download Performance Chart', options: { 'id' => 'performanceDownloadLink' })%>
-          <%= render CommonComponents::ButtonComponent.new(label: 'Donwload Attendance Chart', options: { 'id' => 'attendanceDownloadLink' })%>
+          <%= render CommonComponents::ButtonComponent.new(label: 'Download Skill Chart', options: { 'id' => 'skillDownloadLink' })%>
         </div>
       <% else %>
         <h3 class="text-center text-2xl text-gray-700">No Data to be shown</h3>
@@ -49,12 +45,16 @@
         <%= select_tag :group_select, options_from_collection_for_select(@available_groups, :id, :group_name, @selected_group_id), :class => 'mt-4 block w-full text-xl shadow border-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md', :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'group_id', 'data-dependents' => ['student_id'].to_json, 'data-resources' => @available_groups.map { |g| { id: g.id, label: g.group_name, depend_id: g.chapter_id } }.to_json %>
       </div>
       <div class="my-2">
+        <%= label_tag :subject_label, "Subject", class: 'block text-2xl font-medium text-gray-700' %>
+        <%= select_tag :subject_select, options_from_collection_for_select(@available_subjects, :id, :subject_name, @subject), :class => 'mt-4 block w-full text-xl shadow border-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md', :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'subject_id', 'data-resources' => @available_subjects.map { |s| { id: s.id, label: s.subject_name, depend_id: s.organization_id } }.to_json %>
+      </div>
+      <div class="my-2">
         <%= label_tag :student_label, t(:student), class: 'block text-2xl text-right font-medium text-gray-700' %>
         <%= select_tag :student_select, options_from_collection_for_select(@available_students, :id, :proper_name, @selected_student_id), :class => 'mt-4 block w-full text-xl shadow border-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md', :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'student_id', 'data-resources' => @available_students.map { |s| { id: s.id, label: s.proper_name, depend_id: s.group_id } }.to_json %>
       </div>
       <div class="my-4">
         <div class="flex justify-between w-full">
-          <%= render Datepicker.new(date: @selected_summaries.first&.[](:lesson_date) || Date.new(Date.current.year - 1, 1, 1).to_s, target: 'from') do |d| %>
+          <%= render Datepicker.new(date: Date.new(Date.current.year - 1, 1, 1).to_s, target: 'from') do |d| %>
             <%= d.with_input_field do %>
               <div>
                 <%= label_tag :from, t(:from), class: 'block text-2xl text-left font-medium text-gray-700' %>
@@ -62,7 +62,7 @@
               </div>
             <% end %>
           <% end %>
-          <%= render Datepicker.new(date: @selected_summaries.last&.[](:lesson_date) || Time.zone.today.to_s, target: 'to') do |d| %>
+          <%= render Datepicker.new(date: Time.zone.today.to_s, target: 'to') do |d| %>
             <%= d.with_input_field do %>
               <div>
                 <%= label_tag :to, t(:to), class: 'block text-2xl text-right font-medium text-gray-700' %>
@@ -79,30 +79,14 @@
   </div>
 </div>
 <script>
-    const addEventListeners = () => {
-        const chartContainer = document.getElementById('chartContainer')
-        const performanceButton = document.getElementById('performanceButton')
-        const attendanceButton = document.getElementById('attendanceButton')
-
-        performanceButton.addEventListener('click', () => {
-          chartContainer.classList.toggle('is-performance', true)
-          chartContainer.classList.remove('is-attendance')
-        })
-
-        attendanceButton.addEventListener('click', () => {
-          chartContainer.classList.toggle('is-attendance', true)
-          chartContainer.classList.remove('is-performance')
-        })
-    }
-
     const onChartsLoad = () => {
-        let series = <%= @selected_summaries.to_json.html_safe %>;
+        let series = <%= @subject_series.to_json.html_safe %>;
+
+        console.log(series)
 
         if(series.length> 0)
         {
-          generatePerformanceChart && generatePerformanceChart(series, 'performanceChart')
-          generateAttendanceChart && generateAttendanceChart(series, 'attendanceChart')
-          addEventListeners()
+          generateSkillChart && generateSkillChart(series, 'skillChart')
         }
     }
 </script>

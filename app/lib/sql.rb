@@ -1,15 +1,19 @@
 class Sql
-  def self.performance_per_skill_in_lessons_per_student_query(student_ids)
+  def self.performance_per_skill_in_lessons_per_student_query(student_ids, from = '1970-01-01', to = 'current_date')
     <<~SQL.squish
-      select rank() over(PARTITION BY stu.id, s.id order by date) - 1 as rank, round(avg(mark), 2)::FLOAT, l.id, date, s.skill_name, stu.id::INT from
-          lessons as l
-              join groups as gr on gr.id = l.group_id
-              join grades as g on l.id = g.lesson_id
-              join students as stu on stu.id = g.student_id
-              join skills as s on s.id = g.skill_id
-      WHERE stu.id IN (#{student_ids.join(', ')})
-      GROUP BY gr.id, stu.id, l.id, s.id
-      ORDER BY stu.id, date, s.id;
+      select stu.id::INT as student_id , rank() over(partition by stu.id, s.id order by date) - 1 as rank,
+           l.id   as lesson_id,
+           l.date as lesson_date,
+           round(avg(mark), 2)::FLOAT as average_mark_for_skill,
+           s.skill_name as skill_name
+        from lessons as l
+          join groups gr on gr.id = l.group_id
+          join grades g on l.id = g.lesson_id
+          join students stu on stu.id = g.student_id
+          join skills s on s.id = g.skill_id
+      where stu.id in (#{student_ids.length.positive? ? student_ids.join(', ') : 'null'}) and l.date between '#{from}' AND '#{to}'
+      group by gr.id, stu.id, l.id, s.id
+      order by stu.id, l.date, s.id, s.skill_name;
     SQL
   end
 

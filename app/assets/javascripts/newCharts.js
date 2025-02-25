@@ -18,13 +18,12 @@ const generatePerformanceChart = (dataSeries, chartId) => {
 
     dataSeries.forEach(s => {
         let numberOfPoints = s.series[0].data.length
-        let seriesColor = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0")
 
         dataSets.push({
             label: s.series[0].name,
             data: s.series[0].data.map(dataPoint => ({ x: dataPoint.x, y: dataPoint.y, date: dataPoint.date, url: dataPoint.lesson_url })),
             fill: false,
-            borderColor:  seriesColor,
+            borderColor:  s.color,
             borderWidth: 4 - (0.1 * dataSeries.length),
             tension: 0.2
         })
@@ -123,13 +122,12 @@ const generateAttendanceChart = (dataSeries, chartId) => {
     let dataSets = []
 
     dataSeries.forEach(s => {
-        let seriesColor = "#" + ((1 << 24) * Math.random() | 0).toString(16).padStart(6, "0")
 
         dataSets.push({
             label: s.series[0].name,
             data: s.series[0].data.map(dataPoint => ({ x: dataPoint.date, y: dataPoint.attendance === true ? 100 : dataPoint.attendance, date: dataPoint.date, url: dataPoint.lesson_url })),
-            backgroundColor:  seriesColor,
-            borderColor: seriesColor,
+            backgroundColor:  s.color,
+            borderColor: s.color,
             barPercentage: 0.5,
             categoryPercentage: 1,
             tension: 0.2
@@ -221,6 +219,114 @@ const generateAttendanceChart = (dataSeries, chartId) => {
     updateChartContainerDimensions(chartId)
 }
 
+const generateSkillChart = (dataSeries, chartId) => {
+    let dataSets = []
+    let skill = dataSeries[0].skill
+    let maxIndex = 0
+
+    dataSeries = dataSeries[0].series
+
+    dataSeries.forEach(s => {
+        let numberOfPoints = s.data.length
+
+        dataSets.push({
+            label: s.name,
+            data: s.data.map(dataPoint => ({ x: dataPoint.x, y: dataPoint.y, date: dataPoint.date, url: dataPoint.lesson_url })),
+            fill: false,
+            borderColor: s.color,
+            borderWidth: 4 - (0.1 * dataSeries.length),
+            tension: 0.2
+        })
+
+        if(numberOfPoints > maxIndex) maxIndex = numberOfPoints
+    })
+
+    let skillChart = new Chart(document.getElementById(chartId), {
+        type: 'line',
+        data: {
+            labels: Array.from({ length: maxIndex }, (x, i) => i + 1),
+            datasets: dataSets
+        },
+        options: {
+            clip: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: skill,
+                    fullSize: true,
+                    padding: 20,
+                    font: {
+                        size: 20
+                    }
+                },
+                legend: {
+                    display: true,
+                    position: 'bottom',
+                },
+                customCanvasBackgroundColor: {
+                    color: 'white',
+                },
+                tooltip: {
+                    enabled: true,
+                    callbacks: {
+                        title: () => '',
+                        label: (item) => {
+                            return item.dataset.label
+                        },
+                        beforeFooter: (item) => {
+                            return 'Lesson Date: ' + item[0].raw.date
+                        },
+                        footer: (item) => {
+                            return 'Average Skill Mark: ' + item[0].formattedValue
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title:{
+                        display: true,
+                        text: 'Number of Lessons',
+                        font: {
+                            size: 20
+                        }
+                    },
+                    ticks: {
+                        padding: 8,
+                        font: {
+                            size: 14
+                        },
+                    }
+                },
+                y: {
+                    title:{
+                        display: true,
+                        text: 'Score',
+                        font: {
+                            size: 20
+                        }
+                    },
+                    beginAtZero: true,
+                    min: 1,
+                    max: 7,
+                    ticks: {
+                        padding: 5,
+                    }
+                }
+            },
+            animation: {
+                onComplete: () => {
+                    const downloadAnchor = document.getElementById('skillDownloadLink')
+                    downloadAnchor.href = skillChart.toBase64Image();
+                    downloadAnchor.download = 'Skill_Chart.png';
+                }
+            }
+        },
+        plugins: [whiteBackgroundOnDownload]
+    });
+
+    updateChartContainerDimensions(chartId)
+}
 
 const updateChartContainerDimensions = (chartId) => {
     const chart = document.getElementById(chartId)

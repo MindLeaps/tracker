@@ -17,12 +17,13 @@ module Analytics
 
     # rubocop:disable Metrics/AbcSize
     def create_series(summaries)
-      summaries.group_by { |s| s['group_id'] }.map do |id, entries|
+      summaries.group_by { |s| s['group_id'] }.map.with_index do |(id, entries), index|
         series = []
         is_student_summary = entries[0]['student_id'].present?
         series << {
           name: is_student_summary ? "#{entries[0]['first_name']} #{entries[0]['last_name']} - #{entries[0]['group_name']}" : entries[0]['group_chapter_name'],
           is_student_series: is_student_summary,
+          color: get_color(index),
           data: entries.map.with_index do |entry, i|
             @number_of_data_points += entry['grade_count']
             { x: i + 1, y: entry['average_mark'], date: entry['lesson_date'], lesson_url: lesson_path(entry['lesson_id'].to_s), attendance: entry['attendance'] }
@@ -45,10 +46,10 @@ module Analytics
         group_ids = Group.where(chapter_id: @selected_chapter_id).pluck(:id)
         average_performance_per_group_by_lesson(group_ids, @from, @to)
       elsif selected_param_present_but_not_all?(@selected_organization_id)
-        group_ids = Group.joins(:chapter).where(chapters: { organization_id: @selected_organization_id }).pluck(:id)
+        group_ids = Group.includes(:chapter).where(chapters: { organization_id: @selected_organization_id }).pluck(:id)
         average_performance_per_group_by_lesson(group_ids, @from, @to)
       else
-        group_ids = Group.joins(:chapter).where(chapters: { organization_id: @available_organizations }).pluck(:id)
+        group_ids = Group.includes(:chapter).where(chapters: { organization_id: @available_organizations }).pluck(:id)
         average_performance_per_group_by_lesson(group_ids, @from, @to)
       end
     end
