@@ -8,8 +8,11 @@
     skillName: s[:skill],
     downloadText: "Download #{s[:skill]} Chart",
     chartId: "#{clean_skill_name(s[:skill].downcase)}Chart",
-    class: ".is-#{clean_skill_name(s[:skill].downcase)}",
-    series: s[:series]
+    buttonId: "#{clean_skill_name(s[:skill].downcase)}Button",
+    class: "is-#{clean_skill_name(s[:skill].downcase)}",
+    series: s[:series],
+    cleanSkillName: clean_skill_name(s[:skill].downcase),
+    skillAverage: s[:skill_average]
   }}
 %>
 
@@ -19,28 +22,30 @@
 
   <div class="w-full flex gap-4 my-4">
     <div class="w-full rounded-md bg-white px-4 py-2 shadow border border-2 border-gray-400">
-      <dt class="text-lg font-medium text-gray-500"><%= t(:number_of_datapoints) %></dt>
-      <dd class="mt-1 text-2xl font-semibold text-gray-900 text-right">
-        Maybe average mark given?
+      <dt class="text-lg font-medium text-gray-500"><%= t(:average) %></dt>
+      <dd id="averageMark" class="mt-1 text-2xl font-semibold text-gray-900 text-right">
+        No scores yet
       </dd>
     </div>
 
     <div class="w-full rounded-md bg-white px-4 py-2 shadow border border-2 border-gray-400">
-      <dt class="text-lg font-medium text-gray-500"><%= t(:average_performance) %></dt>
+      <dt class="text-lg font-medium text-gray-500"><%= t(:highest_rated_skill) %></dt>
       <dd class="mt-1 text-2xl font-semibold text-gray-900 text-right">
-        Maybe highest rated skill?
+        <%= @highest_rated_skill || 'No scores yet' %>
       </dd>
     </div>
   </div>
 
-  <div class="w-full flex justify-between gap-24">
-    <div id="chartContainer" class="w-full max-w-10xl border border-2 border-gray-400 rounded-md shadow relative h-fit group is-memorization">
+  <div class="w-full min-h-10xl flex justify-between gap-24">
+    <div id="chartContainer" class="relative w-full max-w-10xl border border-2 border-gray-400 rounded-md shadow h-fit">
       <% if @subject_series.length.positive? %>
         <% @skills.each do |s| %>
-          <canvas id="<%= s[:chartId] %>" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full <%= "group-[#{s[:class]}]:opacity-1 group-[:not(#{s[:class]})]:opacity-0 group-[:not(#{s[:class]})]:pointer-events-none" %> transition-all duration-200" ></canvas>
+          <canvas id="<%= s[:chartId] %>" class="<%= "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full transition-all duration-200"%>"></canvas>
         <% end %>
         <div id="chartControls" class="w-full absolute -bottom-20 left-1/2 -translate-x-1/2 flex justify-center">
-          <%= render CommonComponents::ButtonComponent.new(label: 'Download Skill Chart', options: { 'id' => 'skillDownloadLink' })%>
+          <% @skills.each do |s| %>
+            <div id="<%= s[:buttonId] %>" class="normal-button"><%= s[:skillName] %></div>
+          <% end %>
         </div>
       <% else %>
         <h3 class="text-center text-2xl text-gray-700">No Data to be shown</h3>
@@ -95,16 +100,38 @@
   </div>
 </div>
 <script>
+    const setAverageMark = (average) => {
+      document.getElementById('averageMark').textContent = Math.round(average * 100) / 100 || 'No scores yet'
+    }
+
+    const addEventListeners = (skills) => {
+        skills.forEach(s => {
+            let skillButton = document.getElementById(s.buttonId)
+
+            skillButton.addEventListener('click', () => {
+                skills.map(s => s.chartId).forEach(id => {
+                  let chart = document.getElementById(id)
+                  let skillClicked = skillButton.id.split('Button')[0];
+
+                  chart.classList.add('opacity-0')
+
+                  if(chart.id.includes(skillClicked)) chart.classList.remove('opacity-0')
+
+                  setAverageMark(s.skillAverage)
+                })
+            })
+        })
+    }
+
     const onChartsLoad = () => {
         let skills = <%= @skills.to_json.html_safe %>;
-
-        console.log(skills)
+        let series = <%= @subject_series.to_json.html_safe %>;
 
         if(skills.length> 0)
         {
-          skills.forEach(s => {
-              generateSkillChart && generateSkillChart(s.series, s.chartId, s.skillName)
-          })
+          skills.forEach(s => { generateSkillChart && generateSkillChart(s.series, s.chartId, s.skillName) })
+          addEventListeners(skills)
+          setAverageMark(skills[skills.length - 1].skillAverage)
         }
     }
 </script>

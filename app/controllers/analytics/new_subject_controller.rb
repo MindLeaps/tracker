@@ -1,11 +1,13 @@
 module Analytics
   class NewSubjectController < AnalyticsController
+    include CollectionHelper
     # rubocop:disable Metrics/MethodLength
     # rubocop:disable Metrics/AbcSize
     def index
       @from = params[:from] || Date.new(Date.current.year - 1, 1, 1).to_s
       @to = params[:to] || Time.zone.today.to_s
       @subject_series = selected_param_present_but_not_all?(@selected_student_id) ? performance_per_skill_single_student : performance_per_skill
+      @highest_rated_skill = @subject_series.max_by { |e| e&.[](:skill_average) }&.[](:skill)
     end
 
     private
@@ -60,11 +62,15 @@ module Analytics
       series = []
       result.each do |skill_name, hash|
         skill_series = []
+        skill_series_averages = []
+
         hash.each_with_index do |(group, array), index|
+          skill_series_averages << average_from_array(array.map { |e| e[:y] })
           skill_series << { name: group, data: array, color: get_color(index) }
         end
 
-        series << { skill: skill_name, series: skill_series }
+        skill_average = average_from_array(skill_series_averages)
+        series << { skill: skill_name, series: skill_series, skill_average: skill_average }
       end
       series
     end
