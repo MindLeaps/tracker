@@ -15,19 +15,19 @@
 
 <% content_for :title, t(:subject_analytics).capitalize %>
 <div class="w-full h-full bg-white p-6">
-  <h1 class="text-center text-6xl font-bold mb-6">Subject Analytics</h1>
+  <h1 class="text-center text-2xl font-bold mb-6">Subject Analytics</h1>
 
   <div class="w-full flex gap-4 my-4">
-    <div class="w-full rounded-md bg-white px-4 py-5 shadow border border-2 border-gray-400">
+    <div class="w-full rounded-md bg-white px-4 py-2 shadow border border-2 border-gray-400">
       <dt class="text-lg font-medium text-gray-500"><%= t(:number_of_datapoints) %></dt>
-      <dd class="mt-1 text-3xl font-semibold text-gray-900 text-right">
+      <dd class="mt-1 text-2xl font-semibold text-gray-900 text-right">
         Maybe average mark given?
       </dd>
     </div>
 
-    <div class="w-full rounded-md bg-white px-4 py-5 shadow border border-2 border-gray-400">
+    <div class="w-full rounded-md bg-white px-4 py-2 shadow border border-2 border-gray-400">
       <dt class="text-lg font-medium text-gray-500"><%= t(:average_performance) %></dt>
-      <dd class="mt-1 text-3xl font-semibold text-gray-900 text-right">
+      <dd class="mt-1 text-2xl font-semibold text-gray-900 text-right">
         Maybe highest rated skill?
       </dd>
     </div>
@@ -39,7 +39,7 @@
         <% @skills.each do |s| %>
           <canvas id="<%= s[:chartId] %>" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full <%= "group-[#{s[:class]}]:opacity-1 group-[:not(#{s[:class]})]:opacity-0 group-[:not(#{s[:class]})]:pointer-events-none" %> transition-all duration-200" ></canvas>
         <% end %>
-        <div id="chartControls" class="absolute -bottom-12 left-1/2 -translate-x-1/2">
+        <div id="chartControls" class="w-full absolute -bottom-20 left-1/2 -translate-x-1/2 flex justify-center">
           <%= render CommonComponents::ButtonComponent.new(label: 'Download Skill Chart', options: { 'id' => 'skillDownloadLink' })%>
         </div>
       <% else %>
@@ -61,7 +61,7 @@
         <%= select_tag :group_select, options_from_collection_for_select(@available_groups, :id, :group_name, @selected_group_id), :class => 'mt-4 block w-full text-xl shadow border-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md', :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'group_id', 'data-dependents' => ['student_id'].to_json, 'data-resources' => @available_groups.map { |g| { id: g.id, label: g.group_name, depend_id: g.chapter_id } }.to_json %>
       </div>
       <div class="my-2">
-        <%= label_tag :subject_label, "Subject", class: 'block text-2xl font-medium text-gray-700' %>
+        <%= label_tag :subject_label, "Subject", class: 'block text-2xl text-right font-medium text-gray-700' %>
         <%= select_tag :subject_select, options_from_collection_for_select(@available_subjects, :id, :subject_name, @subject), :class => 'mt-4 block w-full text-xl shadow border-gray-700 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md', :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'subject_id', 'data-resources' => @available_subjects.map { |s| { id: s.id, label: s.subject_name, depend_id: s.organization_id } }.to_json %>
       </div>
       <div class="my-2">

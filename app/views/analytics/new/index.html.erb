@@ -1,19 +1,19 @@
 <% content_for :title, t(:general_analytics).capitalize %>
 
 <div class="w-full h-full bg-white p-6">
-  <h1 class="text-center text-6xl font-bold mb-6">General Analytics</h1>
+  <h1 class="text-center text-2xl font-bold mb-6">General Analytics</h1>
 
   <div class="w-full flex gap-4 my-4">
-    <div class="w-full rounded-md bg-white px-4 py-5 shadow border border-2 border-gray-400">
+    <div class="w-full rounded-md bg-white px-4 py-2 shadow border border-2 border-gray-400">
       <dt class="text-lg font-medium text-gray-500"><%= t(:number_of_datapoints) %></dt>
-      <dd class="mt-1 text-3xl font-semibold text-gray-900 text-right">
+      <dd class="mt-1 text-2xl font-semibold text-gray-900 text-right">
         <%= number_with_delimiter @number_of_data_points %>
       </dd>
     </div>
 
-    <div class="w-full rounded-md bg-white px-4 py-5 shadow border border-2 border-gray-400">
+    <div class="w-full rounded-md bg-white px-4 py-2 shadow border border-2 border-gray-400">
       <dt class="text-lg font-medium text-gray-500"><%= t(:average_performance) %></dt>
-      <dd class="mt-1 text-3xl font-semibold text-gray-900 text-right">
+      <dd class="mt-1 text-2xl font-semibold text-gray-900 text-right">
         <%= @number_of_data_points.positive? ? @total_average&.round(2) : 'No scores yet' %>
       </dd>
     </div>
@@ -24,7 +24,7 @@
       <% if @selected_summaries.length.positive? %>
         <canvas id="attendanceChart" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full group-[.is-attendance]:opacity-1 group-[:not(.is-attendance)]:opacity-0 group-[:not(.is-attendance)]:pointer-events-none transition-all duration-200"></canvas>
         <canvas id="performanceChart" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full group-[.is-performance]:opacity-1 group-[:not(.is-performance)]:opacity-0 group-[:not(.is-performance)]:pointer-events-none transition-all duration-200"></canvas>
-        <div id="chartControls" class="absolute -bottom-12 left-1/2 -translate-x-1/2">
+        <div id="chartControls" class="w-full absolute -bottom-20 left-1/2 -translate-x-1/2 flex justify-center">
           <div id="performanceButton" class="normal-button"><%= t(:performance) %></div>
           <div id="attendanceButton" class="normal-button"><%= t(:attendance) %></div>
           <%= render CommonComponents::ButtonComponent.new(label: 'Download Performance Chart', options: { 'id' => 'performanceDownloadLink' })%>
