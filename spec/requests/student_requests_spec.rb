@@ -11,7 +11,7 @@ RSpec.describe 'Student API', type: :request do
       @group = create :group
       @current_group = create :group
       @student = create :student, group: @group, deleted_at: Time.zone.now
-      create :enrollment, student: @student, group: @current_group, inactive_since: nil
+      create :enrollment, student: @student, group: @current_group, active_since: 1.day.after, inactive_since: nil
     end
 
     it 'responds with a specific student' do

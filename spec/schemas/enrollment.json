@@ -6,8 +6,8 @@
   "required": ["id", "active_since", "inactive_since", "created_at", "updated_at", "group_id", "student_id"],
   "properties": {
     "id": { "$ref": "file:/uuid.json#" },
-    "active_since": {"type": ["string"], "format": "date-time"},
-    "inactive_since": {"type": ["string", "null"], "format": "date-time"},
+    "active_since": {"type": ["string"], "format": "date"},
+    "inactive_since": {"type": ["string", "null"], "format": "date"},
     "created_at": {"type": ["string"], "format": "date-time"},
     "updated_at": {"type": ["string"], "format": "date-time"},
     "group_id": {"type": "number"},

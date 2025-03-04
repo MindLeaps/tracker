@@ -99,20 +99,19 @@ CREATE PROCEDURE public.update_enrollments_by_grades()
     LANGUAGE plpgsql
     AS $$
 BEGIN
-  -- Find enrollments to fix
-  with tofix_enrollments as 
-  ( select s.id as student_id, s.group_id, min(l.date) as earliest_lesson, min(en.active_since) as enrollment_date, en.id as enrollment_id 
-  from grades as g
-  join students s on s.id = g.student_id
-  join lessons l on g.lesson_id = l.id
-  join groups gr on gr.id = l.group_id
-  join enrollments en on en.student_id = s.id and en.group_id = gr.id and en.active_since > l.date
-  where l.date > now() - '3 years'::interval
-  group by s.id, s.group_id, en.id
+  -- Find enrollments to fix (ignore grades that reference lessons from more than 3 years ago)
+  with tofix_enrollments as
+  ( select s.id as student_id, s.group_id, min(l.date) as earliest_lesson, min(en.active_since) as enrollment_date, en.id as enrollment_id
+    from grades as gr
+    join students s on s.id = gr.student_id
+    join lessons l on gr.lesson_id = l.id
+    join enrollments en on en.student_id = s.id and en.group_id = s.group_id and en.active_since > l.date
+    where l.date > now() - '3 years'::interval
+    group by s.id, s.group_id, en.id
   )
 
   -- Update found enrollments
-  update enrollments en set active_since = tfe.earliest_lesson::timestamp
+  update enrollments en set active_since = tfe.earliest_lesson
   from tofix_enrollments tfe
   where en.id = tfe.enrollment_id;
 END;
@@ -336,6 +335,8 @@ CREATE TABLE public.enrollments (
     group_id bigint NOT NULL,
     active_since timestamp without time zone NOT NULL,
     inactive_since timestamp without time zone,
+    active_since date NOT NULL,
+    inactive_since date,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
@@ -1046,27 +1047,6 @@ CREATE TABLE public.tags (
 
 
 --
--- Name: temporary_summaries; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.temporary_summaries AS
-SELECT
-    NULL::text AS full_mlid,
-    NULL::integer AS student_id,
-    NULL::date AS dob,
-    NULL::public.gender AS gender,
-    NULL::text AS country_of_nationality,
-    NULL::integer AS group_id,
-    NULL::character varying AS group_name,
-    NULL::date AS lesson_date,
-    NULL::numeric AS lesson_average_mark,
-    NULL::date AS first_group_lesson,
-    NULL::date AS last_group_lesson,
-    NULL::bigint AS number_of_lessons_for_group,
-    NULL::jsonb AS skill_marks;
-
-
---
 -- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -1749,35 +1729,36 @@ CREATE OR REPLACE VIEW public.student_lesson_summaries AS
              JOIN public.groups g ON ((g.id = en.group_id)))
              JOIN public.lessons l ON ((l.group_id = g.id)))
              LEFT JOIN public.grades ON (((grades.student_id = s.id) AND (grades.lesson_id = l.id) AND (grades.deleted_at IS NULL))))
-          WHERE ((en.active_since < (l.date + 1)) AND ((en.inactive_since IS NULL) OR (en.inactive_since > (l.date - 1))))
+          WHERE ((en.active_since <= l.date) AND ((en.inactive_since IS NULL) OR (en.inactive_since >= l.date)))
           GROUP BY s.id, l.id) united
      JOIN public.subject_summaries su ON ((united.subject_id = su.id)));
 
 
 --
--- Name: group_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+-- Name: student_lesson_details _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
-CREATE OR REPLACE VIEW public.group_lesson_summaries AS
- SELECT slu.lesson_id,
-    slu.lesson_date,
-    gr.id AS group_id,
-    gr.chapter_id,
-    slu.subject_id,
-    concat(gr.group_name, ' - ', c.chapter_name) AS group_chapter_name,
-    (round(avg(slu.average_mark), 2))::double precision AS average_mark,
-    (sum(slu.grade_count))::bigint AS grade_count,
-    (round((((sum(
-        CASE
-            WHEN (slu.grade_count = 0) THEN 0
-            ELSE 1
-        END))::numeric / (count(slu.*))::numeric) * (100)::numeric), 2))::double precision AS attendance
-   FROM ((public.student_lesson_summaries slu
-     JOIN public.groups gr ON ((slu.group_id = gr.id)))
-     JOIN public.chapters c ON ((gr.chapter_id = c.id)))
-  WHERE (slu.deleted_at IS NULL)
-  GROUP BY slu.lesson_id, gr.id, c.id, slu.subject_id, slu.lesson_date
-  ORDER BY slu.lesson_date;
+CREATE OR REPLACE VIEW public.student_lesson_details AS
+ SELECT s.id AS student_id,
+    s.first_name,
+    s.last_name,
+    s.deleted_at AS student_deleted_at,
+    l.id AS lesson_id,
+    l.date,
+    l.deleted_at AS lesson_deleted_at,
+    l.subject_id,
+    round(avg(g.mark), 2) AS average_mark,
+    count(g.mark) AS grade_count,
+    COALESCE(jsonb_object_agg(g.skill_id, jsonb_build_object('mark', g.mark, 'grade_descriptor_id', g.grade_descriptor_id, 'skill_name', sk.skill_name)) FILTER (WHERE (sk.skill_name IS NOT NULL)), '{}'::jsonb) AS skill_marks
+   FROM (((((public.students s
+     JOIN public.groups gr ON ((gr.id = s.group_id)))
+     JOIN public.lessons l ON ((gr.id = l.group_id)))
+     JOIN public.enrollments en ON ((s.id = en.student_id)))
+     LEFT JOIN public.grades g ON (((g.student_id = s.id) AND (g.lesson_id = l.id) AND (g.deleted_at IS NULL))))
+     LEFT JOIN public.skills sk ON ((sk.id = g.skill_id)))
+  WHERE ((en.active_since <= l.date) AND ((en.inactive_since IS NULL) OR (en.inactive_since >= l.date)))
+  GROUP BY s.id, l.id
+  ORDER BY l.subject_id;
 
 
 --
@@ -1811,114 +1792,29 @@ CREATE OR REPLACE VIEW public.lesson_table_rows AS
 
 
 --
--- Name: student_averages _RETURN; Type: RULE; Schema: public; Owner: -
+-- Name: group_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
-CREATE OR REPLACE VIEW public.student_averages AS
- SELECT s.id AS student_id,
-    s.first_name,
-    s.last_name,
-    s.deleted_at AS student_deleted_at,
-    su.id AS subject_id,
-    su.subject_name,
-    sk.skill_name,
-    round(avg(g.mark), 2) AS average_mark
-   FROM (((((public.students s
-     JOIN public.grades g ON (((g.student_id = s.id) AND (g.deleted_at IS NULL))))
-     JOIN public.skills sk ON ((sk.id = g.skill_id)))
-     JOIN public.assignments a ON ((a.skill_id = sk.id)))
-     JOIN public.subjects su ON ((su.id = a.subject_id)))
-     JOIN public.lessons l ON (((l.id = g.lesson_id) AND (l.subject_id = su.id))))
-  GROUP BY s.id, su.id, sk.skill_name;
-
-
---
--- Name: student_lesson_details _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.student_lesson_details AS
- SELECT s.id AS student_id,
-    s.first_name,
-    s.last_name,
-    s.deleted_at AS student_deleted_at,
-    l.id AS lesson_id,
-    l.date,
-    l.deleted_at AS lesson_deleted_at,
-    l.subject_id,
-    round(avg(g.mark), 2) AS average_mark,
-    count(g.mark) AS grade_count,
-    COALESCE(jsonb_object_agg(g.skill_id, jsonb_build_object('mark', g.mark, 'grade_descriptor_id', g.grade_descriptor_id, 'skill_name', sk.skill_name)) FILTER (WHERE (sk.skill_name IS NOT NULL)), '{}'::jsonb) AS skill_marks
-   FROM (((((public.students s
-     JOIN public.groups gr ON ((gr.id = s.group_id)))
-     JOIN public.lessons l ON ((gr.id = l.group_id)))
-     JOIN public.enrollments en ON ((s.id = en.student_id)))
-     LEFT JOIN public.grades g ON (((g.student_id = s.id) AND (g.lesson_id = l.id) AND (g.deleted_at IS NULL))))
-     LEFT JOIN public.skills sk ON ((sk.id = g.skill_id)))
-  WHERE ((en.active_since < (l.date + 1)) AND ((en.inactive_since IS NULL) OR (en.inactive_since > (l.date - 1))))
-  GROUP BY s.id, l.id
-  ORDER BY l.subject_id;
-
-
---
--- Name: temporary_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.temporary_summaries AS
- WITH student_group_summaries AS (
-         SELECT concat(o.mlid, '-', c.mlid, '-', g.mlid, '-', s.mlid) AS full_mlid,
-            s.id AS student_id,
-            s.dob,
-            s.gender,
-            s.country_of_nationality,
-            g.group_name,
-            g.id AS group_id,
-            min(gls.lesson_date) AS first_group_lesson,
-            max(gls.lesson_date) AS last_group_lesson,
-            count(gls.lesson_date) AS number_of_lessons_for_group
-           FROM ((((public.students s
-             JOIN public.group_lesson_summaries gls ON ((gls.group_id = s.group_id)))
-             JOIN public.groups g ON ((g.id = gls.group_id)))
-             JOIN public.chapters c ON ((gls.chapter_id = c.id)))
-             JOIN public.organizations o ON ((c.organization_id = o.id)))
-          WHERE ((gls.lesson_date >= '2021-09-01'::date) AND (gls.lesson_date <= '2024-08-31'::date))
-          GROUP BY (concat(o.mlid, '-', c.mlid, '-', g.mlid, '-', s.mlid)), s.id, g.id
-        ), student_group_lesson_summaries AS (
-         SELECT sgs.full_mlid,
-            sgs.student_id,
-            sgs.dob,
-            sgs.gender,
-            sgs.country_of_nationality,
-            sgs.group_name,
-            sgs.group_id,
-            sgs.first_group_lesson,
-            sgs.last_group_lesson,
-            sgs.number_of_lessons_for_group,
-            slu.average_mark AS lesson_average_mark,
-            slu.lesson_id,
-            slu.lesson_date,
-            slu.subject_id
-           FROM (public.student_lesson_summaries slu
-             JOIN student_group_summaries sgs ON (((slu.student_id = sgs.student_id) AND (slu.group_id = sgs.group_id))))
-        )
- SELECT sgls.full_mlid,
-    sgls.student_id,
-    sgls.dob,
-    sgls.gender,
-    sgls.country_of_nationality,
-    sgls.group_id,
-    sgls.group_name,
-    sgls.lesson_date,
-    sgls.lesson_average_mark,
-    sgls.first_group_lesson,
-    sgls.last_group_lesson,
-    sgls.number_of_lessons_for_group,
-    COALESCE(jsonb_object_agg(sk.skill_name, gr.mark), '{}'::jsonb) AS skill_marks
-   FROM (((student_group_lesson_summaries sgls
-     JOIN public.assignments a ON ((a.subject_id = sgls.subject_id)))
-     LEFT JOIN public.skills sk ON ((sk.id = a.skill_id)))
-     LEFT JOIN public.grades gr ON (((gr.student_id = sgls.student_id) AND (gr.lesson_id = sgls.lesson_id) AND (gr.skill_id = sk.id) AND (gr.deleted_at IS NULL))))
-  WHERE (sk.id = ANY (ARRAY[1, 2, 3, 4, 5, 6, 7]))
-  GROUP BY sgls.full_mlid, sgls.student_id, sgls.dob, sgls.gender, sgls.country_of_nationality, sgls.group_id, sgls.group_name, sgls.lesson_date, sgls.lesson_average_mark, sgls.first_group_lesson, sgls.last_group_lesson, sgls.number_of_lessons_for_group;
+CREATE OR REPLACE VIEW public.group_lesson_summaries AS
+ SELECT slu.lesson_id,
+    slu.lesson_date,
+    gr.id AS group_id,
+    gr.chapter_id,
+    slu.subject_id,
+    concat(gr.group_name, ' - ', c.chapter_name) AS group_chapter_name,
+    (round(avg(slu.average_mark), 2))::double precision AS average_mark,
+    (sum(slu.grade_count))::bigint AS grade_count,
+    (round((((sum(
+        CASE
+            WHEN (slu.grade_count = 0) THEN 0
+            ELSE 1
+        END))::numeric / (count(slu.*))::numeric) * (100)::numeric), 2))::double precision AS attendance
+   FROM ((public.student_lesson_summaries slu
+     JOIN public.groups gr ON ((slu.group_id = gr.id)))
+     JOIN public.chapters c ON ((gr.chapter_id = c.id)))
+  WHERE (slu.deleted_at IS NULL)
+  GROUP BY slu.lesson_id, gr.id, c.id, slu.subject_id, slu.lesson_date
+  ORDER BY slu.lesson_date;
 
 
 --
@@ -2119,7 +2015,7 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
-('20250216183143'),
+('20250129182516'),
 ('20250125235507'),
 ('20250124144809'),
 ('20241120234016'),
