@@ -142,6 +142,7 @@ en:
   delete_group: Delete Group
   restore_group: Restore Deleted Group
   edit_group: Edit Group
+  export_students: Export Students
   edit: Edit
   delete: Delete
   chapter_added: Chapter Added

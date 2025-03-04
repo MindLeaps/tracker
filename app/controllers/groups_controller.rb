@@ -1,5 +1,6 @@
 class GroupsController < HtmlController
   include Pagy::Backend
+  include CollectionHelper
   has_scope :exclude_deleted, type: :boolean, default: true
   has_scope :table_order, type: :hash, default: { key: :created_at, order: :desc }
   has_scope :search, only: [:show, :index]
@@ -82,13 +83,20 @@ class GroupsController < HtmlController
     @group = Group.find params.require :id
     skip_authorization
 
-    @students = @group.students
     respond_to do |format|
       format.html
       format.csv do
         filename = ["#{@group.group_name} - Students", Time.zone.today.to_s].join(' ')
-        send_data Student.to_csv(@students), filename:, content_type: 'text/csv'
+        send_data csv_from_array_of_hashes(get_student_export_data(@group.students)), filename:, content_type: 'text/csv'
       end
+    end
+  end
+
+  def get_student_export_data(students)
+    students.map do |student|
+      { id: student.id, first_name: student.first_name, last_name: student.last_name, date_of_birth: student.dob, age: student.age, country_of_nationality: student.country_of_nationality, gender: student.gender,
+        enrolled_at: Enrollment.where(student_id: student.id, group_id: @group).maximum(:active_since),
+        total_average_score: StudentLessonSummary.where(student_id: student.id, group_id: @group).average(:average_mark)&.round(2) || 'No scores yet' }
     end
   end
 
