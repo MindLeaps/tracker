@@ -11,6 +11,10 @@ class GroupPolicy < ApplicationPolicy
     destroy?
   end
 
+  def export_students?
+    show?
+  end
+
   class Scope
     attr_reader :user, :scope
 

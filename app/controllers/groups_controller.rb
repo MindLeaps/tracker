@@ -81,7 +81,7 @@ class GroupsController < HtmlController
 
   def export_students
     @group = Group.find params.require :id
-    skip_authorization
+    authorize @group
 
     respond_to do |format|
       format.html
