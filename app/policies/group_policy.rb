@@ -11,6 +11,10 @@ class GroupPolicy < ApplicationPolicy
     destroy?
   end
 
+  def import_students?
+    edit?
+  end
+
   class Scope
     attr_reader :user, :scope
 

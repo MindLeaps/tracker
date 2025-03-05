@@ -28,6 +28,12 @@ end %>
        <% end %>
     </div>
 </section>
+<div class="w-full bg-white">
+  <%= form_with url: import_students_group_path, method: :post do |form| %>
+    <%= form.file_field :file %>
+    <%= form.button "Import", class: 'normal-button' %>
+  <% end %>
+</div>
 <turbo-frame id="students-table">
   <%= render GroupEnrolledStudentsComponent.new(students: @students, group: @group, new_student: Student.new(group: @group)) %>
 </turbo-frame>

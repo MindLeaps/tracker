@@ -78,7 +78,24 @@ class GroupsController < HtmlController
     redirect_to group_path
   end
 
+  def import_students
+    @group = Group.find params.require :id
+    authorize @group
+
+    file = params[:file]
+    redirect_to group_path, notice: 'Only CSV please' unless file_is_csv(file.content_type)
+
+    CsvImportService.new.import_students_from_file(file)
+
+    success(title: 'Imported Students!', text: 'Students imported successfully')
+    redirect_to group_path
+  end
+
   private
+
+  def file_is_csv(content_type)
+    %w[text/csv text/x-csv application/vnd.ms-excel application/vnd.openxmlformats-officedocument.spreadsheetml.sheet application/csv application/x-csv].include? content_type
+  end
 
   def group_params
     params.require(:group).permit :group_name, :mlid, :chapter_id
