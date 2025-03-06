@@ -78,6 +78,13 @@ class GroupsController < HtmlController
     redirect_to group_path
   end
 
+  def import
+    @group = Group.find params.require :id
+    authorize @group
+
+    respond_to(&:turbo_stream)
+  end
+
   def import_students
     @group = Group.find params.require :id
     authorize @group
@@ -85,7 +92,11 @@ class GroupsController < HtmlController
     file = params[:file]
     redirect_to group_path, notice: 'Only CSV please' unless file_is_csv(file.content_type)
 
-    CsvImportService.new.import_students_from_file(file)
+    students = CsvImportService.new.import_students_from_file(file, @group.id)
+
+    Student.transaction do
+      students.each(&:save!)
+    end
 
     success(title: 'Imported Students!', text: 'Students imported successfully')
     redirect_to group_path

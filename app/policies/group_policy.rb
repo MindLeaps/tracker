@@ -11,6 +11,10 @@ class GroupPolicy < ApplicationPolicy
     destroy?
   end
 
+  def import?
+    import_students?
+  end
+
   def import_students?
     edit?
   end
