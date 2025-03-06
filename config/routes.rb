@@ -54,7 +54,6 @@ Rails.application.routes.draw do
 
   resources :groups, only: %i[index new create show edit update destroy] do
     member { post :undelete }
-    member { get :export_students, format: 'csv' }
 
     resources :students, controller: :group_students, only: %i[new create edit update] do
       member { post :cancel_edit }
@@ -63,6 +62,7 @@ Rails.application.routes.draw do
 
   resources :students, only: %i[index new create show edit update destroy] do
     member { post :undelete }
+    collection { get :index, to: 'students#export', format: :csv }
     resources :student_images, only: %i[create destroy]
   end
 

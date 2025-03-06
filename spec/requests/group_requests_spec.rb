@@ -54,13 +54,6 @@ RSpec.describe 'Group API', type: :request do
       expect(lessons.pluck('id')).to include @lesson1.id, @lesson2.id
       expect(lessons.pluck('date')).to include @lesson1.date.to_s, @lesson2.date.to_s
     end
-
-    it "responds with a specific group's exported students" do
-      get_with_token export_students_group_url(id: @group.id), as: :csv
-
-      expect(response.header['Content-Type']).to include 'text/csv'
-      expect(response.body).to include(@student1.first_name, @student2.first_name, @student1.last_name, @student2.last_name)
-    end
   end
 
   describe 'GET /groups' do

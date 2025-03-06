@@ -11,7 +11,7 @@ class GroupPolicy < ApplicationPolicy
     destroy?
   end
 
-  def export_students?
+  def export?
     show?
   end
 

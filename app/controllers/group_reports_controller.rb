@@ -1,5 +1,4 @@
 class GroupReportsController < HtmlController
-  include MiscHelper
   include CollectionHelper
   skip_after_action :verify_policy_scoped
   layout 'print'

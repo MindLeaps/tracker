@@ -1,6 +1,7 @@
 # rubocop:disable Metrics/ClassLength
 class StudentsController < HtmlController
   include Pagy::Backend
+  include CollectionHelper
   has_scope :exclude_deleted, only: :index, type: :boolean, default: true
   has_scope :exclude_empty, only: :performance, type: :boolean, default: true
   has_scope :table_order, only: [:index], type: :hash, default: { key: :created_at, order: :desc }
@@ -86,6 +87,18 @@ class StudentsController < HtmlController
 
     success title: t(:student_restored), text: t(:student_restored_text, name: @student.proper_name)
     redirect_to student_path
+  end
+
+  def export
+    @group = Group.find params[:group_id]
+    authorize @group
+
+    respond_to do |format|
+      format.csv do
+        filename = ["#{@group.group_name} - Students", Time.zone.today.to_s].join(' ')
+        send_data csv_from_array_of_hashes(@group.students.map(&:to_export)), filename:, content_type: 'text/csv'
+      end
+    end
   end
 
   private
