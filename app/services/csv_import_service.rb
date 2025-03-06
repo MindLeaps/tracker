@@ -3,23 +3,22 @@
 class CsvImportService
   require 'csv'
 
-  def import_students_from_file(file, group_id)
-    file = File.open(file, &:read)
-    csv = CSV.parse(file, headers: true, col_sep: ',')
-    new_students = []
+  def import_students_from_file(file, group)
+    file = File.read(file)
+    csv = CSV.parse(file, headers: true, col_sep: ';')
 
-    csv.each do |row|
-      student_hash = {}
-      student_hash[:mlid] = row['MLID']
-      student_hash[:first_name] = row['First Name']
-      student_hash[:last_name] = row['Last Name']
-      student_hash[:gender] = row['Gender']
-      student_hash[:dob] = row['Date of Birth']
-      student_hash[:group_id] = group_id
-      student_hash[:estimated_dob] = false
-
-      new_students << Student.find_or_create_by!(student_hash)
+    csv.map do |row|
+      Student.new(
+        {
+          mlid: row['MLID'],
+          first_name: row['First Name'],
+          last_name: row['Last Name'],
+          gender: row['Gender'],
+          dob: row['Date of Birth'],
+          group: group,
+          estimated_dob: false
+        }
+      )
     end
-    new_students
   end
 end

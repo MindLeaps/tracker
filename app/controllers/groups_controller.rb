@@ -90,15 +90,16 @@ class GroupsController < HtmlController
     authorize @group
 
     file = params[:file]
-    redirect_to group_path, notice: 'Only CSV please' unless file_is_csv(file.content_type)
 
-    students = CsvImportService.new.import_students_from_file(file, @group.id)
-
-    Student.transaction do
-      students.each(&:save!)
+    if file.present? && file_is_csv(file.content_type)
+      new_students = CsvImportService.new.import_students_from_file(file, @group)
+      Student.transaction do
+        new_students.each(&:save)
+      end
+      success(title: 'Imported Students!', text: 'Students imported successfully')
+    else
+      failure(title: 'Invalid file!', text: "Make sure you are sending a '.csv' file")
     end
-
-    success(title: 'Imported Students!', text: 'Students imported successfully')
     redirect_to group_path
   end
 
