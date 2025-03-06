@@ -12,7 +12,20 @@ class StudentsController < HtmlController
 
   def index
     authorize Student
-    @pagy, @student_rows = pagy apply_scopes(policy_scope(StudentTableRow.includes(:tags, { group: { chapter: :organization } })))
+    respond_to do |format|
+      format.html do
+        @pagy, @student_rows = pagy apply_scopes(policy_scope(StudentTableRow.includes(:tags, { group: { chapter: :organization } })))
+      end
+
+      format.csv do
+        skip_policy_scope
+        @group = Group.find(params[:group_id])
+        authorize @group
+
+        filename = ["#{@group.group_name} - Students", Time.zone.today.to_s].join(' ')
+        send_data csv_from_array_of_hashes(@group.students.map(&:to_export)), filename:, content_type: 'text/csv'
+      end
+    end
   end
 
   def show
@@ -87,18 +100,6 @@ class StudentsController < HtmlController
 
     success title: t(:student_restored), text: t(:student_restored_text, name: @student.proper_name)
     redirect_to student_path
-  end
-
-  def export
-    @group = Group.find params[:group_id]
-    authorize @group
-
-    respond_to do |format|
-      format.csv do
-        filename = ["#{@group.group_name} - Students", Time.zone.today.to_s].join(' ')
-        send_data csv_from_array_of_hashes(@group.students.map(&:to_export)), filename:, content_type: 'text/csv'
-      end
-    end
   end
 
   private

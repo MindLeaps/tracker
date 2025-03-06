@@ -62,7 +62,7 @@ Rails.application.routes.draw do
 
   resources :students, only: %i[index new create show edit update destroy] do
     member { post :undelete }
-    collection { get :index, to: 'students#export', format: :csv }
+
     resources :student_images, only: %i[create destroy]
   end
 
