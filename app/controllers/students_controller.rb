@@ -9,6 +9,7 @@ class StudentsController < HtmlController
     scope.table_order value
   end
   has_scope :search, only: :index
+  has_scope :by_group, as: :group_id
 
   def index
     authorize Student
@@ -18,12 +19,9 @@ class StudentsController < HtmlController
       end
 
       format.csv do
-        skip_policy_scope
-        @group = Group.find(params[:group_id])
-        authorize @group
-
-        filename = ["#{@group.group_name} - Students", Time.zone.today.to_s].join(' ')
-        send_data csv_from_array_of_hashes(@group.students.map(&:to_export)), filename:, content_type: 'text/csv'
+        @students = apply_scopes(policy_scope(Student)).includes(:group).all
+        filename = ["#{@students.first.group.group_name} - Students", Time.zone.today.to_s].join(' ')
+        send_data csv_from_array_of_hashes(@students.map(&:to_export)), filename:, content_type: 'text/csv'
       end
     end
   end

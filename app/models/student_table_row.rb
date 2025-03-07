@@ -44,6 +44,7 @@ class StudentTableRow < ApplicationRecord
   belongs_to :group
   has_many :student_tags, foreign_key: :student_id, inverse_of: :student, dependent: :restrict_with_exception
   has_many :tags, through: :student_tags
+  scope :by_group, ->(group_id) { where group_id: }
 
   enum :gender, { M: 'male', F: 'female', NB: 'nonbinary' }
 
