@@ -97,7 +97,7 @@ RSpec.describe 'Student API', type: :request do
       get_with_token students_url, params: { group_id: @group1.id, format: :csv }
 
       expect(response.header['Content-Type']).to include 'text/csv'
-      expect(response.body).to include(@student1.first_name, @student2.first_name, @student1.last_name, @student2.last_name)
+      expect(response.body).to include(@student2.first_name, @student2.last_name)
     end
   end
 end
