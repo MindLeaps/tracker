@@ -157,5 +157,11 @@ RSpec.describe 'User interacts with Groups' do
 
       expect(page).to_not have_content 'Generate Report'
     end
+
+    it 'cannot export students if empty' do
+      visit "/groups/#{@empty_group.id}"
+
+      expect(page).to_not have_content 'Export Students'
+    end
   end
 end

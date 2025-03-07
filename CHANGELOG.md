@@ -1,4 +1,7 @@
-## Unreleased
+## Unreleased 
+- Added the ability to export basic student data to csv for a group
+
+## 0.35.0 - Enrollment Date Fixes
 - Enabled teachers to create and edit groups/students
 - Added toggle buttons in group reports
 - Added averages for each skill when viewing students
