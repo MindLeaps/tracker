@@ -63,6 +63,21 @@ CREATE TYPE public.gender AS ENUM (
 
 
 --
+-- Name: random_alphanumeric_strings(integer); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.random_alphanumeric_strings(length integer) RETURNS text
+    LANGUAGE plpgsql
+    AS $$
+declare value text;
+begin
+  select array_to_string(array(select substr('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',floor(random()*36)::int + 1, 1) from generate_series(1,length)),'') into value;
+  return value;
+end;
+$$;
+
+
+--
 -- Name: update_enrollments(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -333,8 +348,6 @@ CREATE TABLE public.enrollments (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     student_id bigint NOT NULL,
     group_id bigint NOT NULL,
-    active_since timestamp without time zone NOT NULL,
-    inactive_since timestamp without time zone,
     active_since date NOT NULL,
     inactive_since date,
     created_at timestamp(6) without time zone NOT NULL,
@@ -1699,6 +1712,28 @@ CREATE OR REPLACE VIEW public.subject_summaries AS
 
 
 --
+-- Name: student_averages _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.student_averages AS
+ SELECT s.id AS student_id,
+    s.first_name,
+    s.last_name,
+    s.deleted_at AS student_deleted_at,
+    su.id AS subject_id,
+    su.subject_name,
+    sk.skill_name,
+    round(avg(g.mark), 2) AS average_mark
+   FROM (((((public.students s
+     JOIN public.grades g ON (((g.student_id = s.id) AND (g.deleted_at IS NULL))))
+     JOIN public.skills sk ON ((sk.id = g.skill_id)))
+     JOIN public.assignments a ON ((a.skill_id = sk.id)))
+     JOIN public.subjects su ON ((su.id = a.subject_id)))
+     JOIN public.lessons l ON (((l.id = g.lesson_id) AND (l.subject_id = su.id))))
+  GROUP BY s.id, su.id, sk.skill_name;
+
+
+--
 -- Name: student_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
@@ -2015,6 +2050,7 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250307233526'),
 ('20250129182516'),
 ('20250125235507'),
 ('20250124144809'),
