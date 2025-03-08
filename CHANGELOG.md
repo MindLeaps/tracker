@@ -1,5 +1,7 @@
 ## Unreleased 
 - Added the ability to export basic student data to csv for a group
+- Added `random_alphanumeric_string(length)` DB function to help with MLID generation
+- Added organization to student model
 
 ## 0.35.0 - Enrollment Date Fixes
 - Enabled teachers to create and edit groups/students

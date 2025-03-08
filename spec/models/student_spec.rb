@@ -27,15 +27,18 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  group_id               :integer
+#  organization_id        :integer          not null
 #  profile_image_id       :integer
 #
 # Indexes
 #
 #  index_students_on_group_id          (group_id)
+#  index_students_on_organization_id   (organization_id)
 #  index_students_on_profile_image_id  (profile_image_id)
 #
 # Foreign Keys
 #
+#  fk_rails_...          (organization_id => organizations.id)
 #  fk_rails_...          (profile_image_id => student_images.id)
 #  students_group_id_fk  (group_id => groups.id)
 #
@@ -45,6 +48,7 @@ RSpec.describe Student, type: :model do
   let(:gro) { create :group }
 
   describe 'relationships' do
+    it { should belong_to :organization }
     it { should belong_to :group }
     it { should have_many :grades }
     it { should have_many :enrollments }
@@ -61,6 +65,27 @@ RSpec.describe Student, type: :model do
     end
 
     subject { create :student, mlid: 'TS1' }
+
+    describe 'group and organization' do
+      let(:organization1) { create :organization }
+      let(:organization2) { create :organization }
+      let(:group1) { create :group, chapter: create(:chapter, organization: organization1) }
+      let(:group2) { create :group, chapter: create(:chapter, organization: organization2) }
+
+      it 'student is valid when the group belongs to the chapter in the same organization as the student' do
+        student = build :student, group: group1, organization: organization1
+        expect(student).to be_valid
+        student = build :student, group: group2, organization: organization2
+        expect(student).to be_valid
+      end
+
+      it 'student is not valid when belongs to the chapter in a different organization than the student' do
+        student = build :student, group: group1, organization: organization2
+        expect(student).not_to be_valid
+        student = build :student, group: group2, organization: organization1
+        expect(student).not_to be_valid
+      end
+    end
 
     describe 'student is valid' do
       it 'with first and last name, dob, and gender' do
@@ -223,15 +248,6 @@ RSpec.describe Student, type: :model do
         expect(result.length).to eq 2
         expect(result).to include @zomzovato, @zombanavo
       end
-    end
-  end
-
-  describe '#organization' do
-    let(:org) { create :organization }
-    let(:student) { create :student, group: create(:group, chapter: create(:chapter, organization: org)) }
-
-    it 'returns the organization that the student ultimately belongs to' do
-      expect(student.organization).to eq(org)
     end
   end
 end

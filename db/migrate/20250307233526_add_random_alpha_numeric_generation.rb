@@ -1,7 +1,7 @@
 class AddRandomAlphaNumericGeneration < ActiveRecord::Migration[7.2]
   def up
     execute <<~SQL
-      create or replace function random_alphanumeric_strings(length integer) returns text
+      create or replace function random_alphanumeric_string(length integer) returns text
       language plpgsql
       as $$
       declare value text;
@@ -16,7 +16,7 @@ class AddRandomAlphaNumericGeneration < ActiveRecord::Migration[7.2]
 
   def down
     execute <<~SQL
-      drop function random_alphanumeric_strings;
+      drop function random_alphanumeric_string;
     SQL
   end
 end

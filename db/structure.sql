@@ -63,10 +63,10 @@ CREATE TYPE public.gender AS ENUM (
 
 
 --
--- Name: random_alphanumeric_strings(integer); Type: FUNCTION; Schema: public; Owner: -
+-- Name: random_alphanumeric_string(integer); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.random_alphanumeric_strings(length integer) RETURNS text
+CREATE FUNCTION public.random_alphanumeric_string(length integer) RETURNS text
     LANGUAGE plpgsql
     AS $$
 declare value text;
@@ -894,7 +894,8 @@ CREATE TABLE public.students (
     mlid character varying NOT NULL,
     deleted_at timestamp without time zone,
     profile_image_id integer,
-    country_of_nationality text
+    country_of_nationality text,
+    organization_id integer NOT NULL
 );
 
 
@@ -1507,6 +1508,13 @@ CREATE INDEX index_students_on_group_id ON public.students USING btree (group_id
 
 
 --
+-- Name: index_students_on_organization_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_students_on_organization_id ON public.students USING btree (organization_id);
+
+
+--
 -- Name: index_students_on_profile_image_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1900,6 +1908,14 @@ ALTER TABLE ONLY public.student_tags
 
 
 --
+-- Name: students fk_rails_2c3c300d44; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.students
+    ADD CONSTRAINT fk_rails_2c3c300d44 FOREIGN KEY (organization_id) REFERENCES public.organizations(id);
+
+
+--
 -- Name: students fk_rails_512f7ce835; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2050,6 +2066,7 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250308222117'),
 ('20250307233526'),
 ('20250129182516'),
 ('20250125235507'),
