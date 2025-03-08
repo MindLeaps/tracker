@@ -15,7 +15,7 @@ class StudentsController < HtmlController
     authorize Student
     respond_to do |format|
       format.html do
-        @pagy, @student_rows = pagy apply_scopes(policy_scope(StudentTableRow.includes(:tags, { group: { chapter: :organization } })))
+        @pagy, @student_rows = pagy apply_scopes(policy_scope(StudentTableRow.includes(:tags, :organization)))
       end
 
       format.csv do

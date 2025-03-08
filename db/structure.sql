@@ -942,15 +942,16 @@ CREATE VIEW public.student_table_rows AS
     s.deleted_at,
     s.profile_image_id,
     s.country_of_nationality,
+    s.organization_id,
     g.group_name,
     o.mlid AS organization_mlid,
     c.mlid AS chapter_mlid,
     g.mlid AS group_mlid,
-    concat(o.mlid, '-', c.mlid, '-', g.mlid, '-', s.mlid) AS full_mlid
+    concat(o.mlid, '-', s.mlid) AS full_mlid
    FROM (((public.students s
      JOIN public.groups g ON ((s.group_id = g.id)))
      JOIN public.chapters c ON ((g.chapter_id = c.id)))
-     JOIN public.organizations o ON ((c.organization_id = o.id)));
+     JOIN public.organizations o ON ((s.organization_id = o.id)));
 
 
 --
@@ -2066,6 +2067,7 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250308233317'),
 ('20250308222117'),
 ('20250307233526'),
 ('20250129182516'),
