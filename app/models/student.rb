@@ -51,7 +51,7 @@ class Student < ApplicationRecord
   }, using: { tsearch: { prefix: true } }
 
   validates :first_name, :last_name, :dob, :gender, presence: true
-  validates :mlid, uniqueness: { scope: :group_id }, length: { maximum: 3 }
+  validates :mlid, uniqueness: { scope: :organization_id }, length: { maximum: 3 }
   validate :group_belongs_to_same_organization
 
   enum :gender, { M: 'male', F: 'female', NB: 'nonbinary' }

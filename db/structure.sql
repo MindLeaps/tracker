@@ -78,6 +78,29 @@ $$;
 
 
 --
+-- Name: random_student_mlids(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.random_student_mlids(org_id integer, mlid_length integer DEFAULT 5, number_of_mlids integer DEFAULT 10) RETURNS TABLE(mlid text)
+    LANGUAGE plpgsql
+    AS $$
+    declare current_values text[];
+    begin
+        while coalesce(array_length(current_values, 1), 0) < number_of_mlids loop
+                with values as (
+                    select random_alphanumeric_string(coalesce(mlid_length, 5)) as value from generate_series(1, number_of_mlids * 2)
+                ),
+                mlids as (
+                    select value as mlid from values where value not in (select s.mlid from students s where s.organization_id = org_id) limit number_of_mlids
+                )
+                select current_values || array_agg(m.mlid) from mlids m into current_values;
+        end loop;
+        return query select unnest(current_values[1:number_of_mlids]) as mlid;
+    end;
+$$;
+
+
+--
 -- Name: update_enrollments(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -2067,6 +2090,7 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250309013544'),
 ('20250308233317'),
 ('20250308222117'),
 ('20250307233526'),
