@@ -78,36 +78,7 @@ class GroupsController < HtmlController
     redirect_to group_path
   end
 
-  def import
-    @group = Group.find params.require :id
-    authorize @group
-
-    respond_to(&:turbo_stream)
-  end
-
-  def import_students
-    @group = Group.find params.require :id
-    authorize @group
-
-    file = params[:file]
-
-    if file.present? && file_is_csv(file.content_type)
-      new_students = CsvImportService.new.import_students_from_file(file, @group)
-      Student.transaction do
-        new_students.each(&:save)
-      end
-      success(title: 'Imported Students!', text: 'Students imported successfully')
-    else
-      failure(title: 'Invalid file!', text: "Make sure you are sending a '.csv' file")
-    end
-    redirect_to group_path
-  end
-
   private
-
-  def file_is_csv(content_type)
-    %w[text/csv text/x-csv application/vnd.ms-excel application/vnd.openxmlformats-officedocument.spreadsheetml.sheet application/csv application/x-csv].include? content_type
-  end
 
   def group_params
     params.require(:group).permit :group_name, :mlid, :chapter_id

@@ -65,6 +65,33 @@ class GroupStudentsController < HtmlController
     ]
   end
 
+  def import
+    @group = Group.find params.require :group_id
+    authorize @group
+
+    respond_to(&:turbo_stream)
+  end
+
+  def import_students
+    @group = Group.find params.require :group_id
+    authorize @group
+
+    file = params[:file]
+
+    if file.present? && file_is_csv(file.content_type)
+      students_to_import = CSVDeserializer.new.deserialize_students_from_file(file)
+      Student.transaction do
+        Student.create(students_to_import) do |student|
+          student.group = @group
+        end
+      end
+      success(title: 'Imported Students!', text: 'Students imported successfully')
+    else
+      failure(title: 'Invalid file!', text: "Make sure you are sending a '.csv' file")
+    end
+    redirect_to group_path
+  end
+
   def group_students
     Student.where(group_id: @group.id).includes(:group).where(deleted_at: nil)
   end
@@ -72,6 +99,10 @@ class GroupStudentsController < HtmlController
   helper_method :group_students
 
   private
+
+  def file_is_csv(content_type)
+    %w[text/csv text/x-csv application/vnd.ms-excel application/vnd.openxmlformats-officedocument.spreadsheetml.sheet application/csv application/x-csv].include? content_type
+  end
 
   def inline_student_params
     p = params.require(:student)

@@ -6,7 +6,7 @@
         <div class="modal-out transition-all transform-gpu" data-modal-target="modal" data-action="click->modal#stopPropagation">
         <%= render CommonComponents::Card.new(title: 'Import Students') do |card| %>
           <% card.with_card_content do %>
-            <%= form_with url: import_students_group_path, method: :post, class: 'bg-white p-4 space-y-0.5' do |f| %>
+            <%= form_with url: import_students_group_students_path, method: :post, class: 'bg-white p-4 space-y-0.5' do |f| %>
                 <div class="p-2">
                   <%= f.file_field :file %>
                 </div>
