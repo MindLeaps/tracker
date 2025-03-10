@@ -40,6 +40,7 @@
 #  students_group_id_fk  (group_id => groups.id)
 #
 class Student < ApplicationRecord
+  require 'csv'
   include PgSearch::Model
   include Mlid
   pg_search_scope :search, against: [:first_name, :last_name, :mlid], associated_against: {
@@ -72,6 +73,17 @@ class Student < ApplicationRecord
 
   def organization
     Organization.joins(chapters: :groups).find_by('groups.id = ?', group_id)
+  end
+
+  def age
+    now = Time.now.utc.to_date
+    now.year - dob.year - (now.month > dob.month || (now.month == dob.month && now.day >= dob.day) ? 0 : 1)
+  end
+
+  def to_export
+    { id: id, first_name: first_name, last_name: last_name, date_of_birth: dob, age: age, country_of_nationality: country_of_nationality, gender: gender,
+      group_id: group_id, group_name: group.group_name, enrolled_at: Enrollment.where(student_id: id, group_id: group_id).maximum(:active_since),
+      total_average_score: StudentLessonSummary.where(student_id: id, group_id: group_id).average(:average_mark)&.round(2) || 'No scores yet' }
   end
 
   def self.permitted_params

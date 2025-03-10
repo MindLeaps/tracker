@@ -1,6 +1,7 @@
 # rubocop:disable Metrics/ClassLength
 class StudentsController < HtmlController
   include Pagy::Backend
+  include CollectionHelper
   has_scope :exclude_deleted, only: :index, type: :boolean, default: true
   has_scope :exclude_empty, only: :performance, type: :boolean, default: true
   has_scope :table_order, only: [:index], type: :hash, default: { key: :created_at, order: :desc }
@@ -8,10 +9,21 @@ class StudentsController < HtmlController
     scope.table_order value
   end
   has_scope :search, only: :index
+  has_scope :by_group, as: :group_id
 
   def index
     authorize Student
-    @pagy, @student_rows = pagy apply_scopes(policy_scope(StudentTableRow.includes(:tags, { group: { chapter: :organization } })))
+    respond_to do |format|
+      format.html do
+        @pagy, @student_rows = pagy apply_scopes(policy_scope(StudentTableRow.includes(:tags, { group: { chapter: :organization } })))
+      end
+
+      format.csv do
+        @students = apply_scopes(policy_scope(Student)).includes(:group).all
+        filename = ["#{@students.first.group.group_name} - Students", Time.zone.today.to_s].join(' ')
+        send_data csv_from_array_of_hashes(@students.map(&:to_export)), filename:, content_type: 'text/csv'
+      end
+    end
   end
 
   def show
