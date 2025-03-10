@@ -31,19 +31,19 @@ RSpec.describe Enrollment, type: :model do
   describe 'triggers' do
     before :each do
       @first_group = create :group
-      @second_group = create :group
+      @second_group = create :group, chapter: @first_group.chapter
       @student = create :student, group: @first_group
       @enrollment = create :enrollment, group: @first_group, student: @student
     end
 
     it 'the inactivity on student changing a group' do
-      @student.update(group: @second_group)
+      @student.update!(group: @second_group)
 
       expect(@enrollment.reload.inactive_since).to eq(Time.zone.today)
     end
 
     it 'a new enrollment on student changing a group' do
-      @student.update(group: @second_group)
+      @student.update!(group: @second_group)
 
       @new_enrollment = Enrollment.find_by(student: @student, group: @second_group)
 

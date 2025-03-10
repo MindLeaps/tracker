@@ -11,7 +11,6 @@ class AddRandomAlphaNumericGeneration < ActiveRecord::Migration[7.2]
       end;
       $$;
     SQL
-
   end
 
   def down

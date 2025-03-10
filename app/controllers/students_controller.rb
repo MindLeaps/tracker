@@ -110,6 +110,7 @@ class StudentsController < HtmlController
     p = params.require(:student)
     p[:student_tags_attributes] = p.fetch(:tag_ids, []).map { |tag_id| { tag_id: } }
     p.delete :tag_ids
+    p[:organization_id] = Group.find(p[:group_id]).chapter[:organization_id] if p[:organization_id].blank? && p[:group_id].present?
     p.permit(*Student.permitted_params)
   end
 

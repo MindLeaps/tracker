@@ -89,11 +89,11 @@ RSpec.describe Student, type: :model do
 
     describe 'student is valid' do
       it 'with first and last name, dob, and gender' do
-        male_student = Student.new mlid: '1S', first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 'male', group: gro
+        male_student = Student.new mlid: '1S', first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 'male', group: gro, organization: gro.chapter.organization
         expect(male_student).to be_valid
         expect(male_student.save).to eq true
 
-        female_student = Student.new mlid: '2S', first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 'female', group: gro
+        female_student = Student.new mlid: '2S', first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 'female', group: gro, organization: gro.chapter.organization
         expect(female_student).to be_valid
         expect(female_student.save).to eq true
       end
@@ -104,23 +104,24 @@ RSpec.describe Student, type: :model do
         @chapter = create :chapter
         @group = create :group, chapter: @chapter
         @group2 = create :group, chapter: @chapter
-        @existing_student = create :student, group: @group, mlid: 'AA1'
       end
 
       describe 'is valid' do
-        it 'when a student is the only student in their group' do
-          new_student = create :student, group: @group2, mlid: 'AA1'
+        it 'when a student is the only student in the organization' do
+          new_student = create :student, group: @group, mlid: 'AA1'
           expect(new_student).to be_valid
         end
 
-        it 'when it is unique in a group' do
-          new_student = create :student, group: @group, mlid: 'BB1'
+        it 'when it is unique in an organization' do
+          _existing_student = create :student, group: @group, mlid: 'AA1'
+          new_student = create :student, group: @group2, mlid: 'BB1'
           expect(new_student).to be_valid
         end
       end
 
       describe 'is invalid' do
-        it 'when it is duplicated in the same group' do
+        it 'when it is duplicated in the same organization' do
+          _existing_student = create :student, group: @group, mlid: 'AA1'
           new_student = build :student, group: @group, mlid: 'AA1'
           expect(new_student).to be_invalid
         end
@@ -160,7 +161,7 @@ RSpec.describe Student, type: :model do
     it 'updates the enrollments after a students group has been changed' do
       student = create :student
       old_group = student.group
-      new_group = create :group
+      new_group = create :group, chapter: student.group.chapter
       student.group = new_group
       student.save!
       expect(student.enrollments.count).to eq 2

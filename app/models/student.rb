@@ -97,8 +97,6 @@ class Student < ApplicationRecord
   private
 
   def group_belongs_to_same_organization
-    if group.chapter.organization_id != organization_id
-      errors.add(:group, I18n.t(:student_and_group_in_different_organizations))
-    end
+    errors.add(:group, I18n.t(:student_and_group_in_different_organizations)) if group.present? && group.chapter.organization_id != (organization_id)
   end
 end
