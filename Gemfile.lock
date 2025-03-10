@@ -131,6 +131,7 @@ GEM
       bigdecimal
       rexml
     crass (1.0.6)
+    csv (3.3.2)
     database_cleaner-active_record (2.2.0)
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0.0)
@@ -476,7 +477,7 @@ GEM
     unicode-emoji (4.0.4)
     unicode_utils (1.4.0)
     uniform_notifier (1.16.0)
-    uri (1.0.2)
+    uri (1.0.3)
     useragent (0.16.11)
     version_gem (1.1.4)
     view_component (3.20.0)
@@ -514,6 +515,7 @@ DEPENDENCIES
   capybara (> 2.1)
   carrierwave (>= 3.1.0.beta)
   carrierwave-bombshelter
+  csv
   database_cleaner-active_record
   devise
   dotenv-rails
