@@ -77,19 +77,18 @@ class GroupStudentsController < HtmlController
     authorize @group
 
     file = params[:file]
-
     if file.present? && file_is_csv(file.content_type)
-      students_to_import = CSVDeserializer.new.deserialize_students_from_file(file)
+      students_to_import = CsvDeserializer.new(file).deserialize_students
       Student.transaction do
-        Student.create(students_to_import) do |student|
+        Student.create students_to_import do |student|
           student.group = @group
         end
       end
-      success(title: 'Imported Students!', text: 'Students imported successfully')
+      success_now(title: 'Imported Students!', text: 'Students imported successfully')
+      redirect_to group_path(@group)
     else
-      failure(title: 'Invalid file!', text: "Make sure you are sending a '.csv' file")
+      failure_now(title: 'Invalid file!', text: "Make sure you are sending a '.csv' file")
     end
-    redirect_to group_path
   end
 
   def group_students
