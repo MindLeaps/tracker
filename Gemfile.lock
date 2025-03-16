@@ -131,6 +131,7 @@ GEM
       bigdecimal
       rexml
     crass (1.0.6)
+    csv (3.3.2)
     database_cleaner-active_record (2.2.0)
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0.0)
@@ -316,7 +317,7 @@ GEM
       rspec-mocks (~> 3.12)
       rspec-support (~> 3.12)
     racc (1.8.1)
-    rack (2.2.10)
+    rack (2.2.13)
     rack-protection (3.2.0)
       base64 (>= 0.1.0)
       rack (~> 2.2, >= 2.2.4)
@@ -514,6 +515,7 @@ DEPENDENCIES
   capybara (> 2.1)
   carrierwave (>= 3.1.0.beta)
   carrierwave-bombshelter
+  csv
   database_cleaner-active_record
   devise
   dotenv-rails
