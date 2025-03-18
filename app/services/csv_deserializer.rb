@@ -32,4 +32,3 @@ class CsvDeserializer
     end
   end
 end
-
