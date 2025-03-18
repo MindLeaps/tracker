@@ -65,6 +65,47 @@ class GroupStudentsController < HtmlController
     ]
   end
 
+  def import
+    @group = Group.find params.require :group_id
+    authorize @group
+
+    respond_to(&:turbo_stream)
+  end
+
+  def import_students
+    @group = Group.find params.require :group_id
+    authorize @group
+
+    file = params[:file]
+    if file.present? && file_is_csv(file.content_type)
+      students_to_import = CsvDeserializer.new(file).deserialize_students
+      if invalid_students_present(students_to_import)
+        render template: 'group_students/import', status: :unprocessable_entity, locals: { invalid_students: @invalid_students }
+      else
+        create_imported_students(students_to_import)
+      end
+    else
+      failure(title: t(:'errors.messages.invalid_file'), text: t(:'errors.messages.csv_mandatory_error'))
+    end
+  end
+
+  def invalid_students_present(students)
+    @invalid_students = []
+
+    students.each do |student|
+      new_student = Student.build(student) { |s| s.group = @group }
+      @invalid_students << new_student unless new_student.valid?
+    end
+
+    true if @invalid_students.any?
+  end
+
+  def create_imported_students(students)
+    Student.transaction { Student.create(students) { |student| student.group = @group } }
+    success(title: t(:imported_students), text: t(:students_imported_successfully))
+    redirect_to group_path(@group)
+  end
+
   def group_students
     Student.where(group_id: @group.id).includes(:group).where(deleted_at: nil)
   end
@@ -72,6 +113,10 @@ class GroupStudentsController < HtmlController
   helper_method :group_students
 
   private
+
+  def file_is_csv(content_type)
+    %w[text/csv text/x-csv application/vnd.ms-excel application/vnd.openxmlformats-officedocument.spreadsheetml.sheet application/csv application/x-csv].include? content_type
+  end
 
   def inline_student_params
     p = params.require(:student)
