@@ -15,6 +15,21 @@
                   <div class="dangerous-button" data-action="click->modal#close"><%= t(:cancel) %></div>
                 </div>
             <% end %>
+            <% if @invalid_students.present? && @invalid_students.size.positive?  %>
+              <div class="bg-white py-1 px-4">
+                <h3 class="validation-error text-xl">Please check your file for the following errors:</h3>
+                <% @invalid_students.each do |s| %>
+                  <div class="my-2">
+                    <h6 class="text-sm text-gray-700"> <%= "Errors for student #{s.proper_name}" %> </h6>
+                    <%= render ValidationErrorComponent.new(model: s, key: :mlid) %>
+                    <%= render ValidationErrorComponent.new(model: s, key: :first_name) %>
+                    <%= render ValidationErrorComponent.new(model: s, key: :last_name) %>
+                    <%= render ValidationErrorComponent.new(model: s, key: :gender) %>
+                    <%= render ValidationErrorComponent.new(model: s, key: :dob) %>
+                  </div>
+                <% end %>
+              </div>
+            <% end %>
           <% end %>
         <% end %>
         </div>

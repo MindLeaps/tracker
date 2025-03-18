@@ -143,6 +143,9 @@ en:
   restore_group: Restore Deleted Group
   edit_group: Edit Group
   export_students_csv: Export Students CSV
+  import_students_csv: Import Students CSV
+  imported_students: Imported Students.
+  students_imported_successfully: Students imported successfully
   edit: Edit
   delete: Delete
   chapter_added: Chapter Added
@@ -388,6 +391,8 @@ en:
     messages:
       extension_whitelist_error: File is not an image
       invalid_email: is not valid
+      invalid_file: Invalid File.
+      csv_mandatory_error: Make sure you are sending a 'CSV' type file
 
   enums:
     student:

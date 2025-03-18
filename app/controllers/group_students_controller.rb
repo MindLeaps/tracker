@@ -79,16 +79,31 @@ class GroupStudentsController < HtmlController
     file = params[:file]
     if file.present? && file_is_csv(file.content_type)
       students_to_import = CsvDeserializer.new(file).deserialize_students
-      Student.transaction do
-        Student.create students_to_import do |student|
-          student.group = @group
-        end
+      if invalid_students_present(students_to_import)
+        render template: 'group_students/import', status: :unprocessable_entity, locals: { invalid_students: @invalid_students }
+      else
+        create_imported_students(students_to_import)
       end
-      success_now(title: 'Imported Students!', text: 'Students imported successfully')
-      redirect_to group_path(@group)
     else
-      failure_now(title: 'Invalid file!', text: "Make sure you are sending a '.csv' file")
+      failure(title: t(:'errors.messages.invalid_file'), text: t(:'errors.messages.csv_mandatory_error'))
     end
+  end
+
+  def invalid_students_present(students)
+    @invalid_students = []
+
+    students.each do |student|
+      new_student = Student.build(student) { |s| s.group = @group }
+      @invalid_students << new_student unless new_student.valid?
+    end
+
+    true if @invalid_students.any?
+  end
+
+  def create_imported_students(students)
+    Student.transaction { Student.create(students) { |student| student.group = @group } }
+    success(title: t(:imported_students), text: t(:students_imported_successfully))
+    redirect_to group_path(@group)
   end
 
   def group_students
