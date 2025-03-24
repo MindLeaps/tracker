@@ -15,6 +15,14 @@ class GroupPolicy < ApplicationPolicy
     show?
   end
 
+  def merge_group?
+    edit?
+  end
+
+  def submit_merge?
+    merge_group?
+  end
+
   class Scope
     attr_reader :user, :scope
 

@@ -1,0 +1,29 @@
+<%= turbo_stream.replace 'modal' do %>
+  <div id="modal" class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true" data-controller="modal">
+    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity backdrop-out transform-gpu" data-modal-target="backdrop"></div>
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto" data-action="click->modal#close">
+      <div class="flex min-h-full items-end justify-center p-4 sm:items-center sm:p-0">
+        <div class="modal-out transition-all transform-gpu w-1/2" data-modal-target="modal" data-action="click->modal#stopPropagation">
+          <%= render CommonComponents::Card.new(title: 'Merge group') do |card| %>
+            <% card.with_card_content do %>
+              <div class="p-4 bg-white rounded-md w-full">
+                <h3 class="text-xl text-gray-800">Merging group:  <%= @group.group_name %> </h3>
+                <%= form_with url: submit_merge_group_path, method: :post, class: 'p-4 space-y-0.5 my-2' do |f| %>
+                  <div>
+                    <%= f.label :group, "Group to merge into", class: 'block text-md font-medium text-gray-700' %>
+                    <%= f.select :group, options_from_collection_for_select(@other_groups, :id, :group_name), { include_blank: "Select group" }, { :class => 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' } %>
+                  </div>
+
+                  <div class="p-2">
+                    <%= f.submit "Merge", class: 'px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 cursor-pointer' %>
+                    <div class="dangerous-button" data-action="click->modal#close"><%= t(:cancel) %></div>
+                  </div>
+                <% end %>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

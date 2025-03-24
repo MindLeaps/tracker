@@ -78,6 +78,29 @@ class GroupsController < HtmlController
     redirect_to group_path
   end
 
+  def merge_group
+    @group = Group.find params.require :id
+    authorize @group
+
+    group_chapter = @group.chapter
+    @other_groups = policy_scope Group.where(deleted_at: nil, chapter_id: group_chapter).where.not(id: @group).order(:group_name)
+
+    respond_to(&:turbo_stream)
+  end
+
+  def submit_merge
+    @group = Group.find params.require :id
+    authorize @group
+
+    group_to_merge_into = Group.find params[:group]
+
+    @group.merge_into(group_to_merge_into)
+
+    success(title: 'Group Merged!', text: "Group merged successfully into #{group_to_merge_into.group_name}")
+
+    redirect_to group_path(group_to_merge_into)
+  end
+
   private
 
   def group_params

@@ -73,4 +73,17 @@ class Group < ApplicationRecord
       save
     end
   end
+
+  def merge_into(new_group)
+    transaction do
+      students.each do |student|
+        student.update(group_id: new_group.id)
+        student.save
+      end
+
+      self.deleted_at = Time.zone.now
+
+      save
+    end
+  end
 end
