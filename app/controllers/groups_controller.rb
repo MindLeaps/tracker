@@ -95,7 +95,6 @@ class GroupsController < HtmlController
     group_to_merge_into = Group.find params[:group]
 
     @group.merge_into(group_to_merge_into)
-
     success(title: 'Group Merged!', text: "Group merged successfully into #{group_to_merge_into.group_name}")
 
     redirect_to group_path(group_to_merge_into)

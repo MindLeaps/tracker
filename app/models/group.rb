@@ -76,14 +76,51 @@ class Group < ApplicationRecord
 
   def merge_into(new_group)
     transaction do
+      # move students to new group set enrollment date to first lesson of new group
       students.each do |student|
-        student.update(group_id: new_group.id)
+        student.mlid = next_student_mlid
+        student.group_id = new_group.id
         student.save
+
+        new_enrollment = Enrollment.find_by(student_id: student.id, group_id: new_group.id)
+        new_enrollment.update(active_since: new_group.lessons.map(&:date).min.to_datetime) unless new_group.lessons.empty?
       end
 
-      self.deleted_at = Time.zone.now
+      # check and update grades if lessons happened on the same day
+      update_lesson_grades_when_merging(new_group)
 
+      # delete group that was merged
+      self.deleted_at = Time.zone.now
       save
     end
+  end
+
+  def update_lesson_grades_when_merging(new_group)
+    both_group_lessons = lessons + new_group.lessons
+    by_date_and_subject_lessons = both_group_lessons.group_by { |l| [l.date, l.subject_id] }
+
+    by_date_and_subject_lessons.each_value do |subject_lessons|
+      next unless subject_lessons.size == 2
+
+      lesson_to_be_merged = subject_lessons.find { |l| l.group_id == id }
+      lesson_to_use = subject_lessons.find { |l| l.group_id == new_group.id }
+
+      # rubocop:disable Rails/SkipsModelValidations
+      Grade.where(lesson_id: lesson_to_be_merged.id, deleted_at: nil).update_all(lesson_id: lesson_to_use.id)
+      # rubocop:enable Rails/SkipsModelValidations
+    end
+  end
+
+  def next_student_mlid
+    last_mlid_given = students.map(&:mlid).max
+
+    return '01' if last_mlid_given.blank?
+
+    if last_mlid_given[0] == '0'
+      new_mlid = (last_mlid_given[-1].to_i + 1).to_s
+      return new_mlid.length == 2 ? new_mlid : "0#{new_mlid}"
+    end
+
+    (last_mlid_given.to_i + 1).to_s
   end
 end
