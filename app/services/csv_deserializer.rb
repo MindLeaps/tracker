@@ -6,14 +6,15 @@ class CsvDeserializer
   end
 
   def deserialize_students
-    csv = CSV.parse(File.read(@file), headers: true, col_sep: ',').delete_if { |row| row.to_hash.values.all?(&:blank?) }
+    content = File.open(@file, encoding: 'UTF-8', &:read)
+    content.sub!("\xEF\xBB\xBF", '')
+    csv = CSV.parse(content, headers: true, col_sep: ',').delete_if { |row| row.to_hash.values.all?(&:blank?) }
     csv.map do |row|
       {
-        mlid: row['MLID'],
         first_name: row['First Name'],
         last_name: row['Last Name'],
         gender: row['Gender'],
-        dob: safe_parse_date(row['Date of Birth'])
+        dob: safe_parse_date(row['Date of Birth']),
       }
     end
   end

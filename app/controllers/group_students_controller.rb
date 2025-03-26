@@ -91,17 +91,32 @@ class GroupStudentsController < HtmlController
 
   def invalid_students_present(students)
     @invalid_students = []
+    student_mlid = @group.next_student_mlid
 
     students.each do |student|
-      new_student = Student.build(student) { |s| s.group = @group }
+      new_student = Student.build(student) do |s|
+        s.mlid = student_mlid
+        s.group = @group
+      end
+
       @invalid_students << new_student unless new_student.valid?
+      student_mlid = @group.next_student_mlid(student_mlid)
     end
 
     true if @invalid_students.any?
   end
 
   def create_imported_students(students)
-    Student.transaction { Student.create(students) { |student| student.group = @group } }
+    Student.transaction do
+      student_mlid = @group.next_student_mlid
+      students.each do |student|
+        student[:mlid] = student_mlid
+        student[:group] = @group
+        Student.create!(student)
+        student_mlid = @group.next_student_mlid(student_mlid)
+      end
+    end
+
     success(title: t(:imported_students), text: t(:students_imported_successfully))
     redirect_to group_path(@group)
   end
