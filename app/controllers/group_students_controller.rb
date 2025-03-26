@@ -140,4 +140,3 @@ class GroupStudentsController < HtmlController
   end
 end
 # rubocop:enable Metrics/ClassLength
-
