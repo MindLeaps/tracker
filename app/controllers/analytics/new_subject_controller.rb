@@ -66,7 +66,7 @@ module Analytics
 
         hash.each_with_index do |(group, array), index|
           skill_series_averages << average_from_array(array.map { |e| e[:y] })
-          skill_series << { name: group, data: array, color: get_color(index) }
+          skill_series << { name: group, data: array, color: get_color(index), skill_name: skill_name }
         end
 
         skill_average = average_from_array(skill_series_averages)

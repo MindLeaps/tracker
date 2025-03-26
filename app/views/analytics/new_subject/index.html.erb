@@ -39,12 +39,20 @@
   <div class="w-full min-h-10xl flex justify-between gap-24">
     <div id="chartContainer" class="relative w-full max-w-10xl border border-2 border-gray-400 rounded-md shadow h-fit">
       <% if @subject_series.length.positive? %>
-        <% @skills.each do |s| %>
-          <canvas id="<%= s[:chartId] %>" class="<%= "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full transition-all duration-200"%>"></canvas>
+        <% if @skills.all? {|s| s[:series].length == 1 } %>
+          <canvas id="skillChart" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full transition-all duration-200"></canvas>
+        <% else %>
+          <% @skills.each do |s| %>
+            <canvas id="<%= s[:chartId] %>" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full transition-all duration-200"></canvas>
+          <% end %>
         <% end %>
         <div id="chartControls" class="w-full absolute -bottom-20 left-1/2 -translate-x-1/2 flex justify-center">
-          <% @skills.each do |s| %>
+          <% if @skills.all? {|s| s[:series].length == 1 } %>
+            <%= render CommonComponents::ButtonComponent.new(label: 'Download Chart', options: { 'id' => 'skillDownloadLink' })%>
+          <% else %>
+            <% @skills.each do |s| %>
             <div id="<%= s[:buttonId] %>" class="normal-button"><%= s[:skillName] %></div>
+            <% end %>
           <% end %>
         </div>
       <% else %>
@@ -127,9 +135,19 @@
         let skills = <%= @skills.to_json.html_safe %>;
         let series = <%= @subject_series.to_json.html_safe %>;
 
-        if(skills.length> 0)
+        console.log(series)
+
+        if(skills.length > 0)
         {
-          skills.forEach(s => { generateSkillChart && generateSkillChart(s.series, s.chartId, s.skillName) })
+          // Single student is being viewed
+          if(skills.every(s => s.series.length === 1)) {
+            let studentName = skills[0].series[0].name
+            let skillSeriesForStudent = skills.map(s => s.series[0])
+
+            generateStudentSkillChart && generateStudentSkillChart(skillSeriesForStudent, 'skillChart', studentName)
+          } else {
+            skills.forEach(s => { generateSkillChart && generateSkillChart(s.series, s.chartId, s.skillName) })
+          }
           addEventListeners(skills)
           setAverageMark(skills[skills.length - 1].skillAverage)
         }
