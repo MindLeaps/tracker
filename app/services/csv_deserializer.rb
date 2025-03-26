@@ -14,7 +14,7 @@ class CsvDeserializer
         first_name: row['First Name'],
         last_name: row['Last Name'],
         gender: row['Gender'],
-        dob: safe_parse_date(row['Date of Birth']),
+        dob: safe_parse_date(row['Date of Birth'])
       }
     end
   end

@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class GroupStudentsController < HtmlController
   include Pagy::Backend
   skip_after_action :verify_policy_scoped
@@ -138,3 +139,5 @@ class GroupStudentsController < HtmlController
     p.permit(*Student.permitted_params)
   end
 end
+# rubocop:enable Metrics/ClassLength
+
