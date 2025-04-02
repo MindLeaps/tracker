@@ -73,6 +73,7 @@ class GroupStudentsController < HtmlController
     respond_to(&:turbo_stream)
   end
 
+  # rubocop:disable Metrics/MethodLength
   def import_students
     @group = Group.find params.require :group_id
     authorize @group
@@ -87,8 +88,10 @@ class GroupStudentsController < HtmlController
       end
     else
       failure(title: t(:'errors.messages.invalid_file'), text: t(:'errors.messages.csv_mandatory_error'))
+      redirect_to group_path(@group)
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   def invalid_students_present(students)
     @invalid_students = []
