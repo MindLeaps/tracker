@@ -20,7 +20,7 @@ class CsvDeserializer
   end
 
   def safe_parse_date(date_text)
-    Date.parse(date_text)
+    date_text.present? ? Date.parse(date_text) : 'Invalid Date!'
   rescue Date::Error
     if date_text.include?('/')
       date_parts = date_text.split('/')
