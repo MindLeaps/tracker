@@ -8,7 +8,8 @@
           <% card.with_card_content do %>
             <%= form_with url: import_students_group_students_path, method: :post, class: 'bg-white p-4 space-y-0.5' do |f| %>
                 <div class="p-2">
-                  <%= f.file_field :file %>
+                  <%= f.label :import_file, class: 'field-label' %>
+                  <%= f.file_field :import_file %>
                 </div>
                 <div class="p-2">
                   <%= f.submit t(:import), class: 'px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 cursor-pointer' %>
