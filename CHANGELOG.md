@@ -1,4 +1,5 @@
 ## Unreleased 
+- Added the ability to import basic student data from csv to a group
 - Added the ability to export basic student data to csv for a group
 
 ## 0.35.0 - Enrollment Date Fixes

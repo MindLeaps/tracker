@@ -15,6 +15,14 @@ class GroupPolicy < ApplicationPolicy
     show?
   end
 
+  def import?
+    import_students?
+  end
+
+  def import_students?
+    edit?
+  end
+
   class Scope
     attr_reader :user, :scope
 
