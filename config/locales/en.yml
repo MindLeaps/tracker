@@ -129,6 +129,9 @@ en:
       - :year
       - :month
       - :day
+
+  merge: Merge
+  merge_group: Merge Group
   group_added: Group Added
   group_with_name_added: Group "%{group}" added.
   group_updated: Group updated
