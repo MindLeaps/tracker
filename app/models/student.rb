@@ -20,6 +20,7 @@
 #  mlid                   :string           not null
 #  name_of_school         :string
 #  notes                  :text
+#  old_mlid               :string           not null
 #  quartier               :string
 #  reason_for_leaving     :string
 #  school_level_completed :string
@@ -32,9 +33,10 @@
 #
 # Indexes
 #
-#  index_students_on_group_id          (group_id)
-#  index_students_on_organization_id   (organization_id)
-#  index_students_on_profile_image_id  (profile_image_id)
+#  index_students_on_group_id                  (group_id)
+#  index_students_on_mlid_and_organization_id  (mlid,organization_id) UNIQUE
+#  index_students_on_organization_id           (organization_id)
+#  index_students_on_profile_image_id          (profile_image_id)
 #
 # Foreign Keys
 #
@@ -51,7 +53,7 @@ class Student < ApplicationRecord
   }, using: { tsearch: { prefix: true } }
 
   validates :first_name, :last_name, :dob, :gender, presence: true
-  validates :mlid, uniqueness: { scope: :organization_id }, length: { maximum: 3 }
+  validates :mlid, uniqueness: { scope: :organization_id }, length: { maximum: 16 }
   validate :group_belongs_to_same_organization
 
   enum :gender, { M: 'male', F: 'female', NB: 'nonbinary' }

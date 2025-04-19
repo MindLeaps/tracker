@@ -24,6 +24,7 @@
 #  mlid                   :string
 #  name_of_school         :string
 #  notes                  :text
+#  old_mlid               :string
 #  organization_mlid      :string(3)
 #  quartier               :string
 #  reason_for_leaving     :string

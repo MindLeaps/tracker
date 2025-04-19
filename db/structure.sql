@@ -91,7 +91,7 @@ CREATE FUNCTION public.random_student_mlids(org_id integer, mlid_length integer 
                     select random_alphanumeric_string(coalesce(mlid_length, 5)) as value from generate_series(1, number_of_mlids * 2)
                 ),
                 mlids as (
-                    select value as mlid from values where value not in (select s.mlid from students s where s.organization_id = org_id) limit number_of_mlids
+                    select value as mlid from values where value not in (select coalesce(s.mlid, '00000000') from students s where s.organization_id = org_id) limit number_of_mlids
                 )
                 select current_values || array_agg(m.mlid) from mlids m into current_values;
         end loop;
@@ -914,11 +914,12 @@ CREATE TABLE public.students (
     guardian_occupation character varying,
     guardian_contact character varying,
     family_members text,
-    mlid character varying NOT NULL,
+    old_mlid character varying NOT NULL,
     deleted_at timestamp without time zone,
     profile_image_id integer,
     country_of_nationality text,
-    organization_id integer NOT NULL
+    organization_id integer NOT NULL,
+    mlid character varying NOT NULL
 );
 
 
@@ -961,11 +962,12 @@ CREATE VIEW public.student_table_rows AS
     s.guardian_occupation,
     s.guardian_contact,
     s.family_members,
-    s.mlid,
+    s.old_mlid,
     s.deleted_at,
     s.profile_image_id,
     s.country_of_nationality,
     s.organization_id,
+    s.mlid,
     g.group_name,
     o.mlid AS organization_mlid,
     c.mlid AS chapter_mlid,
@@ -1532,6 +1534,13 @@ CREATE INDEX index_students_on_group_id ON public.students USING btree (group_id
 
 
 --
+-- Name: index_students_on_mlid_and_organization_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_students_on_mlid_and_organization_id ON public.students USING btree (mlid, organization_id);
+
+
+--
 -- Name: index_students_on_organization_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2090,7 +2099,9 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
-('20250309013544'),
+('20250419013904'),
+('20250419013751'),
+('20250419013750'),
 ('20250308233317'),
 ('20250308222117'),
 ('20250307233526'),

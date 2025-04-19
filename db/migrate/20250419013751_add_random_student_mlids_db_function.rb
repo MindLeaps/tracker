@@ -11,7 +11,7 @@ class AddRandomStudentMlidsDbFunction < ActiveRecord::Migration[7.2]
                           select random_alphanumeric_string(coalesce(mlid_length, 5)) as value from generate_series(1, number_of_mlids * 2)
                       ),
                       mlids as (
-                          select value as mlid from values where value not in (select s.mlid from students s where s.organization_id = org_id) limit number_of_mlids
+                          select value as mlid from values where value not in (select coalesce(s.mlid, '00000000') from students s where s.organization_id = org_id) limit number_of_mlids
                       )
                       select current_values || array_agg(m.mlid) from mlids m into current_values;
               end loop;
@@ -23,7 +23,7 @@ class AddRandomStudentMlidsDbFunction < ActiveRecord::Migration[7.2]
 
   def down
     execute <<~SQL
-      drop function random_student_mlids(org_id integer);
+      drop function if exists random_student_mlids(org_id integer);
     SQL
   end
 end
