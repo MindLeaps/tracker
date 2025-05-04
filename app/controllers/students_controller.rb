@@ -49,6 +49,17 @@ class StudentsController < HtmlController
     flash_redirect request.referer
   end
 
+  def mlid
+    authorize Student, :new?
+    group = Group.includes(:chapter).find params.require(:group_id)
+    organization_id = group.chapter.organization_id
+    mlid = MindleapsIdService.generate_student_mlid organization_id
+    mlid_component = ::CommonComponents::StudentMlidInput.new(mlid, show_label: true)
+    render turbo_stream: [
+      turbo_stream.replace(CommonComponents::StudentMlidInput::ELEMENT_ID, mlid_component)
+    ]
+  end
+
   def edit
     @student = Student.find params[:id]
     authorize @student
