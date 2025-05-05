@@ -17,10 +17,10 @@
 #  health_issues          :text
 #  hiv_tested             :boolean
 #  last_name              :string           not null
-#  mlid                   :string           not null
+#  mlid                   :string(8)        not null
 #  name_of_school         :string
 #  notes                  :text
-#  old_mlid               :string           not null
+#  old_mlid               :string
 #  quartier               :string
 #  reason_for_leaving     :string
 #  school_level_completed :string
@@ -125,6 +125,11 @@ RSpec.describe Student, type: :model do
         it 'when it is duplicated in the same organization' do
           _existing_student = create :student, group: @group, mlid: 'AA1'
           new_student = build :student, group: @group, mlid: 'AA1'
+          expect(new_student).to be_invalid
+        end
+
+        it 'when it is longer than 8 characters' do
+          new_student = build :student, group: @group, mlid: '123456789'
           expect(new_student).to be_invalid
         end
       end

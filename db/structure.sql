@@ -914,12 +914,12 @@ CREATE TABLE public.students (
     guardian_occupation character varying,
     guardian_contact character varying,
     family_members text,
-    old_mlid character varying NOT NULL,
+    old_mlid character varying,
     deleted_at timestamp without time zone,
     profile_image_id integer,
     country_of_nationality text,
     organization_id integer NOT NULL,
-    mlid character varying NOT NULL
+    mlid character varying(8) NOT NULL
 );
 
 
@@ -2099,6 +2099,7 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250505014040'),
 ('20250419013904'),
 ('20250419013751'),
 ('20250419013750'),

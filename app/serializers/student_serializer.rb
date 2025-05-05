@@ -17,10 +17,10 @@
 #  health_issues          :text
 #  hiv_tested             :boolean
 #  last_name              :string           not null
-#  mlid                   :string           not null
+#  mlid                   :string(8)        not null
 #  name_of_school         :string
 #  notes                  :text
-#  old_mlid               :string           not null
+#  old_mlid               :string
 #  quartier               :string
 #  reason_for_leaving     :string
 #  school_level_completed :string

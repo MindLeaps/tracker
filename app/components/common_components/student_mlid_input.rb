@@ -6,7 +6,6 @@ class CommonComponents::StudentMlidInput < ViewComponent::Base
   def initialize(mlid, show_label: false)
     @mlid = mlid
     @show_label = show_label
-    @super
   end
 
   # <%= render ::CommonComponents::ButtonComponent.new(label: 'generate', href: '', options: {data: {'action' => 'click->mlid#manuallyGenerateMlid'}}) %>

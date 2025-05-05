@@ -30,12 +30,12 @@ RSpec.describe 'User interacts with Students' do
     it 'creates Rick', js: true do
       visit '/students'
       click_link 'Add Student'
-      fill_in 'student_mlid', with: '1A'
       fill_in 'First name', with: 'Rick'
       fill_in 'Last name', with: 'Sanchez'
       fill_in 'Date of Birth', with: '1943-01-15'
       select('Antarctica', from: 'Country of nationality')
       select(@group.chapter_group_name_with_full_mlid, from: 'student_group_id')
+      fill_in 'student_mlid', with: '1A'
       click_button 'Create'
 
       expect(page).to have_content 'Student "Sanchez, Rick" added'
@@ -47,10 +47,9 @@ RSpec.describe 'User interacts with Students' do
       expect(created_student.country_of_nationality).to eq('AQ')
     end
 
-    it 'renders error flash when submitted form is incomplete' do
+    it 'renders error flash when submitted form is incomplete', js: true do
       visit '/students'
       click_link 'Add Student'
-      fill_in 'student_mlid', with: '1A'
       fill_in 'First name', with: 'Rick'
       fill_in 'Last name', with: 'Sanchez'
       click_button 'Create'

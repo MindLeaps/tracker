@@ -21,7 +21,7 @@
 #  health_issues          :text
 #  hiv_tested             :boolean
 #  last_name              :string
-#  mlid                   :string
+#  mlid                   :string(8)
 #  name_of_school         :string
 #  notes                  :text
 #  old_mlid               :string
