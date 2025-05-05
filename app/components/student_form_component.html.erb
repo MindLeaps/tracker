@@ -55,7 +55,7 @@
         <h3 class="text-lg font-medium leading-6 text-gray-900"><%= t(:group_and_mlid) %></h3>
       </div>
       <div class="mt-5 md:col-span-3 md:mt-0">
-        <div class="grid grid-cols-6 gap-4" data-controller="mlid">
+        <div class="grid grid-cols-6 gap-4" data-controller="mlid" data-mlid-show-label-value="true">
           <div class="col-span-6 lg:col-span-2">
             <%= f.label :group_id, class: 'field-label' %>
             <%= f.grouped_collection_select :group_id, @chapter_groups, :groups, :chapter_display, :id, :chapter_group_name_with_full_mlid, { include_blank: true }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm', data: { 'mlid-target' => 'group', 'action' => 'mlid#groupSelect' } %>
