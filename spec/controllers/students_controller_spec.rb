@@ -11,9 +11,9 @@ RSpec.describe StudentsController, type: :controller do
     end
 
     describe '#create' do
-      it 'creates a student when supplied valid params' do
+      it 'creates a student when supplied valid params ensuring mlid is uppercase' do
         post :create, params: { student: {
-          mlid: '1M',
+          mlid: 'abcdefgh',
           first_name: 'Trevor',
           last_name: 'Noah',
           'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
@@ -24,6 +24,7 @@ RSpec.describe StudentsController, type: :controller do
         } }
 
         student = Student.last
+        expect(student.mlid).to eql 'ABCDEFGH'
         expect(student.first_name).to eql 'Trevor'
         expect(student.last_name).to eql 'Noah'
         expect(student.group.group_name).to eql 'Group A'

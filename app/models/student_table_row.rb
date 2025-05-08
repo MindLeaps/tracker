@@ -21,9 +21,10 @@
 #  health_issues          :text
 #  hiv_tested             :boolean
 #  last_name              :string
-#  mlid                   :string
+#  mlid                   :string(8)
 #  name_of_school         :string
 #  notes                  :text
+#  old_mlid               :string
 #  organization_mlid      :string(3)
 #  quartier               :string
 #  reason_for_leaving     :string
@@ -32,6 +33,7 @@
 #  created_at             :datetime
 #  updated_at             :datetime
 #  group_id               :integer
+#  organization_id        :integer
 #  profile_image_id       :integer
 #
 class StudentTableRow < ApplicationRecord
@@ -42,6 +44,7 @@ class StudentTableRow < ApplicationRecord
 
   self.primary_key = :id
   belongs_to :group
+  belongs_to :organization
   has_many :student_tags, foreign_key: :student_id, inverse_of: :student, dependent: :restrict_with_exception
   has_many :tags, through: :student_tags
   scope :by_group, ->(group_id) { where group_id: }
@@ -54,9 +57,5 @@ class StudentTableRow < ApplicationRecord
 
   def self.policy_class
     StudentPolicy
-  end
-
-  def organization
-    Organization.joins(chapters: :groups).find_by('groups.id = ?', group_id)
   end
 end

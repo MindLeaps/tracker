@@ -1,9 +1,9 @@
 class StudentTableForm < ViewComponent::Base
   erb_template <<~ERB
     <%= form_with url: url, model: @student, id: dom_id(@student), class: form_class do |form| %>
-      <div class="table-cell">
-        <span class="inline-block whitespace-nowrap text-sm font-medium text-gray-700"><%= @group.full_mlid %>-</span>
-        <%= form.text_field :mlid, class: "w-20 inline-block rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm" %>
+      <div class="table-cell" data-controller="mlid">
+        <input type="text" class="hidden" value="<%= @student.group_id %>" data-mlid-target="group" />
+        <%= render CommonComponents::StudentMlidInput.new(@student.mlid) %>
         <%= render ValidationErrorComponent.new(model: @student, key: :mlid) %>
       </div>
       <div class="table-cell text-right">
@@ -48,7 +48,9 @@ class StudentTableForm < ViewComponent::Base
     super
     @student = student
     @group = group
+    @organization = group.chapter.organization
     @is_edit = is_edit
+    @student.mlid = MindleapsIdService.generate_student_mlid @organization.id unless @is_edit
   end
 
   def url

@@ -63,6 +63,44 @@ CREATE TYPE public.gender AS ENUM (
 
 
 --
+-- Name: random_alphanumeric_string(integer); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.random_alphanumeric_string(length integer) RETURNS text
+    LANGUAGE plpgsql
+    AS $$
+declare value text;
+begin
+  select array_to_string(array(select substr('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',floor(random()*36)::int + 1, 1) from generate_series(1,length)),'') into value;
+  return value;
+end;
+$$;
+
+
+--
+-- Name: random_student_mlids(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.random_student_mlids(org_id integer, mlid_length integer DEFAULT 5, number_of_mlids integer DEFAULT 10) RETURNS TABLE(mlid text)
+    LANGUAGE plpgsql
+    AS $$
+    declare current_values text[];
+    begin
+        while coalesce(array_length(current_values, 1), 0) < number_of_mlids loop
+                with values as (
+                    select random_alphanumeric_string(coalesce(mlid_length, 5)) as value from generate_series(1, number_of_mlids * 2)
+                ),
+                mlids as (
+                    select value as mlid from values where value not in (select coalesce(s.mlid, '00000000') from students s where s.organization_id = org_id) limit number_of_mlids
+                )
+                select current_values || array_agg(m.mlid) from mlids m into current_values;
+        end loop;
+        return query select unnest(current_values[1:number_of_mlids]) as mlid;
+    end;
+$$;
+
+
+--
 -- Name: update_enrollments(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -333,8 +371,6 @@ CREATE TABLE public.enrollments (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     student_id bigint NOT NULL,
     group_id bigint NOT NULL,
-    active_since timestamp without time zone NOT NULL,
-    inactive_since timestamp without time zone,
     active_since date NOT NULL,
     inactive_since date,
     created_at timestamp(6) without time zone NOT NULL,
@@ -878,10 +914,12 @@ CREATE TABLE public.students (
     guardian_occupation character varying,
     guardian_contact character varying,
     family_members text,
-    mlid character varying NOT NULL,
+    old_mlid character varying,
     deleted_at timestamp without time zone,
     profile_image_id integer,
-    country_of_nationality text
+    country_of_nationality text,
+    organization_id integer NOT NULL,
+    mlid character varying(8) NOT NULL
 );
 
 
@@ -924,19 +962,21 @@ CREATE VIEW public.student_table_rows AS
     s.guardian_occupation,
     s.guardian_contact,
     s.family_members,
-    s.mlid,
+    s.old_mlid,
     s.deleted_at,
     s.profile_image_id,
     s.country_of_nationality,
+    s.organization_id,
+    s.mlid,
     g.group_name,
     o.mlid AS organization_mlid,
     c.mlid AS chapter_mlid,
     g.mlid AS group_mlid,
-    concat(o.mlid, '-', c.mlid, '-', g.mlid, '-', s.mlid) AS full_mlid
+    concat(o.mlid, '-', s.mlid) AS full_mlid
    FROM (((public.students s
      JOIN public.groups g ON ((s.group_id = g.id)))
      JOIN public.chapters c ON ((g.chapter_id = c.id)))
-     JOIN public.organizations o ON ((c.organization_id = o.id)));
+     JOIN public.organizations o ON ((s.organization_id = o.id)));
 
 
 --
@@ -1494,6 +1534,20 @@ CREATE INDEX index_students_on_group_id ON public.students USING btree (group_id
 
 
 --
+-- Name: index_students_on_mlid_and_organization_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_students_on_mlid_and_organization_id ON public.students USING btree (mlid, organization_id);
+
+
+--
+-- Name: index_students_on_organization_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_students_on_organization_id ON public.students USING btree (organization_id);
+
+
+--
 -- Name: index_students_on_profile_image_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1699,6 +1753,28 @@ CREATE OR REPLACE VIEW public.subject_summaries AS
 
 
 --
+-- Name: student_averages _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.student_averages AS
+ SELECT s.id AS student_id,
+    s.first_name,
+    s.last_name,
+    s.deleted_at AS student_deleted_at,
+    su.id AS subject_id,
+    su.subject_name,
+    sk.skill_name,
+    round(avg(g.mark), 2) AS average_mark
+   FROM (((((public.students s
+     JOIN public.grades g ON (((g.student_id = s.id) AND (g.deleted_at IS NULL))))
+     JOIN public.skills sk ON ((sk.id = g.skill_id)))
+     JOIN public.assignments a ON ((a.skill_id = sk.id)))
+     JOIN public.subjects su ON ((su.id = a.subject_id)))
+     JOIN public.lessons l ON (((l.id = g.lesson_id) AND (l.subject_id = su.id))))
+  GROUP BY s.id, su.id, sk.skill_name;
+
+
+--
 -- Name: student_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
@@ -1865,6 +1941,14 @@ ALTER TABLE ONLY public.student_tags
 
 
 --
+-- Name: students fk_rails_2c3c300d44; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.students
+    ADD CONSTRAINT fk_rails_2c3c300d44 FOREIGN KEY (organization_id) REFERENCES public.organizations(id);
+
+
+--
 -- Name: students fk_rails_512f7ce835; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2015,6 +2099,13 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250505014040'),
+('20250419013904'),
+('20250419013751'),
+('20250419013750'),
+('20250308233317'),
+('20250308222117'),
+('20250307233526'),
 ('20250129182516'),
 ('20250125235507'),
 ('20250124144809'),

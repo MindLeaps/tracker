@@ -33,4 +33,14 @@ RSpec.describe MindleapsIdService do
       expect(generated_new_chapter_mlid).to eq 'B2'
     end
   end
+
+  describe '#generate_student_mlid' do
+    before :each do
+      @org1 = create :organization
+    end
+    it 'generates a unique 8 character MLID' do
+      mlid = MindleapsIdService.generate_student_mlid(@org1.id)
+      expect(mlid.length).to eq 8
+    end
+  end
 end
