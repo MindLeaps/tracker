@@ -101,5 +101,41 @@ RSpec.describe GroupStudentsController, type: :controller do
         expect(student.reload.first_name).to eq('Student')
       end
     end
+
+    describe '#import' do
+      it 'returns an import form' do
+        response = get :import, as: :turbo_stream, params: { group_id: group_a.id }
+
+        expect(response).to be_successful
+        expect(response).to render_template('import')
+      end
+    end
+
+    describe '#import_students' do
+      it 'does not import students if file is not csv' do
+        @file = fixture_file_upload('text_file.txt', 'text/plain')
+        post :import_students, params: { group_id: group_a.id, file: @file }
+
+        expect(group_a.students.count).to eq 0
+      end
+
+      it 'returns unsuccessfully if file contains invalid data' do
+        @file = fixture_file_upload('invalid_import.csv', 'text/csv')
+        response = post :import_students, as: :turbo_stream, params: { group_id: group_a.id, file: @file }
+
+        expect(response).to_not be_successful
+        expect(response).to render_template('import')
+        expect(group_a.students.count).to eq 0
+      end
+
+      it 'imports students successfully if file is valid' do
+        @file = fixture_file_upload('valid_import.csv', 'text/csv')
+        response = post :import_students, params: { group_id: group_a.id, file: @file }
+
+        expect(response).to redirect_to(group_path(group_a))
+        expect(group_a.students.count).to eq 2
+        expect(group_a.students.map(&:first_name)).to include 'Marko', 'Rick'
+      end
+    end
   end
 end

@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class GroupStudentsController < HtmlController
   include Pagy::Backend
   skip_after_action :verify_policy_scoped
@@ -66,6 +67,65 @@ class GroupStudentsController < HtmlController
     ]
   end
 
+  def import
+    @group = Group.find params.require :group_id
+    authorize @group
+
+    respond_to(&:turbo_stream)
+  end
+
+  # rubocop:disable Metrics/MethodLength
+  def import_students
+    @group = Group.find params.require :group_id
+    authorize @group
+
+    file = params[:file]
+    if file.present? && file_is_csv(file.content_type)
+      students_to_import = CsvDeserializer.new(file).deserialize_students
+      if invalid_students_present(students_to_import)
+        render template: 'group_students/import', status: :unprocessable_entity, locals: { invalid_students: @invalid_students }
+      else
+        create_imported_students(students_to_import)
+      end
+    else
+      failure(title: t(:'errors.messages.invalid_file'), text: t(:'errors.messages.csv_mandatory_error'))
+      redirect_to group_path(@group)
+    end
+  end
+  # rubocop:enable Metrics/MethodLength
+
+  def invalid_students_present(students)
+    @invalid_students = []
+    student_mlid = @group.next_student_mlid
+
+    students.each do |student|
+      new_student = Student.build(student) do |s|
+        s.mlid = student_mlid
+        s.group = @group
+      end
+
+      @invalid_students << new_student unless new_student.valid?
+      student_mlid = @group.next_student_mlid(student_mlid)
+    end
+
+    true if @invalid_students.any?
+  end
+
+  def create_imported_students(students)
+    Student.transaction do
+      student_mlid = @group.next_student_mlid
+      students.each do |student|
+        student[:mlid] = student_mlid
+        student[:group] = @group
+        Student.create!(student)
+        student_mlid = @group.next_student_mlid(student_mlid)
+      end
+    end
+
+    success(title: t(:imported_students), text: t(:students_imported_successfully))
+    redirect_to group_path(@group)
+  end
+
   def group_students
     Student.where(group_id: @group.id).includes(:group).where(deleted_at: nil)
   end
@@ -74,8 +134,13 @@ class GroupStudentsController < HtmlController
 
   private
 
+  def file_is_csv(content_type)
+    %w[text/csv text/x-csv application/vnd.ms-excel application/vnd.openxmlformats-officedocument.spreadsheetml.sheet application/csv application/x-csv].include? content_type
+  end
+
   def inline_student_params
     p = params.require(:student)
     p.permit(*Student.permitted_params)
   end
 end
+# rubocop:enable Metrics/ClassLength
