@@ -17,9 +17,10 @@
 #  health_issues          :text
 #  hiv_tested             :boolean
 #  last_name              :string           not null
-#  mlid                   :string           not null
+#  mlid                   :string(8)        not null
 #  name_of_school         :string
 #  notes                  :text
+#  old_mlid               :string
 #  quartier               :string
 #  reason_for_leaving     :string
 #  school_level_completed :string
@@ -27,15 +28,19 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  group_id               :integer
+#  organization_id        :integer          not null
 #  profile_image_id       :integer
 #
 # Indexes
 #
-#  index_students_on_group_id          (group_id)
-#  index_students_on_profile_image_id  (profile_image_id)
+#  index_students_on_group_id                  (group_id)
+#  index_students_on_mlid_and_organization_id  (mlid,organization_id) UNIQUE
+#  index_students_on_organization_id           (organization_id)
+#  index_students_on_profile_image_id          (profile_image_id)
 #
 # Foreign Keys
 #
+#  fk_rails_...          (organization_id => organizations.id)
 #  fk_rails_...          (profile_image_id => student_images.id)
 #  students_group_id_fk  (group_id => groups.id)
 #

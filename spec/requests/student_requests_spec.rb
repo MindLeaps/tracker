@@ -11,7 +11,7 @@ RSpec.describe 'Student API', type: :request do
       @group = create :group
       @current_group = create :group
       @student = create :student, group: @group, deleted_at: Time.zone.now
-      create :enrollment, student: @student, group: @current_group, inactive_since: nil
+      create :enrollment, student: @student, group: @current_group, active_since: 1.day.after, inactive_since: nil
     end
 
     it 'responds with a specific student' do
@@ -44,6 +44,8 @@ RSpec.describe 'Student API', type: :request do
   end
 
   describe 'GET /students' do
+    register_encoder :csv, param_encoder: ->(params) { params.to_s }
+
     before :each do
       @group1 = create :group
       @group2 = create :group
@@ -89,6 +91,13 @@ RSpec.describe 'Student API', type: :request do
 
       expect(students.length).to eq 2
       expect(students.pluck('id')).to include @student2.id, @student3.id
+    end
+
+    it "responds with a specific group's exported students" do
+      get_with_token students_url, params: { group_id: @group1.id, format: :csv }
+
+      expect(response.header['Content-Type']).to include 'text/csv'
+      expect(response.body).to include(@student2.first_name, @student2.last_name)
     end
   end
 end

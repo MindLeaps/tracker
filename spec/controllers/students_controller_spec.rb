@@ -11,9 +11,9 @@ RSpec.describe StudentsController, type: :controller do
     end
 
     describe '#create' do
-      it 'creates a student when supplied valid params' do
+      it 'creates a student when supplied valid params ensuring mlid is uppercase' do
         post :create, params: { student: {
-          mlid: '1M',
+          mlid: 'abcdefgh',
           first_name: 'Trevor',
           last_name: 'Noah',
           'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => 17,
@@ -24,6 +24,7 @@ RSpec.describe StudentsController, type: :controller do
         } }
 
         student = Student.last
+        expect(student.mlid).to eql 'ABCDEFGH'
         expect(student.first_name).to eql 'Trevor'
         expect(student.last_name).to eql 'Noah'
         expect(student.group.group_name).to eql 'Group A'
@@ -202,12 +203,35 @@ RSpec.describe StudentsController, type: :controller do
       it { should render_template :edit }
     end
 
+    describe '#show' do
+      before :each do
+        @student = create :graded_student, grades: {
+          'Memorization' => [1, 2, 3],
+          'Grit' => [3, 5, 6]
+        }
+        get :show, params: { id: @student.id }
+      end
+
+      it { should respond_with 200 }
+
+      it 'assigns the correct averages for each skill' do
+        averages = assigns[:skill_averages].values[0]
+        averages.sort_by { |a| a['skill'] }
+
+        expect(averages[0][:skill]).to eq('Grit')
+        expect(averages[0][:average]).to be_within(0.01).of 4.66
+        expect(averages[1][:skill]).to eq('Memorization')
+        expect(averages[1][:average]).to be_within(0.01).of 2.0
+      end
+    end
+
     describe '#performance' do
       before :each do
         @student = create :graded_student, grades: {
           'Memorization' => [1, 2, 3],
           'Grit' => [3, 5, 6]
         }
+        create :enrollment, group: @student.group, student: @student, active_since: 1.year.ago
         get :show, params: { id: @student.id }
       end
 

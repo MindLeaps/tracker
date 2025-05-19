@@ -1,4 +1,15 @@
-## Unreleased
+## Unreleased 
+- Added the ability to export basic student data to csv for a group
+- Added `random_alphanumeric_string(length)` DB function to help with MLID generation
+- Added `random_student_mlids(org_id, mlid_length, number_of_mlids)` to generate unique available student MLIDs for organization
+- Added organization to student model
+- Reworked student MLIDs to be up to 8 characters long
+- Added autogeneration of student MLIDs when creating students
+
+## 0.35.0 - Enrollment Date Fixes
+- Enabled teachers to create and edit groups/students
+- Added toggle buttons in group reports
+- Added averages for each skill when viewing students
 - Added average mark info and mark counts chart in skill view
 - Fixed duplicate skills showing in skill index
 - Upgraded to Rails 7.2
@@ -7,6 +18,7 @@
 - Added database procedure which updates enrollments according to earliest grades
 - Modified Student API to return group_id according to Enrollments
 - Implemented Enrollments API
+- Added Datepicker component and modified forms with dates to use it
 
 ## 0.34.0 - Group Reports
 - Added Count of Graded/absent/total students and total lesson average mark in lesson view

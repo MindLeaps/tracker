@@ -63,6 +63,44 @@ CREATE TYPE public.gender AS ENUM (
 
 
 --
+-- Name: random_alphanumeric_string(integer); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.random_alphanumeric_string(length integer) RETURNS text
+    LANGUAGE plpgsql
+    AS $$
+declare value text;
+begin
+  select array_to_string(array(select substr('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',floor(random()*36)::int + 1, 1) from generate_series(1,length)),'') into value;
+  return value;
+end;
+$$;
+
+
+--
+-- Name: random_student_mlids(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.random_student_mlids(org_id integer, mlid_length integer DEFAULT 5, number_of_mlids integer DEFAULT 10) RETURNS TABLE(mlid text)
+    LANGUAGE plpgsql
+    AS $$
+    declare current_values text[];
+    begin
+        while coalesce(array_length(current_values, 1), 0) < number_of_mlids loop
+                with values as (
+                    select random_alphanumeric_string(coalesce(mlid_length, 5)) as value from generate_series(1, number_of_mlids * 2)
+                ),
+                mlids as (
+                    select value as mlid from values where value not in (select coalesce(s.mlid, '00000000') from students s where s.organization_id = org_id) limit number_of_mlids
+                )
+                select current_values || array_agg(m.mlid) from mlids m into current_values;
+        end loop;
+        return query select unnest(current_values[1:number_of_mlids]) as mlid;
+    end;
+$$;
+
+
+--
 -- Name: update_enrollments(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -105,13 +143,13 @@ BEGIN
     from grades as gr
     join students s on s.id = gr.student_id
     join lessons l on gr.lesson_id = l.id
-    join enrollments en on en.student_id = s.id and en.group_id = s.group_id and en.active_since::date > l.date
+    join enrollments en on en.student_id = s.id and en.group_id = s.group_id and en.active_since > l.date
     where l.date > now() - '3 years'::interval
     group by s.id, s.group_id, en.id
   )
 
   -- Update found enrollments
-  update enrollments en set active_since = tfe.earliest_lesson::timestamp
+  update enrollments en set active_since = tfe.earliest_lesson
   from tofix_enrollments tfe
   where en.id = tfe.enrollment_id;
 END;
@@ -333,8 +371,8 @@ CREATE TABLE public.enrollments (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     student_id bigint NOT NULL,
     group_id bigint NOT NULL,
-    active_since timestamp without time zone NOT NULL,
-    inactive_since timestamp without time zone,
+    active_since date NOT NULL,
+    inactive_since date,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
@@ -763,6 +801,22 @@ ALTER SEQUENCE public.skills_id_seq OWNED BY public.skills.id;
 
 
 --
+-- Name: student_averages; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.student_averages AS
+SELECT
+    NULL::integer AS student_id,
+    NULL::character varying AS first_name,
+    NULL::character varying AS last_name,
+    NULL::timestamp without time zone AS student_deleted_at,
+    NULL::integer AS subject_id,
+    NULL::character varying AS subject_name,
+    NULL::character varying AS skill_name,
+    NULL::numeric AS average_mark;
+
+
+--
 -- Name: student_images; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -860,10 +914,12 @@ CREATE TABLE public.students (
     guardian_occupation character varying,
     guardian_contact character varying,
     family_members text,
-    mlid character varying NOT NULL,
+    old_mlid character varying,
     deleted_at timestamp without time zone,
     profile_image_id integer,
-    country_of_nationality text
+    country_of_nationality text,
+    organization_id integer NOT NULL,
+    mlid character varying(8) NOT NULL
 );
 
 
@@ -906,19 +962,21 @@ CREATE VIEW public.student_table_rows AS
     s.guardian_occupation,
     s.guardian_contact,
     s.family_members,
-    s.mlid,
+    s.old_mlid,
     s.deleted_at,
     s.profile_image_id,
     s.country_of_nationality,
+    s.organization_id,
+    s.mlid,
     g.group_name,
     o.mlid AS organization_mlid,
     c.mlid AS chapter_mlid,
     g.mlid AS group_mlid,
-    concat(o.mlid, '-', c.mlid, '-', g.mlid, '-', s.mlid) AS full_mlid
+    concat(o.mlid, '-', s.mlid) AS full_mlid
    FROM (((public.students s
      JOIN public.groups g ON ((s.group_id = g.id)))
      JOIN public.chapters c ON ((g.chapter_id = c.id)))
-     JOIN public.organizations o ON ((c.organization_id = o.id)));
+     JOIN public.organizations o ON ((s.organization_id = o.id)));
 
 
 --
@@ -1476,6 +1534,20 @@ CREATE INDEX index_students_on_group_id ON public.students USING btree (group_id
 
 
 --
+-- Name: index_students_on_mlid_and_organization_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_students_on_mlid_and_organization_id ON public.students USING btree (mlid, organization_id);
+
+
+--
+-- Name: index_students_on_organization_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_students_on_organization_id ON public.students USING btree (organization_id);
+
+
+--
 -- Name: index_students_on_profile_image_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1641,31 +1713,6 @@ CREATE OR REPLACE VIEW public.performance_per_group_per_skill_per_lessons AS
 
 
 --
--- Name: student_lesson_details _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.student_lesson_details AS
- SELECT s.id AS student_id,
-    s.first_name,
-    s.last_name,
-    s.deleted_at AS student_deleted_at,
-    l.id AS lesson_id,
-    l.date,
-    l.deleted_at AS lesson_deleted_at,
-    l.subject_id,
-    round(avg(grades.mark), 2) AS average_mark,
-    count(grades.mark) AS grade_count,
-    COALESCE(jsonb_object_agg(grades.skill_id, jsonb_build_object('mark', grades.mark, 'grade_descriptor_id', grades.grade_descriptor_id, 'skill_name', skills.skill_name)) FILTER (WHERE (skills.skill_name IS NOT NULL)), '{}'::jsonb) AS skill_marks
-   FROM ((((public.students s
-     JOIN public.groups g ON ((g.id = s.group_id)))
-     JOIN public.lessons l ON ((g.id = l.group_id)))
-     LEFT JOIN public.grades ON (((grades.student_id = s.id) AND (grades.lesson_id = l.id))))
-     LEFT JOIN public.skills ON ((skills.id = grades.skill_id)))
-  GROUP BY s.id, l.id
-  ORDER BY l.subject_id;
-
-
---
 -- Name: student_tag_table_rows _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
@@ -1706,6 +1753,28 @@ CREATE OR REPLACE VIEW public.subject_summaries AS
 
 
 --
+-- Name: student_averages _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.student_averages AS
+ SELECT s.id AS student_id,
+    s.first_name,
+    s.last_name,
+    s.deleted_at AS student_deleted_at,
+    su.id AS subject_id,
+    su.subject_name,
+    sk.skill_name,
+    round(avg(g.mark), 2) AS average_mark
+   FROM (((((public.students s
+     JOIN public.grades g ON (((g.student_id = s.id) AND (g.deleted_at IS NULL))))
+     JOIN public.skills sk ON ((sk.id = g.skill_id)))
+     JOIN public.assignments a ON ((a.skill_id = sk.id)))
+     JOIN public.subjects su ON ((su.id = a.subject_id)))
+     JOIN public.lessons l ON (((l.id = g.lesson_id) AND (l.subject_id = su.id))))
+  GROUP BY s.id, su.id, sk.skill_name;
+
+
+--
 -- Name: student_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
@@ -1736,35 +1805,36 @@ CREATE OR REPLACE VIEW public.student_lesson_summaries AS
              JOIN public.groups g ON ((g.id = en.group_id)))
              JOIN public.lessons l ON ((l.group_id = g.id)))
              LEFT JOIN public.grades ON (((grades.student_id = s.id) AND (grades.lesson_id = l.id) AND (grades.deleted_at IS NULL))))
-          WHERE ((en.active_since < (l.date + 1)) AND ((en.inactive_since IS NULL) OR (en.inactive_since > (l.date - 1))))
+          WHERE ((en.active_since <= l.date) AND ((en.inactive_since IS NULL) OR (en.inactive_since >= l.date)))
           GROUP BY s.id, l.id) united
      JOIN public.subject_summaries su ON ((united.subject_id = su.id)));
 
 
 --
--- Name: group_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+-- Name: student_lesson_details _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
-CREATE OR REPLACE VIEW public.group_lesson_summaries AS
- SELECT slu.lesson_id,
-    slu.lesson_date,
-    gr.id AS group_id,
-    gr.chapter_id,
-    slu.subject_id,
-    concat(gr.group_name, ' - ', c.chapter_name) AS group_chapter_name,
-    (round(avg(slu.average_mark), 2))::double precision AS average_mark,
-    (sum(slu.grade_count))::bigint AS grade_count,
-    (round((((sum(
-        CASE
-            WHEN (slu.grade_count = 0) THEN 0
-            ELSE 1
-        END))::numeric / (count(slu.*))::numeric) * (100)::numeric), 2))::double precision AS attendance
-   FROM ((public.student_lesson_summaries slu
-     JOIN public.groups gr ON ((slu.group_id = gr.id)))
-     JOIN public.chapters c ON ((gr.chapter_id = c.id)))
-  WHERE (slu.deleted_at IS NULL)
-  GROUP BY slu.lesson_id, gr.id, c.id, slu.subject_id, slu.lesson_date
-  ORDER BY slu.lesson_date;
+CREATE OR REPLACE VIEW public.student_lesson_details AS
+ SELECT s.id AS student_id,
+    s.first_name,
+    s.last_name,
+    s.deleted_at AS student_deleted_at,
+    l.id AS lesson_id,
+    l.date,
+    l.deleted_at AS lesson_deleted_at,
+    l.subject_id,
+    round(avg(g.mark), 2) AS average_mark,
+    count(g.mark) AS grade_count,
+    COALESCE(jsonb_object_agg(g.skill_id, jsonb_build_object('mark', g.mark, 'grade_descriptor_id', g.grade_descriptor_id, 'skill_name', sk.skill_name)) FILTER (WHERE (sk.skill_name IS NOT NULL)), '{}'::jsonb) AS skill_marks
+   FROM (((((public.students s
+     JOIN public.groups gr ON ((gr.id = s.group_id)))
+     JOIN public.lessons l ON ((gr.id = l.group_id)))
+     JOIN public.enrollments en ON ((s.id = en.student_id)))
+     LEFT JOIN public.grades g ON (((g.student_id = s.id) AND (g.lesson_id = l.id) AND (g.deleted_at IS NULL))))
+     LEFT JOIN public.skills sk ON ((sk.id = g.skill_id)))
+  WHERE ((en.active_since <= l.date) AND ((en.inactive_since IS NULL) OR (en.inactive_since >= l.date)))
+  GROUP BY s.id, l.id
+  ORDER BY l.subject_id;
 
 
 --
@@ -1795,6 +1865,32 @@ CREATE OR REPLACE VIEW public.lesson_table_rows AS
      JOIN public.subjects s ON ((l.subject_id = s.id)))
      JOIN public.student_lesson_summaries slu ON (((l.id = slu.lesson_id) AND (slu.deleted_at IS NULL))))
   GROUP BY l.id, s.subject_name, gr.group_name, c.chapter_name;
+
+
+--
+-- Name: group_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.group_lesson_summaries AS
+ SELECT slu.lesson_id,
+    slu.lesson_date,
+    gr.id AS group_id,
+    gr.chapter_id,
+    slu.subject_id,
+    concat(gr.group_name, ' - ', c.chapter_name) AS group_chapter_name,
+    (round(avg(slu.average_mark), 2))::double precision AS average_mark,
+    (sum(slu.grade_count))::bigint AS grade_count,
+    (round((((sum(
+        CASE
+            WHEN (slu.grade_count = 0) THEN 0
+            ELSE 1
+        END))::numeric / (count(slu.*))::numeric) * (100)::numeric), 2))::double precision AS attendance
+   FROM ((public.student_lesson_summaries slu
+     JOIN public.groups gr ON ((slu.group_id = gr.id)))
+     JOIN public.chapters c ON ((gr.chapter_id = c.id)))
+  WHERE (slu.deleted_at IS NULL)
+  GROUP BY slu.lesson_id, gr.id, c.id, slu.subject_id, slu.lesson_date
+  ORDER BY slu.lesson_date;
 
 
 --
@@ -1842,6 +1938,14 @@ ALTER TABLE ONLY public.enrollments
 
 ALTER TABLE ONLY public.student_tags
     ADD CONSTRAINT fk_rails_21aa011b2b FOREIGN KEY (tag_id) REFERENCES public.tags(id);
+
+
+--
+-- Name: students fk_rails_2c3c300d44; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.students
+    ADD CONSTRAINT fk_rails_2c3c300d44 FOREIGN KEY (organization_id) REFERENCES public.organizations(id);
 
 
 --
@@ -1995,6 +2099,16 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250505014040'),
+('20250419013904'),
+('20250419013751'),
+('20250419013750'),
+('20250308233317'),
+('20250308222117'),
+('20250307233526'),
+('20250129182516'),
+('20250125235507'),
+('20250124144809'),
 ('20241120234016'),
 ('20241012105115'),
 ('20241011120532'),

@@ -1,5 +1,7 @@
+# rubocop:disable Metrics/ClassLength
 class StudentsController < HtmlController
   include Pagy::Backend
+  include CollectionHelper
   has_scope :exclude_deleted, only: :index, type: :boolean, default: true
   has_scope :exclude_empty, only: :performance, type: :boolean, default: true
   has_scope :table_order, only: [:index], type: :hash, default: { key: :created_at, order: :desc }
@@ -7,10 +9,21 @@ class StudentsController < HtmlController
     scope.table_order value
   end
   has_scope :search, only: :index
+  has_scope :by_group, as: :group_id
 
   def index
     authorize Student
-    @pagy, @student_rows = pagy apply_scopes(policy_scope(StudentTableRow.includes(:tags, { group: { chapter: :organization } })))
+    respond_to do |format|
+      format.html do
+        @pagy, @student_rows = pagy apply_scopes(policy_scope(StudentTableRow.includes(:tags, :organization)))
+      end
+
+      format.csv do
+        @students = apply_scopes(policy_scope(Student)).includes(:group).all
+        filename = ["#{@students.first.group.group_name} - Students", Time.zone.today.to_s].join(' ')
+        send_data csv_from_array_of_hashes(@students.map(&:to_export)), filename:, content_type: 'text/csv'
+      end
+    end
   end
 
   def show
@@ -18,11 +31,15 @@ class StudentsController < HtmlController
     authorize @student
     @student_lessons_details_by_subject = apply_scopes(StudentLessonDetail.where(student_id: params[:id])).all.group_by(&:subject_id)
     @subjects = policy_scope(Subject).includes(:skills).where(id: @student_lessons_details_by_subject.keys)
-    @lesson_summaries = StudentLessonSummary.where(student_id: @student.id).where.not(average_mark: nil).order(lesson_date: :asc).last(30).map do |summary|
-      {
-        lesson_date: summary.lesson_date,
-        average_mark: summary.average_mark
-      }
+    @lesson_summaries = StudentLessonSummary.where(student_id: @student.id).where.not(average_mark: nil).order(lesson_date: :asc).last(30).map { |s| lesson_summary(s) }
+    @skill_averages = {}
+    populate_skill_averages
+  end
+
+  def populate_skill_averages
+    StudentAverage.where(student_id: @student.id).load.each do |average|
+      @skill_averages[average[:subject_name].to_s] = [] unless @skill_averages[average[:subject_name].to_s]
+      @skill_averages[average[:subject_name].to_s].push({ skill: average[:skill_name], average: average[:average_mark] })
     end
   end
 
@@ -30,6 +47,18 @@ class StudentsController < HtmlController
     authorize Student
     @student = populate_new_student
     flash_redirect request.referer
+  end
+
+  def mlid
+    authorize Student, :new?
+    group = Group.includes(:chapter).find params.require(:group_id)
+    organization_id = group.chapter.organization_id
+    mlid = MindleapsIdService.generate_student_mlid organization_id
+    show_label = params.key? :show_label
+    mlid_component = ::CommonComponents::StudentMlidInput.new(mlid, show_label:)
+    render turbo_stream: [
+      turbo_stream.replace(CommonComponents::StudentMlidInput::ELEMENT_ID, mlid_component)
+    ]
   end
 
   def edit
@@ -85,10 +114,15 @@ class StudentsController < HtmlController
 
   private
 
+  def lesson_summary(summary)
+    { lesson_date: summary.lesson_date, average_mark: summary.average_mark }
+  end
+
   def student_params
     p = params.require(:student)
     p[:student_tags_attributes] = p.fetch(:tag_ids, []).map { |tag_id| { tag_id: } }
     p.delete :tag_ids
+    p[:organization_id] = Group.find(p[:group_id]).chapter[:organization_id] if p[:organization_id].blank? && p[:group_id].present?
     p.permit(*Student.permitted_params)
   end
 
@@ -115,3 +149,4 @@ class StudentsController < HtmlController
     student.update p
   end
 end
+# rubocop:enable Metrics/ClassLength

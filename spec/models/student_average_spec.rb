@@ -1,0 +1,53 @@
+# == Schema Information
+#
+# Table name: student_averages
+#
+#  average_mark       :decimal(, )
+#  first_name         :string
+#  last_name          :string
+#  skill_name         :string
+#  student_deleted_at :datetime
+#  subject_name       :string
+#  student_id         :integer
+#  subject_id         :integer
+#
+require 'rails_helper'
+
+RSpec.describe StudentAverage, type: :model do
+  describe 'Averages calculation' do
+    context 'student that has been graded' do
+      before :each do
+        @student = create :graded_student, grades: {
+          'Memorization' => [1],
+          'Grit' => [1, 2],
+          'Teamwork' => [3, 4, 4]
+        }
+      end
+
+      it 'returns the skills for which the student has been graded on' do
+        skill_averages = StudentAverage.where(student_id: @student.id)
+        expect(skill_averages.length).to eq(3)
+        expect(skill_averages.map(&:skill_name)).to contain_exactly('Memorization', 'Grit', 'Teamwork')
+      end
+
+      it 'calculates the average marks correctly' do
+        skill_averages = StudentAverage.where(student_id: @student.id).order(skill_name: :asc).map(&:average_mark)
+        expect(skill_averages[0]).to be_within(0.01).of 1.5
+        expect(skill_averages[1]).to be_within(0.01).of 1.0
+        expect(skill_averages[2]).to be_within(0.01).of 3.66
+      end
+
+      it 'has multiple subjects if student was graded in different ones' do
+        other_subject = create :subject, subject_name: 'Other Subject'
+        skill = create :skill_in_subject, subject: other_subject
+        lesson = create :lesson, subject: other_subject
+        create :grade, student: @student, lesson: lesson, skill: skill
+
+        subjects = StudentAverage.where(student_id: @student.id).map(&:subject_name)
+
+        expect(subjects.length).to eq(4)
+        expect(subjects).to include('Other Subject')
+      end
+    end
+  end
+end
