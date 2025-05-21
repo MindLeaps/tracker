@@ -572,6 +572,7 @@ DEPENDENCIES
   sprockets-rails
   stimulus-rails
   tailwindcss-rails
+  tailwindcss-ruby
   tiddle
   turbo-rails
   view_component
