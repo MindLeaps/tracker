@@ -18,7 +18,7 @@ class LessonFormComponent < ViewComponent::Base
   end
   erb_template <<~ERB
     <%= form_with model: @lesson, class: 'space-y-0.5' do |f| %>
-      <div class="bg-white px-4 py-5 shadow sm:p-4">
+      <div class="bg-white px-4 py-5 shadow-sm sm:p-4">
         <div class="md:grid md:grid-cols-4 md:gap-6">
           <div class="md:col-span-1">
             <h3 class="text-lg font-medium leading-6 text-gray-900"><%= t(:lesson_information) %></h3>
@@ -27,28 +27,28 @@ class LessonFormComponent < ViewComponent::Base
             <div class="grid grid-cols-6 gap-4">
               <div class="col-span-6 lg:col-span-2">
                 <%= f.label :group, class: 'block text-sm font-medium text-gray-700' %>
-                <%= f.grouped_collection_select :group_id, @chapter_groups, :groups, :chapter_display, :id, :chapter_group_name_with_full_mlid, { include_blank: true }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+                <%= f.grouped_collection_select :group_id, @chapter_groups, :groups, :chapter_display, :id, :chapter_group_name_with_full_mlid, { include_blank: true }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
               </div>
               <div class="col-span-6 lg:col-span-2">
                 <%= f.label :subject, class: 'block text-sm font-medium text-gray-700' %>
-                <%= f.grouped_collection_select :subject_id, @org_subjects, :subjects, :org_display, :id, :subject_name, { include_blank: true }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+                <%= f.grouped_collection_select :subject_id, @org_subjects, :subjects, :org_display, :id, :subject_name, { include_blank: true }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
               </div>
               <div class="col-span-6 lg:col-span-2"></div>
               <div class="col-span-6 lg:col-span-2">
                 <%= f.label :date, class: 'block text-sm font-medium text-gray-700' %>
-                <%= f.date_select :date, {}, class: 'mt-1 rounded-md border-purple-500 text-sm focus:border-green-600 focus:outline-none focus:ring-green-600' %>
+                <%= f.date_select :date, {}, class: 'mt-1 rounded-md border-purple-500 text-sm focus:border-green-600 focus:outline-hidden focus:ring-green-600' %>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="bg-white px-4 py-5 shadow sm:p-4">
+      <div class="bg-white px-4 py-5 shadow-sm sm:p-4">
         <div class="md:grid md:grid-cols-4 md:gap-6">
           <div class="md:col-span-1"></div>
           <div class="mt-5 md:col-span-3 md:mt-0">
             <div class="grid grid-cols-6 gap-4">
               <div class="col-span-6 lg:col-span-4">
-                <%= f.submit class: 'px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 cursor-pointer' %>
+                <%= f.submit class: 'px-4 py-2 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 cursor-pointer' %>
               </div>
             </div>
           </div>
