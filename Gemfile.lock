@@ -247,7 +247,6 @@ GEM
     mini_magick (5.2.0)
       benchmark
       logger
-      mime-types-data (~> 3.2025, >= 3.2025.0507)
     mini_mime (1.1.5)
     mini_portile2 (2.8.9)
     minitest (5.25.5)
