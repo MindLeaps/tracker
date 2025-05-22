@@ -1,14 +1,14 @@
 <!--
-          Notification panel, dynamically insert this into the live region when it needs to be displayed
+  Notification panel, dynamically insert this into the live region when it needs to be displayed
 
-          Entering: "transform ease-out duration-300 transition"
-            From: "translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
-            To: "translate-y-0 opacity-100 sm:translate-x-0"
-          Leaving: "transition ease-in duration-100"
-            From: "opacity-100"
-            To: "opacity-0"
-        -->
-<div data-controller="notification" class="pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white drop-shadow-lg ring-1 ring-purple-700 ring-opacity-10 border-purple-800 transform ease-out duration-400 transition translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2">
+  Entering: "transform ease-out duration-300 transition"
+    From: "translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+    To: "translate-y-0 opacity-100 sm:translate-x-0"
+  Leaving: "transition ease-in duration-100"
+    From: "opacity-100"
+    To: "opacity-0"
+-->
+<div data-controller="notification" class="pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white drop-shadow-lg ring-1 ring-purple-700/10 border-purple-800 transform ease-out duration-400 transition notification-out">
   <div class="p-4">
     <div class="flex items-start">
       <div class="shrink-0">

@@ -1,4 +1,10 @@
-@import 'tailwindcss';
+@import "tailwindcss";
+
+@source "../../helpers/**/*.rb";
+@source "../../javascript/**/*.js";
+@source "../../views/**/*";
+@source "../../components/**/*.erb";
+@source "../../components/**/*.rb";
 
 @plugin "@tailwindcss/forms";
 @plugin "@tailwindcss/typography";
@@ -94,12 +100,12 @@
   @apply enabled:hover:bg-red-700;
 }
 
-@utility notification-in {
-  @apply translate-y-0 opacity-100 sm:translate-x-0;
-}
-
 @utility notification-out {
   @apply translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2;
+}
+
+@utility notification-in {
+  @apply translate-y-0 opacity-100 sm:translate-x-0;
 }
 
 @utility backdrop-in {
