@@ -1,5 +1,5 @@
 <%= form_with model: @skill, action: @action do |f| %>
-  <div class="bg-white px-4 py-5 shadow sm:p-4">
+  <div class="bg-white px-4 py-5 shadow-sm sm:p-4">
     <div class="md:grid md:grid-cols-4 md:gap-6">
       <div class="md:col-span-1">
         <h3 class="text-lg font-medium leading-6 text-gray-900"><%= t(:skill_information) %></h3>
@@ -7,17 +7,17 @@
       <div class="mt-5 md:col-span-3 md:mt-0">
         <div class="grid grid-cols-6 gap-4">
           <div class="col-span-6 lg:col-span-4">
-            <%= f.label :skill_name, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
-            <%= f.text_field :skill_name, autofocus: true, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            <%= f.label :skill_name, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            <%= f.text_field :skill_name, autofocus: true, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
           </div>
           <div class="col-span-6 lg:col-span-4">
-            <%= f.label :skill_description, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
-            <%= f.text_area :skill_description, rows: 5, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            <%= f.label :skill_description, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            <%= f.text_area :skill_description, rows: 5, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
           </div>
           <div class="col-span-2"></div>
           <div class="col-span-6 lg:col-span-2">
-            <%= f.label :organization_id, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
-            <%= f.collection_select :organization_id, @permitted_organizations, :id, :organization_name, {}, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            <%= f.label :organization_id, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            <%= f.collection_select :organization_id, @permitted_organizations, :id, :organization_name, {}, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
           </div>
         </div>
       </div>
@@ -31,12 +31,12 @@
             <% id = SecureRandom.uuid %>
             <div class="grid grid-cols-6 col-span-6 gap-4" data-association-target="removable" id="<%= id %>">
             <div class="col-span-1">
-              <%= gf.label :mark, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
-              <%= gf.number_field :mark, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+              <%= gf.label :mark, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+              <%= gf.number_field :mark, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
             </div>
             <div class="col-span-3">
-              <%= gf.label :grade_description, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
-              <%= gf.text_field :grade_description, rows: 5, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+              <%= gf.label :grade_description, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+              <%= gf.text_field :grade_description, rows: 5, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
             </div>
             <div class="col-span-2 relative">
               <button class="dangerous-button absolute bottom-0 cursor-pointer" data-action="association#remove" data-association-remove-id-param="<%= id %>"><%= t(:delete_grade) %></button>
@@ -52,7 +52,7 @@
       </div>
     </div>
   </div>
-  <div class="bg-white px-4 py-5 shadow sm:p-4">
+  <div class="bg-white px-4 py-5 shadow-sm sm:p-4">
     <div class="md:grid md:grid-cols-4 md:gap-6">
       <div class="md:col-span-1"></div>
       <div class="mt-5 md:col-span-3 md:mt-0">

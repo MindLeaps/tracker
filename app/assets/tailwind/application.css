@@ -1,151 +1,194 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-@layer utilities {
-  .table-row-wrapper {
-    display: contents;
+@source "../../helpers/**/*.rb";
+@source "../../javascript/**/*.js";
+@source "../../views/**/*";
+@source "../../components/**/*.erb";
+@source "../../components/**/*.rb";
+
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/typography";
+@plugin "@tailwindcss/aspect-ratio";
+
+@theme {
+  --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+  --color-primary: 'rgb(107 33 168/var(--tw-bg-opacity))';
+  --color-focus: 'rgb(22 163 74/var(--tw-bg-opacity))';
+  --color-current: 'currentColor';
+
+  --breakpoint-print: 'print';
+}
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
   }
+}
 
-  .shaded-row > div {
-    @apply bg-slate-100;
-  }
+@utility table-row-wrapper {
+  display: contents;
 
-  .table-row-wrapper:hover div {
+  &:hover div {
     @apply bg-green-200;
   }
+}
 
-  .table-action-link {
-    @apply text-purple-800;
+@utility shaded-row {
+  & > div {
+    @apply bg-slate-100;
   }
+}
 
-  .table-action-link:hover {
+@utility table-action-link {
+  @apply text-purple-800;
+
+  &:hover {
     @apply text-purple-500;
   }
+}
 
-  .deleted-row > div {
+@utility deleted-row {
+  & > div {
     @apply bg-red-200;
     @apply line-through;
   }
+}
 
-  .base-button {
-    @apply cursor-pointer;
-    @apply inline-flex;
-    @apply items-center;
-    @apply mr-2;
-    @apply px-4;
-    @apply py-2;
-    @apply border;
-    @apply border-transparent;
-    @apply shadow-sm;
-    @apply text-sm;
-    @apply font-medium;
-    @apply rounded-md;
-    @apply text-white;
-    @apply focus:outline-none;
-    @apply focus:ring-2;
-    @apply focus:ring-offset-2;
-    @apply focus:ring-purple-500;
-    @apply enabled:cursor-pointer;
-    @apply disabled:bg-slate-300;
-  }
+@utility base-button {
+  @apply cursor-pointer;
+  @apply inline-flex;
+  @apply items-center;
+  @apply mr-2;
+  @apply px-4;
+  @apply py-2;
+  @apply border;
+  @apply border-transparent;
+  @apply shadow-xs;
+  @apply text-sm;
+  @apply font-medium;
+  @apply rounded-md;
+  @apply text-white;
+  @apply focus:outline-hidden;
+  @apply focus:ring-2;
+  @apply focus:ring-offset-2;
+  @apply focus:ring-purple-500;
+  @apply enabled:cursor-pointer;
+  @apply disabled:bg-slate-300;
+}
 
-  .normal-button {
-    @apply base-button;
-    @apply bg-green-600;
-    @apply enabled:hover:bg-green-700;
-  }
+@utility normal-button {
+  @apply base-button;
+  @apply bg-green-600;
+  @apply enabled:hover:bg-green-700;
+}
 
-  .dangerous-button {
-    @apply base-button;
-    @apply bg-red-600;
-    @apply enabled:hover:bg-red-700;
-  }
+@utility dangerous-button {
+  @apply base-button;
+  @apply bg-red-600;
+  @apply enabled:hover:bg-red-700;
+}
 
-  .notification-in {
-    @apply translate-y-0 opacity-100 sm:translate-x-0;
-  }
+@utility notification-out {
+  @apply translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2;
+}
 
-  .notification-out {
-    @apply translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2;
-  }
+@utility notification-in {
+  @apply translate-y-0 opacity-100 sm:translate-x-0;
+}
 
-  .backdrop-in {
-    @apply ease-out;
-    @apply duration-300;
-    @apply opacity-100;
-  }
+@utility backdrop-in {
+  @apply ease-out;
+  @apply duration-300;
+  @apply opacity-100;
+}
 
-  .backdrop-out {
-    @apply ease-in;
-    @apply duration-200;
-    @apply opacity-0;
-  }
+@utility backdrop-out {
+  @apply ease-in;
+  @apply duration-200;
+  @apply opacity-0;
+}
 
-  .modal-in {
-    @apply ease-out;
-    @apply duration-300;
-    @apply opacity-100;
-    @apply translate-y-0;
-  }
+@utility modal-in {
+  @apply ease-out;
+  @apply duration-300;
+  @apply opacity-100;
+  @apply translate-y-0;
+}
 
-  .modal-out {
-    @apply ease-in;
-    @apply duration-200;
-    @apply opacity-0;
-    @apply translate-y-4;
-  }
+@utility modal-out {
+  @apply ease-in;
+  @apply duration-200;
+  @apply opacity-0;
+  @apply translate-y-4;
+}
 
-  .grading-marker {
-    content: '';
-    width: 5px;
-    height: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
-  }
+@utility grading-marker {
+  content: '';
+  width: 5px;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
 
-  .fully-graded:before {
+@utility fully-graded {
+  &:before {
     @apply grading-marker;
     background: green;
   }
+}
 
-  .partially-graded:before {
+@utility partially-graded {
+  &:before {
     @apply grading-marker;
     background: yellow;
   }
+}
 
-  .not-graded:before {
+@utility not-graded {
+  &:before {
     @apply grading-marker;
     background: red;
   }
+}
 
-  .base-table-cell {
-    @apply px-4;
-    @apply py-3;
-    @apply text-sm;
-    @apply font-medium;
-    @apply text-gray-600;
-  }
+@utility base-table-cell {
+  @apply px-4;
+  @apply py-3;
+  @apply text-sm;
+  @apply font-medium;
+  @apply text-gray-600;
+}
 
-  .table-cell {
-    @apply base-table-cell;
-    @apply whitespace-nowrap;
-  }
+@utility table-cell {
+  @apply base-table-cell;
+  @apply whitespace-nowrap;
+}
 
-  .drop-container {
-    @apply mb-4;
-    @apply transition;
-    @apply ease-in-out;
-    @apply duration-150;
-  }
+@utility drop-container {
+  @apply mb-4;
+  @apply transition;
+  @apply ease-in-out;
+  @apply duration-150;
+}
 
-  .field-label {
-    @apply block;
-    @apply text-sm;
-    @apply font-medium;
-    @apply text-gray-700;
-  }
+@utility field-label {
+  @apply block;
+  @apply text-sm;
+  @apply font-medium;
+  @apply text-gray-700;
 }
 
 .validation-error {

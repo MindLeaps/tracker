@@ -3,6 +3,6 @@
     <%= hidden_field_tag name, value %>
   <% end %>
   <div class="mdl-textfield mdl-js-textfield">
-    <%= text_field_tag :search, @search[:term], data: { action: 'keyup->autosubmit#submit', turbo_permanent: true }, autofocus: @autofocus, class: 'block w-full bg-white border border-green-700 rounded-md py-2 pl-10 pr-3 text-sm placeholder-gray-500 focus:outline-none focus:text-gray-900 focus:placeholder-gray-400 focus:ring-1 focus:ring-green-700 focus:border-green-700 sm:text-sm', id: 'search-field', placeholder: 'Search' %>
+    <%= text_field_tag :search, @search[:term], data: { action: 'keyup->autosubmit#submit', turbo_permanent: true }, autofocus: @autofocus, class: 'block w-full bg-white border border-green-700 rounded-md py-2 pl-10 pr-3 text-sm placeholder-gray-500 focus:outline-hidden focus:text-gray-900 focus:placeholder-gray-400 focus:ring-1 focus:ring-green-700 focus:border-green-700 sm:text-sm', id: 'search-field', placeholder: 'Search' %>
   </div>
 <% end %>

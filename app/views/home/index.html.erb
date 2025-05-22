@@ -35,10 +35,10 @@
             </div>
             <div class="mt-12 sm:max-w-lg sm:w-full sm:flex">
               <div class="mt-4 sm:mt-0 sm:ml-3">
-                <%= button_to 'Log in', omniauth_authorize_path(User, :google_oauth2), { class: 'block w-full rounded-md border border-transparent px-5 py-3 bg-purple-800 text-base font-medium text-white shadow hover:bg-green-600 cursor-pointer focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 sm:px-10' } %>
+                <%= button_to 'Log in', omniauth_authorize_path(User, :google_oauth2), { class: 'block w-full rounded-md border border-transparent px-5 py-3 bg-purple-800 text-base font-medium text-white shadow-sm hover:bg-green-600 cursor-pointer focus:outline-hidden focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 sm:px-10' } %>
               </div>
               <div class="mt-4 sm:mt-0 sm:ml-3">
-                <a class="block w-full rounded-md border border-transparent px-5 py-3 bg-white text-base font-medium text-purple-800 shadow hover:bg-green-600 hover:text-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 sm:px-10" href='https://releases.mindleaps.app/latest'>
+                <a class="block w-full rounded-md border border-transparent px-5 py-3 bg-white text-base font-medium text-purple-800 shadow-sm hover:bg-green-600 hover:text-white cursor-pointer focus:outline-hidden focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 sm:px-10" href='https://releases.mindleaps.app/latest'>
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                   </svg>
@@ -89,10 +89,10 @@
             <!-- Testimonial card-->
             <div class="relative pt-64 pb-10 rounded-2xl shadow-xl overflow-hidden">
               <img class="absolute inset-0 h-full w-full object-cover " src="<%= image_url 'mindleaps_home_students_photo.png' %>" alt="">
-              <div class="absolute inset-0 bg-gradient-to-t from-purple-800 opacity-50"></div>
+              <div class="absolute inset-0 bg-linear-to-t from-purple-800 opacity-50"></div>
               <div class="relative px-8">
                 <blockquote class="mt-8">
-                  <div class="relative text-lg font-medium text-white md:flex-grow">
+                  <div class="relative text-lg font-medium text-white md:grow">
                     <p class="relative">
                       At MindLeaps, Tracker enables us to collect social-emotional learning data unobtrusively on every student, every class session, on each of 7 life skills
                     </p>

@@ -7,11 +7,11 @@ class StudentTableForm < ViewComponent::Base
         <%= render ValidationErrorComponent.new(model: @student, key: :mlid) %>
       </div>
       <div class="table-cell text-right">
-        <%= form.text_field :last_name, class: "w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm" %>
+        <%= form.text_field :last_name, class: "w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm" %>
         <%= render ValidationErrorComponent.new(model: @student, key: :last_name) %>
       </div>
       <div class="table-cell text-right">
-        <%= form.text_field :first_name, class: "w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm" %>
+        <%= form.text_field :first_name, class: "w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm" %>
         <%= render ValidationErrorComponent.new(model: @student, key: :first_name) %>
       </div>
       <div class="table-cell text-right">
@@ -36,7 +36,7 @@ class StudentTableForm < ViewComponent::Base
       </div>
       <div class="table-cell"></div>
       <div class="table-cell">
-        <%= form.submit class: "px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 cursor-pointer" %>
+        <%= form.submit class: "px-4 py-2 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 cursor-pointer" %>
         <% if @is_edit %>
           <%= link_to t(:cancel), cancel_edit_group_student_path(@group.id, @student.id), data: { "turbo-method": "post", "turbo-stream": "" } %>
         <% end %>
