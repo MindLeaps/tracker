@@ -15,7 +15,7 @@ class StudentsController < HtmlController
     authorize Student
     respond_to do |format|
       format.html do
-        @pagy, @student_rows = pagy apply_scopes(policy_scope(StudentTableRow.includes(:tags, :organization)))
+        @pagy, @student_rows = pagy apply_scopes(policy_scope(Student.includes(:tags, :organization)))
       end
 
       format.csv do
@@ -27,7 +27,7 @@ class StudentsController < HtmlController
   end
 
   def show
-    @student = Student.includes(:profile_image, group: { chapter: [:organization] }).find params.require(:id)
+    @student = Student.includes(:profile_image, :organization).find params.require(:id)
     authorize @student
     @student_lessons_details_by_subject = apply_scopes(StudentLessonDetail.where(student_id: params[:id])).all.group_by(&:subject_id)
     @subjects = policy_scope(Subject).includes(:skills).where(id: @student_lessons_details_by_subject.keys)
@@ -70,24 +70,33 @@ class StudentsController < HtmlController
   def create
     @student = Student.new student_params
     authorize @student
-    if @student.save
-      success(title: :student_added, text: t(:student_name_added, name: @student.proper_name), link_text: t(:create_another), link_path: new_student_path(group_id: @student.group_id))
-      return redirect_to(flash[:redirect] || student_path(@student))
+    if params[:add_group]
+      @student.enrollments.build
+      render :new, status: :ok
+    elsif @student.save
+      success(title: :student_added, text: t(:student_name_added, name: @student.proper_name), link_text: t(:create_another), link_path: new_student_path)
+      redirect_to(flash[:redirect] || student_path(@student))
+    else
+      failure_now(title: t(:student_invalid), text: t(:fix_form_errors))
+      render :new, status: :unprocessable_entity
     end
-    failure_now(title: t(:student_invalid), text: t(:fix_form_errors))
-    render :new, status: :unprocessable_entity
   end
 
   def update
     @student = Student.find params[:id]
     authorize @student
-    if update_student @student
-      success title: t(:student_updated), text: t(:student_name_updated, name: @student.proper_name)
-      return redirect_to(flash[:redirect] || student_path(@student))
-    end
+    @student.assign_attributes student_params
 
-    failure title: t(:student_invalid), text: t(:fix_form_errors)
-    render :edit, status: :unprocessable_entity
+    if params[:add_group]
+      @student.enrollments.build
+      render :new, status: :ok
+    elsif @student.save
+      success title: t(:student_updated), text: t(:student_name_updated, name: @student.proper_name)
+      redirect_to(flash[:redirect] || student_path(@student))
+    else
+      failure title: t(:student_invalid), text: t(:fix_form_errors)
+      render :edit, status: :unprocessable_entity
+    end
   end
 
   def destroy
@@ -122,7 +131,7 @@ class StudentsController < HtmlController
     p = params.require(:student)
     p[:student_tags_attributes] = p.fetch(:tag_ids, []).map { |tag_id| { tag_id: } }
     p.delete :tag_ids
-    p[:organization_id] = Group.find(p[:group_id]).chapter[:organization_id] if p[:organization_id].blank? && p[:group_id].present?
+    p[:organization_id] = Group.find(p[:old_group_id]).chapter[:organization_id] if p[:organization_id].blank? && p[:old_group_id].present?
     p.permit(*Student.permitted_params)
   end
 
@@ -132,7 +141,13 @@ class StudentsController < HtmlController
 
   def populate_new_student
     student = Student.new
-    student.group = Group.find(new_params[:group_id]) if new_params[:group_id]
+    if new_params[:group_id]
+      group = Group.includes(:chapter).find new_params[:group_id]
+      if group
+        student.enrollments.build(group: group)
+        student.organization_id = group.chapter.organization_id
+      end
+    end
     student
   end
 

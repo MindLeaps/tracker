@@ -1,6 +1,7 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -8,6 +9,20 @@ SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
+
+--
+-- Name: btree_gist; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS btree_gist WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION btree_gist; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION btree_gist IS 'support for indexing common datatypes in GiST';
+
 
 --
 -- Name: pg_stat_statements; Type: EXTENSION; Schema: -; Owner: -
@@ -899,7 +914,7 @@ CREATE TABLE public.students (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     estimated_dob boolean DEFAULT true NOT NULL,
-    group_id integer,
+    old_group_id integer,
     gender public.gender NOT NULL,
     quartier character varying,
     health_insurance text,
@@ -932,7 +947,7 @@ CREATE VIEW public.student_lessons AS
     l.id AS lesson_id
    FROM ((public.lessons l
      JOIN public.groups g ON ((l.group_id = g.id)))
-     JOIN public.students s ON ((g.id = s.group_id)));
+     JOIN public.students s ON ((g.id = s.old_group_id)));
 
 
 --
@@ -947,7 +962,7 @@ CREATE VIEW public.student_table_rows AS
     s.created_at,
     s.updated_at,
     s.estimated_dob,
-    s.group_id,
+    s.old_group_id AS group_id,
     s.gender,
     s.quartier,
     s.health_insurance,
@@ -974,7 +989,7 @@ CREATE VIEW public.student_table_rows AS
     g.mlid AS group_mlid,
     concat(o.mlid, '-', s.mlid) AS full_mlid
    FROM (((public.students s
-     JOIN public.groups g ON ((s.group_id = g.id)))
+     JOIN public.groups g ON ((s.old_group_id = g.id)))
      JOIN public.chapters c ON ((g.chapter_id = c.id)))
      JOIN public.organizations o ON ((s.organization_id = o.id)));
 
@@ -1277,6 +1292,14 @@ ALTER TABLE ONLY public.lessons
 
 
 --
+-- Name: enrollments non_overlapping_enrollments; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.enrollments
+    ADD CONSTRAINT non_overlapping_enrollments EXCLUDE USING gist (student_id WITH =, group_id WITH =, tsrange((active_since)::timestamp without time zone, (inactive_since)::timestamp without time zone) WITH &&);
+
+
+--
 -- Name: organizations organizations_mlid_key; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1527,17 +1550,17 @@ CREATE INDEX index_student_tags_on_tag_id ON public.student_tags USING btree (ta
 
 
 --
--- Name: index_students_on_group_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_students_on_group_id ON public.students USING btree (group_id);
-
-
---
 -- Name: index_students_on_mlid_and_organization_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_students_on_mlid_and_organization_id ON public.students USING btree (mlid, organization_id);
+
+
+--
+-- Name: index_students_on_old_group_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_students_on_old_group_id ON public.students USING btree (old_group_id);
 
 
 --
@@ -1632,7 +1655,7 @@ CREATE OR REPLACE VIEW public.group_summaries AS
             ELSE 0
         END) AS student_count
    FROM (((public.groups g
-     LEFT JOIN public.students s ON ((g.id = s.group_id)))
+     LEFT JOIN public.students s ON ((g.id = s.old_group_id)))
      LEFT JOIN public.chapters c ON ((g.chapter_id = c.id)))
      LEFT JOIN public.organizations o ON ((c.organization_id = o.id)))
   GROUP BY g.id, c.id, o.id;
@@ -1827,7 +1850,7 @@ CREATE OR REPLACE VIEW public.student_lesson_details AS
     count(g.mark) AS grade_count,
     COALESCE(jsonb_object_agg(g.skill_id, jsonb_build_object('mark', g.mark, 'grade_descriptor_id', g.grade_descriptor_id, 'skill_name', sk.skill_name)) FILTER (WHERE (sk.skill_name IS NOT NULL)), '{}'::jsonb) AS skill_marks
    FROM (((((public.students s
-     JOIN public.groups gr ON ((gr.id = s.group_id)))
+     JOIN public.groups gr ON ((gr.id = s.old_group_id)))
      JOIN public.lessons l ON ((gr.id = l.group_id)))
      JOIN public.enrollments en ON ((s.id = en.student_id)))
      LEFT JOIN public.grades g ON (((g.student_id = s.id) AND (g.lesson_id = l.id) AND (g.deleted_at IS NULL))))
@@ -1891,13 +1914,6 @@ CREATE OR REPLACE VIEW public.group_lesson_summaries AS
   WHERE (slu.deleted_at IS NULL)
   GROUP BY slu.lesson_id, gr.id, c.id, slu.subject_id, slu.lesson_date
   ORDER BY slu.lesson_date;
-
-
---
--- Name: students update_enrollments_on_student_group_change_trigger; Type: TRIGGER; Schema: public; Owner: -
---
-
-CREATE TRIGGER update_enrollments_on_student_group_change_trigger AFTER INSERT OR UPDATE ON public.students FOR EACH ROW EXECUTE FUNCTION public.update_enrollments();
 
 
 --
@@ -2065,7 +2081,7 @@ ALTER TABLE ONLY public.student_images
 --
 
 ALTER TABLE ONLY public.students
-    ADD CONSTRAINT students_group_id_fk FOREIGN KEY (group_id) REFERENCES public.groups(id);
+    ADD CONSTRAINT students_group_id_fk FOREIGN KEY (old_group_id) REFERENCES public.groups(id);
 
 
 --
@@ -2099,6 +2115,8 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250530141635'),
+('20250530123657'),
 ('20250505014040'),
 ('20250419013904'),
 ('20250419013751'),
