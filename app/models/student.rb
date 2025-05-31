@@ -27,14 +27,14 @@
 #  year_of_dropout        :integer
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  group_id               :integer
+#  old_group_id           :integer
 #  organization_id        :integer          not null
 #  profile_image_id       :integer
 #
 # Indexes
 #
-#  index_students_on_group_id                  (group_id)
 #  index_students_on_mlid_and_organization_id  (mlid,organization_id) UNIQUE
+#  index_students_on_old_group_id              (old_group_id)
 #  index_students_on_organization_id           (organization_id)
 #  index_students_on_profile_image_id          (profile_image_id)
 #
@@ -42,37 +42,35 @@
 #
 #  fk_rails_...          (organization_id => organizations.id)
 #  fk_rails_...          (profile_image_id => student_images.id)
-#  students_group_id_fk  (group_id => groups.id)
+#  students_group_id_fk  (old_group_id => groups.id)
 #
 class Student < ApplicationRecord
   require 'csv'
   include PgSearch::Model
   include Mlid
   pg_search_scope :search, against: [:first_name, :last_name, :mlid], associated_against: {
-    tags: :tag_name
+    tags: :tag_name,
+    organization: :organization_name
   }, using: { tsearch: { prefix: true } }
 
   validates :first_name, :last_name, :dob, :gender, presence: true
   validates :mlid, uniqueness: { scope: :organization_id }, length: { maximum: 8 }
-  validate :group_belongs_to_same_organization
+  validates_associated :enrollments
 
   enum :gender, { M: 'male', F: 'female', NB: 'nonbinary' }
 
-  belongs_to :organization
-  belongs_to :group
+  belongs_to :organization, inverse_of: :students
   has_many :grades, dependent: :restrict_with_error
   has_many :student_images, dependent: :restrict_with_error
-  has_many :enrollments, dependent: :destroy
+  has_many :enrollments, inverse_of: :student, dependent: :destroy
+  has_many :groups, through: :enrollments, inverse_of: :students
   belongs_to :profile_image, class_name: 'StudentImage', optional: true, inverse_of: :student
   has_many :student_tags, dependent: :destroy
   has_many :tags, through: :student_tags
   accepts_nested_attributes_for :grades
   accepts_nested_attributes_for :student_images
   accepts_nested_attributes_for :student_tags
-
-  delegate :group_name, to: :group, allow_nil: true
-
-  scope :by_group, ->(group_id) { where group_id: }
+  accepts_nested_attributes_for :enrollments, allow_destroy: true
 
   def proper_name
     "#{last_name}, #{first_name}"
@@ -93,12 +91,7 @@ class Student < ApplicationRecord
     [:mlid, :first_name, :last_name, :dob, :estimated_dob, :group_id, :gender, :country_of_nationality, :quartier,
      :guardian_name, :guardian_occupation, :guardian_contact, :family_members, :health_insurance,
      :health_issues, :hiv_tested, :name_of_school, :school_level_completed, :year_of_dropout,
-     :reason_for_leaving, :notes, :organization_id, :profile_image_id, { student_images_attributes: [:image], student_tags_attributes: [:tag_id, :student_id, :_destroy] }]
-  end
-
-  private
-
-  def group_belongs_to_same_organization
-    errors.add(:group, I18n.t(:student_and_group_in_different_organizations)) if group.present? && group.chapter.organization_id != organization_id
+     :reason_for_leaving, :notes, :organization_id, :profile_image_id, { student_images_attributes: [:image], student_tags_attributes: [:tag_id, :student_id, :_destroy] },
+     { enrollments_attributes: [:id, :student_id, :group_id, :active_since, :inactive_since, :_destroy] }]
   end
 end
