@@ -1,4 +1,9 @@
 class TagPolicy < ApplicationPolicy
+
+  def destroy?
+    create?
+  end
+
   class Scope
     attr_reader :user, :scope
 

@@ -47,6 +47,21 @@ class StudentTagsController < HtmlController
     render :edit
   end
 
+  def destroy
+    @tag = Tag.find params.require(:id)
+    authorize @tag
+
+    if @tag.can_delete?
+      return unless @tag.destroy
+
+      success title: t(:tag_deleted), text: t(:tag_deleted_text, tag_name: @tag.tag_name)
+      redirect_to student_tags_path
+    else
+      failure title: t(:unable_to_delete_tag), text: t(:tag_not_deleted_because_students)
+      redirect_to request.referer || student_tag_path(@tag)
+    end
+  end
+
   private
 
   def tag_params
