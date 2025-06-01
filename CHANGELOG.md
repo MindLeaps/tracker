@@ -1,4 +1,5 @@
 ## Unreleased 
+- Updated subject analytics performance charts to render each grade score
 - Added the ability to export basic student data to csv for a group
 - Added `random_alphanumeric_string(length)` DB function to help with MLID generation
 - Added `random_student_mlids(org_id, mlid_length, number_of_mlids)` to generate unique available student MLIDs for organization
