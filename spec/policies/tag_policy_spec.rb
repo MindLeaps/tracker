@@ -1,6 +1,42 @@
 require 'rails_helper'
 
 RSpec.describe TagPolicy do
+  describe 'permissions' do
+    subject { TagPolicy.new current_user, tag }
+    let(:org) { create :organization }
+
+    context 'as a super administrator' do
+      let(:current_user) { create :super_admin }
+
+      context 'on any existing tag' do
+        let(:tag) { create :tag }
+
+        it { is_expected.to permit_action :destroy }
+      end
+    end
+
+    context 'as a local teacher' do
+      let(:current_user) { create :teacher_in, organization: org }
+
+      context 'on any existing tag' do
+        let(:tag) { create :tag }
+
+        it { is_expected.not_to permit_action :destroy }
+      end
+    end
+
+    context 'as a local researcher' do
+      let(:current_user) { create :researcher_in, organization: org }
+
+      context 'on any existing tag' do
+        let(:tag) { create :tag }
+
+        it { is_expected.not_to permit_action :destroy }
+      end
+    end
+  end
+
+
   describe 'scope' do
     describe 'resolve_for_organization_id' do
       let(:org1) { create :organization }
