@@ -1,5 +1,4 @@
 class TagPolicy < ApplicationPolicy
-
   def create?
     new? && (user.global_administrator? || user.is_admin_of?(record.organization))
   end

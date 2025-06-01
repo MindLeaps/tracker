@@ -201,7 +201,6 @@ RSpec.describe TagPolicy do
     end
   end
 
-
   describe 'scope' do
     describe 'resolve_for_organization_id' do
       let(:org1) { create :organization }
