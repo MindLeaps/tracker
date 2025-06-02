@@ -31,8 +31,12 @@ class Enrollment < ApplicationRecord
   validates :active_since, presence: true
   validates :inactive_since, comparison: { greater_than: :active_since, message: I18n.t(:enrollment_end_before_start) }, allow_nil: true
   validates :student, uniqueness: { scope: [:group_id, :inactive_since], message: I18n.t(:enrollment_duplicate), if: :open? }
-  validate :validate_student_and_group_in_same_org
+  validate :validate_student_and_group_in_same_org, if: :student_in_organization?
   validate :validate_enrollments_do_not_overlap
+
+  def student_in_organization?
+    student.organization.present?
+  end
 
   def validate_student_and_group_in_same_org
     errors.add(:student, I18n.t(:enrollment_not_same_org)) if student.present? && group.present? && (student.organization_id != group.chapter.organization_id)
