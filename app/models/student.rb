@@ -82,14 +82,23 @@ class Student < ApplicationRecord
   end
 
   def deleted_enrollment_with_grades?
-    # check if there are deleted enrollments which have grades
     enrollments.each do |enrollment|
       next unless enrollment.marked_for_destruction?
 
       lessons = Lesson.where(group_id: enrollment.group_id)
       grades = Grade.where(student_id: id, lesson_id: lessons, deleted_at: nil)
 
-      return grades.count.positive?
+      return enrollment if grades.count.positive?
+    end
+
+    false
+  end
+
+  def updated_group_for_existing_enrollment?
+    enrollments.each do |enrollment|
+      original_enrollment = Enrollment.find_by(id: enrollment.id)
+
+      return original_enrollment if original_enrollment.present? && original_enrollment.group_id != enrollment.group.id
     end
 
     false

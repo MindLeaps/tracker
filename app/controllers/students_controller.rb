@@ -90,11 +90,7 @@ class StudentsController < HtmlController
     if params[:add_group]
       @student.enrollments.build
       render :new, status: :ok
-    elsif @student.deleted_enrollment_with_grades?
-      failure title: 'Enrollment has grades in it', text: 'Cannot delete enrollment because it has grades associated with it.'
-      redirect_to(flash[:redirect] || edit_student_path(@student))
-    elsif @student.save
-      success title: t(:student_updated), text: t(:student_name_updated, name: @student.proper_name)
+    elsif validate_student_enrollments_and_save
       redirect_to(flash[:redirect] || student_path(@student))
     else
       failure title: t(:student_invalid), text: t(:fix_form_errors)
@@ -125,6 +121,17 @@ class StudentsController < HtmlController
   end
 
   private
+
+  def validate_student_enrollments_and_save
+    deleted_enrollment = @student.deleted_enrollment_with_grades?
+    modified_existing_enrollment = @student.updated_group_for_existing_enrollment?
+
+    return failure title: t(:unable_to_delete_enrollment), text: t(:enrollment_not_deleted_because_grades, group: Group.find(deleted_enrollment.group_id).group_name) if deleted_enrollment
+    return failure title: t(:enrollment_already_exists), text: t(:cannot_change_existing_enrollment, group: Group.find(modified_existing_enrollment.group_id).group_name) if modified_existing_enrollment
+    return success title: t(:student_updated), text: t(:student_name_updated, name: @student.proper_name) if @student.save
+
+    false
+  end
 
   def lesson_summary(summary)
     { lesson_date: summary.lesson_date, average_mark: summary.average_mark }
