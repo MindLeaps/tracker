@@ -88,18 +88,18 @@
                   <%= ef.hidden_field :id %>
                   <%= ef.label :group_id, class: 'block text-sm font-medium text-gray-700' %>
                   <%= ef.grouped_collection_select :group_id, @chapter_groups, :groups, :chapter_display, :id, :chapter_group_name_with_full_mlid, { include_blank: false }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
-                  <%= render ValidationErrorComponent.new(model: ef.object, key: :student) %>
-                  <%= render ValidationErrorComponent.new(model: ef.object, key: :group) %>
+                  <%= render ValidationErrorComponent.new(model: ef.object, key: :student, remove_prepend: true) %>
+                  <%= render ValidationErrorComponent.new(model: ef.object, key: :group, remove_prepend: true) %>
                 </div>
                 <div class="col-span-6 lg:col-span-2">
-                  <%= ef.label :active_since, t(:enrolled_since),class: 'field-label' %>
-                  <%= ef.date_select :active_since, { start_year: 2012, end_year: Date.today.year, selected: Date.new(Date.current.year, 1, 1), use_short_month: true }, class: 'mt-1 rounded-md border-purple-500 text-sm focus:border-green-600 focus:outline-none focus:ring-green-600' %>
+                  <%= ef.label :active_since, t(:enrolled_since), class: 'field-label' %>
+                  <%= render Datepicker.new(date: :active_since || Date.new(Date.current.year, 1, 1), target: 'active_since', form: ef) %>
                   <%= render ValidationErrorComponent.new(model: ef.object, key: :active_since) %>
                 </div>
                 <div class="col-span-6 lg:col-span-2">
                   <%= ef.label :inactive_since, t(:enrolled_until),class: 'field-label' %>
-                  <%= ef.date_select :inactive_since, { start_year: 2012, include_blank: true, selected: nil, use_short_month: true }, class: 'mt-1 rounded-md border-purple-500 text-sm focus:border-green-600 focus:outline-none focus:ring-green-600' %>
-                  <%= render ValidationErrorComponent.new(model: ef.object, key: :inactive_since) %>
+                  <%= render Datepicker.new(date: :inactive_since, target: 'inactive_since', form: ef) %>
+                  <%= render ValidationErrorComponent.new(model: ef.object, key: :inactive_since, remove_prepend: true) %>
                 </div>
                 <div class="col-span-2 relative">
                   <%= ef.check_box :_destroy, class: 'hidden', 'data-association-target': 'checkable', 'data-association-id': id %>

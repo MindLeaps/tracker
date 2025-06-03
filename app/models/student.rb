@@ -81,6 +81,20 @@ class Student < ApplicationRecord
     now.year - dob.year - (now.month > dob.month || (now.month == dob.month && now.day >= dob.day) ? 0 : 1)
   end
 
+  def deleted_enrollment_with_grades?
+    # check if there are deleted enrollments which have grades
+    enrollments.each do |enrollment|
+      next unless enrollment.marked_for_destruction?
+
+      lessons = Lesson.where(group_id: enrollment.group_id)
+      grades = Grade.where(student_id: id, lesson_id: lessons, deleted_at: nil)
+
+      return grades.count.positive?
+    end
+
+    false
+  end
+
   def to_export
     { id: id, first_name: first_name, last_name: last_name, date_of_birth: dob, age: age, country_of_nationality: country_of_nationality, gender: gender,
       group_id: group_id, group_name: group.group_name, enrolled_at: Enrollment.where(student_id: id, group_id: group_id).maximum(:active_since),

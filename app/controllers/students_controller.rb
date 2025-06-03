@@ -90,6 +90,9 @@ class StudentsController < HtmlController
     if params[:add_group]
       @student.enrollments.build
       render :new, status: :ok
+    elsif @student.deleted_enrollment_with_grades?
+      failure title: 'Enrollment has grades in it', text: 'Cannot delete enrollment because it has grades associated with it.'
+      redirect_to(flash[:redirect] || edit_student_path(@student))
     elsif @student.save
       success title: t(:student_updated), text: t(:student_name_updated, name: @student.proper_name)
       redirect_to(flash[:redirect] || student_path(@student))
