@@ -484,7 +484,7 @@ GEM
       activerecord (>= 6.1.0)
       devise (>= 4.0.0.rc1, < 5)
     timeout (0.4.3)
-    turbo-rails (2.0.13)
+    turbo-rails (2.0.16)
       actionpack (>= 7.1.0)
       railties (>= 7.1.0)
     tzinfo (2.0.6)
