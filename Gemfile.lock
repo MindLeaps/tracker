@@ -154,7 +154,7 @@ GEM
       activesupport (>= 3.0.0)
     erb (5.0.1)
     erubi (1.13.1)
-    excon (1.2.5)
+    excon (1.2.7)
       logger
     factory_bot (6.5.0)
       activesupport (>= 5.0.0)
@@ -171,7 +171,7 @@ GEM
       net-http (>= 0.5.0)
     fastimage (2.2.4)
     ffi (1.17.2)
-    fog-aws (3.31.0)
+    fog-aws (3.32.0)
       base64 (~> 0.2.0)
       fog-core (~> 2.6)
       fog-json (~> 1.1)
@@ -244,7 +244,7 @@ GEM
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2025.0520)
+    mime-types-data (3.2025.0527)
     mini_magick (5.2.0)
       benchmark
       logger
