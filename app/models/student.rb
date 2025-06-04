@@ -57,6 +57,8 @@ class Student < ApplicationRecord
   validates :mlid, uniqueness: { scope: :organization_id }, length: { maximum: 8 }
   validates_associated :enrollments
 
+  attr_accessor :current_group_id
+
   enum :gender, { M: 'male', F: 'female', NB: 'nonbinary' }
 
   belongs_to :organization, inverse_of: :students

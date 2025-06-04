@@ -30,7 +30,7 @@ end %>
     </div>
 </section>
 <turbo-frame id="students-table">
-  <%= render GroupEnrolledStudentsComponent.new(students: @students, group: @group, new_student: Student.new(group: @group)) %>
+  <%= render GroupEnrolledStudentsComponent.new(students: @group.students, group: @group, new_student: Student.new) %>
 </turbo-frame>
 
 <%= javascript_tag do %>

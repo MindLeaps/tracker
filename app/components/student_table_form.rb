@@ -2,7 +2,7 @@ class StudentTableForm < ViewComponent::Base
   erb_template <<~ERB
     <%= form_with url: url, model: @student, id: dom_id(@student), class: form_class do |form| %>
       <div class="table-cell" data-controller="mlid">
-        <input type="text" class="hidden" value="<%= @student.group_id %>" data-mlid-target="group" />
+        <input type="text" class="hidden" value="<%= @student.organization_id %>" data-mlid-target="organization" />
         <%= render CommonComponents::StudentMlidInput.new(@student.mlid) %>
         <%= render ValidationErrorComponent.new(model: @student, key: :mlid) %>
       </div>

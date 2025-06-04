@@ -10,8 +10,8 @@ class GroupStudentsController < HtmlController
   end
 
   def edit
-    @group = Group.find params.require :group_id
     @student = Student.find_by(id: params.require(:id))
+    @group = Group.find_by(id: params.require(:group_id))
 
     authorize @student
   end
@@ -46,10 +46,12 @@ class GroupStudentsController < HtmlController
   end
 
   def cancel_edit
-    @group = Group.find params.require :group_id
+    @group = Group.find_by(id: params.require(:group_id))
     authorize @group, :show?
-    @student = Student.find(params.require(:id))
-    @pagy, @students = pagy(group_students)
+    @student = Student.find_by(id: params.require(:id))
+    @student.current_group_id = @group.id
+
+    @pagy, @students = pagy(@group.students)
   end
 
   def destroy
