@@ -9,7 +9,7 @@ class StudentsController < HtmlController
     scope.table_order value
   end
   has_scope :search, only: :index
-  has_scope :by_group, as: :group_id
+  has_scope :by_group, as: :current_group_id
 
   def index
     authorize Student
@@ -19,8 +19,10 @@ class StudentsController < HtmlController
       end
 
       format.csv do
-        @students = apply_scopes(policy_scope(Student)).includes(:group).all
-        filename = ["#{@students.first.group.group_name} - Students", Time.zone.today.to_s].join(' ')
+        @group = Group.find(params.require(:group_id))
+        @students = apply_scopes(policy_scope(@group.students.where(deleted_at: nil)))
+        set_current_group_id_for_students
+        filename = ["#{@group.group_name} - Enrolled Students", Time.zone.today.to_s].join(' ')
         send_data csv_from_array_of_hashes(@students.map(&:to_export)), filename:, content_type: 'text/csv'
       end
     end
@@ -121,6 +123,12 @@ class StudentsController < HtmlController
   end
 
   private
+
+  def set_current_group_id_for_students
+    @students.each do |student|
+      student.current_group_id = @group.id
+    end
+  end
 
   def validate_student_enrollments_and_save
     deleted_enrollment = @student.deleted_enrollment_with_grades?

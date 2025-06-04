@@ -12,10 +12,6 @@ class GroupEnrolledStudentsComponent < ViewComponent::Base
   def initialize(students:, group:, new_student:)
     super
 
-    students.each do |student|
-      student.current_group_id = group.id
-    end
-
     @student_records = students
     @group = group
     @new_student = new_student
@@ -23,5 +19,8 @@ class GroupEnrolledStudentsComponent < ViewComponent::Base
 
   def before_render
     @pagy, @students = pagy @student_records
+    @students.each do |s|
+      s.current_group_id = @group.id
+    end
   end
 end

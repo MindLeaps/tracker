@@ -51,10 +51,11 @@ class StudentTableForm < ViewComponent::Base
     @organization = group.chapter.organization
     @is_edit = is_edit
     @student.mlid = MindleapsIdService.generate_student_mlid @organization.id unless @is_edit
+    @student.current_group_id = group.id
   end
 
   def url
-    @is_edit ? group_student_path(@group, @student) : group_students_path(@group, @student)
+    @is_edit ? helpers.group_student_path(@group.id, @student.id) : helpers.group_students_path(@group.id, @student.id)
   end
 
   def form_class

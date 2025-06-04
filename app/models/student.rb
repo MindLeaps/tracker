@@ -108,12 +108,12 @@ class Student < ApplicationRecord
 
   def to_export
     { id: id, first_name: first_name, last_name: last_name, date_of_birth: dob, age: age, country_of_nationality: country_of_nationality, gender: gender,
-      group_id: group_id, group_name: group.group_name, enrolled_at: Enrollment.where(student_id: id, group_id: group_id).maximum(:active_since),
-      total_average_score: StudentLessonSummary.where(student_id: id, group_id: group_id).average(:average_mark)&.round(2) || 'No scores yet' }
+      organization_id: organization_id, enrolled_at: Enrollment.where(student_id: id, group_id: current_group_id).maximum(:active_since), group_id: current_group_id,
+      group_name: Group.find(current_group_id).group_name, total_average_score: StudentLessonSummary.where(student_id: id, group_id: current_group_id).average(:average_mark)&.round(2) || 'No scores yet' }
   end
 
   def self.permitted_params
-    [:mlid, :first_name, :last_name, :dob, :estimated_dob, :group_id, :gender, :country_of_nationality, :quartier,
+    [:mlid, :first_name, :last_name, :dob, :estimated_dob, :current_group_id, :old_group_id, :gender, :country_of_nationality, :quartier,
      :guardian_name, :guardian_occupation, :guardian_contact, :family_members, :health_insurance,
      :health_issues, :hiv_tested, :name_of_school, :school_level_completed, :year_of_dropout,
      :reason_for_leaving, :notes, :organization_id, :profile_image_id, { student_images_attributes: [:image], student_tags_attributes: [:tag_id, :student_id, :_destroy] },
