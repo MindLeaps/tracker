@@ -1,2 +1,2 @@
-<%= turbo_stream.replace('students-table', GroupEnrolledStudentsComponent.new(students: group_students, group: @group, new_student: Student.new(current_group_id: @group.id))) %>
+<%= turbo_stream.replace('students-table', GroupEnrolledStudentsComponent.new(students: group_students, group: @group)) %>
 <%= turbo_stream.update('flashes', partial: 'shared/flashes') %>
