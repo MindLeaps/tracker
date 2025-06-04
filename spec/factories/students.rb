@@ -52,13 +52,27 @@ FactoryBot.define do
     dob { Faker::Time.between from: 20.years.ago.to_datetime, to: 10.years.ago.to_datetime }
     estimated_dob { Faker::Boolean.boolean true_ratio: 0.2 }
     gender { %w[male female nonbinary].sample }
-    group { create :group }
     tags { create_list :tag, 3 }
-    organization { group.chapter.organization }
+    enrollments { [] }
+    organization
     mlid { MindleapsIdService.generate_student_mlid organization.id }
     transient do
       grades { {} }
       subject { nil }
+    end
+
+    factory :enrolled_student do
+      transient do
+        groups { [] }
+      end
+
+      after(:create) do |student, evaluator|
+        unless evaluator.groups.empty?
+          evaluator.groups.each do |group|
+            student.enrollments << create(:enrollment, group: group, student: student)
+          end
+        end
+      end
     end
 
     factory :graded_student do
@@ -67,7 +81,7 @@ FactoryBot.define do
           subject = evaluator.subject || create(
             :subject_with_skills,
             skill_names: evaluator.grades.keys,
-            organization: student.group.chapter.organization
+            organization: student.organization
           )
           (0..evaluator.grades.values.map(&:length).max - 1).each do |i|
             date = 1.year.ago.to_date + i.days
