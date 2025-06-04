@@ -25,11 +25,11 @@ class MembershipPolicy < ApplicationPolicy
     Role::ROLE_LEVELS[@record.role] || Role::MINIMAL_ROLE_LEVEL
   end
 
-  def target_user_ranks_lower
+  def target_user_ranks_lower?
     target_user_global_level < @user.global_role.level
   end
 
-  def target_role_not_above_own_role
+  def target_role_not_above_own_role?
     membership_role_level <= @user.global_role.level
   end
 end
