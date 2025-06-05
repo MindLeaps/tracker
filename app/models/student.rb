@@ -74,6 +74,8 @@ class Student < ApplicationRecord
   accepts_nested_attributes_for :student_tags
   accepts_nested_attributes_for :enrollments, allow_destroy: true
 
+  scope :by_group, ->(group_id:) { where(groups: group_id) }
+
   def proper_name
     "#{last_name}, #{first_name}"
   end

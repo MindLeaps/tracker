@@ -1,12 +1,14 @@
 module Api
   class StudentsController < ApiController
     has_scope :after_timestamp
-    has_scope :by_group, as: :group_id
+    has_scope :by_group do |_controller, scope, value|
+      scope.by_group(group_id: value)
+    end
     has_scope :by_organization, as: :organization_id
     has_scope :exclude_deleted, type: :boolean
 
     def index
-      @students = apply_scopes(@api_version == 2 ? policy_scope(Student) : Student).includes(:group).all
+      @students = apply_scopes(@api_version == 2 ? policy_scope(Student) : Student).all
       respond_with @students, include: included_params, meta: { timestamp: Time.zone.now }
     end
 

@@ -49,7 +49,7 @@ class StudentSerializer < ActiveModel::Serializer
              :guardian_contact, :family_members, :health_insurance, :health_issues, :hiv_tested, :name_of_school, :school_level_completed,
              :year_of_dropout, :reason_for_leaving, :notes, :deleted_at
 
-  belongs_to :group
+  has_many :groups, through: :enrollments, inverse_of: :students
   belongs_to :organization
 
   def group_id
