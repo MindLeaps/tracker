@@ -225,7 +225,6 @@ RSpec.describe StudentsController, type: :controller do
 
     describe '#performance' do
       before :each do
-        @group = create :group
         @student = create :graded_student, grades: {
           'Memorization' => [1, 2, 3],
           'Grit' => [3, 5, 6]
