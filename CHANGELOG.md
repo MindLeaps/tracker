@@ -1,5 +1,6 @@
 ## Unreleased 
 - Added the ability to delete Tags
+- Added ability to search students by both organization and tag name
 - Updated subject analytics performance charts to render each grade score
 - Added the ability to export basic student data to csv for a group
 - Added `random_alphanumeric_string(length)` DB function to help with MLID generation
