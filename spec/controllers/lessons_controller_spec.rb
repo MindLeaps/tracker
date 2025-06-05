@@ -11,8 +11,7 @@ RSpec.describe LessonsController, type: :controller do
     describe '#index' do
       before :each do
         @group = create :group
-        @active_student1 = create :student, group: @group
-        create :enrollment, group: @group, student: @active_student1, active_since: 1.year.ago
+        @active_student1 = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
         @lesson1 = create :lesson, group: @group
         @lesson2 = create :lesson, group: @group
 
@@ -30,10 +29,9 @@ RSpec.describe LessonsController, type: :controller do
     describe '#show' do
       before :each do
         @group = create :group
-        @active_student1 = create :student, group: @group
-        @active_student2 = create :student, group: @group
-        @deleted_student = create :student, group: @group, deleted_at: Time.zone.now
-        [@active_student1, @active_student2, @deleted_student].each { |s| create :enrollment, student: s, group: @group, active_since: 1.year.ago }
+        @active_student1 = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
+        @active_student2 = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
+        @deleted_student = create :enrolled_student, organization: @group.chapter.organization, groups: [@group], deleted_at: Time.zone.now
 
         lesson = create :lesson, group: @group, date: Time.zone.today
         gd1 = create :grade_descriptor, skill: lesson.subject.skills[0], mark: 1

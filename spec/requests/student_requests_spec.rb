@@ -31,17 +31,11 @@ RSpec.describe 'Student API', type: :request do
       expect(response_timestamp).to be_within(1.second).of Time.zone.now
     end
 
-    it 'responds with a student including their group' do
-      get_with_token student_path(@student), params: { include: 'group' }, as: :json
+    it 'responds with a student including their enrollments' do
+      get_with_token student_path(@student), params: { include: 'enrollments' }, as: :json
 
-      expect(student['group']['group_name']).to eq @group.group_name
-    end
-
-    it "responds with the student's group id as the one where its enrolled" do
-      get_with_token student_path(@student), as: :json
-
-      expect(student['group_id']).to_not eq @group.id
-      expect(student['group_id']).to eq @current_group.id
+      expect(student['enrollments'].count).to eq 2
+      expect(student['enrollments'].map { |e| e['group_id'] }).to include @first_group.id, @current_group.id
     end
   end
 
@@ -67,24 +61,24 @@ RSpec.describe 'Student API', type: :request do
     end
 
     it 'responds only with students belonging to a specific organization' do
-      get_with_token students_path, params: { organization_id: @org.id }, as: :json
+      get_with_token students_path, params: { organization_id: @org1.id }, as: :json
 
       expect(students.length).to eq 2
       expect(students.pluck('first_name')).to include 'Api', 'Controller'
     end
 
-    it 'responds only with students belonging to a specific group' do
+    it 'responds only with students enrolled to a specific group' do
       get_with_token students_path, params: { group_id: @group2.id }, as: :json
 
       expect(students.length).to eq 1
       expect(students.pluck('first_name')).to include 'Spector'
     end
 
-    it 'responds with students including their group and organization' do
-      get_with_token students_path, params: { include: 'group' }, as: :json
+    it 'responds with students including their enrollments and organization' do
+      get_with_token students_path, params: { include: 'enrollments' }, as: :json
 
       expect(students.length).to eq 3
-      expect(students.map { |s| s['group']['group_name'] }).to include @group1.group_name, @group2.group_name
+      expect(students.flat_map { |s| s['enrollments'].map { |e| e['group_id'] } }).to include @group1.id, @group2.id
     end
 
     it 'responds only with students created or updated after a certain time' do
