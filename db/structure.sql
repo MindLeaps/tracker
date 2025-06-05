@@ -1822,11 +1822,12 @@ CREATE OR REPLACE VIEW public.group_summaries AS
     o.organization_name,
     sum(
         CASE
-            WHEN ((en.active_since <= CURRENT_DATE) AND ((en.inactive_since IS NULL) OR (en.inactive_since >= CURRENT_DATE))) THEN 1
+            WHEN ((en.active_since <= CURRENT_DATE) AND ((en.inactive_since IS NULL) OR (en.inactive_since >= CURRENT_DATE)) AND (s.deleted_at IS NULL)) THEN 1
             ELSE 0
         END) AS student_count
-   FROM (((public.groups g
+   FROM ((((public.groups g
      LEFT JOIN public.enrollments en ON ((g.id = en.group_id)))
+     LEFT JOIN public.students s ON ((s.id = en.student_id)))
      LEFT JOIN public.chapters c ON ((g.chapter_id = c.id)))
      LEFT JOIN public.organizations o ON ((c.organization_id = o.id)))
   GROUP BY g.id, c.id, o.id;
