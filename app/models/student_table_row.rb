@@ -32,7 +32,7 @@
 #  year_of_dropout        :integer
 #  created_at             :datetime
 #  updated_at             :datetime
-#  group_id               :integer
+#  old_group_id           :integer
 #  organization_id        :integer
 #  profile_image_id       :integer
 #
