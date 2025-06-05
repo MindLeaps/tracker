@@ -8,7 +8,7 @@ class MembershipPolicy < ApplicationPolicy
   end
 
   def update_global_role?
-    @user.global_administrator? && target_user_ranks_lower && target_role_not_above_own_role
+    @user.global_administrator? && target_user_ranks_lower? && target_role_not_above_own_role?
   end
 
   def revoke_global_role?
