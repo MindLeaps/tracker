@@ -1,9 +1,7 @@
 module Api
   class StudentsController < ApiController
     has_scope :after_timestamp
-    has_scope :by_group do |_controller, scope, value|
-      scope.by_group(group_id: value)
-    end
+    has_scope :by_group, as: :group_id
     has_scope :by_organization, as: :organization_id
     has_scope :exclude_deleted, type: :boolean
 

@@ -23,8 +23,8 @@
 #
 FactoryBot.define do
   factory :enrollment do
-    student { create :student }
-    group { create :group, chapter: create(:chapter, organization: student.organization) }
+    group { create :group, chapter: create(:chapter) }
+    student { create :student, organization: group.chapter.organization }
     active_since { Time.zone.today }
   end
 end
