@@ -66,7 +66,7 @@ FactoryBot.define do
       after(:create) do |student, evaluator|
         unless evaluator.groups.empty?
           evaluator.groups.each do |group|
-            student.enrollments << create(:enrollment, group: group, student: student)
+            student.enrollments << create(:enrollment, group: group, student: student, active_since: 1.year.ago.to_date)
           end
         end
       end
@@ -77,10 +77,10 @@ FactoryBot.define do
         if evaluator.groups.empty?
           chapter = create :chapter, organization: student.organization
           group = create :group, chapter: chapter
-          student.enrollments << create(:enrollment, group: group, student: student)
+          student.enrollments << create(:enrollment, group: group, student: student, active_since: 1.year.ago.to_date)
         else
           evaluator.groups.each do |group|
-            student.enrollments << create(:enrollment, group: group, student: student)
+            student.enrollments << create(:enrollment, group: group, student: student, active_since: 1.year.ago.to_date)
           end
         end
 

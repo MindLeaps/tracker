@@ -30,9 +30,9 @@ RSpec.describe ChapterSummary, type: :model do
       chapters = create_list :chapter, 3
 
       groups1 = create_list :group, 3, chapter: chapters[0]
-      create_list :student, 5, group: groups1[0]
-      create_list :student, 3, group: groups1[0], deleted_at: Time.zone.now
-      create_list :student, 3, group: groups1[1]
+      create_list :enrolled_student, 5, organization: chapters[0].organization, groups: [groups1[0]]
+      create_list :enrolled_student, 3, organization: chapters[0].organization, groups: [groups1[0]], deleted_at: Time.zone.now
+      create_list :enrolled_student, 3, organization: chapters[0].organization, groups: [groups1[1]]
 
       create_list :group, 2, chapter: chapters[0], deleted_at: Time.zone.now
       create_list :group, 2, chapter: chapters[1], deleted_at: Time.zone.now

@@ -36,6 +36,7 @@ RSpec.describe Enrollment, type: :model do
       enrollment.group = group
       enrollment.student = student
     end
+
     it { should belong_to :group }
     it { should belong_to :student }
   end
