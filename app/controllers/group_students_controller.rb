@@ -6,7 +6,7 @@ class GroupStudentsController < HtmlController
     @group = Group.find params.require :group_id
     authorize @group
 
-    @student = Student.new(group: @group)
+    @student = Student.new(current_group_id: @group.id)
   end
 
   def edit
@@ -19,9 +19,7 @@ class GroupStudentsController < HtmlController
   def create
     @group = Group.find_by(id: params.require(:group_id))
     authorize @group
-
-    @student = Student.new(inline_student_params)
-    @student.organization_id = @group.chapter.organization.id
+    @student = populate_new_student
     authorize @student
 
     if @student.save
@@ -75,6 +73,14 @@ class GroupStudentsController < HtmlController
   helper_method :group_students
 
   private
+
+  def populate_new_student
+    @student = Student.new(inline_student_params)
+    @student.organization_id = @group.chapter.organization.id
+    @student.enrollments << Enrollment.new(student: @student, group: @group, active_since: Time.zone.now)
+
+    @student
+  end
 
   def inline_student_params
     p = params.require(:student)

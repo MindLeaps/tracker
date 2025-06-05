@@ -45,14 +45,10 @@
 #  students_group_id_fk  (old_group_id => groups.id)
 #
 class StudentSerializer < ActiveModel::Serializer
-  attributes :mlid, :id, :first_name, :last_name, :dob, :estimated_dob, :group_id, :gender, :quartier, :guardian_name, :guardian_occupation,
+  attributes :mlid, :id, :first_name, :last_name, :dob, :estimated_dob, :gender, :quartier, :guardian_name, :guardian_occupation,
              :guardian_contact, :family_members, :health_insurance, :health_issues, :hiv_tested, :name_of_school, :school_level_completed,
              :year_of_dropout, :reason_for_leaving, :notes, :deleted_at
 
-  has_many :groups, through: :enrollments, inverse_of: :students
+  has_many :enrollments, inverse_of: :student, dependent: :destroy
   belongs_to :organization
-
-  def group_id
-    object.enrollments.where(student_id: object.id, inactive_since: nil).order(active_since: :desc).first.group_id
-  end
 end

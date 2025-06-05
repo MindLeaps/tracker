@@ -130,16 +130,20 @@ class StudentsController < HtmlController
     end
   end
 
+  # rubocop:disable Metrics/AbcSize
   def validate_student_enrollments_and_save
     deleted_enrollment = @student.deleted_enrollment_with_grades?
-    modified_existing_enrollment = @student.updated_group_for_existing_enrollment?
+    modified_group_existing_enrollment = @student.updated_group_for_existing_enrollment?
+    modified_date_existing_enrollment = @student.updated_enrollment_with_grades?
 
     return failure title: t(:unable_to_delete_enrollment), text: t(:enrollment_not_deleted_because_grades, group: Group.find(deleted_enrollment.group_id).group_name) if deleted_enrollment
-    return failure title: t(:enrollment_already_exists), text: t(:cannot_change_existing_enrollment, group: Group.find(modified_existing_enrollment.group_id).group_name) if modified_existing_enrollment
+    return failure title: t(:enrollment_already_exists), text: t(:cannot_change_existing_enrollment, group: Group.find(modified_group_existing_enrollment.group_id).group_name) if modified_group_existing_enrollment
+    return failure title: t(:unable_to_update_enrollment), text: t(:cannot_change_date_existing_enrollment, group: Group.find(modified_date_existing_enrollment.group_id).group_name) if modified_date_existing_enrollment
     return success title: t(:student_updated), text: t(:student_name_updated, name: @student.proper_name) if @student.save
 
     false
   end
+  # rubocop:enable Metrics/AbcSize
 
   def lesson_summary(summary)
     { lesson_date: summary.lesson_date, average_mark: summary.average_mark }

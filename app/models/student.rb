@@ -74,7 +74,7 @@ class Student < ApplicationRecord
   accepts_nested_attributes_for :student_tags
   accepts_nested_attributes_for :enrollments, allow_destroy: true
 
-  scope :by_group, ->(group_id) { includes(:groups).where(groups: { id: group_id }) }
+  scope :by_group, ->(group_id) { includes(:enrollments).where(enrollments: { group_id: group_id }) }
   scope :by_organization, ->(organization_id) { where organization_id: }
 
   def proper_name
@@ -104,6 +104,24 @@ class Student < ApplicationRecord
       original_enrollment = Enrollment.find_by(id: enrollment.id)
 
       return original_enrollment if original_enrollment.present? && original_enrollment.group_id != enrollment.group.id
+    end
+
+    false
+  end
+
+  def updated_enrollment_with_grades?
+    enrollments.each do |enrollment|
+      original_enrollment = Enrollment.find_by(id: enrollment.id)
+      next if original_enrollment.blank?
+
+      lessons = Lesson.where(group_id: original_enrollment.group_id)
+      all_grades = Grade.where(student_id: id, lesson_id: lessons, deleted_at: nil)
+
+      next unless enrollment.active_since != original_enrollment.active_since || enrollment.inactive_since != original_enrollment.inactive_since
+
+      grades = Grade.where(student_id: id, lesson_id: lessons, deleted_at: nil, created_at: enrollment.active_since..enrollment.inactive_since)
+
+      return original_enrollment if grades.count != all_grades.count
     end
 
     false
