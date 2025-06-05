@@ -21,17 +21,17 @@ RSpec.describe PerformancePerGroupPerSkillPerLesson, type: :model do
 
     subject = create :subject_with_skills, skill_names: %w[Memorization Grit]
 
-    create :graded_student, subject:, group: group1, grades: {
+    create :graded_student, subject:, organization: group1.chapter.organization, groups: [group1], grades: {
       'Memorization' => [7, 5, 4], 'Grit' => [3, 2, 5]
     }
-    create :graded_student, subject:, group: group1, grades: {
+    create :graded_student, subject:, organization: group1.chapter.organization, groups: [group1], grades: {
       'Memorization' => [1, 3, 4], 'Grit' => [1, 2, 1]
     }
 
-    create :graded_student, subject:, group: group2, grades: {
+    create :graded_student, subject:, organization: group2.chapter.organization, groups: [group1], grades: {
       'Memorization' => [1, 3, 6], 'Grit' => [2, 4, 7]
     }
-    create :graded_student, subject:, group: group2, grades: {
+    create :graded_student, subject:, organization: group2.chapter.organization, groups: [group1], grades: {
       'Memorization' => [1, 5, 6], 'Grit' => [2, 6, 7]
     }
 

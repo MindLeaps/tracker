@@ -64,7 +64,7 @@ RSpec.describe StudentLessonDetail, type: :model do
     describe '#exclude_empty' do
       before :each do
         @student = create :graded_student, grades: { 'Memorization' => [3, nil, nil, 1], 'Grit' => [2], 'Teamwork' => [] }
-        create :enrollment, group: @student.group, student: @student, active_since: 1.year.ago
+        create :enrollment, group: @student.enrollments.first.group, student: @student, active_since: 1.year.ago
       end
       it 'returns only records that have at least a single grade' do
         expect(StudentLessonDetail.exclude_empty.all.length).to eq 2
