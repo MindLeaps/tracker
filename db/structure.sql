@@ -1834,33 +1834,6 @@ CREATE OR REPLACE VIEW public.student_lesson_summaries AS
 
 
 --
--- Name: student_lesson_details _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.student_lesson_details AS
- SELECT s.id AS student_id,
-    s.first_name,
-    s.last_name,
-    s.deleted_at AS student_deleted_at,
-    l.id AS lesson_id,
-    l.date,
-    l.deleted_at AS lesson_deleted_at,
-    l.subject_id,
-    round(avg(g.mark), 2) AS average_mark,
-    count(g.mark) AS grade_count,
-    COALESCE(jsonb_object_agg(g.skill_id, jsonb_build_object('mark', g.mark, 'grade_descriptor_id', g.grade_descriptor_id, 'skill_name', sk.skill_name)) FILTER (WHERE (sk.skill_name IS NOT NULL)), '{}'::jsonb) AS skill_marks
-   FROM (((((public.students s
-     JOIN public.groups gr ON ((gr.id = s.old_group_id)))
-     JOIN public.lessons l ON ((gr.id = l.group_id)))
-     JOIN public.enrollments en ON ((s.id = en.student_id)))
-     LEFT JOIN public.grades g ON (((g.student_id = s.id) AND (g.lesson_id = l.id) AND (g.deleted_at IS NULL))))
-     LEFT JOIN public.skills sk ON ((sk.id = g.skill_id)))
-  WHERE ((en.active_since <= l.date) AND ((en.inactive_since IS NULL) OR (en.inactive_since >= l.date)))
-  GROUP BY s.id, l.id
-  ORDER BY l.subject_id;
-
-
---
 -- Name: lesson_table_rows _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
@@ -1914,6 +1887,32 @@ CREATE OR REPLACE VIEW public.group_lesson_summaries AS
   WHERE (slu.deleted_at IS NULL)
   GROUP BY slu.lesson_id, gr.id, c.id, slu.subject_id, slu.lesson_date
   ORDER BY slu.lesson_date;
+
+
+--
+-- Name: student_lesson_details _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.student_lesson_details AS
+ SELECT s.id AS student_id,
+    s.first_name,
+    s.last_name,
+    s.deleted_at AS student_deleted_at,
+    l.id AS lesson_id,
+    l.date,
+    l.deleted_at AS lesson_deleted_at,
+    l.subject_id,
+    round(avg(g.mark), 2) AS average_mark,
+    count(g.mark) AS grade_count,
+    COALESCE(jsonb_object_agg(g.skill_id, jsonb_build_object('mark', g.mark, 'grade_descriptor_id', g.grade_descriptor_id, 'skill_name', sk.skill_name)) FILTER (WHERE (sk.skill_name IS NOT NULL)), '{}'::jsonb) AS skill_marks
+   FROM ((((public.students s
+     JOIN public.enrollments en ON ((s.id = en.student_id)))
+     JOIN public.lessons l ON ((en.group_id = l.group_id)))
+     LEFT JOIN public.grades g ON (((g.student_id = s.id) AND (g.lesson_id = l.id) AND (g.deleted_at IS NULL))))
+     LEFT JOIN public.skills sk ON ((sk.id = g.skill_id)))
+  WHERE ((en.active_since <= l.date) AND ((en.inactive_since IS NULL) OR (en.inactive_since >= l.date)))
+  GROUP BY s.id, l.id
+  ORDER BY l.subject_id;
 
 
 --
@@ -2115,6 +2114,7 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250605085534'),
 ('20250530141635'),
 ('20250530123657'),
 ('20250505014040'),
