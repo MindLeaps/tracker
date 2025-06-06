@@ -32,4 +32,26 @@ RSpec.describe Tag, type: :model do
       expect(new_tag).to_not be_valid
     end
   end
+
+  describe 'methods' do
+    before(:each) do
+      @org = create :organization
+      @chapter = create :chapter, organization: @org
+      @group = create :group, chapter: @chapter
+      @student = create :student, group: @group
+      @unused_tag = create :tag, tag_name: 'Empty tag', organization: @org
+      @used_tag = create :tag, tag_name: 'First tag', organization: @org
+      create :student_tag, tag: @used_tag, student: @student
+    end
+
+    describe '#can_delete' do
+      it 'should return true when the tag has no students associated with it' do
+        expect(@unused_tag.can_delete?).to be true
+      end
+
+      it 'should return false when the tag has students associated with it' do
+        expect(@used_tag.can_delete?).to be false
+      end
+    end
+  end
 end

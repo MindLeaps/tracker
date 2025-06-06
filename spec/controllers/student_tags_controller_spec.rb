@@ -109,5 +109,40 @@ RSpec.describe StudentTagsController, type: :controller do
         it { should set_flash[:failure_notice] }
       end
     end
+
+    describe '#destroy' do
+      context 'with unused tag' do
+        before :each do
+          @unused_tag = create :tag, organization: create(:organization)
+
+          post :destroy, params: { id: @unused_tag.id }
+        end
+
+        it { should redirect_to student_tags_path }
+        it { should set_flash[:success_notice] }
+        it 'removes the tag' do
+          expect(Tag.exists?(@unused_tag.id)).to be false
+        end
+      end
+
+      context 'with used tag' do
+        before :each do
+          @org = create :organization
+          @chapter = create :chapter, organization: @org
+          @group = create :group, chapter: @chapter
+          @student = create :student, group: @group
+          @used_tag = create :tag, organization: @org
+          create :student_tag, student: @student, tag: @used_tag
+
+          post :destroy, params: { id: @used_tag.id }
+        end
+
+        it { should redirect_to student_tag_path(@used_tag.id) }
+        it { should set_flash[:failure_notice] }
+        it 'does not remove the tag' do
+          expect(Tag.exists?(@used_tag.id)).to be true
+        end
+      end
+    end
   end
 end

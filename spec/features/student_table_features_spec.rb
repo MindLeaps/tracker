@@ -70,4 +70,72 @@ RSpec.describe 'User searches and navigates through students table', js: true do
       expect(page).to have_selector('.student-row', count: 50)
     end
   end
+
+  context 'with filters' do
+    describe 'by organization and tag name' do
+      before :each do
+        @org = create :organization, organization_name: 'First Organization'
+        @first_chapter = create :chapter, organization: @org
+        @first_group = create :group, chapter: @first_chapter
+        @another_org = create :organization, organization_name: 'Second Organization'
+        @second_chapter = create :chapter, organization: @another_org
+        @second_group = create :group, chapter: @second_chapter
+        @first_student = create :student, group: @first_group, first_name: 'Cicada'
+        @second_student = create :student, group: @second_group, first_name: 'Enchilada'
+        @third_student = create :student, group: @second_group, first_name: 'Quesadilla'
+        @shared_tag = create :tag, organization: @another_org, tag_name: 'Shared Tag', shared: true
+        @tag = create :tag, organization: @org, tag_name: 'Test Tag', shared: false
+        create :student_tag, tag: @shared_tag, student: @first_student
+        create :student_tag, tag: @shared_tag, student: @second_student
+        create :student_tag, tag: @shared_tag, student: @third_student
+        create :student_tag, tag: @tag, student: @first_student
+      end
+
+      it 'displays students found by organization name' do
+        visit '/students'
+
+        expect(page).to have_selector('div.table-row-wrapper', count: 3)
+
+        fill_in 'search-field', with: 'Second Organization'
+
+        expect(page).to have_selector('div.table-row-wrapper', count: 2)
+        expect(page).not_to have_content 'Cicada'
+        expect(page).to have_content 'Enchilada'
+        expect(page).to have_content 'Quesadilla'
+      end
+
+      it 'displays students found by tag name' do
+        visit '/students'
+
+        expect(page).to have_selector('div.table-row-wrapper', count: 3)
+
+        fill_in 'search-field', with: 'Test Tag'
+
+        expect(page).to have_selector('div.table-row-wrapper', count: 1)
+        expect(page).to have_content 'Cicada'
+        expect(page).not_to have_content 'Enchilada'
+        expect(page).not_to have_content 'Quesadilla'
+      end
+
+      it 'displays students found by both organization and tag name' do
+        visit '/students'
+
+        expect(page).to have_selector('div.table-row-wrapper', count: 3)
+
+        fill_in 'search-field', with: 'Shared Tag Second Organization'
+
+        expect(page).to have_selector('div.table-row-wrapper', count: 2)
+        expect(page).not_to have_content 'Cicada'
+        expect(page).to have_content 'Enchilada'
+        expect(page).to have_content 'Quesadilla'
+
+        fill_in 'search-field', with: 'Теst Tag Second Organization'
+
+        expect(page).to have_selector('div.table-row-wrapper', count: 0)
+        expect(page).not_to have_content 'Cicada'
+        expect(page).not_to have_content 'Enchilada'
+        expect(page).not_to have_content 'Quesadilla'
+      end
+    end
+  end
 end
