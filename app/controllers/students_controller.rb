@@ -53,9 +53,8 @@ class StudentsController < HtmlController
 
   def mlid
     authorize Student, :new?
-    group = Group.includes(:chapter).find params.require(:group_id)
-    organization_id = group.chapter.organization_id
-    mlid = MindleapsIdService.generate_student_mlid organization_id
+    organization = Organization.find params.require(:organization_id)
+    mlid = MindleapsIdService.generate_student_mlid organization.id
     show_label = params.key? :show_label
     mlid_component = ::CommonComponents::StudentMlidInput.new(mlid, show_label:)
     render turbo_stream: [
