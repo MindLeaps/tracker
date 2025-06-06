@@ -54,11 +54,12 @@ class StudentsController < HtmlController
   def mlid
     authorize Student, :new?
     organization = Organization.find params.require(:organization_id)
+    student = params[:student_id].present? ? Student.find(params.require(:student_id)) : nil
     mlid = MindleapsIdService.generate_student_mlid organization.id
     show_label = params.key? :show_label
-    mlid_component = ::CommonComponents::StudentMlidInput.new(mlid, show_label:)
+    mlid_component = ::CommonComponents::StudentMlidInput.new(mlid, student_id: student&.id || nil, show_label:)
     render turbo_stream: [
-      turbo_stream.replace(CommonComponents::StudentMlidInput::ELEMENT_ID, mlid_component)
+      turbo_stream.replace(student.present? ? "#{CommonComponents::StudentMlidInput::ELEMENT_ID}_#{student.id}" : CommonComponents::StudentMlidInput::ELEMENT_ID, mlid_component)
     ]
   end
 
