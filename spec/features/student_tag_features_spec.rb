@@ -50,4 +50,35 @@ RSpec.describe 'User interacts with Student Tags' do
       find('div.table-cell', text: 'My Edited Tag', match: :first).click
     end
   end
+
+  describe 'Delete Tag' do
+    before :each do
+      @org = create :organization
+      @chapter = create :chapter, organization: @org
+      @group = create :group, chapter: @chapter
+      @student = create :student, group: @group
+      @used_tag = create :tag, tag_name: 'Used Tag', organization: @org
+      @unused_tag = create :tag, tag_name: 'Unused Tag', organization: @org
+      create :student_tag, student: @student, tag: @used_tag
+    end
+
+    it 'visits the used tag and tries to delete it', js: true do
+      visit "/student_tags/#{@used_tag.id}"
+      click_button 'Delete Tag'
+
+      expect(page).to have_content 'Unable to delete tag'
+      expect(page).to have_content 'Tag not deleted because it has students associated with it. Remove it from the students before deleting.'
+      expect(Tag.exists?(@used_tag.id)).to be true
+    end
+
+    it 'visits the unused tag and deletes it', js: true do
+      visit "/student_tags/#{@unused_tag.id}"
+      click_button 'Delete Tag'
+
+      expect(page).to have_content 'Tag Deleted'
+      expect(page).to have_content 'Tag "Unused Tag" deleted.'
+      expect(page).to have_current_path(student_tags_path)
+      expect(Tag.exists?(@unused_tag.id)).to be false
+    end
+  end
 end
