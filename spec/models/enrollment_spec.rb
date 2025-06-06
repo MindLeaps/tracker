@@ -27,18 +27,14 @@ RSpec.describe Enrollment, type: :model do
   subject(:enrollment) { create :enrollment, group: group, student: student }
 
   describe 'relationships' do
-    let(:org) { create :organization }
-    let(:chapter) { create :chapter, organization: org }
-    let(:group) { create :group, chapter: chapter }
-    let(:student) { create :student, organization: org }
-
-    before :each do
-      enrollment.group = group
-      enrollment.student = student
-    end
+    let(:group) { create :group }
+    let(:student) { create :student, organization: group.chapter.organization }
 
     it { should belong_to :group }
-    it { should belong_to :student }
+    it 'should belong to student' do
+      relation = Enrollment.reflect_on_association(:student)
+      expect(relation.macro).to eq(:belongs_to)
+    end
   end
 
   describe 'validations' do

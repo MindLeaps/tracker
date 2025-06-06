@@ -13,11 +13,8 @@ RSpec.describe 'User interacts with Reports' do
       @chapter = create :chapter, chapter_name: 'Report Chapter', organization: @organization
       @group = create :group, chapter: @chapter, group_name: 'Report Group'
       @empty_group = create :group, chapter: @chapter, group_name: 'Empty Report Group'
-      @first_student = create :graded_student, group: @group, subject: @first_subject, grades: { 'First Skill' => [1, 2, 3] }
-      @second_student = create :graded_student, group: @group, subject: @second_subject, grades: { 'Second Skill' => [1, 2, 3] }
-
-      create :enrollment, group: @group, student: @first_student, active_since: 1.year.ago
-      create :enrollment, group: @group, student: @second_student, active_since: 1.year.ago
+      @first_student = create :graded_student, organization: @group, groups: [@group], subject: @first_subject, grades: { 'First Skill' => [1, 2, 3] }
+      @second_student = create :graded_student, organization: @group, groups: [@group], subject: @second_subject, grades: { 'Second Skill' => [1, 2, 3] }
     end
 
     it 'displays group and student averages', js: true, skip: 'Fails because we cannot close an open print preview window' do

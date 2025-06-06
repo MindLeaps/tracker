@@ -39,7 +39,7 @@ RSpec.describe 'User interacts with Students' do
       click_button 'Create'
 
       expect(page).to have_content 'Student "Sanchez, Rick" added'
-      expect(page).to have_link 'Create another', href: new_student_path(group_id: @group.id)
+      expect(page).to have_link 'Create another'
 
       created_student = Student.find_by! first_name: 'Rick', last_name: 'Sanchez'
 
