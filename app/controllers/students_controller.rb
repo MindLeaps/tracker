@@ -9,27 +9,29 @@ class StudentsController < HtmlController
     scope.table_order value
   end
   has_scope :search, only: :index
-  has_scope :by_group, as: :group_id
+  has_scope :by_group, as: :current_group_id
 
   def index
     authorize Student
     respond_to do |format|
       format.html do
-        @pagy, @student_rows = pagy apply_scopes(policy_scope(StudentTableRow.includes(:tags, :organization)))
+        @pagy, @student_rows = pagy apply_scopes(policy_scope(Student.includes(:tags, :organization)))
       end
 
       format.csv do
-        @students = apply_scopes(policy_scope(Student)).includes(:group).all
-        filename = ["#{@students.first.group.group_name} - Students", Time.zone.today.to_s].join(' ')
+        @group = Group.find(params.require(:group_id))
+        @students = apply_scopes(policy_scope(@group.students.where(deleted_at: nil)))
+        set_current_group_id_for_students
+        filename = ["#{@group.group_name} - Enrolled Students", Time.zone.today.to_s].join(' ')
         send_data csv_from_array_of_hashes(@students.map(&:to_export)), filename:, content_type: 'text/csv'
       end
     end
   end
 
   def show
-    @student = Student.includes(:profile_image, group: { chapter: [:organization] }).find params.require(:id)
+    @student = Student.includes(:profile_image, :organization).find params.require(:id)
     authorize @student
-    @student_lessons_details_by_subject = apply_scopes(StudentLessonDetail.where(student_id: params[:id])).all.group_by(&:subject_id)
+    @student_lessons_details_by_subject = apply_scopes(StudentLessonDetail.where(student_id: @student.id)).all.group_by(&:subject_id)
     @subjects = policy_scope(Subject).includes(:skills).where(id: @student_lessons_details_by_subject.keys)
     @lesson_summaries = StudentLessonSummary.where(student_id: @student.id).where.not(average_mark: nil).order(lesson_date: :asc).last(30).map { |s| lesson_summary(s) }
     @skill_averages = {}
@@ -51,13 +53,13 @@ class StudentsController < HtmlController
 
   def mlid
     authorize Student, :new?
-    group = Group.includes(:chapter).find params.require(:group_id)
-    organization_id = group.chapter.organization_id
-    mlid = MindleapsIdService.generate_student_mlid organization_id
+    organization = Organization.find params.require(:organization_id)
+    student = params[:student_id].present? ? Student.find(params.require(:student_id)) : nil
+    mlid = MindleapsIdService.generate_student_mlid organization.id
     show_label = params.key? :show_label
-    mlid_component = ::CommonComponents::StudentMlidInput.new(mlid, show_label:)
+    mlid_component = ::CommonComponents::StudentMlidInput.new(mlid, student_id: student&.id || nil, show_label:)
     render turbo_stream: [
-      turbo_stream.replace(CommonComponents::StudentMlidInput::ELEMENT_ID, mlid_component)
+      turbo_stream.replace(student.present? ? "#{CommonComponents::StudentMlidInput::ELEMENT_ID}_#{student.id}" : CommonComponents::StudentMlidInput::ELEMENT_ID, mlid_component)
     ]
   end
 
@@ -70,24 +72,32 @@ class StudentsController < HtmlController
   def create
     @student = Student.new student_params
     authorize @student
-    if @student.save
-      success(title: :student_added, text: t(:student_name_added, name: @student.proper_name), link_text: t(:create_another), link_path: new_student_path(group_id: @student.group_id))
-      return redirect_to(flash[:redirect] || student_path(@student))
+    if params[:add_group]
+      @student.enrollments.build
+      render :new, status: :ok
+    elsif @student.save
+      success(title: :student_added, text: t(:student_name_added, name: @student.proper_name), link_text: t(:create_another), link_path: new_student_path)
+      redirect_to(flash[:redirect] || student_path(@student))
+    else
+      failure_now(title: t(:student_invalid), text: t(:fix_form_errors))
+      render :new, status: :unprocessable_entity
     end
-    failure_now(title: t(:student_invalid), text: t(:fix_form_errors))
-    render :new, status: :unprocessable_entity
   end
 
   def update
     @student = Student.find params[:id]
     authorize @student
-    if update_student @student
-      success title: t(:student_updated), text: t(:student_name_updated, name: @student.proper_name)
-      return redirect_to(flash[:redirect] || student_path(@student))
-    end
+    @student.assign_attributes student_params
 
-    failure title: t(:student_invalid), text: t(:fix_form_errors)
-    render :edit, status: :unprocessable_entity
+    if params[:add_group]
+      @student.enrollments.build
+      render :new, status: :ok
+    elsif validate_student_enrollments_and_save
+      redirect_to(flash[:redirect] || student_path(@student))
+    else
+      failure title: t(:student_invalid), text: t(:fix_form_errors)
+      render :edit, status: :unprocessable_entity
+    end
   end
 
   def destroy
@@ -114,6 +124,27 @@ class StudentsController < HtmlController
 
   private
 
+  def set_current_group_id_for_students
+    @students.each do |student|
+      student.current_group_id = @group.id
+    end
+  end
+
+  # rubocop:disable Metrics/AbcSize
+  def validate_student_enrollments_and_save
+    deleted_enrollment = @student.deleted_enrollment_with_grades?
+    modified_group_existing_enrollment = @student.updated_group_for_existing_enrollment?
+    modified_date_existing_enrollment = @student.updated_enrollment_with_grades?
+
+    return failure title: t(:unable_to_delete_enrollment), text: t(:enrollment_not_deleted_because_grades, group: Group.find(deleted_enrollment.group_id).group_name) if deleted_enrollment
+    return failure title: t(:enrollment_already_exists), text: t(:cannot_change_existing_enrollment, group: Group.find(modified_group_existing_enrollment.group_id).group_name) if modified_group_existing_enrollment
+    return failure title: t(:unable_to_update_enrollment), text: t(:cannot_change_date_existing_enrollment, group: Group.find(modified_date_existing_enrollment.group_id).group_name) if modified_date_existing_enrollment
+    return success title: t(:student_updated), text: t(:student_name_updated, name: @student.proper_name) if @student.save
+
+    false
+  end
+  # rubocop:enable Metrics/AbcSize
+
   def lesson_summary(summary)
     { lesson_date: summary.lesson_date, average_mark: summary.average_mark }
   end
@@ -122,7 +153,7 @@ class StudentsController < HtmlController
     p = params.require(:student)
     p[:student_tags_attributes] = p.fetch(:tag_ids, []).map { |tag_id| { tag_id: } }
     p.delete :tag_ids
-    p[:organization_id] = Group.find(p[:group_id]).chapter[:organization_id] if p[:organization_id].blank? && p[:group_id].present?
+    p[:organization_id] = Group.find(p[:old_group_id]).chapter[:organization_id] if p[:organization_id].blank? && p[:old_group_id].present?
     p.permit(*Student.permitted_params)
   end
 
@@ -132,7 +163,13 @@ class StudentsController < HtmlController
 
   def populate_new_student
     student = Student.new
-    student.group = Group.find(new_params[:group_id]) if new_params[:group_id]
+    if new_params[:group_id]
+      group = Group.includes(:chapter).find new_params[:group_id]
+      if group
+        student.enrollments.build(group: group)
+        student.organization_id = group.chapter.organization_id
+      end
+    end
     student
   end
 

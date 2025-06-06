@@ -111,7 +111,7 @@ RSpec.describe ChaptersController, type: :controller do
       request.env['HTTP_REFERER'] = 'http://example.com/chapters?param=1'
 
       @groups = create_list :group, 2, chapter: @chapter
-      @students = create_list :student, 2, group: @groups.first
+      @students = create_list :enrolled_student, 2, organization: @groups.first.chapter.organization, groups: [@groups.first]
       @lessons = create_list :lesson, 2, group: @groups.first
       @grades = create_list :grade, 2, lesson: @lessons.first
       @deleted_group = create :group, chapter: @chapter, deleted_at: Time.zone.now
@@ -131,7 +131,6 @@ RSpec.describe ChaptersController, type: :controller do
       @chapter.reload
 
       @groups.each { |group| expect(group.reload.deleted_at).to eq(@chapter.deleted_at) }
-      @students.each { |student| expect(student.reload.deleted_at).to eq(@chapter.deleted_at) }
       @lessons.each { |lesson| expect(lesson.reload.deleted_at).to eq(@chapter.deleted_at) }
       @grades.each { |grade| expect(grade.reload.deleted_at).to eq(@chapter.deleted_at) }
     end
@@ -149,7 +148,6 @@ RSpec.describe ChaptersController, type: :controller do
       @chapter = create :chapter, deleted_at: Time.zone.now
 
       @groups = create_list :group, 2, chapter: @chapter, deleted_at: @chapter.deleted_at
-      @students = create_list :student, 2, group: @groups.first, deleted_at: @chapter.deleted_at
       @lessons = create_list :lesson, 2, group: @groups.first, deleted_at: @chapter.deleted_at
       @grades = create_list :grade, 2, lesson: @lessons.first, deleted_at: @chapter.deleted_at
       @deleted_group = create :group, chapter: @chapter, deleted_at: Time.zone.now
@@ -165,7 +163,6 @@ RSpec.describe ChaptersController, type: :controller do
 
     it 'Removes the chapter\'s dependents deleted timestamps' do
       @groups.each { |group| expect(group.reload.deleted_at).to be_nil }
-      @students.each { |student| expect(student.reload.deleted_at).to be_nil }
       @lessons.each { |lesson| expect(lesson.reload.deleted_at).to be_nil }
       @grades.each { |grade| expect(grade.reload.deleted_at).to be_nil }
     end

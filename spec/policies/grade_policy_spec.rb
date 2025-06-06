@@ -5,7 +5,7 @@ RSpec.describe GradePolicy do
       @org1, @org2 = create_list :organization, 2
       @group1 = create(:group, chapter: create(:chapter, organization: @org1))
       @group2 = create(:group, chapter: create(:chapter, organization: @org2))
-      @student1 = create :graded_student, group: @group1, grades: {
+      @student1 = create :graded_student, organization: @org1, groups: [@group1], grades: {
         'Memorization' => [1, 2, 3],
         'Grit' => [2, 1, 2],
         'Teamwork' => [3, 4, 4],
@@ -14,7 +14,7 @@ RSpec.describe GradePolicy do
         'Creativity & Self-Expression' => [5, 4],
         'Language' => [1, 1, 2]
       }
-      @student2 = create :graded_student, group: @group1, grades: {
+      @student2 = create :graded_student, organization: @org1, groups: [@group1], grades: {
         'Memorization' => [3, 3, 3],
         'Grit' => [3, 5, 6],
         'Teamwork' => [3, 4],
@@ -24,7 +24,7 @@ RSpec.describe GradePolicy do
         'Language' => [1, 2]
       }
 
-      @student3 = create :graded_student, group: @group2, grades: {
+      @student3 = create :graded_student, organization: @org2, groups: [@group2], grades: {
         'Memorization' => [1, 2, 3],
         'Grit' => [2, 1],
         'Teamwork' => [1, 2, 5],
@@ -33,7 +33,7 @@ RSpec.describe GradePolicy do
         'Creativity & Self-Expression' => [2, 3, 2],
         'Language' => [4, 5, 4]
       }
-      @student4 = create :graded_student, group: @group2, grades: {
+      @student4 = create :graded_student, organization: @org2, groups: [@group2], grades: {
         'Memorization' => [7, 7],
         'Grit' => [5, 4],
         'Teamwork' => [7],
