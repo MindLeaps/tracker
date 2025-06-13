@@ -133,6 +133,8 @@ en:
   student_deleted_text: Student "%{student}" deleted.
   student_restored: Student Restored
   student_restored_text: Student "%{name}" restored.
+  unable_to_update_student: Unable to update student
+  cannot_change_organization_existing_student: Cannot change the organization for an existing student.
   number_of_students: Number of Students
   number_of_groups: Number of Groups
   number_of_chapters: Number of Chapters

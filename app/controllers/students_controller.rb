@@ -92,7 +92,7 @@ class StudentsController < HtmlController
     if params[:add_group]
       @student.enrollments.build
       render :new, status: :ok
-    elsif validate_student_enrollments_and_save
+    elsif validate_student_enrollments_and_organization
       redirect_to(flash[:redirect] || student_path(@student))
     else
       failure title: t(:student_invalid), text: t(:fix_form_errors)
@@ -131,14 +131,17 @@ class StudentsController < HtmlController
   end
 
   # rubocop:disable Metrics/AbcSize
-  def validate_student_enrollments_and_save
+  def validate_student_enrollments_and_organization
     deleted_enrollment = @student.deleted_enrollment_with_grades?
     modified_group_existing_enrollment = @student.updated_group_for_existing_enrollment?
     modified_date_existing_enrollment = @student.updated_enrollment_with_grades?
+    existing_student_organization = Student.find(@student.id).organization
 
     return failure title: t(:unable_to_delete_enrollment), text: t(:enrollment_not_deleted_because_grades, group: Group.find(deleted_enrollment.group_id).group_name) if deleted_enrollment
     return failure title: t(:enrollment_already_exists), text: t(:cannot_change_existing_enrollment, group: Group.find(modified_group_existing_enrollment.group_id).group_name) if modified_group_existing_enrollment
     return failure title: t(:unable_to_update_enrollment), text: t(:cannot_change_date_existing_enrollment, group: Group.find(modified_date_existing_enrollment.group_id).group_name) if modified_date_existing_enrollment
+    return failure title: t(:unable_to_update_student), text: t(:cannot_change_organization_existing_student) if @student.organization != existing_student_organization
+
     return success title: t(:student_updated), text: t(:student_name_updated, name: @student.proper_name) if @student.save
 
     false

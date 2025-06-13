@@ -49,7 +49,7 @@
       </div>
     </div>
   </div>
-  <div data-controller="dynamic-fields">
+  <div data-controller="dynamic-fields" class="space-y-0.5">
     <div class="bg-white px-4 py-5 shadow sm:p-4">
       <div class="md:grid md:grid-cols-4 md:gap-6">
         <div class="md:col-span-1">
@@ -83,11 +83,11 @@
         </div>
         <div class="mt-5 md:col-span-3 md:mt-0">
           <%= turbo_frame_tag f.field_id(:enrollments), data: { 'action' => 'turbo:frame-render->dynamic-fields#updateFilter' } do %>
-            <div id="groups" class="divide-y divide-gray-200" data-controller="association">
+            <div id="groups" class="divide-y-2 divide-gray-300" data-controller="association">
               <%= f.fields_for :enrollments, include_id: false do |ef| %>
                 <% id = SecureRandom.uuid %>
-                <div class="grid grid-cols-8 gap-4 [&:not(:last-child)]:pb-4 [&:not(:first-child)]:pt-4 <%= if ef.object.marked_for_destruction? then 'hidden' else '' end %>" data-association-target="removable" id="<%= id %>">
-                  <div class="col-span-6 lg:col-span-2">
+                <div class="grid grid-cols-8 gap-4 py-4 [&:not(:last-child)]:pb-4 [&:not(:first-child)]:pt-4 <%= if ef.object.marked_for_destruction? then 'hidden' else '' end %>" data-association-target="removable" id="<%= id %>">
+                  <div class="col-span-6">
                     <%= ef.hidden_field :id %>
                     <%= ef.label :group_id, class: 'block text-sm font-medium text-gray-700' %>
                     <%= ef.grouped_collection_select :group_id, @chapter_groups, :groups, :chapter_display, :id, :chapter_group_name_with_full_mlid, { include_blank: false }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm',
@@ -95,19 +95,19 @@
                     <%= render ValidationErrorComponent.new(model: ef.object, key: :student, remove_prepend: true) %>
                     <%= render ValidationErrorComponent.new(model: ef.object, key: :group, remove_prepend: true) %>
                   </div>
-                  <div class="col-span-6 lg:col-span-2">
+                  <div class="col-span-2 relative">
+                    <%= ef.check_box :_destroy, class: 'hidden', 'data-association-target': 'checkable', 'data-association-id': id %>
+                    <button class="dangerous-button cursor-pointer relative top-5 mt-[2px]" data-action="association#remove" data-association-remove-id-param="<%= id %>"><%= t(:delete_enrollment) %></button>
+                  </div>
+                  <div class="col-span-2">
                     <%= ef.label :active_since, t(:enrolled_since), class: 'field-label' %>
                     <%= render Datepicker.new(date: :active_since || Date.new(Date.current.year, 1, 1), target: 'active_since', form: ef) %>
                     <%= render ValidationErrorComponent.new(model: ef.object, key: :active_since) %>
                   </div>
-                  <div class="col-span-6 lg:col-span-2">
+                  <div class="col-span-2">
                     <%= ef.label :inactive_since, t(:enrolled_until),class: 'field-label' %>
                     <%= render Datepicker.new(date: :inactive_since, target: 'inactive_since', form: ef) %>
                     <%= render ValidationErrorComponent.new(model: ef.object, key: :inactive_since, remove_prepend: true) %>
-                  </div>
-                  <div class="col-span-2 relative">
-                    <%= ef.check_box :_destroy, class: 'hidden', 'data-association-target': 'checkable', 'data-association-id': id %>
-                    <button class="dangerous-button cursor-pointer relative top-5 mt-[2px]" data-action="association#remove" data-association-remove-id-param="<%= id %>"><%= t(:delete_enrollment) %></button>
                   </div>
                 </div>
               <% end %>
