@@ -31,7 +31,7 @@ class StudentPolicy < ApplicationPolicy
       if user.global_role?
         scope.all
       else
-        scope.joins(group: :chapter).where(group: { chapters: { organization_id: user.membership_organizations } })
+        scope.where(organization: user.membership_organizations)
       end
     end
   end
