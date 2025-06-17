@@ -259,37 +259,60 @@ RSpec.describe StudentsController, type: :controller do
     end
 
     describe '#update' do
-      let(:student) { create :student }
-      let(:image) { create :student_image, student: }
+      before :each do
+        @group = create :group
+        @other_group = create :group, chapter: @group.chapter
+        @student = create :student, organization: @group.chapter.organization
+        @image = create :student_image, student: @student
+        @existing_enrollment = create :enrollment, student: @student, group: @other_group
+      end
 
       context 'redirects after successful update' do
         it 'redirects to student path if there is no redirect flash' do
           allow_any_instance_of(StudentsController).to receive(:flash).and_return(redirect: nil)
-          post :update, params: { id: student.id, student: { first_name: 'updated' } }
-          expect(response).to redirect_to(student_path(student))
+          post :update, params: { id: @student.id, student: { first_name: 'updated' } }
+          expect(response).to redirect_to(student_path(@student))
         end
 
         it 'redirects to the path in flash[:redirect]' do
           allow_any_instance_of(StudentsController).to receive(:flash).and_return(redirect: students_path)
-          post :update, params: { id: student.id, student: { first_name: 'updated' } }
+          post :update, params: { id: @student.id, student: { first_name: 'updated' } }
           expect(response).to redirect_to(students_path)
         end
       end
 
       it 'updates the student\'s profile image' do
-        post :update, params: { id: student.id, student: { profile_image_id: image.id } }
+        post :update, params: { id: @student.id, student: { profile_image_id: @image.id } }
 
-        expect(student.reload.profile_image).to eq image
+        expect(@student.reload.profile_image).to eq @image
       end
 
       it 'updates the student\'s tags' do
-        tag1 = create :tag, organization: student.organization
-        tag2 = create :tag, organization: student.organization
+        tag1 = create :tag, organization: @student.organization
+        tag2 = create :tag, organization: @student.organization
 
-        post :update, params: { id: student.id, student: { tag_ids: [tag1.id, tag2.id, student.tags[0].id] } }
+        post :update, params: { id: @student.id, student: { tag_ids: [tag1.id, tag2.id, @student.tags[0].id] } }
 
-        expect(student.reload.tags.map(&:tag_name)).to include(tag1.tag_name, tag2.tag_name, student.tags[0].tag_name)
-        expect(student.reload.tags).to include tag1, tag2
+        expect(@student.reload.tags.map(&:tag_name)).to include(tag1.tag_name, tag2.tag_name, @student.tags[0].tag_name)
+        expect(@student.reload.tags).to include tag1, tag2
+      end
+
+      it 'updates the student\'s enrollments' do
+        post :update, params: { id: @student.id, student: { enrollments_attributes:
+          { '0' => { id: @existing_enrollment.id, _destroy: '1' },
+            '1' => { group_id: @group.id, active_since: 1.day.ago.to_date, _destroy: '0' } } } }
+
+        expect(@student.reload.enrollments).not_to include @existing_enrollment
+        expect(@student.reload.enrollments.first.group_id).to eq @group.id
+        expect(@student.reload.enrollments.first.active_since).to eq 1.day.ago.to_date
+      end
+
+      it 'does not update the student if the organization has been changed' do
+        organization_id = @student.organization.id
+        post :update, params: { id: @student.id, student: { organization_id: create(:organization).id } }
+
+        expect(response).to redirect_to(student_path(@student))
+        expect(@student.reload.organization_id).to eq organization_id
       end
     end
 
