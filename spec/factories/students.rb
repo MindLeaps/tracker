@@ -90,7 +90,7 @@ FactoryBot.define do
             skill_names: evaluator.grades.keys,
             organization: student.organization
           )
-          (0..evaluator.grades.values.map(&:length).max - 1).each do |i|
+          (0..(evaluator.grades.values.map(&:length).max - 1)).each do |i|
             date = 1.year.ago.to_date + i.days
             existing_lesson = Lesson.find_by(subject_id: subject.id, group_id: student.enrollments.first.group.id, date:)
             skill_marks = evaluator.grades.transform_values { |v| v[i] }
