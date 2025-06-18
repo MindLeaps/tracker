@@ -92,7 +92,8 @@ class StudentsController < HtmlController
     if params[:add_group]
       @student.enrollments.build
       render :new, status: :ok
-    elsif validate_student_enrollments_and_organization
+    elsif @student.save
+      success title: t(:student_updated), text: t(:student_name_updated, name: @student.proper_name)
       redirect_to(flash[:redirect] || student_path(@student))
     else
       failure title: t(:student_invalid), text: t(:fix_form_errors)
@@ -156,7 +157,6 @@ class StudentsController < HtmlController
     p = params.require(:student)
     p[:student_tags_attributes] = p.fetch(:tag_ids, []).map { |tag_id| { tag_id: } }
     p.delete :tag_ids
-    p[:organization_id] = Group.find(p[:old_group_id]).chapter[:organization_id] if p[:organization_id].blank? && p[:old_group_id].present?
     p.permit(*Student.permitted_params)
   end
 

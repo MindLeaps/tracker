@@ -56,8 +56,7 @@ class Student < ApplicationRecord
   validates :first_name, :last_name, :dob, :gender, presence: true
   validates :mlid, uniqueness: { scope: :organization_id }, length: { maximum: 8 }
   validates_associated :enrollments
-
-  attr_accessor :current_group_id
+  validate :validate_organization_has_not_been_changed, on: :update
 
   enum :gender, { M: 'male', F: 'female', NB: 'nonbinary' }
 
@@ -84,6 +83,11 @@ class Student < ApplicationRecord
   def age
     now = Time.now.utc.to_date
     now.year - dob.year - (now.month > dob.month || (now.month == dob.month && now.day >= dob.day) ? 0 : 1)
+  end
+
+  def validate_organization_has_not_been_changed
+    existing_student_organization = Student.find_by(id: id).organization
+    errors.add :organization, I18n.t(:cannot_change_organization_existing_student) if existing_student_organization.id != organization.id
   end
 
   def deleted_enrollment_with_grades?

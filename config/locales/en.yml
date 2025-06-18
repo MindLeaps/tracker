@@ -45,12 +45,9 @@ en:
   enrolled_since: Enrolled Since
   enrolled_until: Enrolled Until
   delete_enrollment: Delete Enrollment
-  unable_to_delete_enrollment: Unable to delete enrollment
-  unable_to_update_enrollment: Unable to update enrollment
-  enrollment_not_deleted_because_grades: Enrollment not deleted for "%{group}" because it has grades associated with it. Remove any connected grades before deleting.
-  enrollment_already_exists: Enrollment already exists
-  cannot_change_existing_enrollment: Cannot change the group for an existing enrollment in "%{group}", create a new one and set the end date for this one.
-  cannot_change_date_existing_enrollment: Cannot change the enrollment date for "%{group}" because existing grades will be lost.
+  enrollment_not_deleted_because_grades: Enrollment not deleted because it has grades associated with it
+  cannot_change_existing_enrollment: Cannot change the group for an existing enrollment
+  cannot_change_enrollment_dates_because_grades: Cannot change the enrollment dates because existing grades will be lost
   students: Students
   student_details: Student Details
   student_deleted_at: Student deleted %{time} ago
@@ -134,7 +131,7 @@ en:
   student_restored: Student Restored
   student_restored_text: Student "%{name}" restored.
   unable_to_update_student: Unable to update student
-  cannot_change_organization_existing_student: Cannot change the organization for an existing student.
+  cannot_change_organization_existing_student: Cannot change the organization of an existing student
   number_of_students: Number of Students
   number_of_groups: Number of Groups
   number_of_chapters: Number of Chapters

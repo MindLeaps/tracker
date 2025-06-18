@@ -19,8 +19,5 @@ class GroupEnrolledStudentsComponent < ViewComponent::Base
 
   def before_render
     @pagy, @students = pagy @student_records
-    @students.each do |s|
-      s.current_group_id = @group.id
-    end
   end
 end
