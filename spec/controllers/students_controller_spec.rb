@@ -314,6 +314,15 @@ RSpec.describe StudentsController, type: :controller do
         expect(response).to redirect_to(student_path(@student))
         expect(@student.reload.organization_id).to eq organization_id
       end
+
+      it 'returns the new student template when a group is added' do
+        new_student = create :student
+
+        post :update, params: { id: new_student.id, student: { first_name: 'Added Group' }, add_group: 'Add+Group' }
+
+        expect(response).to be_successful
+        expect(response).to render_template('new')
+      end
     end
 
     describe '#destroy' do
