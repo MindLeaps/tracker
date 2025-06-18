@@ -227,9 +227,7 @@ RSpec.describe Student, type: :model do
     end
   end
 
-
   describe 'methods' do
-
     describe '#deleted_enrollment_with_grades?' do
       before :each do
         @group = create :group

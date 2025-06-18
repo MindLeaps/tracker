@@ -124,9 +124,7 @@ RSpec.describe 'User interacts with Students' do
 
         find('button', text: 'Delete Enrollment', match: :first).click
         fill_in 'student_enrollments_attributes_1_inactive_since', with: Time.zone.now.strftime('%Y-%m-%d')
-
         click_button 'Update'
-
 
         test_student.reload
         expect(test_student.enrollments.size).to eq 1
@@ -162,8 +160,6 @@ RSpec.describe 'User interacts with Students' do
     end
   end
 end
-
-private
 
 def add_and_select_group(chapter_group_name, group_index)
   click_button 'Add Group'
