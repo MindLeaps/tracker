@@ -33,8 +33,8 @@ class Enrollment < ApplicationRecord
   validates :student, uniqueness: { scope: [:group_id, :inactive_since], message: I18n.t(:enrollment_duplicate), if: :open? }
   validate :validate_student_and_group_in_same_org, if: :student_in_organization?
   validate :validate_enrollments_do_not_overlap
-  validate :validate_deleted_enrollment_has_no_grades
   validate :validate_group_has_not_changed
+  validate :validate_modified_enrollment_does_not_lose_grades
 
   def student_in_organization?
     student.organization.present?
@@ -61,18 +61,19 @@ class Enrollment < ApplicationRecord
   end
 
   def validate_deleted_enrollment_has_no_grades
-    if marked_for_destruction?
-      lessons = Lesson.where(group_id: group_id)
-      grades = Grade.where(student_id: student_id, lesson_id: lessons, deleted_at: nil)
+    lessons = Lesson.where(group_id: group_id)
+    grades = Grade.where(student_id: student_id, lesson_id: lessons, deleted_at: nil)
 
+    if grades.count.positive?
       errors.add(:student, I18n.t(:enrollment_not_deleted_because_grades)) if grades.count.positive?
+      throw :abort
     end
   end
 
   def validate_group_has_not_changed
     original_enrollment = Enrollment.find_by(id: id)
 
-    errors.add(:student, I18n.t(:cannot_change_existing_enrollment)) if original_enrollment.present? && original_enrollment.group_id != group.id
+    errors.add(:student, I18n.t(:cannot_change_existing_enrollment)) if original_enrollment.present? && original_enrollment.group_id != group_id
   end
 
   def validate_modified_enrollment_does_not_lose_grades

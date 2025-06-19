@@ -170,5 +170,31 @@ RSpec.describe Enrollment, type: :model do
       expect(non_overlapping_enrollment.valid?).to be false
       expect(overlapping_enrollment.errors[:student]).to eq [I18n.t(:enrollment_overlap)]
     end
+
+    it 'validates no grades are lost when an enrollment\'s dates have been modified' do
+      organization = create :organization
+      chapter = create :chapter, organization: organization
+      group = create :group, chapter: chapter
+      student = create :graded_student, organization: organization, groups: [group]
+
+      enrollment = student.enrollments.first
+      original_active_since = enrollment.active_since
+      original_inactive_since = enrollment.inactive_since
+
+      expect(enrollment.valid?).to be true
+
+      enrollment.active_since = 10.years.ago.to_date
+      expect(enrollment.valid?).to be true
+
+      enrollment.active_since = original_active_since
+      enrollment.inactive_since = 10.years.from_now.to_date
+      expect(enrollment.valid?).to be true
+
+      enrollment.inactive_since = original_inactive_since
+      enrollment.active_since = 1.day.ago.to_date
+      enrollment.save
+
+      expect(enrollment.valid?).to be false
+    end
   end
 end

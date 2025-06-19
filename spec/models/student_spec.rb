@@ -70,7 +70,7 @@ RSpec.describe Student, type: :model do
     describe 'student is valid' do
       let(:org) { create :organization }
 
-      it 'with first and last name, dob, and gender' do
+      it 'with first name, last name, dob, and gender' do
         male_student = Student.new mlid: '1S', first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 'male', organization: org
         expect(male_student).to be_valid
         expect(male_student.save).to eq true
@@ -123,6 +123,15 @@ RSpec.describe Student, type: :model do
       it 'student is valid if profile image belongs to student' do
         @student.profile_image = @image
         expect(@student).to be_valid
+      end
+    end
+
+    describe 'update' do
+      it 'is invalid if organization has been changed' do
+        student = create :student
+        student.organization = create :organization
+
+        expect(student.valid?).to be false
       end
     end
 

@@ -55,8 +55,9 @@ class Student < ApplicationRecord
 
   validates :first_name, :last_name, :dob, :gender, presence: true
   validates :mlid, uniqueness: { scope: :organization_id }, length: { maximum: 8 }
-  validates_associated :enrollments
   validate :validate_organization_has_not_been_changed, on: :update
+  validates_associated :enrollments
+  validate :validate_deleted_enrollments_have_no_grades, on: :update
 
   enum :gender, { M: 'male', F: 'female', NB: 'nonbinary' }
 
@@ -85,60 +86,30 @@ class Student < ApplicationRecord
     now.year - dob.year - (now.month > dob.month || (now.month == dob.month && now.day >= dob.day) ? 0 : 1)
   end
 
-  def validate_organization_has_not_been_changed
-    existing_student_organization = Student.find_by(id: id).organization
-    errors.add :organization, I18n.t(:cannot_change_organization_existing_student) if existing_student_organization.id != organization.id
-  end
-
-  def deleted_enrollment_with_grades?
+  def validate_deleted_enrollments_have_no_grades
     enrollments.each do |enrollment|
       next unless enrollment.marked_for_destruction?
 
       lessons = Lesson.where(group_id: enrollment.group_id)
       grades = Grade.where(student_id: id, lesson_id: lessons, deleted_at: nil)
 
-      return enrollment if grades.count.positive?
+      errors.add(:student, I18n.t(:enrollment_not_deleted_because_grades)) if grades.count.positive?
     end
-
-    false
   end
 
-  def updated_group_for_existing_enrollment?
-    enrollments.each do |enrollment|
-      original_enrollment = Enrollment.find_by(id: enrollment.id)
-
-      return original_enrollment if original_enrollment.present? && original_enrollment.group_id != enrollment.group.id
-    end
-
-    false
+  def validate_organization_has_not_been_changed
+    existing_student_organization = Student.find_by(id: id).organization
+    errors.add :organization, I18n.t(:cannot_change_organization_existing_student) if existing_student_organization.id != organization.id
   end
 
-  def updated_enrollment_with_grades?
-    enrollments.each do |enrollment|
-      original_enrollment = Enrollment.find_by(id: enrollment.id)
-      next if original_enrollment.blank?
-
-      lessons = Lesson.where(group_id: original_enrollment.group_id)
-      all_grades = Grade.where(student_id: id, lesson_id: lessons, deleted_at: nil)
-
-      next unless enrollment.active_since != original_enrollment.active_since || enrollment.inactive_since != original_enrollment.inactive_since
-
-      grades = Grade.where(student_id: id, lesson_id: lessons, deleted_at: nil, created_at: enrollment.active_since..enrollment.inactive_since)
-
-      return original_enrollment if grades.count != all_grades.count
-    end
-
-    false
-  end
-
-  def to_export
+  def to_export(group_id)
     { id: id, first_name: first_name, last_name: last_name, date_of_birth: dob, age: age, country_of_nationality: country_of_nationality, gender: gender,
-      organization_id: organization_id, enrolled_at: Enrollment.where(student_id: id, group_id: current_group_id).maximum(:active_since), group_id: current_group_id,
-      group_name: Group.find(current_group_id).group_name, total_average_score: StudentLessonSummary.where(student_id: id, group_id: current_group_id).average(:average_mark)&.round(2) || 'No scores yet' }
+      organization_id: organization_id, enrolled_at: Enrollment.where(student_id: id, group_id: group_id).maximum(:active_since), group_id: group_id,
+      group_name: Group.find(group_id).group_name, total_average_score: StudentLessonSummary.where(student_id: id, group_id: group_id).average(:average_mark)&.round(2) || 'No scores yet' }
   end
 
   def self.permitted_params
-    [:mlid, :first_name, :last_name, :dob, :estimated_dob, :current_group_id, :old_group_id, :gender, :country_of_nationality, :quartier,
+    [:mlid, :first_name, :last_name, :dob, :estimated_dob, :gender, :country_of_nationality, :quartier,
      :guardian_name, :guardian_occupation, :guardian_contact, :family_members, :health_insurance,
      :health_issues, :hiv_tested, :name_of_school, :school_level_completed, :year_of_dropout,
      :reason_for_leaving, :notes, :organization_id, :profile_image_id, { student_images_attributes: [:image], student_tags_attributes: [:tag_id, :student_id, :_destroy] },

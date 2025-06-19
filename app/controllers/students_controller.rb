@@ -11,6 +11,7 @@ class StudentsController < HtmlController
   has_scope :search, only: :index
   has_scope :by_group, as: :current_group_id
 
+  # rubocop:disable Metrics/AbcSize
   def index
     authorize Student
     respond_to do |format|
@@ -21,12 +22,12 @@ class StudentsController < HtmlController
       format.csv do
         @group = Group.find(params.require(:group_id))
         @students = apply_scopes(policy_scope(@group.students.where(deleted_at: nil)))
-        set_current_group_id_for_students
         filename = ["#{@group.group_name} - Enrolled Students", Time.zone.today.to_s].join(' ')
-        send_data csv_from_array_of_hashes(@students.map(&:to_export)), filename:, content_type: 'text/csv'
+        send_data csv_from_array_of_hashes(@students.map { |s| s.to_export(@group.id) }), filename:, content_type: 'text/csv'
       end
     end
   end
+  # rubocop:enable Metrics/AbcSize
 
   def show
     @student = Student.includes(:profile_image, :organization).find params.require(:id)
@@ -124,30 +125,6 @@ class StudentsController < HtmlController
   end
 
   private
-
-  def set_current_group_id_for_students
-    @students.each do |student|
-      student.current_group_id = @group.id
-    end
-  end
-
-  # rubocop:disable Metrics/AbcSize
-  def validate_student_enrollments_and_organization
-    deleted_enrollment = @student.deleted_enrollment_with_grades?
-    modified_group_existing_enrollment = @student.updated_group_for_existing_enrollment?
-    modified_date_existing_enrollment = @student.updated_enrollment_with_grades?
-    existing_student_organization = Student.find(@student.id).organization
-
-    return failure title: t(:unable_to_delete_enrollment), text: t(:enrollment_not_deleted_because_grades, group: Group.find(deleted_enrollment.group_id).group_name) if deleted_enrollment
-    return failure title: t(:enrollment_already_exists), text: t(:cannot_change_existing_enrollment, group: Group.find(modified_group_existing_enrollment.group_id).group_name) if modified_group_existing_enrollment
-    return failure title: t(:unable_to_update_enrollment), text: t(:cannot_change_date_existing_enrollment, group: Group.find(modified_date_existing_enrollment.group_id).group_name) if modified_date_existing_enrollment
-    return failure title: t(:unable_to_update_student), text: t(:cannot_change_organization_existing_student) if @student.organization != existing_student_organization
-
-    return success title: t(:student_updated), text: t(:student_name_updated, name: @student.proper_name) if @student.save
-
-    false
-  end
-  # rubocop:enable Metrics/AbcSize
 
   def lesson_summary(summary)
     { lesson_date: summary.lesson_date, average_mark: summary.average_mark }
