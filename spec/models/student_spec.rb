@@ -133,6 +133,20 @@ RSpec.describe Student, type: :model do
 
         expect(student.valid?).to be false
       end
+
+      it 'is invalid if an enrollment which contains grades has been deleted' do
+        group = create :group
+        student = create :graded_student, organization: group.chapter.organization, groups: [group], grades: {
+          'Memorization' => [1, 3, 6], 'Grit' => [2, 4, 7]
+        }
+
+        student.enrollments.first.mark_for_destruction
+        student.save
+        
+        expect(student.valid?).to be false
+        expect(student.errors.size).to eq 1
+        expect(student.errors[:student]).to eq [I18n.t(:enrollment_not_deleted_because_grades)]
+      end
     end
 
     it { should validate_presence_of :mlid }
@@ -232,73 +246,6 @@ RSpec.describe Student, type: :model do
         result = Student.search('Dom')
         expect(result.length).to eq 2
         expect(result).to include @zomzovato, @zombanavo
-      end
-    end
-  end
-
-  describe 'methods' do
-    describe '#deleted_enrollment_with_grades?' do
-      before :each do
-        @group = create :group
-        @first_student = create :graded_student, organization: @group.chapter.organization, groups: [@group], grades: {
-          'Memorization' => [1, 3, 6], 'Grit' => [2, 4, 7]
-        }
-        @second_student = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
-      end
-
-      it 'returns false if no enrollments which contain grades have been deleted' do
-        expect(@first_student.deleted_enrollment_with_grades?).to eq false
-        expect(@second_student.deleted_enrollment_with_grades?).to eq false
-      end
-
-      it 'returns any enrollment which contains grades that has been deleted' do
-        @first_student.enrollments.each(&:mark_for_destruction)
-        @second_student.enrollments.each(&:mark_for_destruction)
-
-        expect(@first_student.deleted_enrollment_with_grades?).to eq @first_student.enrollments.first
-        expect(@second_student.deleted_enrollment_with_grades?).to eq false
-      end
-    end
-
-    describe '#updated_group_for_existing_enrollment??' do
-      before :each do
-        @first_group = create :group
-        @second_group = create :group, chapter: @first_group.chapter
-        @student = create :enrolled_student, organization: @first_group.chapter.organization, groups: [@first_group, @second_group]
-      end
-
-      it 'returns false if no group has been modified for existing enrollments' do
-        expect(@student.updated_group_for_existing_enrollment?).to eq false
-      end
-
-      it 'returns the enrollment whose group has been modified' do
-        first_enrollment = @student.enrollments.first
-        first_enrollment.group_id = @second_group.id
-
-        expect(@student.updated_group_for_existing_enrollment?).to eq first_enrollment
-      end
-    end
-
-    describe '#updated_enrollment_with_grades?' do
-      before :each do
-        @group = create :group
-        @student = create :graded_student, organization: @group.chapter.organization, groups: [@group], grades: {
-          'Memorization' => [1, 3, 6], 'Grit' => [2, 4, 7]
-        }
-      end
-
-      it 'returns false if enrollment update does not lose grades' do
-        existing_enrollment = @student.enrollments.first
-        existing_enrollment.active_since = 2.years.ago
-
-        expect(@student.updated_enrollment_with_grades?).to eq false
-      end
-
-      it 'returns any enrollment whose update will lose grades' do
-        existing_enrollment = @student.enrollments.first
-        existing_enrollment.active_since = 1.day.from_now
-
-        expect(@student.updated_enrollment_with_grades?).to eq existing_enrollment
       end
     end
   end

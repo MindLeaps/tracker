@@ -55,8 +55,8 @@ class Student < ApplicationRecord
 
   validates :first_name, :last_name, :dob, :gender, presence: true
   validates :mlid, uniqueness: { scope: :organization_id }, length: { maximum: 8 }
-  validate :validate_organization_has_not_been_changed, on: :update
   validates_associated :enrollments
+  validate :validate_organization_has_not_been_changed, on: :update
   validate :validate_deleted_enrollments_have_no_grades, on: :update
 
   enum :gender, { M: 'male', F: 'female', NB: 'nonbinary' }

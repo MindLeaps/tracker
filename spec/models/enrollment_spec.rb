@@ -175,26 +175,31 @@ RSpec.describe Enrollment, type: :model do
       organization = create :organization
       chapter = create :chapter, organization: organization
       group = create :group, chapter: chapter
-      student = create :graded_student, organization: organization, groups: [group]
+      student = create :student, organization: organization
+      lesson = create :lesson, group: group, date: 10.days.ago
+      create :grade, student: student, lesson: lesson, created_at: 10.days.ago
 
-      enrollment = student.enrollments.first
-      original_active_since = enrollment.active_since
-      original_inactive_since = enrollment.inactive_since
-
-      expect(enrollment.valid?).to be true
-
-      enrollment.active_since = 10.years.ago.to_date
-      expect(enrollment.valid?).to be true
-
-      enrollment.active_since = original_active_since
-      enrollment.inactive_since = 10.years.from_now.to_date
-      expect(enrollment.valid?).to be true
-
-      enrollment.inactive_since = original_inactive_since
-      enrollment.active_since = 1.day.ago.to_date
-      enrollment.save
+      enrollment = create :enrollment, student: student, group: group, active_since: 10.days.ago
+      enrollment.update(active_since: 1.day.ago)
 
       expect(enrollment.valid?).to be false
+      expect(enrollment.errors.size).to eq(1)
+      expect(enrollment.errors[:student]).to eq [I18n.t(:cannot_change_enrollment_dates_because_grades)]
+    end
+
+    it 'validates group has not changed for an active enrollment' do
+      organization = create :organization
+      chapter = create :chapter, organization: organization
+      group = create :group, chapter: chapter
+      other_group = create :group, chapter: chapter
+      student = create :student, organization: organization
+
+      enrollment = create :enrollment, student: student, group: group
+      enrollment.update(group_id: other_group.id)
+
+      expect(enrollment.valid?).to be false
+      expect(enrollment.errors.size).to eq(1)
+      expect(enrollment.errors[:student]).to eq [I18n.t(:cannot_change_existing_enrollment)]
     end
   end
 end
