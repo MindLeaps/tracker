@@ -6,7 +6,7 @@ class GroupStudentsController < HtmlController
     @group = Group.find params.require :group_id
     authorize @group
 
-    @student = Student.new(current_group_id: @group.id)
+    @student = Student.new
   end
 
   def edit

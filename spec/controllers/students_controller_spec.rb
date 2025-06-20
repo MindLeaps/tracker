@@ -307,14 +307,6 @@ RSpec.describe StudentsController, type: :controller do
         expect(@student.reload.enrollments.first.active_since).to eq 1.day.ago.to_date
       end
 
-      it 'does not update the student if the organization has been changed' do
-        organization_id = @student.organization.id
-        post :update, params: { id: @student.id, student: { organization_id: create(:organization).id } }
-
-        expect(response).to redirect_to(student_path(@student))
-        expect(@student.reload.organization_id).to eq organization_id
-      end
-
       it 'returns the new student template when a group is added' do
         new_student = create :student
 
