@@ -71,7 +71,6 @@ class Student < ApplicationRecord
   has_many :tags, through: :student_tags
   accepts_nested_attributes_for :grades
   accepts_nested_attributes_for :student_images
-  accepts_nested_attributes_for :student_tags
   accepts_nested_attributes_for :enrollments, allow_destroy: true
 
   scope :by_group, ->(group_id) { includes(:enrollments).where(enrollments: { group_id: group_id }) }
@@ -114,7 +113,7 @@ class Student < ApplicationRecord
     [:mlid, :first_name, :last_name, :dob, :estimated_dob, :gender, :country_of_nationality, :quartier,
      :guardian_name, :guardian_occupation, :guardian_contact, :family_members, :health_insurance,
      :health_issues, :hiv_tested, :name_of_school, :school_level_completed, :year_of_dropout,
-     :reason_for_leaving, :notes, :organization_id, :profile_image_id, { student_images_attributes: [:image], student_tags_attributes: [:tag_id, :student_id, :_destroy] },
+     :reason_for_leaving, :notes, :organization_id, :profile_image_id, { tag_ids: [] }, { student_images_attributes: [:image] },
      { enrollments_attributes: [:id, :student_id, :group_id, :active_since, :inactive_since, :_destroy] }]
   end
 end

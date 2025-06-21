@@ -129,7 +129,7 @@
           <div class="grid grid-cols-6 gap-4">
             <div class="col-span-6 lg:col-span-2">
               <label for="student_tags" class="block text-sm font-medium text-gray-700"><%= t(:student_tags) %></label>
-              <%= f.collection_select :tag_ids, @permitted_tags, :id, :tag_name, { include_hidden: false }, class: 'hidden', id: 'tags-field', multiple: true, 'data-student-tag-target' => 'tags' %>
+              <%= f.collection_select :tag_ids, @permitted_tags, :id, :tag_name, { }, class: 'hidden', id: 'tags-field', multiple: true, 'data-student-tag-target' => 'tags' %>
               <%= f.text_field :tags_autocomplete, id: 'tag-autocomplete', 'data-student-tag-target' => 'autocomplete', class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm', role:'combobox', 'aria-controls' => 'options', 'aria-expanded' => false %>
             </div>
           </div>

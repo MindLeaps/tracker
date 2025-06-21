@@ -131,8 +131,6 @@ class StudentsController < HtmlController
 
   def student_params
     p = params.require(:student)
-    p[:student_tags_attributes] = p.fetch(:tag_ids, []).map { |tag_id| { tag_id: } }
-    p.delete :tag_ids
     p.permit(*Student.permitted_params)
   end
 
@@ -154,15 +152,6 @@ class StudentsController < HtmlController
 
   def new_params
     params.permit :group_id
-  end
-
-  def update_student(student)
-    p = student_params
-    tag_ids = p[:student_tags_attributes].pluck(:tag_id)
-    tags = Tag.where id: tag_ids
-    p.delete :student_tags_attributes
-    student.tags = tags
-    student.update p
   end
 end
 # rubocop:enable Metrics/ClassLength
