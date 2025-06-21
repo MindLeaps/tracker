@@ -9,7 +9,6 @@ class StudentsController < HtmlController
     scope.table_order value
   end
   has_scope :search, only: :index
-  has_scope :by_group, as: :current_group_id
 
   # rubocop:disable Metrics/AbcSize
   def index

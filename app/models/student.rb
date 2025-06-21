@@ -48,7 +48,7 @@ class Student < ApplicationRecord
   require 'csv'
   include PgSearch::Model
   include Mlid
-  pg_search_scope :search, against: [:first_name, :last_name, :mlid], associated_against: {
+  pg_search_scope :search, against: [:first_name, :last_name, :mlid, :organization_id], associated_against: {
     tags: :tag_name,
     organization: :organization_name
   }, using: { tsearch: { prefix: true } }
@@ -76,6 +76,8 @@ class Student < ApplicationRecord
 
   scope :by_group, ->(group_id) { includes(:enrollments).where(enrollments: { group_id: group_id }) }
   scope :by_organization, ->(organization_id) { where organization_id: }
+
+  delegate :organization_name, to: :organization, allow_nil: true
 
   def proper_name
     "#{last_name}, #{first_name}"
