@@ -7,8 +7,7 @@ RSpec.describe 'User interacts with Analytics' do
     before :each do
       @chapter = create :chapter
       @group = create :group, chapter: @chapter
-      @student = create :graded_student, group: @group, grades: { 'Memorization' => [3, 4, 5, 6, 7], 'Grit' => [2, 3, 2, 4, 5] }
-      create :enrollment, group: @group, student: @student, active_since: 1.year.ago
+      @student = create :graded_student, organization: @group.chapter.organization, groups: [@group], grades: { 'Memorization' => [3, 4, 5, 6, 7], 'Grit' => [2, 3, 2, 4, 5] }
       @organization = @chapter.organization
     end
 

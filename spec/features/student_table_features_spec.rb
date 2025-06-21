@@ -80,9 +80,9 @@ RSpec.describe 'User searches and navigates through students table', js: true do
         @another_org = create :organization, organization_name: 'Second Organization'
         @second_chapter = create :chapter, organization: @another_org
         @second_group = create :group, chapter: @second_chapter
-        @first_student = create :student, group: @first_group, first_name: 'Cicada'
-        @second_student = create :student, group: @second_group, first_name: 'Enchilada'
-        @third_student = create :student, group: @second_group, first_name: 'Quesadilla'
+        @first_student = create :enrolled_student, organization: @first_group.chapter.organization, groups: [@first_group], first_name: 'Cicada'
+        @second_student = create :enrolled_student, organization: @second_group.chapter.organization, groups: [@second_group], first_name: 'Enchilada'
+        @third_student = create :enrolled_student, organization: @second_group.chapter.organization, groups: [@second_group], first_name: 'Quesadilla'
         @shared_tag = create :tag, organization: @another_org, tag_name: 'Shared Tag', shared: true
         @tag = create :tag, organization: @org, tag_name: 'Test Tag', shared: false
         create :student_tag, tag: @shared_tag, student: @first_student

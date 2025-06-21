@@ -130,7 +130,7 @@ RSpec.describe StudentTagsController, type: :controller do
           @org = create :organization
           @chapter = create :chapter, organization: @org
           @group = create :group, chapter: @chapter
-          @student = create :student, group: @group
+          @student = create :enrolled_student, organization: @org, groups: [@group]
           @used_tag = create :tag, organization: @org
           create :student_tag, student: @student, tag: @used_tag
 

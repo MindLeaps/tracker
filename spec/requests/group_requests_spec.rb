@@ -13,7 +13,7 @@ RSpec.describe 'Group API', type: :request do
       @chapter = create :chapter
       @group = create :group, chapter: @chapter
 
-      @student1, @student2 = create_list :student, 2, group: @group
+      @student1, @student2 = create_list :enrolled_student, 2, organization: @chapter.organization, groups: [@group]
       @lesson1, @lesson2 = create_list :lesson, 2, group: @group
     end
 
