@@ -42,7 +42,7 @@ class GroupReportsController < HtmlController
     @enrollments_for_group.each do |enrollment|
       multiple_enrollments = @enrollments_for_group.where(student_id: enrollment.student_id).order(active_since: :asc)
 
-      if multiple_enrollments.count.many?
+      if multiple_enrollments.many?
         enrolled_students.push(student_details(single_enrollment(multiple_enrollments)))
         next
       end
