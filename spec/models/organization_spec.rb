@@ -9,10 +9,16 @@
 #  organization_name :string           not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
+#  country_id        :bigint
 #
 # Indexes
 #
-#  organizations_mlid_key  (mlid) UNIQUE
+#  index_organizations_on_country_id  (country_id)
+#  organizations_mlid_key             (mlid) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (country_id => countries.id)
 #
 require 'rails_helper'
 
@@ -20,6 +26,7 @@ RSpec.describe Organization, type: :model do
   let(:existing_org) { create :organization, organization_name: 'Already Existing Organization' }
 
   it { should have_many :chapters }
+  it { should belong_to(:country).optional }
 
   describe 'is valid' do
     it 'with a valid, unique name and a unique MLID' do
