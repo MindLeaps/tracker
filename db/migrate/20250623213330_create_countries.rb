@@ -18,7 +18,7 @@ class CreateCountries < ActiveRecord::Migration[7.2]
 
   def insert_country_values
     execute <<~SQL
-      INSERT INTO countries VALUES 
+      INSERT INTO countries VALUES
       (1, 'North Macedonia', now(), now()),
       (2, 'Guinea', now(), now());
     SQL
