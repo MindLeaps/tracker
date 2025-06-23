@@ -88,6 +88,7 @@ en:
   organization_restored_text: Organization "%{organization}" restored.
   delete_organization: Delete Organization
   restore_organization: Restore Deleted Organization
+  country: Country
   average_performance_for_last_30_lessons: Average performance for last 30 lessons
   average_performance_group_lifetime: Average performance for the group across lessons
   average_performance_students_lifetime: Average performance for the students across lessons

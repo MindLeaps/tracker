@@ -9,10 +9,16 @@
 #  organization_name :string           not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
+#  country_id        :bigint
 #
 # Indexes
 #
-#  organizations_mlid_key  (mlid) UNIQUE
+#  index_organizations_on_country_id  (country_id)
+#  organizations_mlid_key             (mlid) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (country_id => countries.id)
 #
 class Organization < ApplicationRecord
   include PgSearch::Model
@@ -21,6 +27,8 @@ class Organization < ApplicationRecord
   resourcify
   validates :organization_name, presence: true, uniqueness: true
   validates :mlid, uniqueness: true, length: { maximum: 3 }
+
+  belongs_to :country, optional: true
 
   has_many :chapters, dependent: :restrict_with_error
   has_many :subjects, dependent: :restrict_with_error

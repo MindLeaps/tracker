@@ -6,5 +6,6 @@ class OrganizationFormComponent < ViewComponent::Base
     @action = action
     @organization.mlid = MindleapsIdService.generate_organization_mlid unless @organization.mlid
     @cancel = cancel
+    @countries = Country.all
   end
 end
