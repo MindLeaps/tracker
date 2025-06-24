@@ -20,6 +20,7 @@ class OrganizationsController < HtmlController
   def new
     authorize Organization
     @organization = Organization.new params.permit :organization_name
+    @countries = CountryPolicy::Scope.new(current_user, Country).resolve
     respond_to do |format|
       format.turbo_stream
       format.html { render :new }
@@ -28,6 +29,7 @@ class OrganizationsController < HtmlController
 
   def edit
     @organization = Organization.find params.require :id
+    @countries = CountryPolicy::Scope.new(current_user, Country).resolve
     authorize @organization
   end
 
