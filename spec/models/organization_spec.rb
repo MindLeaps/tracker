@@ -121,6 +121,15 @@ RSpec.describe Organization, type: :model do
     end
   end
 
+  describe 'delegates' do
+    it 'country_name' do
+      country = create :country, country_name: 'Test Country'
+      org = create :organization, country: country
+
+      expect(org.country_name).to eql 'Test Country'
+    end
+  end
+
   describe 'methods' do
     describe 'delete_organization_and_dependents' do
       before :each do

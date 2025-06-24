@@ -1023,7 +1023,8 @@ SELECT
     NULL::boolean AS shared,
     NULL::bigint AS organization_id,
     NULL::character varying AS organization_name,
-    NULL::bigint AS student_count;
+    NULL::bigint AS student_count,
+    NULL::character varying AS country_name;
 
 
 --
@@ -1737,23 +1738,6 @@ CREATE OR REPLACE VIEW public.performance_per_group_per_skill_per_lessons AS
 
 
 --
--- Name: student_tag_table_rows _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.student_tag_table_rows AS
- SELECT t.id,
-    t.tag_name,
-    t.shared,
-    t.organization_id,
-    o.organization_name,
-    count(st.student_id) AS student_count
-   FROM ((public.tags t
-     JOIN public.organizations o ON ((t.organization_id = o.id)))
-     LEFT JOIN public.student_tags st ON ((t.id = st.tag_id)))
-  GROUP BY t.id, t.organization_id, o.organization_name;
-
-
---
 -- Name: subject_summaries _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
@@ -1948,6 +1932,25 @@ CREATE OR REPLACE VIEW public.organization_summaries AS
      LEFT JOIN public.chapter_summaries c ON ((c.organization_id = o.id)))
      LEFT JOIN public.countries co ON ((co.id = o.country_id)))
   GROUP BY o.id, co.country_name;
+
+
+--
+-- Name: student_tag_table_rows _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.student_tag_table_rows AS
+ SELECT t.id,
+    t.tag_name,
+    t.shared,
+    t.organization_id,
+    o.organization_name,
+    count(st.student_id) AS student_count,
+    c.country_name
+   FROM (((public.tags t
+     JOIN public.organizations o ON ((t.organization_id = o.id)))
+     LEFT JOIN public.student_tags st ON ((t.id = st.tag_id)))
+     LEFT JOIN public.countries c ON ((o.country_id = c.id)))
+  GROUP BY t.id, t.organization_id, o.organization_name, c.country_name;
 
 
 --

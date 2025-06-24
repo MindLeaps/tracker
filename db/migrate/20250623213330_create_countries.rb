@@ -8,9 +8,11 @@ class CreateCountries < ActiveRecord::Migration[7.2]
 
     add_reference :organizations, :country, foreign_key: { to_table: :countries }, null: true
     update_view :organization_summaries, version: 4
+    update_view :student_tag_table_rows, version: 2
   end
 
   def down
+    update_view :student_tag_table_rows, version: 1
     update_view :organization_summaries, version: 3
     remove_reference :organizations, :country, foreign_key: { to_table: :countries }
     drop_table :countries

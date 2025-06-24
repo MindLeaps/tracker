@@ -33,6 +33,8 @@ class Organization < ApplicationRecord
   has_many :chapters, dependent: :restrict_with_error
   has_many :subjects, dependent: :restrict_with_error
 
+  delegate :country_name, to: :country, allow_nil: true
+
   def add_user_with_role(email, role)
     return false unless Role::LOCAL_ROLES.key? role
 
