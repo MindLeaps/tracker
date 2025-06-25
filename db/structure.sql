@@ -395,6 +395,17 @@ ALTER SEQUENCE public.countries_id_seq OWNED BY public.countries.id;
 
 
 --
+-- Name: country_summaries; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.country_summaries AS
+SELECT
+    NULL::bigint AS id,
+    NULL::character varying AS country_name,
+    NULL::bigint AS organization_count;
+
+
+--
 -- Name: enrollments; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1951,6 +1962,19 @@ CREATE OR REPLACE VIEW public.student_tag_table_rows AS
      LEFT JOIN public.student_tags st ON ((t.id = st.tag_id)))
      LEFT JOIN public.countries c ON ((o.country_id = c.id)))
   GROUP BY t.id, t.organization_id, o.organization_name, c.country_name;
+
+
+--
+-- Name: country_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.country_summaries AS
+ SELECT c.id,
+    c.country_name,
+    count(o.country_id) AS organization_count
+   FROM (public.countries c
+     LEFT JOIN public.organizations o ON ((o.country_id = c.id)))
+  GROUP BY c.id;
 
 
 --

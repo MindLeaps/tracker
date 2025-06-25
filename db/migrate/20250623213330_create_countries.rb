@@ -13,7 +13,7 @@ class CreateCountries < ActiveRecord::Migration[7.2]
   end
 
   def down
-    drop_view :country_summaries, if_exists: true
+    drop_view :country_summaries
     update_view :student_tag_table_rows, version: 1
     update_view :organization_summaries, version: 3
     remove_reference :organizations, :country, foreign_key: { to_table: :countries }
