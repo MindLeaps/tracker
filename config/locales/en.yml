@@ -88,7 +88,22 @@ en:
   organization_restored_text: Organization "%{organization}" restored.
   delete_organization: Delete Organization
   restore_organization: Restore Deleted Organization
+  country_information: Country Information
+  new_country: New Country
+  add_country: Add Country
+  edit_country: Edit Country
+  delete_country: Delete Country
   country: Country
+  countries: Countries
+  country_name: Country Name
+  number_of_organizations: Number of Organizations
+  country_invalid: Country Invalid
+  country_added: Country Added
+  country_updated: Country Updated
+  country_name_added: Country "%{name}" added
+  country_name_updated: Country "%{name}" updated
+  country_deleted: Country deleted
+  country_deleted_text: Country "%{name}" deleted.
   average_performance_for_last_30_lessons: Average performance for last 30 lessons
   average_performance_group_lifetime: Average performance for the group across lessons
   average_performance_students_lifetime: Average performance for the students across lessons

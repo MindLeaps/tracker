@@ -11,5 +11,5 @@ class Country < ApplicationRecord
   include PgSearch::Model
   validates :country_name, presence: true, uniqueness: true
 
-  has_one :organization, dependent: :nullify
+  has_many :organizations, dependent: :nullify
 end

@@ -1,15 +1,24 @@
 class CountriesController < HtmlController
   include Pagy::Backend
-  has_scope :table_order, type: :hash, default: { key: :created_at, order: :desc }, only: :index
+  has_scope :exclude_deleted, type: :boolean, default: true, only: %i[show]
+  has_scope :table_order, type: :hash
   has_scope :search, only: :index
+
   def index
     authorize Country
-    @pagy, @countries = pagy apply_scopes(policy_scope(CountryRow, policy_scope_class: CountryPolicy::Scope))
+    @pagy, @countries = pagy apply_scopes(policy_scope(CountrySummary, policy_scope_class: CountryPolicy::Scope))
+  end
+
+  def show
+    id = params.require :id
+    @country = Country.find id
+    authorize @country
+    @pagy_organizations, @organizations = pagy apply_scopes(policy_scope(OrganizationSummary.where(organization_mlid: @country.organizations.map(&:mlid)), policy_scope_class: OrganizationPolicy::Scope))
   end
 
   def new
     authorize Country
-    @country = Organization.new params.permit :country_name
+    @country = Country.new params.permit :country_name
     respond_to do |format|
       format.turbo_stream
       format.html { render :new }
@@ -25,7 +34,7 @@ class CountriesController < HtmlController
     authorize Country
     @country = Country.new(params.require(:country).permit(:country_name))
 
-    if @organization.save
+    if @country.save
       success title: t(:country_added), text: t(:country_name_added, name: @country.country_name)
       return redirect_to countries_url
     end
@@ -52,7 +61,7 @@ class CountriesController < HtmlController
 
     return unless @country.destroy
 
-    success title: t(:country_deleted), text: t(:country_deleted_text, country_name: @country.country_name)
+    success title: t(:country_deleted), text: t(:country_deleted_text, name: @country.country_name)
     redirect_to countries_path
   end
 end

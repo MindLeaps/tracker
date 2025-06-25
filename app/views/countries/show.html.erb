@@ -1,0 +1,31 @@
+<%- content_for :title, @country.country_name %>
+
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  { title: CommonComponents::TagLabel.new(label: @country.country_name, img_src: 'flag.svg'), href: '' },
+], buttons: [
+  (CommonComponents::ButtonComponent.new(label: t(:edit_country), href: edit_country_path(@country)) if policy(@country).edit?),
+  (CommonComponents::DangerousFormButtonComponent.new(label: t(:delete_country), path: country_path(@country), method: :delete) if policy(@country).destroy?)
+].compact)  do |h|
+  h.with_left do
+  end
+end %>
+
+<div class="overflow-auto">
+  <div class="flex">
+    <section class="flex-1 pr-2">
+      <%= render CommonComponents::Card.new(title: t(:organizations).capitalize) do |card| %>
+        <% card.with_card_content do %>
+            <%= render TableComponents::Table.new(pagy: @pagy_organizations, rows: @organizations, row_component: TableComponents::OrganizationRow) do |t|
+              t.with_left do %>
+                <div class="flex items-center justify-between">
+                  <div class="flex-1">
+                    <%= render CommonComponents::CheckboxLink.new(label: t(:show_deleted), checked: !excluding_deleted?, href: show_deleted_url) %>
+                  </div>
+                </div>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+    </section>
+  </div>
+</div>
