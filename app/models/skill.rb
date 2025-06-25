@@ -45,7 +45,7 @@ class Skill < ApplicationRecord
   end
 
   def can_delete?
-    subjects.count.zero? && Grade.where(skill: self, deleted_at: nil).count.zero?
+    subjects.none? && Grade.where(skill: self, deleted_at: nil).none?
   end
 
   private
