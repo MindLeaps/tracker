@@ -1,6 +1,6 @@
 <%= turbo_stream.update 'new_organization' do %>
   <%= render DropContainerComponent.new do %>
-    <%= render OrganizationFormComponent.new(organization: @organization, action: :create, cancel: true) %>
+    <%= render OrganizationFormComponent.new(organization: @organization, countries: @countries, action: :create, cancel: true) %>
   <% end %>
   <%= turbo_stream.update "flashes", partial: 'shared/flashes' %>
 <% end %>

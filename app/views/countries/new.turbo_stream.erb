@@ -1,0 +1,6 @@
+<%= turbo_stream.update 'new_country' do %>
+  <%= render DropContainerComponent.new do %>
+    <%= render CountryFormComponent.new(country: @country, action: :create, cancel: true) %>
+  <% end %>
+  <%= turbo_stream.update "flashes", partial: 'shared/flashes' %>
+<% end %>

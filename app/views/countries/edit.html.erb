@@ -1,0 +1,11 @@
+<%- content_for :title, @country.country_name %>
+
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  {title: CommonComponents::TagLabel.new(label: @country.country_name, img_src: 'flag.svg'), href: '' },
+], buttons: [
+].compact) do |h|
+  h.with_left do
+  end
+end %>
+
+<%= render CountryFormComponent.new(country: @country, action: 'update') %>

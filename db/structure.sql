@@ -364,6 +364,48 @@ ALTER SEQUENCE public.chapters_id_seq OWNED BY public.chapters.id;
 
 
 --
+-- Name: countries; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.countries (
+    id bigint NOT NULL,
+    country_name character varying,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: countries_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.countries_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: countries_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.countries_id_seq OWNED BY public.countries.id;
+
+
+--
+-- Name: country_summaries; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.country_summaries AS
+SELECT
+    NULL::bigint AS id,
+    NULL::character varying AS country_name,
+    NULL::bigint AS organization_count;
+
+
+--
 -- Name: enrollments; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -681,6 +723,7 @@ SELECT
     NULL::integer AS chapter_count,
     NULL::integer AS group_count,
     NULL::integer AS student_count,
+    NULL::character varying AS country_name,
     NULL::timestamp without time zone AS updated_at,
     NULL::timestamp without time zone AS created_at,
     NULL::timestamp without time zone AS deleted_at;
@@ -698,6 +741,7 @@ CREATE TABLE public.organizations (
     image character varying DEFAULT 'https://placeholdit.imgix.net/~text?txtsize=23&txt=200%C3%97200&w=200&h=200'::character varying,
     deleted_at timestamp without time zone,
     mlid character varying(3) NOT NULL,
+    country_id bigint,
     CONSTRAINT uppercase CHECK (((mlid)::text = upper((mlid)::text)))
 );
 
@@ -990,7 +1034,8 @@ SELECT
     NULL::boolean AS shared,
     NULL::bigint AS organization_id,
     NULL::character varying AS organization_name,
-    NULL::bigint AS student_count;
+    NULL::bigint AS student_count,
+    NULL::character varying AS country_name;
 
 
 --
@@ -1127,6 +1172,13 @@ ALTER TABLE ONLY public.chapters ALTER COLUMN id SET DEFAULT nextval('public.cha
 
 
 --
+-- Name: countries id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.countries ALTER COLUMN id SET DEFAULT nextval('public.countries_id_seq'::regclass);
+
+
+--
 -- Name: grade_descriptors id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1226,6 +1278,14 @@ ALTER TABLE ONLY public.authentication_tokens
 
 ALTER TABLE ONLY public.chapters
     ADD CONSTRAINT chapters_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: countries countries_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.countries
+    ADD CONSTRAINT countries_pkey PRIMARY KEY (id);
 
 
 --
@@ -1485,6 +1545,13 @@ CREATE INDEX index_lessons_on_subject_id ON public.lessons USING btree (subject_
 
 
 --
+-- Name: index_organizations_on_country_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_organizations_on_country_id ON public.organizations USING btree (country_id);
+
+
+--
 -- Name: index_roles_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1658,37 +1725,6 @@ CREATE OR REPLACE VIEW public.lesson_skill_summaries AS
 
 
 --
--- Name: organization_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.organization_summaries AS
- SELECT o.id,
-    o.organization_name,
-    o.mlid AS organization_mlid,
-    (sum(
-        CASE
-            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN 1
-            ELSE 0
-        END))::integer AS chapter_count,
-    (sum(
-        CASE
-            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN c.group_count
-            ELSE 0
-        END))::integer AS group_count,
-    (sum(
-        CASE
-            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN c.student_count
-            ELSE 0
-        END))::integer AS student_count,
-    o.updated_at,
-    o.created_at,
-    o.deleted_at
-   FROM (public.organizations o
-     LEFT JOIN public.chapter_summaries c ON ((c.organization_id = o.id)))
-  GROUP BY o.id;
-
-
---
 -- Name: performance_per_group_per_skill_per_lessons _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
@@ -1710,23 +1746,6 @@ CREATE OR REPLACE VIEW public.performance_per_group_per_skill_per_lessons AS
      JOIN public.skills s ON ((s.id = g.skill_id)))
   GROUP BY gr.id, c.id, l.id, s.id, su.id
   ORDER BY gr.id, l.date, s.id;
-
-
---
--- Name: student_tag_table_rows _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.student_tag_table_rows AS
- SELECT t.id,
-    t.tag_name,
-    t.shared,
-    t.organization_id,
-    o.organization_name,
-    count(st.student_id) AS student_count
-   FROM ((public.tags t
-     JOIN public.organizations o ON ((t.organization_id = o.id)))
-     LEFT JOIN public.student_tags st ON ((t.id = st.tag_id)))
-  GROUP BY t.id, t.organization_id, o.organization_name;
 
 
 --
@@ -1894,6 +1913,71 @@ CREATE OR REPLACE VIEW public.group_lesson_summaries AS
 
 
 --
+-- Name: organization_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.organization_summaries AS
+ SELECT o.id,
+    o.organization_name,
+    o.mlid AS organization_mlid,
+    (sum(
+        CASE
+            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN 1
+            ELSE 0
+        END))::integer AS chapter_count,
+    (sum(
+        CASE
+            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN c.group_count
+            ELSE 0
+        END))::integer AS group_count,
+    (sum(
+        CASE
+            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN c.student_count
+            ELSE 0
+        END))::integer AS student_count,
+    co.country_name,
+    o.updated_at,
+    o.created_at,
+    o.deleted_at
+   FROM ((public.organizations o
+     LEFT JOIN public.chapter_summaries c ON ((c.organization_id = o.id)))
+     LEFT JOIN public.countries co ON ((co.id = o.country_id)))
+  GROUP BY o.id, co.country_name;
+
+
+--
+-- Name: student_tag_table_rows _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.student_tag_table_rows AS
+ SELECT t.id,
+    t.tag_name,
+    t.shared,
+    t.organization_id,
+    o.organization_name,
+    count(st.student_id) AS student_count,
+    c.country_name
+   FROM (((public.tags t
+     JOIN public.organizations o ON ((t.organization_id = o.id)))
+     LEFT JOIN public.student_tags st ON ((t.id = st.tag_id)))
+     LEFT JOIN public.countries c ON ((o.country_id = c.id)))
+  GROUP BY t.id, t.organization_id, o.organization_name, c.country_name;
+
+
+--
+-- Name: country_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.country_summaries AS
+ SELECT c.id,
+    c.country_name,
+    count(o.country_id) AS organization_count
+   FROM (public.countries c
+     LEFT JOIN public.organizations o ON ((o.country_id = c.id)))
+  GROUP BY c.id;
+
+
+--
 -- Name: students update_enrollments_on_student_group_change_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -1930,6 +2014,14 @@ ALTER TABLE ONLY public.chapters
 
 ALTER TABLE ONLY public.enrollments
     ADD CONSTRAINT fk_rails_0ca8ba010f FOREIGN KEY (group_id) REFERENCES public.groups(id) ON DELETE CASCADE;
+
+
+--
+-- Name: organizations fk_rails_0de9c8b6c9; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.organizations
+    ADD CONSTRAINT fk_rails_0de9c8b6c9 FOREIGN KEY (country_id) REFERENCES public.countries(id);
 
 
 --
@@ -2099,6 +2191,7 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250623213330'),
 ('20250505014040'),
 ('20250419013904'),
 ('20250419013751'),
