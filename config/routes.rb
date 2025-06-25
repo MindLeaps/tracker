@@ -44,6 +44,7 @@ Rails.application.routes.draw do
       delete :revoke_global_role, on: :collection
     end
   end
+  resources :countries, only: %i[index new create edit update destroy]
   resources :organizations, only: %i[index new create show edit update destroy] do
     member { post :add_member }
     member { post :undelete }

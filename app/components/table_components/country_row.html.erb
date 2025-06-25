@@ -1,0 +1,12 @@
+<div class="<%= 'shaded-row' if shaded? %> table-row-wrapper">
+  <a href="<%= helpers.country_path @item %>" class="<%= 'shaded-row' if shaded? %> table-row-wrapper">
+    <div class="table-cell "><%= @pagy.from + @item_counter %></div>
+    <div class="text-right table-cell "><%= @item.country_name %></div>
+    <div class="table-cell "><%= @item.organization_count %></div>
+    <div class="text-right table-cell ">
+      <% if can_update? %>
+        <a id="edit-button-<%= @item_counter %>" class="table-action-link" href="<%= helpers.edit_country_path @item %>}"><%= t(:edit) %></a>
+      <% end %>
+    </div>
+  </a>
+</div>
