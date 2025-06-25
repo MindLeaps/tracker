@@ -1,5 +1,5 @@
 <div class="<%= 'shaded-row' if shaded? %> table-row-wrapper">
-  <a href="<%= helpers.country_path @item %>" class="<%= 'shaded-row' if shaded? %> table-row-wrapper">
+  <a href="<%= helpers.country_path @item %>" class="<%= 'shaded-row' if shaded? %> table-row-wrapper country-row">
     <div class="table-cell "><%= @pagy.from + @item_counter %></div>
     <div class="text-right table-cell "><%= @item.country_name %></div>
     <div class="table-cell"><%= @item.organization_count %></div>

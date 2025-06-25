@@ -12,7 +12,7 @@ require 'rails_helper'
 RSpec.describe Country, type: :model do
   let(:existing_country) { create :country, country_name: 'Already Existing Country' }
 
-  it { should have_one :organization }
+  it { should have_many :organizations }
 
   describe 'is valid' do
     it 'with a valid, unique name' do
