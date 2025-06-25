@@ -143,7 +143,7 @@ class User < ApplicationRecord
     end
 
     def first_user?
-      User.count.zero?
+      User.none?
     end
 
     def auth_params(auth)

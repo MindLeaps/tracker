@@ -90,15 +90,15 @@ class Role < ApplicationRecord
   private
 
   def correct_role_scope
-    errors.add :resource_id, "#{GLOBAL_ROLES[symbol]} cannot be a local role." if invalid_global_role
-    errors.add :resource_id, "#{LOCAL_ROLES[symbol]} cannot be a global role." if invalid_local_role
+    errors.add :resource_id, "#{GLOBAL_ROLES[symbol]} cannot be a local role." if invalid_global_role?
+    errors.add :resource_id, "#{LOCAL_ROLES[symbol]} cannot be a global role." if invalid_local_role?
   end
 
-  def invalid_global_role
+  def invalid_global_role?
     GLOBAL_ROLES.key?(symbol) && resource_id.present?
   end
 
-  def invalid_local_role
+  def invalid_local_role?
     LOCAL_ROLES.key?(symbol) && resource_id.blank?
   end
 end

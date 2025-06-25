@@ -27,6 +27,6 @@ class Tag < ApplicationRecord
   }
 
   def can_delete?
-    students.count.zero?
+    students.none?
   end
 end
