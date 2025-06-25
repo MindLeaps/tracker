@@ -15,7 +15,7 @@ class FixEnrollmentsData < ActiveRecord::Migration[7.1]
   end
 
   def more_than_one_enrollment_for_student?(id)
-    Enrollment.where(student_id: id).count > 1
+    Enrollment.where(student_id: id).many?
   end
 
   def update_enrollments_for_student(id)
