@@ -84,7 +84,6 @@ RSpec.describe 'Interaction with Countries' do
 
       expect(page).to have_selector('.country-row', count: 3)
 
-
       fill_in 'search-field', with: 'First'
       expect(page).to have_selector('.country-row', count: 1)
       expect(page).to have_content 'First'
