@@ -34,23 +34,29 @@ RSpec.describe GroupSummary, type: :model do
 
   describe 'fetching all group summaries' do
     before :each do
-      groups = create_list :group, 3
+      org = create :organization
+      groups = create_list :group, 3, chapter: create(:chapter, organization: org)
 
-      students1 = create_list :student, 5, group: groups[0]
-      students1[3].deleted_at = Time.zone.now
-      students1[4].deleted_at = Time.zone.now
-      students1[3].save
-      students1[4].save
+      students = create_list :enrolled_student, 5, organization: org, groups: groups
+      students[3].deleted_at = Time.zone.now
+      students[4].deleted_at = Time.zone.now
+      students[3].save
+      students[4].save
 
-      create :student, group: groups[1], deleted_at: Time.zone.now
+      create :enrolled_student, organization: org, groups: [groups[0]]
+      create :enrolled_student, organization: org, groups: [groups[1]], deleted_at: Time.zone.now
+      new_student = create :enrolled_student, organization: org, groups: [groups[2]]
+
+      new_student.enrollments.last.active_since = 1.day.from_now
+      new_student.save
     end
 
     it 'fetches all 3 groups' do
       expect(GroupSummary.all.length).to eq 3
     end
 
-    it 'excludes deleted students from student_count' do
-      expect(GroupSummary.all.map(&:student_count).sort).to eq [3, 0, 0].sort
+    it 'excludes deleted and not enrolled students from student_count' do
+      expect(GroupSummary.all.map(&:student_count).sort).to eq [4, 3, 3].sort
     end
   end
 

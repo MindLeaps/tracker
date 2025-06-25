@@ -38,11 +38,10 @@ RSpec.describe Grade, type: :model do
   describe 'validations' do
     describe 'uniqueness' do
       before :each do
-        group = create :group
-        @student = create(:student, group:)
-        @lesson = create(:lesson, group:)
+        @group = create :group
+        @student = create :student, organization: @group.chapter.organization, groups: [@group]
+        @lesson = create :lesson, group: @group
         @grade_descriptor = create :grade_descriptor
-
         @existing_grade = create :grade, lesson: @lesson, student: @student, grade_descriptor: @grade_descriptor
       end
 
@@ -155,33 +154,36 @@ RSpec.describe Grade, type: :model do
   describe '#find_duplicate' do
     before :each do
       @subject = create :subject_with_skills, number_of_skills: 2
+      @group = create :group, chapter: create(:chapter, organization: @subject.organization)
+      @enrolled_student = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
+
       @grade_descriptor1 = create :grade_descriptor, skill: @subject.skills[0], mark: 1
       @grade_descriptor2 = create :grade_descriptor, skill: @subject.skills[0], mark: 2
       @grade_descriptor3 = create :grade_descriptor, skill: @subject.skills[1], mark: 2
 
       @lesson = create :lesson, subject: @subject
 
-      @existing_grade = create :grade, lesson: @lesson, grade_descriptor: @grade_descriptor1
+      @existing_grade = create :grade, student: @enrolled_student, lesson: @lesson, grade_descriptor: @grade_descriptor1
     end
 
     it 'finds an already existing grade for the same student, lesson and skill' do
-      @new_grade = build :grade, lesson: @lesson, student: @existing_grade.student, grade_descriptor: @grade_descriptor2
+      @new_grade = build :grade, lesson: @lesson, student: @enrolled_student, grade_descriptor: @grade_descriptor2
       expect(@new_grade.find_duplicate).to eq @existing_grade
     end
 
     it 'does not find an existing grade for the same student, lesson but a different skill' do
-      @new_grade = build :grade, lesson: @lesson, student: @existing_grade.student, grade_descriptor: @grade_descriptor3
+      @new_grade = build :grade, lesson: @lesson, student: @enrolled_student, grade_descriptor: @grade_descriptor3
       expect(@new_grade.find_duplicate).to be_nil
     end
 
     it 'does not find an existing grade for the same student and skill but a different lesson' do
       different_lesson = create :lesson, subject: @subject
-      @new_grade = build :grade, lesson: different_lesson, student: @existing_grade.student, grade_descriptor: @grade_descriptor1
+      @new_grade = build :grade, lesson: different_lesson, student: @enrolled_student, grade_descriptor: @grade_descriptor1
       expect(@new_grade.find_duplicate).to be_nil
     end
 
     it 'does not find an existing grade for the lesson and skill but a different student' do
-      different_student = create :student, group: @existing_grade.student.group
+      different_student = create :enrolled_student, organization: @enrolled_student.enrollments[0].group.chapter.organization, groups: [@enrolled_student.enrollments[0].group]
       @new_grade = build :grade, lesson: @lesson, student: different_student, grade_descriptor: @grade_descriptor3
       expect(@new_grade.find_duplicate).to be_nil
     end
