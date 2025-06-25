@@ -64,8 +64,8 @@ class Enrollment < ApplicationRecord
     lessons = Lesson.where(group_id: group_id)
     grades = Grade.where(student_id: student_id, lesson_id: lessons, deleted_at: nil)
 
-    if grades.count.positive?
-      errors.add(:student, I18n.t(:enrollment_not_deleted_because_grades)) if grades.count.positive?
+    if grades.any?
+      errors.add(:student, I18n.t(:enrollment_not_deleted_because_grades))
       throw :abort
     end
   end
