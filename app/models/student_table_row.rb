@@ -39,7 +39,8 @@
 class StudentTableRow < ApplicationRecord
   include PgSearch::Model
   pg_search_scope :search, against: [:first_name, :last_name, :full_mlid], associated_against: {
-    tags: :tag_name
+    tags: :tag_name,
+    organization: :organization_name
   }, using: { tsearch: { prefix: true } }
 
   self.primary_key = :id

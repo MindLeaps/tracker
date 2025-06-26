@@ -97,12 +97,13 @@
           min: 1
         },
         yAxis: {
-          allowDecimals: false,
           title: {
             text: '<%= t(:performance) %>'
           },
-          max: 7,
-          endOnTick: false
+          allowDecimals: false,
+          endOnTick: false,
+          tickPositions: [0, 1, 2, 3, 4, 5, 6, 7],
+          max: 7
         },
         plotOptions: {
           series: {

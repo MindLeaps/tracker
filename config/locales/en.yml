@@ -362,6 +362,11 @@ en:
   tag_shared_explanation: Shared tags will be available to all organizations, rather than just the organization the tag belongs to.
   tag_added: Tag Added.
   tag_with_name_added: Tag "%{name}" added.
+  delete_tag: Delete Tag
+  tag_deleted: Tag Deleted
+  tag_deleted_text: Tag "%{tag_name}" deleted.
+  unable_to_delete_tag: Unable to delete tag
+  tag_not_deleted_because_students: Tag not deleted because it has students associated with it. Remove it from the students before deleting.
 
   lesson_date: Lesson Date
   grades_per_skill: Grades Per Skill

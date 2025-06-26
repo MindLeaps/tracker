@@ -8,7 +8,7 @@ class TableComponents::StudentRow < TableComponents::BaseRow
         <div class="text-right table-cell "><%= @item.first_name %></div>
         <div class="text-right table-cell "><%= @item.gender %></div>
         <div class="table-cell "><%= "\#{@item.estimated_dob ? t(:circa) : ''}\#{@item.dob}" %></div>
-        <div class="text-right table-cell "><% @item.tags.each do |tag|%><span class="mdl-chip"><span class="mdl-chip__text"><%= tag.tag_name %></span></span><% end %></div>
+        <div class="text-right table-cell "><% @item.tags.each do |tag|%><span class="mdl-chip"><span class="mdl-chip__text"><%= tag.tag_name %> </span></span><% end %></div>
         <div class="text-right table-cell truncate "><%= helpers.student_group_name @item %></div>
         <div class="table-cell "><%= @item.created_at.strftime('%F') %></div>
         <div class="text-right table-cell ">
