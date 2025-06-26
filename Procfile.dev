@@ -1,2 +1,2 @@
 web: RUBY_YJIT_ENABLE=1 bin/rails server -p 3000 -b 0.0.0.0
-css: rails tailwindcss:watch
+css: bin/rails tailwindcss:watch

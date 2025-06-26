@@ -1,3 +1,3 @@
-<%= button_to @path, (@params || {}).merge({ method: @method, params: @params, form_class: 'order-0 sm:order-1 inline-flex items-center mr-2', class: 'px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500' }) do
+<%= button_to @path, (@params || {}).merge({ method: @method, params: @params, form_class: 'order-none sm:order-1 inline-flex items-center mr-2', class: 'px-4 py-2 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-purple-500' }) do
   @label
 end %>

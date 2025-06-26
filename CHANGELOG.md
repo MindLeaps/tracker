@@ -1,4 +1,5 @@
 ## Unreleased 
+- Upgraded Tailwind from V3 to V4
 - Added the ability to delete Tags
 - Added ability to search students by both organization and tag name
 - Updated subject analytics performance charts to render each grade score
