@@ -73,4 +73,17 @@ class Group < ApplicationRecord
       save
     end
   end
+
+  def next_student_mlid(existing_mlid = nil)
+    last_mlid_given = existing_mlid || students.map(&:mlid).max
+
+    return '01' if last_mlid_given.blank?
+
+    if last_mlid_given[0] == '0'
+      new_mlid = (last_mlid_given[-1].to_i + 1).to_s
+      return new_mlid.length == 2 ? new_mlid : "0#{new_mlid}"
+    end
+
+    (last_mlid_given.to_i + 1).to_s
+  end
 end

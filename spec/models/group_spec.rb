@@ -121,5 +121,24 @@ RSpec.describe Group, type: :model do
         expect(@deleted_student.reload.deleted_at).to_not be_nil
       end
     end
+
+    describe 'next_student_mlid' do
+      before :each do
+        @first_group = create :group
+        @second_group = create :group
+        @empty_group = create :group
+        create :student, group: @first_group, mlid: '01'
+        create :student, group: @second_group, mlid: '12'
+      end
+
+      it "should return '01' when group is empty" do
+        expect(@empty_group.next_student_mlid).to eq '01'
+      end
+
+      it 'should return MLIDs in incremental order when students are added' do
+        expect(@first_group.next_student_mlid).to eq '02'
+        expect(@second_group.next_student_mlid).to eq '13'
+      end
+    end
   end
 end

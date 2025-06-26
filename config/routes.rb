@@ -57,6 +57,8 @@ Rails.application.routes.draw do
 
     resources :students, controller: :group_students, only: %i[new create edit update] do
       member { post :cancel_edit }
+      get :import, on: :collection
+      post :import_students, on: :collection
     end
   end
 

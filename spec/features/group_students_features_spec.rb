@@ -3,12 +3,6 @@ require 'rails_helper'
 RSpec.describe 'User interacts with students in Group', js: true do
   include_context 'login_with_global_admin'
 
-  describe 'Viewing' do
-    before :each do
-      @group = create :group, group_name: 'Group One'
-    end
-  end
-
   describe 'Student creation and editing' do
     before :each do
       @group = create :group, group_name: 'Group One'
@@ -53,6 +47,53 @@ RSpec.describe 'User interacts with students in Group', js: true do
       student.reload
       expect(student.first_name).to eq('Updated')
       expect(student.gender).to eq('M')
+    end
+  end
+
+  describe 'Student Importing' do
+    before :each do
+      @group = create :group, group_name: 'Group One'
+    end
+
+    it 'renders form when trying to import students' do
+      visit "/groups/#{@group.id}"
+      click_link 'Import Students CSV'
+
+      within('#modal') do
+        expect(page).to have_content 'Import Students'
+        expect(page).to have_content 'Import'
+        expect(page).to have_content 'Cancel'
+      end
+    end
+
+    it 'renders error messages when trying to upload invalid file', skip: 'test fails with selenium headless' do
+      visit "/groups/#{@group.id}"
+      click_link 'Import Students CSV'
+
+      within('#modal') do
+        page.attach_file('import_file', 'spec/fixtures/files/invalid_import.csv', make_visible: true)
+        click_button 'Import'
+
+        expect(page).to have_content 'Please check your file for the following errors:'
+        expect(page).to have_content 'Last name can\'t be blank'
+        expect(page).to have_content 'Gender can\'t be blank'
+      end
+    end
+
+    it 'imports students when file upload is successful', skip: 'test fails with selenium headless' do
+      visit "/groups/#{@group.id}"
+      click_link 'Import Students CSV'
+
+      within('#modal') do
+        page.attach_file('import_file', 'spec/fixtures/files/valid_import.csv', make_visible: true)
+        click_button 'Import'
+      end
+
+      expect(page).to have_content 'Imported Students'
+      expect(page).to have_content 'Students imported successfully'
+      expect(page).to have_content 'Marko'
+      expect(page).to have_content 'Rick'
+      expect(@group.students.count).to be 2
     end
   end
 end

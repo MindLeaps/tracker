@@ -1,4 +1,5 @@
 ## Unreleased 
+- Added the ability to import basic student data from csv to a group
 - Added the ability to delete Tags
 - Added ability to search students by both organization and tag name
 - Updated subject analytics performance charts to render each grade score
