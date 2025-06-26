@@ -5,7 +5,8 @@
   {title: t(:student_tags), href: student_tags_url },
   {title: "#{t(:tag)} - #{@tag.tag_name}", href: '' }
 ], buttons: [
-  (CommonComponents::ButtonComponent.new(label: t(:edit_tag), href: edit_student_tag_path) if policy(@tag).edit?)
+  (CommonComponents::ButtonComponent.new(label: t(:edit_tag), href: edit_student_tag_path) if policy(@tag).edit?),
+  (CommonComponents::DangerousFormButtonComponent.new(label: t(:delete_tag), path: student_tag_path(@tag), method: :delete) if policy(@tag).destroy?)
 ].compact) %>
 
 <%= render TableComponents::Table.new(pagy: @pagy, rows: @students, row_component: TableComponents::StudentRow) %>

@@ -23,5 +23,13 @@ class MindleapsIdService
     def generate_mlid(mlid_length)
       SecureRandom.alphanumeric(mlid_length).upcase
     end
+
+    def generate_student_mlid(organization_id)
+      conn = ActiveRecord::Base.connection.raw_connection
+      sql = <<~SQL.squish
+        select mlid from random_student_mlids(#{organization_id}, 8, 1);
+      SQL
+      conn.exec(sql).values[0][0]
+    end
   end
 end

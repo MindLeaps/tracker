@@ -17,9 +17,10 @@
 #  health_issues          :text
 #  hiv_tested             :boolean
 #  last_name              :string           not null
-#  mlid                   :string           not null
+#  mlid                   :string(8)        not null
 #  name_of_school         :string
 #  notes                  :text
+#  old_mlid               :string
 #  quartier               :string
 #  reason_for_leaving     :string
 #  school_level_completed :string
@@ -27,15 +28,19 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  group_id               :integer
+#  organization_id        :integer          not null
 #  profile_image_id       :integer
 #
 # Indexes
 #
-#  index_students_on_group_id          (group_id)
-#  index_students_on_profile_image_id  (profile_image_id)
+#  index_students_on_group_id                  (group_id)
+#  index_students_on_mlid_and_organization_id  (mlid,organization_id) UNIQUE
+#  index_students_on_organization_id           (organization_id)
+#  index_students_on_profile_image_id          (profile_image_id)
 #
 # Foreign Keys
 #
+#  fk_rails_...          (organization_id => organizations.id)
 #  fk_rails_...          (profile_image_id => student_images.id)
 #  students_group_id_fk  (group_id => groups.id)
 #
@@ -45,6 +50,7 @@ RSpec.describe Student, type: :model do
   let(:gro) { create :group }
 
   describe 'relationships' do
+    it { should belong_to :organization }
     it { should belong_to :group }
     it { should have_many :grades }
     it { should have_many :enrollments }
@@ -62,13 +68,34 @@ RSpec.describe Student, type: :model do
 
     subject { create :student, mlid: 'TS1' }
 
+    describe 'group and organization' do
+      let(:organization1) { create :organization }
+      let(:organization2) { create :organization }
+      let(:group1) { create :group, chapter: create(:chapter, organization: organization1) }
+      let(:group2) { create :group, chapter: create(:chapter, organization: organization2) }
+
+      it 'student is valid when the group belongs to the chapter in the same organization as the student' do
+        student = build :student, group: group1, organization: organization1
+        expect(student).to be_valid
+        student = build :student, group: group2, organization: organization2
+        expect(student).to be_valid
+      end
+
+      it 'student is not valid when belongs to the chapter in a different organization than the student' do
+        student = build :student, group: group1, organization: organization2
+        expect(student).not_to be_valid
+        student = build :student, group: group2, organization: organization1
+        expect(student).not_to be_valid
+      end
+    end
+
     describe 'student is valid' do
       it 'with first and last name, dob, and gender' do
-        male_student = Student.new mlid: '1S', first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 'male', group: gro
+        male_student = Student.new mlid: '1S', first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 'male', group: gro, organization: gro.chapter.organization
         expect(male_student).to be_valid
         expect(male_student.save).to eq true
 
-        female_student = Student.new mlid: '2S', first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 'female', group: gro
+        female_student = Student.new mlid: '2S', first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 'female', group: gro, organization: gro.chapter.organization
         expect(female_student).to be_valid
         expect(female_student.save).to eq true
       end
@@ -79,24 +106,30 @@ RSpec.describe Student, type: :model do
         @chapter = create :chapter
         @group = create :group, chapter: @chapter
         @group2 = create :group, chapter: @chapter
-        @existing_student = create :student, group: @group, mlid: 'AA1'
       end
 
       describe 'is valid' do
-        it 'when a student is the only student in their group' do
-          new_student = create :student, group: @group2, mlid: 'AA1'
+        it 'when a student is the only student in the organization' do
+          new_student = create :student, group: @group, mlid: 'AA1'
           expect(new_student).to be_valid
         end
 
-        it 'when it is unique in a group' do
-          new_student = create :student, group: @group, mlid: 'BB1'
+        it 'when it is unique in an organization' do
+          _existing_student = create :student, group: @group, mlid: 'AA1'
+          new_student = create :student, group: @group2, mlid: 'BB1'
           expect(new_student).to be_valid
         end
       end
 
       describe 'is invalid' do
-        it 'when it is duplicated in the same group' do
+        it 'when it is duplicated in the same organization' do
+          _existing_student = create :student, group: @group, mlid: 'AA1'
           new_student = build :student, group: @group, mlid: 'AA1'
+          expect(new_student).to be_invalid
+        end
+
+        it 'when it is longer than 8 characters' do
+          new_student = build :student, group: @group, mlid: '123456789'
           expect(new_student).to be_invalid
         end
       end
@@ -135,7 +168,7 @@ RSpec.describe Student, type: :model do
     it 'updates the enrollments after a students group has been changed' do
       student = create :student
       old_group = student.group
-      new_group = create :group
+      new_group = create :group, chapter: student.group.chapter
       student.group = new_group
       student.save!
       expect(student.enrollments.count).to eq 2
@@ -223,15 +256,6 @@ RSpec.describe Student, type: :model do
         expect(result.length).to eq 2
         expect(result).to include @zomzovato, @zombanavo
       end
-    end
-  end
-
-  describe '#organization' do
-    let(:org) { create :organization }
-    let(:student) { create :student, group: create(:group, chapter: create(:chapter, organization: org)) }
-
-    it 'returns the organization that the student ultimately belongs to' do
-      expect(student.organization).to eq(org)
     end
   end
 end

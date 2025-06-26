@@ -13,7 +13,6 @@ RSpec.describe 'User interacts with students in Group', js: true do
 
       click_button 'Create Student'
 
-      expect(page).to have_content "MLID can't be blank"
       expect(page).to have_content "Last name can't be blank"
       expect(page).to have_content "First name can't be blank"
       expect(page).to have_content "Dob can't be blank"

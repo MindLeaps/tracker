@@ -50,7 +50,7 @@ RSpec.describe GroupStudentsController, type: :controller do
 
       it 'does not create a student when passed invalid params' do
         post :create, as: :turbo_stream, params: { group_id: group_a.id, student: {
-          mlid: '12345',
+          mlid: '1234567890',
           first_name: 'Stoic',
           last_name: 'Henderson',
           'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => '17',

@@ -27,6 +27,7 @@ en:
 
   mindleaps_tracker: MindLeaps Tracker
   mlid: MLID
+  new_mlid: New
   name: Name
   full_name: Full Name
   undo: Undo
@@ -34,6 +35,7 @@ en:
   organization_mlid_error_message: Organization MLID has to be 3 characters long and can only contain numbers and letters. No special characters.
   chapter_mlid_error_message: Chapter MLID has to be up to 2 characters long and can only contain numbers and letters. No special characters.
   group_mlid_error_message: Group MLID has to be up to 2 characters long and can only contain numbers and letters. No special characters.
+  student_and_group_in_different_organizations: Student and Group are not in the same organization
   mlid_cannot_contain_special_characters: No special characters allowed in MLID
   students: Students
   student_details: Student Details
@@ -365,6 +367,11 @@ en:
   tag_shared_explanation: Shared tags will be available to all organizations, rather than just the organization the tag belongs to.
   tag_added: Tag Added.
   tag_with_name_added: Tag "%{name}" added.
+  delete_tag: Delete Tag
+  tag_deleted: Tag Deleted
+  tag_deleted_text: Tag "%{tag_name}" deleted.
+  unable_to_delete_tag: Unable to delete tag
+  tag_not_deleted_because_students: Tag not deleted because it has students associated with it. Remove it from the students before deleting.
 
   lesson_date: Lesson Date
   grades_per_skill: Grades Per Skill

@@ -1,7 +1,7 @@
 class FixEnrollmentsData < ActiveRecord::Migration[7.1]
   def up
     Enrollment.pluck(:student_id).each do |id|
-      if more_than_one_enrollment_for_student(id)
+      if more_than_one_enrollment_for_student?(id)
         update_enrollments_for_student(id)
       else
         enrollment = Enrollment.find_by(student_id: id)
@@ -14,8 +14,8 @@ class FixEnrollmentsData < ActiveRecord::Migration[7.1]
     raise ActiveRecord::IrreversibleMigration, 'This migration cannot be reverted because it amends data.'
   end
 
-  def more_than_one_enrollment_for_student(id)
-    Enrollment.where(student_id: id).count > 1
+  def more_than_one_enrollment_for_student?(id)
+    Enrollment.where(student_id: id).many?
   end
 
   def update_enrollments_for_student(id)

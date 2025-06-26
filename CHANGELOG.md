@@ -1,6 +1,14 @@
 ## Unreleased 
 - Added the ability to import basic student data from csv to a group
+- Added the ability to delete Tags
+- Added ability to search students by both organization and tag name
+- Updated subject analytics performance charts to render each grade score
 - Added the ability to export basic student data to csv for a group
+- Added `random_alphanumeric_string(length)` DB function to help with MLID generation
+- Added `random_student_mlids(org_id, mlid_length, number_of_mlids)` to generate unique available student MLIDs for organization
+- Added organization to student model
+- Reworked student MLIDs to be up to 8 characters long
+- Added autogeneration of student MLIDs when creating students
 
 ## 0.35.0 - Enrollment Date Fixes
 - Enabled teachers to create and edit groups/students

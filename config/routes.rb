@@ -64,11 +64,12 @@ Rails.application.routes.draw do
 
   resources :students, only: %i[index new create show edit update destroy] do
     member { post :undelete }
+    collection { get '/mlid/:group_id', to: 'students#mlid' }
 
     resources :student_images, only: %i[create destroy]
   end
 
-  resources :student_tags, only: %i[index new create show edit update]
+  resources :student_tags, only: %i[index new create show edit update destroy]
 
   resource :reports, only: %i[show] do
     resources :groups, controller: :group_reports, only: %i[show]

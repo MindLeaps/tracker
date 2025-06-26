@@ -18,9 +18,10 @@ class GroupStudentsController < HtmlController
   end
 
   def create
-    @group = Group.find params.require :group_id
+    @group = Group.includes(:chapter).find(params.require(:group_id))
     @student = Student.new(inline_student_params)
     @student.group = @group
+    @student.organization_id = @group.chapter.organization.id
     authorize @student
 
     if @student.save

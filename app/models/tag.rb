@@ -25,4 +25,8 @@ class Tag < ApplicationRecord
       "Tag \"#{data[:value]}\" already exists in #{Organization.find(tag.organization_id).organization_name} organization"
     end
   }
+
+  def can_delete?
+    students.none?
+  end
 end
