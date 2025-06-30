@@ -9,7 +9,8 @@ RSpec.describe Api::StudentsController, type: :controller do
 
   describe '#index' do
     before :each do
-      create_list :student, 3
+      @group = create :group
+      create_list :enrolled_student, 3, organization: @group.chapter.organization, groups: [@group]
       get :index, format: :json
     end
 
@@ -18,8 +19,9 @@ RSpec.describe Api::StudentsController, type: :controller do
 
   describe '#show' do
     before :each do
-      student = create :student
-      get :show, format: :json, params: { id: student.id }
+      @group = create :group
+      @student = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
+      get :show, format: :json, params: { id: @student.id }
     end
 
     it { should respond_with 200 }

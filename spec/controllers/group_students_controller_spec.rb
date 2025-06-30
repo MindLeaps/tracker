@@ -21,7 +21,7 @@ RSpec.describe GroupStudentsController, type: :controller do
 
     describe '#edit' do
       it 'returns a student form to edit' do
-        student = create :student, group: group_a
+        student = create :enrolled_student, organization: group_a.chapter.organization, groups: [group_a]
         response = get :edit, params: { id: student.id, group_id: group_a.id }
 
         expect(response).to be_successful
@@ -67,7 +67,7 @@ RSpec.describe GroupStudentsController, type: :controller do
 
     describe '#update' do
       it 'updates a student when passed valid params' do
-        student = create :student, group: group_a, first_name: 'Student', gender: 'M'
+        student = create :enrolled_student, organization: group_a.chapter.organization, groups: [group_a], first_name: 'Student', gender: 'M'
         post :update, as: :turbo_stream, params: { group_id: group_a.id, id: student.id, student: {
           first_name: 'Updated Student',
           gender: 'NB'
@@ -80,7 +80,7 @@ RSpec.describe GroupStudentsController, type: :controller do
       end
 
       it 'does not update a student when passed invalid params' do
-        student = create :student, group: group_a, first_name: 'Student', gender: 'M'
+        student = create :student, organization: group_a.chapter.organization, groups: [group_a], first_name: 'Student', gender: 'M'
         post :create, as: :turbo_stream, params: { group_id: group_a.id, student: {
           first_name: ''
         } }
@@ -93,7 +93,7 @@ RSpec.describe GroupStudentsController, type: :controller do
 
     describe '#cancel' do
       it 'returns a student successfully without updating' do
-        student = create :student, group: group_a, first_name: 'Student'
+        student = create :student, organization: group_a.chapter.organization, groups: [group_a], first_name: 'Student'
         get :edit, params: { id: student.id, group_id: group_a.id }
         response = get :cancel_edit, as: :turbo_stream, params: { id: student.id, group_id: group_a.id }
 

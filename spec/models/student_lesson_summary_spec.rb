@@ -21,9 +21,8 @@ RSpec.describe StudentLessonSummary, type: :model do
     describe '#table_order_lesson_students' do
       before :each do
         @group = create :group
-        @abimz = create :student, last_name: 'Abimz', first_name: 'Zima', group: @group
-        @zimba = create :student, last_name: 'Zimba', first_name: 'Azim', group: @group
-        [@abimz, @zimba].each { |s| create :enrollment, student: s, group: @group, active_since: 1.year.ago }
+        @abimz = create :enrolled_student, last_name: 'Abimz', first_name: 'Zima', organization: @group.chapter.organization, groups: [@group]
+        @zimba = create :enrolled_student, last_name: 'Zimba', first_name: 'Azim', organization: @group.chapter.organization, groups: [@group]
 
         create :lesson, group: @group
       end
@@ -40,11 +39,10 @@ RSpec.describe StudentLessonSummary, type: :model do
 
   describe 'values' do
     before :each do
-      subject = create :subject
-      @group = create :group
-      @lesson = create(:lesson, group: @group, subject:)
-      @student = create :student, group: @group
-      create :enrollment, group: @group, student: @student
+      @subject = create :subject
+      @group = create :group, chapter: create(:chapter, organization: @subject.organization)
+      @lesson = create(:lesson, group: @group, subject: @subject)
+      @student = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
     end
 
     it 'show the lesson date' do
@@ -57,17 +55,16 @@ RSpec.describe StudentLessonSummary, type: :model do
 
   describe 'calculations' do
     before :each do
-      subject = create :subject
-      @group = create :group
-      @lesson = create(:lesson, group: @group, subject:)
-      @first_student = create :student, group: @group
-      @second_student = create :student, group: @group
-      [@first_student, @second_student].each { |s| create :enrollment, student: s, group: @group, active_since: 1.year.ago }
+      @subject = create :subject
+      @group = create :group, chapter: create(:chapter, organization: @subject.organization)
+      @lesson = create(:lesson, group: @group, subject: @subject)
+      @first_student = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
+      @second_student = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
 
-      @first_skill = create(:skill_in_subject, subject:)
-      @second_skill = create(:skill_in_subject, subject:)
-      @empty_skill = create(:skill_in_subject, subject:)
-      @removed_skill = create(:skill_removed_from_subject, subject:)
+      @first_skill = create(:skill_in_subject, subject: @subject)
+      @second_skill = create(:skill_in_subject, subject: @subject)
+      @empty_skill = create(:skill_in_subject, subject: @subject)
+      @removed_skill = create(:skill_removed_from_subject, subject: @subject)
 
       @first_grade = create :grade, student: @first_student, lesson: @lesson, skill: @first_skill, mark: 1
       @second_grade = create :grade, student: @first_student, lesson: @lesson, skill: @second_skill, mark: 5
