@@ -1,8 +1,7 @@
 <%- content_for :title, t(:organizations).capitalize %>
 
 <%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
-  { title: CommonComponents::TagLabel.new(label: t(:organizations).capitalize, img_src: 'world.svg'), href: '' },
-  { title: CommonComponents::TagLabel.new(label: t(:countries), img_src: 'flag.svg'), href: countries_path }
+  { title: CommonComponents::TagLabel.new(label: t(:organizations).capitalize, img_src: 'world.svg'), href: '' }
 ], buttons: [
   (CommonComponents::ButtonComponent.new(label: t(:add_organization), href: new_organization_path, options: { data: { turbo_stream: true } }) if policy(Organization).new?)
 ].compact) %>

@@ -9,16 +9,10 @@
 #  organization_name :string           not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
-#  country_id        :bigint
 #
 # Indexes
 #
-#  index_organizations_on_country_id  (country_id)
-#  organizations_mlid_key             (mlid) UNIQUE
-#
-# Foreign Keys
-#
-#  fk_rails_...  (country_id => countries.id)
+#  organizations_mlid_key  (mlid) UNIQUE
 #
 require 'rails_helper'
 
@@ -26,7 +20,6 @@ RSpec.describe Organization, type: :model do
   let(:existing_org) { create :organization, organization_name: 'Already Existing Organization' }
 
   it { should have_many :chapters }
-  it { should belong_to(:country).optional }
 
   describe 'is valid' do
     it 'with a valid, unique name and a unique MLID' do
@@ -118,15 +111,6 @@ RSpec.describe Organization, type: :model do
         expect(Organization.exclude_deleted).to include @first_organization, @second_organization
         expect(Organization.exclude_deleted).not_to include @deleted_organization
       end
-    end
-  end
-
-  describe 'delegates' do
-    it 'country_name' do
-      country = create :country, country_name: 'Test Country'
-      org = create :organization, country: country
-
-      expect(org.country_name).to eql 'Test Country'
     end
   end
 

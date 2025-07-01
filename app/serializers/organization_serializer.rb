@@ -9,16 +9,10 @@
 #  organization_name :string           not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
-#  country_id        :bigint
 #
 # Indexes
 #
-#  index_organizations_on_country_id  (country_id)
-#  organizations_mlid_key             (mlid) UNIQUE
-#
-# Foreign Keys
-#
-#  fk_rails_...  (country_id => countries.id)
+#  organizations_mlid_key  (mlid) UNIQUE
 #
 class OrganizationSerializer < ActiveModel::Serializer
   attributes :id, :organization_name, :image, :deleted_at
