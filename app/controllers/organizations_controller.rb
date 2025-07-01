@@ -20,7 +20,8 @@ class OrganizationsController < HtmlController
   def new
     authorize Organization
     @organization = Organization.new params.permit :organization_name
-    @countries = CountryPolicy::Scope.new(current_user, Country).resolve
+    @countries = I18nData.countries
+
     respond_to do |format|
       format.turbo_stream
       format.html { render :new }
@@ -29,13 +30,13 @@ class OrganizationsController < HtmlController
 
   def edit
     @organization = Organization.find params.require :id
-    @countries = CountryPolicy::Scope.new(current_user, Country).resolve
+    @countries = I18nData.countries
     authorize @organization
   end
 
   def create
     authorize Organization
-    @organization = Organization.new(params.require(:organization).permit(:organization_name, :mlid, :country_id))
+    @organization = Organization.new(params.require(:organization).permit(:organization_name, :mlid, :country))
 
     if @organization.save
       success title: t(:organization_added), text: t(:organization_name_added, name: @organization.organization_name)
@@ -49,7 +50,7 @@ class OrganizationsController < HtmlController
     @organization = Organization.find params.require :id
     authorize @organization
 
-    if @organization.update params.require(:organization).permit :organization_name, :mlid, :country_id
+    if @organization.update params.require(:organization).permit :organization_name, :mlid, :country
       success title: t(:organization_updated), text: t(:organization_name_updated, name: @organization.organization_name)
       return redirect_to organizations_url
     end
