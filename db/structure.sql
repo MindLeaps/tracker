@@ -1589,11 +1589,6 @@ CREATE INDEX index_users_roles_on_user_id_and_role_id ON public.users_roles USIN
 -- Name: chapter_summaries _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
-CREATE OR REPLACE VIEW public.student_tag_table_rows AS
- SELECT t.id,
-    t.tag_name,
-    t.shared,
-    t.organization_id,
 CREATE OR REPLACE VIEW public.chapter_summaries AS
  SELECT c.id,
     c.chapter_name,
@@ -1693,19 +1688,6 @@ CREATE OR REPLACE VIEW public.performance_per_group_per_skill_per_lessons AS
 -- Name: subject_summaries _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
-CREATE OR REPLACE VIEW public.lesson_skill_summaries AS
- SELECT l.id AS lesson_id,
-    sk.id AS skill_id,
-    sk.skill_name,
-    round(avg(g.mark), 2) AS average_mark,
-    count(g.mark) AS grade_count,
-    su.id AS subject_id
-   FROM ((((public.lessons l
-     JOIN public.subjects su ON ((su.id = l.subject_id)))
-     JOIN public.assignments a ON (((su.id = a.subject_id) AND (a.deleted_at IS NULL))))
-     JOIN public.skills sk ON ((a.skill_id = sk.id)))
-     LEFT JOIN public.grades g ON (((g.lesson_id = l.id) AND (g.skill_id = sk.id) AND (g.deleted_at IS NULL))))
-  GROUP BY l.id, sk.id, su.id;
 CREATE OR REPLACE VIEW public.subject_summaries AS
  SELECT su.id,
     su.subject_name,
