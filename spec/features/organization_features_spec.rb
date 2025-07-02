@@ -88,10 +88,10 @@ RSpec.describe 'Interaction with Organizations' do
 
   describe 'Organization searching and filtering', js: true do
     before :each do
-      @org1 = create :organization, organization_name: 'Abisamol'
-      @org2 = create :organization, organization_name: 'Abisouena'
+      @org1 = create :organization, organization_name: 'Abisamol', country: 'Test Country'
+      @org2 = create :organization, organization_name: 'Abisouena', country: 'Test Country'
       @org3 = create :organization, organization_name: 'Abilatava', deleted_at: Time.zone.now
-      @org4 = create :organization, organization_name: 'Milatava'
+      @org4 = create :organization, organization_name: 'Milatava', country: 'Aruba'
     end
 
     it 'searches different organizations' do
@@ -109,6 +109,22 @@ RSpec.describe 'Interaction with Organizations' do
       expect(page).to have_selector('.organization-row', count: 2)
       expect(page).to have_content 'Abisamol'
       expect(page).to have_content 'Abisouena'
+    end
+
+    it 'searches organizations by country' do
+      visit '/organizations'
+
+      expect(page).to have_selector('.organization-row', count: 3)
+
+      fill_in 'search-field', with: 'Test'
+
+      expect(page).to have_selector('.organization-row', count: 2)
+      expect(page).to have_content 'Test Country'
+
+      fill_in 'search-field', with: 'Aruba'
+
+      expect(page).to have_selector('.organization-row', count: 1)
+      expect(page).to have_content 'Aruba'
     end
   end
 end
