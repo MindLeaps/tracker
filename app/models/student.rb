@@ -57,7 +57,7 @@ class Student < ApplicationRecord
   validates :mlid, uniqueness: { scope: :organization_id }, length: { maximum: 8 }
   validates_associated :enrollments
   validate :validate_organization_has_not_been_changed, on: :update
-  validate :validate_deleted_enrollments_have_no_grades, on: :update
+  validate :validate_enrollments_explicitly
 
   enum :gender, { M: 'male', F: 'female', NB: 'nonbinary' }
 
@@ -87,15 +87,8 @@ class Student < ApplicationRecord
     now.year - dob.year - (now.month > dob.month || (now.month == dob.month && now.day >= dob.day) ? 0 : 1)
   end
 
-  def validate_deleted_enrollments_have_no_grades
-    enrollments.each do |enrollment|
-      next unless enrollment.marked_for_destruction?
-
-      lessons = Lesson.where(group_id: enrollment.group_id)
-      grades = Grade.where(student_id: id, lesson_id: lessons, deleted_at: nil)
-
-      errors.add(:student, I18n.t(:enrollment_not_deleted_because_grades)) if grades.any?
-    end
+  def validate_enrollments_explicitly
+    enrollments.each(&:valid?)
   end
 
   def validate_organization_has_not_been_changed

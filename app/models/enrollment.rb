@@ -35,6 +35,7 @@ class Enrollment < ApplicationRecord
   validate :validate_enrollments_do_not_overlap
   validate :validate_group_has_not_changed
   validate :validate_modified_enrollment_does_not_lose_grades
+  validate :validate_deleted_enrollment_has_no_grades
 
   def student_in_organization?
     student.organization.present?
@@ -61,12 +62,15 @@ class Enrollment < ApplicationRecord
   end
 
   def validate_deleted_enrollment_has_no_grades
-    lessons = Lesson.where(group_id: group_id)
-    grades = Grade.where(student_id: student_id, lesson_id: lessons, deleted_at: nil)
+    if marked_for_destruction?
+      lessons = Lesson.where(group_id: group_id)
+      grades = Grade.where(student_id: student_id, lesson_id: lessons, deleted_at: nil)
 
-    if grades.any?
-      errors.add(:student, I18n.t(:enrollment_not_deleted_because_grades))
-      throw :abort
+      if grades.any?
+        student.errors.add(:base, I18n.t(:enrollment_not_deleted_because_grades))
+        errors.add(:student, I18n.t(:enrollment_not_deleted_because_grades))
+        reload
+      end
     end
   end
 
