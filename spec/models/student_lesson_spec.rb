@@ -15,8 +15,9 @@ RSpec.describe StudentLesson, type: :model do
 
     it 'has correct associations' do
       @subject = create :subject_with_skills, number_of_skills: 3
-      @student = create :student
-      @lesson = create :lesson, group: @student.group, subject: @subject
+      @group = create :group, chapter: create(:chapter, organization: @subject.organization)
+      @student = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
+      @lesson = create :lesson, group: @student.enrollments.first.group, subject: @subject
 
       student_lesson = StudentLesson.find_by(student: @student, lesson: @lesson)
       expect(student_lesson.subject).to eq @subject
@@ -67,9 +68,9 @@ RSpec.describe StudentLesson, type: :model do
   describe '#perform_grading' do
     before :each do
       @subject = create :subject_with_mindleaps_skills
-      group = create :group
-      @student = create(:student, group:)
-      @lesson = create :lesson, group:, subject: @subject
+      @group = create :group, chapter: create(:chapter, organization: @subject.organization)
+      @student = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
+      @lesson = create :lesson, group: @group, subject: @subject
 
       @student_lesson = StudentLesson.find_by student: @student, lesson: @lesson
     end
