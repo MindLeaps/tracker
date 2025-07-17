@@ -187,6 +187,22 @@ RSpec.describe Enrollment, type: :model do
       expect(enrollment.errors[:student]).to eq [I18n.t(:cannot_change_enrollment_dates_because_grades)]
     end
 
+    it 'validates no grades are lost when an enrollment has been deleted' do
+      organization = create :organization
+      chapter = create :chapter, organization: organization
+      group = create :group, chapter: chapter
+      student = create :student, organization: organization
+      lesson = create :lesson, group: group, date: 10.days.ago
+      create :grade, student: student, lesson: lesson, created_at: 10.days.ago
+
+      enrollment = create :enrollment, student: student, group: group, active_since: 10.days.ago
+      enrollment.mark_for_destruction
+
+      expect(enrollment.valid?).to be false
+      expect(enrollment.errors.size).to eq(1)
+      expect(enrollment.errors[:student]).to eq [I18n.t(:enrollment_not_deleted_because_grades)]
+    end
+
     it 'validates group has not changed for an active enrollment' do
       organization = create :organization
       chapter = create :chapter, organization: organization

@@ -141,11 +141,10 @@ RSpec.describe Student, type: :model do
         }
 
         student.enrollments.first.mark_for_destruction
-        student.save
 
         expect(student.valid?).to be false
         expect(student.errors.size).to eq 1
-        expect(student.errors[:student]).to eq [I18n.t(:enrollment_not_deleted_because_grades)]
+        expect(student.errors[:base]).to eq [I18n.t(:enrollment_not_deleted_because_grades)]
       end
     end
 
