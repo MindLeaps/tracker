@@ -62,6 +62,10 @@ Rails.application.routes.draw do
 
   resources :students, only: %i[index new create show edit update destroy] do
     member { post :undelete }
+    get :import, on: :collection
+    post :import_students, on: :collection
+    post :confirm_import, on: :collection
+
     collection { get '/mlid/:organization_id', to: 'students#mlid' }
 
     resources :student_images, only: %i[create destroy]
