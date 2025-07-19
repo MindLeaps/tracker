@@ -54,18 +54,26 @@ class StudentsController < HtmlController
     authorize Student
 
     @students = params.require :students
+    params.permit(*Student.permitted_params)
 
-    @students.each do |student|
-      student.mlid = MindleapsIdService.generate_student_mlid(Organization.first.id)
-    end
+    Student.transaction do
+      @students.each do |student|
+        new_student = Student.new(params.permit(
+          :first_name,
+          :last_name,
+          :gender,
+          :dob
+        ))
+        new_student.gender = :F
+        new_student.save!
+      end
 
-    if @students.save
       success(title: 'Students successfully imported', text: 'successful import')
       redirect_to students_path
-    else
-      failure_now(title: 'Students failed to import', text: 'unsuccessful import')
-      render :import_students, status: :unprocessable_entity
     end
+
+    failure_now(title: 'Students failed to import', text: 'unsuccessful import')
+    render :import_students, status: :unprocessable_entity
   end
 
   def show
