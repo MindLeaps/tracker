@@ -15,6 +15,18 @@ class OrganizationPolicy < ApplicationPolicy
     destroy?
   end
 
+  def import?
+    import_students?
+  end
+
+  def import_students?
+    add_member?
+  end
+
+  def confirm_import?
+    import_students?
+  end
+
   def add_member?
     user.global_administrator? || user.is_admin_of?(record)
   end

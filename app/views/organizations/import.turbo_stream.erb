@@ -6,14 +6,15 @@
         <div class="modal-out transition-all transform-gpu" data-modal-target="modal" data-action="click->modal#stopPropagation">
           <%= render CommonComponents::Card.new(title: 'Import Students') do |card| %>
             <% card.with_card_content do %>
-              <%= form_tag confirm_import_students_path, :method => :post, :class => 'bg-white p-4' do %>
-                <% @new_students.each do |student| %>
-                  <%= fields_for 'students[]', student do |f|  %>
-                    <%= render 'students/import_students_fields', :form => f %>
-                  <% end %>
-                <% end %>
-                <%= submit_tag "Confirm", class: 'button normal-button' %>
-                <div class="dangerous-button" data-action="click->modal#close"><%= t(:cancel) %></div>
+              <%= form_with url: import_students_organization_path, method: :post, class: 'bg-white p-4 space-y-0.5' do |f| %>
+                <div class="p-2">
+                  <%= f.label :import_file, class: 'field-label' %>
+                  <%= f.file_field :file %>
+                </div>
+                <div class="p-2">
+                  <%= f.submit 'Import', class: 'px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 cursor-pointer' %>
+                  <div class="dangerous-button" data-action="click->modal#close"><%= t(:cancel) %></div>
+                </div>
               <% end %>
             <% end %>
           <% end %>

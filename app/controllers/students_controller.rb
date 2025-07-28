@@ -26,55 +26,6 @@ class StudentsController < HtmlController
       end
     end
   end
-  # rubocop:enable Metrics/AbcSize
-
-  def import
-    authorize Student
-    respond_to(&:turbo_stream)
-  end
-
-  def import_students
-    authorize Student
-    file = params[:file]
-
-    if file.present? && file_is_csv(file.content_type)
-      @students_to_import = CsvService.deserialize_students(file)
-      @new_students = @students_to_import.map do |student|
-        Student.build(student)
-      end
-
-      render :import_students
-    else
-      failure(title: 'Invalid File', text: "Make sure the file is a 'csv' type file")
-      redirect_to students_path
-    end
-  end
-
-  def confirm_import
-    authorize Student
-
-    @students = params.require :students
-    params.permit(*Student.permitted_params)
-
-    Student.transaction do
-      @students.each do |student|
-        new_student = Student.new(params.permit(
-          :first_name,
-          :last_name,
-          :gender,
-          :dob
-        ))
-        new_student.gender = :F
-        new_student.save!
-      end
-
-      success(title: 'Students successfully imported', text: 'successful import')
-      redirect_to students_path
-    end
-
-    failure_now(title: 'Students failed to import', text: 'unsuccessful import')
-    render :import_students, status: :unprocessable_entity
-  end
 
   def show
     @student = Student.includes(:profile_image, :organization).find params.require(:id)
@@ -172,10 +123,6 @@ class StudentsController < HtmlController
   end
 
   private
-
-  def file_is_csv(content_type)
-    %w[text/csv text/x-csv application/vnd.ms-excel application/vnd.openxmlformats-officedocument.spreadsheetml.sheet application/csv application/x-csv].include? content_type
-  end
 
   def lesson_summary(summary)
     { lesson_date: summary.lesson_date, average_mark: summary.average_mark }

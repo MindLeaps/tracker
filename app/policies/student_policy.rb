@@ -19,18 +19,6 @@ class StudentPolicy < ApplicationPolicy
     destroy?
   end
 
-  def import?
-    import_students?
-  end
-
-  def import_students?
-    user.global_role?
-  end
-
-  def confirm_import?
-    import_students?
-  end
-
   class Scope
     attr_reader :user, :scope
 
