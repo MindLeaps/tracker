@@ -68,7 +68,7 @@ class OrganizationsController < HtmlController
     authorize @organization
     file = params[:file]
 
-    if file.present? && file_is_csv(file.content_type)
+    if file.present? && file_is_csv?(file.content_type)
       @students_to_import = CsvService.deserialize_students(file)
       @new_students = @students_to_import.map do |student|
         Student.build(student)
@@ -77,31 +77,28 @@ class OrganizationsController < HtmlController
       render :import_students
     else
       failure(title: 'Invalid File', text: "Make sure the file is a 'csv' type file")
-      redirect_to students_path
+      redirect_to organization_path(@organization)
     end
   end
 
   def confirm_import
     @organization = Organization.find params.require :id
     authorize @organization
-    @students = params.require :students
-    params.permit(*Student.permitted_params)
+    @students = params.require(:students)
 
-    Student.transaction do
-      @students.each do |_student|
-        new_student = Student.new(params.permit(:first_name, :last_name, :gender, :dob))
-        new_student.gender = :F
-        new_student.save!
-      end
-
-      success(title: 'Students successfully imported', text: 'successful import')
-      redirect_to students_path
+    @students = @students.map do |_student|
+      new_student = Student.new import_student_params
+      new_student
     end
 
-    failure_now(title: 'Students failed to import', text: 'unsuccessful import')
-    render :import_students, status: :unprocessable_entity
-  end
+    if @organization.create_imported_students?(@students)
+      success(title: 'Students successfully imported', text: 'successful import')
+    else
+      failure(title: 'Students failed to import', text: 'unsuccessful import')
+    end
 
+    redirect_to organization_path(@organization)
+  end
 
   def initialize_organization(id)
     @pagy_chapters, @chapters = pagy apply_scopes(ChapterSummary.where(organization_id: id), chapter_order_scope)
@@ -158,6 +155,10 @@ class OrganizationsController < HtmlController
   end
 
   private
+
+  def import_student_params
+    params.permit(*Student.permitted_params)
+  end
 
   def file_is_csv?(content_type)
     %w[text/csv text/x-csv application/vnd.ms-excel application/vnd.openxmlformats-officedocument.spreadsheetml.sheet application/csv application/x-csv].include? content_type

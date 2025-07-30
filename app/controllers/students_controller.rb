@@ -26,6 +26,7 @@ class StudentsController < HtmlController
       end
     end
   end
+  # rubocop:enable Metrics/AbcSize
 
   def show
     @student = Student.includes(:profile_image, :organization).find params.require(:id)

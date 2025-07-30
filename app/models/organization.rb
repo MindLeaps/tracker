@@ -88,6 +88,24 @@ class Organization < ApplicationRecord
     # rubocop:enable Rails/SkipsModelValidations
   end
 
+  def create_imported_students?(students)
+    begin
+      Student.transaction do
+        students.each do |student|
+          student.gender = :F
+          student.organization = self
+          student.mlid = MindleapsIdService.generate_student_mlid(id)
+          Rails.logger.debug { "Student not saved: #{student.errors.full_messages.join(', ')}" } unless student.save
+
+        end
+      end
+    rescue StandardError
+      return false
+    end
+
+    true
+  end
+
   def members
     OrganizationMember.where(organization_id: id)
   end
