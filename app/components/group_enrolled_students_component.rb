@@ -10,7 +10,6 @@ class GroupEnrolledStudentsComponent < ViewComponent::Base
   ERB
 
   def initialize(students:, group:, new_student:)
-    super
     @student_records = students
     @group = group
     @new_student = new_student
