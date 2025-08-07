@@ -22,6 +22,7 @@
 #
 class User < ApplicationRecord
   include PgSearch::Model
+
   pg_search_scope :search, against: [:name, :email], using: { tsearch: { prefix: true } }
 
   has_many :authentication_tokens, dependent: :destroy

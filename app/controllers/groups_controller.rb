@@ -1,5 +1,6 @@
 class GroupsController < HtmlController
   include Pagy::Backend
+
   has_scope :exclude_deleted, type: :boolean, default: true
   has_scope :table_order, type: :hash, default: { key: :created_at, order: :desc }
   has_scope :search, only: [:show, :index]

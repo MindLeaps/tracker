@@ -1,5 +1,6 @@
 class CommonComponents::StudentMlidInput < ViewComponent::Base
   include ApplicationHelper
+
   attr_reader :id
 
   ELEMENT_ID = 'student_mlid_input'.freeze
