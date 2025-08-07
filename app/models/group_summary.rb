@@ -18,6 +18,7 @@
 #
 class GroupSummary < ApplicationRecord
   include PgSearch::Model
+
   pg_search_scope :search, against: [:group_name, :chapter_name, :organization_name, :mlid, :chapter_mlid, :organization_mlid, :full_mlid],
                            using: { tsearch: { prefix: true } }
 

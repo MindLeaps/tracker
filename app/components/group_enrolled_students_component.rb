@@ -1,5 +1,6 @@
 class GroupEnrolledStudentsComponent < ViewComponent::Base
   include Pagy::Backend
+
   erb_template <<~ERB
     <%= render CommonComponents::Card.new(title: t(:students_in_group).capitalize) do |card| %>
       <% card.with_card_content do %>
