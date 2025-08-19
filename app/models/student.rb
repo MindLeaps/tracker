@@ -48,6 +48,7 @@ class Student < ApplicationRecord
   require 'csv'
   include PgSearch::Model
   include Mlid
+
   pg_search_scope :search, against: [:first_name, :last_name, :mlid, :organization_id], associated_against: {
     tags: :tag_name,
     organization: :organization_name

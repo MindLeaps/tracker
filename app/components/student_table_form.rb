@@ -45,7 +45,6 @@ class StudentTableForm < ViewComponent::Base
   ERB
 
   def initialize(student:, group:, is_edit: false)
-    super
     @student = student
     @group = group
     @organization = group.chapter.organization

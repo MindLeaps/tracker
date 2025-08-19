@@ -1,5 +1,6 @@
 class SubjectsController < HtmlController
   include Pagy::Backend
+
   has_scope :table_order, type: :hash, default: { key: :created_at, order: :desc }, only: :index
   has_scope :table_order_skills, type: :hash, only: :show
   def index

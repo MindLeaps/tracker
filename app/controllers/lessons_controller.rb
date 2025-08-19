@@ -1,5 +1,6 @@
 class LessonsController < HtmlController
   include Pagy::Backend
+
   has_scope :exclude_deleted, type: :boolean, default: true
   has_scope :table_order, type: :hash, only: :index, default: { key: :date, order: :desc }
   has_scope :table_order_lesson_students, type: :hash, only: :show
