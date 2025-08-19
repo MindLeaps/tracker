@@ -35,7 +35,7 @@ RSpec.describe 'Student API', type: :request do
       get_with_token student_path(@student), params: { include: 'enrollments' }, as: :json
 
       expect(student['enrollments'].count).to eq 2
-      expect(student['enrollments'].map { |e| e['group_id'] }).to include @first_group.id, @current_group.id
+      expect(student['enrollments'].pluck('group_id')).to include @first_group.id, @current_group.id
     end
   end
 
