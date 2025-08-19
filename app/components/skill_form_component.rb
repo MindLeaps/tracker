@@ -1,5 +1,6 @@
 class SkillFormComponent < ViewComponent::Base
   include Turbo::FramesHelper
+
   def initialize(skill:, action:, current_user:)
     @skill = skill
     @action = action

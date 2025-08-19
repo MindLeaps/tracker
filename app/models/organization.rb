@@ -18,6 +18,7 @@
 class Organization < ApplicationRecord
   include PgSearch::Model
   include Mlid
+
   pg_search_scope :search, against: [:organization_name], using: { tsearch: { prefix: true } }
   resourcify
   validates :organization_name, presence: true, uniqueness: true

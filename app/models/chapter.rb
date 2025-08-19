@@ -21,6 +21,7 @@
 #
 class Chapter < ApplicationRecord
   include Mlid
+
   validates :chapter_name, presence: true
   validates :chapter_name, uniqueness: {
     scope: :organization_id,
