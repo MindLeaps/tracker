@@ -1,5 +1,6 @@
 class CommonComponents::CheckboxLink < ViewComponent::Base
   include ApplicationHelper
+
   erb_template <<~ERB
     <%= link_to @href do %>
       <label class="cursor-pointer text-sm text-gray-600">

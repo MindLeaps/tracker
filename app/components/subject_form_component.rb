@@ -1,5 +1,6 @@
 class SubjectFormComponent < ViewComponent::Base
   include Turbo::FramesHelper
+
   erb_template <<~ERB
     <%= form_with model: @subject, class: 'space-y-0.5' do |f| %>
       <%= render FormWrapperComponent.new do |fw| %>

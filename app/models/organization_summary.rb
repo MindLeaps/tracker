@@ -14,6 +14,7 @@
 #
 class OrganizationSummary < ApplicationRecord
   include PgSearch::Model
+
   pg_search_scope :search, against: [:organization_name], using: { tsearch: { prefix: true } }
   self.primary_key = :id
 
