@@ -1,5 +1,6 @@
 class StudentFormComponent < ViewComponent::Base
   include Turbo::FramesHelper
+
   attr_reader :chapter_groups, :permitted_tags
 
   class ChapterGroups
