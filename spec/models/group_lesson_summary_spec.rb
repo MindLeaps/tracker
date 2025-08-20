@@ -15,6 +15,11 @@
 require 'rails_helper'
 
 RSpec.describe GroupLessonSummary, type: :model do
+  describe 'relationships' do
+    it { should belong_to :chapter }
+    it { should belong_to :group }
+  end
+
   describe '#readonly?' do
     before :each do
       @group = create :group
