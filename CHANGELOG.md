@@ -1,3 +1,6 @@
+## Unreleased
+- Filtered out deleted data when viewing group analytics
+
 ## 0.36.0 - Reworked Student MLIDs and Tags 
 - Added the ability to delete Tags
 - Added ability to search students by both organization and tag name
