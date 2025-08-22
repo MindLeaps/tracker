@@ -37,7 +37,8 @@ class OrganizationsController < HtmlController
 
   def create
     authorize Organization
-    @organization = Organization.new(params.require(:organization).permit(:organization_name, :mlid, :country))
+    @organization = Organization.new(params.require(:organization).permit(:organization_name, :mlid, :country_code))
+    @organization.country = I18nData.countries[@organization.country_code]
 
     if @organization.save
       success title: t(:organization_added), text: t(:organization_name_added, name: @organization.organization_name)
@@ -51,7 +52,10 @@ class OrganizationsController < HtmlController
     @organization = Organization.find params.require :id
     authorize @organization
 
-    if @organization.update params.require(:organization).permit :organization_name, :mlid, :country
+    p = params.require(:organization).permit :organization_name, :mlid, :country_code
+    p[:country] = I18nData.countries[p[:country_code]]
+
+    if @organization.update p
       success title: t(:organization_updated), text: t(:organization_name_updated, name: @organization.organization_name)
       return redirect_to organizations_url
     end

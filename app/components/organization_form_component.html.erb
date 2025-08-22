@@ -18,7 +18,7 @@
           </div>
           <div class="col-span-6 lg:col-span-2">
             <%= f.label :country, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
-            <%= f.select :country, options_for_select(@countries.values, @organization.country), { include_blank: true }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            <%= f.select :country_code, options_for_select(@countries.invert, @organization.country_code), { include_blank: false }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
           </div>
         </div>
       </div>
