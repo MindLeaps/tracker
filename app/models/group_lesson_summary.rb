@@ -15,6 +15,7 @@
 class GroupLessonSummary < ApplicationRecord
   self.primary_key = :lesson_id
   belongs_to :chapter
+  belongs_to :group
 
   def readonly?
     true

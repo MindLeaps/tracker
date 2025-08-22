@@ -5,7 +5,7 @@
     <meta name="turbo-cache-control" content="no-preview">
     <meta content="notranslate" name="google" />
     <%= favicon_link_tag 'favicon.ico' %>
-    <%= stylesheet_link_tag 'tailwind.css', media: 'all' %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag 'pikaday.css' %>
     <%= javascript_importmap_tags %>
     <%= yield :head_content %>

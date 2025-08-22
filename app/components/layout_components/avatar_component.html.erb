@@ -1,9 +1,9 @@
 <div class="px-3 relative inline-block text-left" data-controller="avatar">
   <div>
-    <button data-action="click->avatar#toggleDropdown click@window->avatar#closeDropdown" data-avatar-target="button" type="button" class="group w-full bg-gray-200 rounded-md px-3.5 py-2 text-sm text-left font-medium text-gray-700 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-200 focus:ring-purple-500" id="options-menu-button" aria-expanded="false" aria-haspopup="true">
+    <button data-action="click->avatar#toggleDropdown click@window->avatar#closeDropdown" data-avatar-target="button" type="button" class="group w-full bg-gray-200 rounded-md px-3.5 py-2 text-sm text-left font-medium text-gray-700 hover:bg-gray-300 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-200 focus:ring-purple-500" id="options-menu-button" aria-expanded="false" aria-haspopup="true">
             <span class="flex w-full justify-between items-center">
               <span class="flex min-w-0 items-center justify-between space-x-3">
-                <%= image_tag user_image, class: 'w-10 h-10 bg-gray-300 rounded-full flex-shrink-0' %>
+                <%= image_tag user_image, class: 'w-10 h-10 bg-gray-300 rounded-full shrink-0' %>
                 <span class="flex-1 flex flex-col min-w-0">
                   <span class="text-gray-900 text-sm font-medium truncate"><%= @current_user.name %></span>
                   <span class="text-gray-500 text-sm truncate"><%= @current_user.email %></span>
@@ -13,7 +13,7 @@
             </span>
     </button>
   </div>
-  <div class="z-10 mx-3 origin-top absolute right-0 left-0 mt-1 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-200 focus:outline-none transition transform opacity-0" data-avatar-target="dropdown" role="menu" aria-orientation="vertical" aria-labelledby="options-menu-button" tabindex="-1">
+  <div class="z-10 mx-3 origin-top absolute right-0 left-0 mt-1 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-200 focus:outline-hidden transition transform opacity-0" data-avatar-target="dropdown" role="menu" aria-orientation="vertical" aria-labelledby="options-menu-button" tabindex="-1">
     <div class="py-1" role="none">
       <a href="<%= current_user_path %>" class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-900" role="menuitem" tabindex="-1" id="options-menu-item-0">View profile</a>
     </div>

@@ -3,6 +3,7 @@
 # Table name: student_tag_table_rows
 #
 #  id                :uuid             primary key
+#  country           :string
 #  organization_name :string
 #  shared            :boolean
 #  student_count     :bigint
@@ -18,7 +19,7 @@ class StudentTagTableRow < ApplicationRecord
 
   include PgSearch::Model
 
-  pg_search_scope :search, against: [:tag_name, :organization_name], using: { tsearch: { prefix: true } }
+  pg_search_scope :search, against: [:tag_name, :organization_name, :country], using: { tsearch: { prefix: true } }
 
   self.primary_key = :id
 

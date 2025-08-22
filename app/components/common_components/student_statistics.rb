@@ -13,19 +13,19 @@ class CommonComponents::StudentStatistics < ViewComponent::Base
   erb_template <<~ERB
     <div>
       <dl class="mt-14 grid grid-cols-2 gap-5 sm:grid-cols-2">
-      <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+      <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow-sm sm:p-6">
         <dt class="truncate text-sm font-medium text-gray-500"><%= t(:total_nr_of_students) %>:</dt>
         <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900"><%= @total_students %></dd>
       </div>
-      <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+      <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow-sm sm:p-6">
         <dt class="truncate text-sm font-medium text-gray-500"><%= t(:nr_of_graded_students) %>:</dt>
         <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900"><%= @total_attending_students %></dd>
       </div>
-      <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+      <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow-sm sm:p-6">
         <dt class="truncate text-sm font-medium text-gray-500"><%= t(:nr_of_absent_students) %>:</dt>
         <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900"><%= @absent_students%></dd>
       </div>
-      <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow sm:p-6">
+      <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow-sm sm:p-6">
         <dt class="truncate text-sm font-medium text-gray-500"><%= t(:average_mark_across_students) %>:</dt>
         <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900"><%= @average_mark_across_students %></dd>
       </div>

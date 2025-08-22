@@ -1,6 +1,6 @@
 <%= turbo_stream.replace 'modal' do %>
   <div id="modal" class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true" data-controller="modal">
-    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity backdrop-out transform-gpu" data-modal-target="backdrop"></div>
+    <div class="fixed inset-0 bg-gray-500/50 transition-opacity backdrop-out transform-gpu" data-modal-target="backdrop"></div>
     <div class="fixed inset-0 z-10 w-screen overflow-y-auto" data-action="click->modal#close">
       <div class="flex min-h-full items-end justify-center p-4 sm:items-center sm:p-0">
         <div class="modal-out transition-all transform-gpu" data-modal-target="modal" data-action="click->modal#stopPropagation">
@@ -11,11 +11,11 @@
                 <div class="p-2">
                   <%= g.hidden_field :skill_id, value: g.object.skill_id %>
                   <%= g.label :grade_descriptor_id, g.object.skill.skill_name, class: 'field-label' %>
-                  <%= g.collection_select :grade_descriptor_id, g.object.skill.grade_descriptors, :id, -> (o) { "#{o.mark} - #{o.grade_description}" }, { include_blank: t(:ungraded) }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+                  <%= g.collection_select :grade_descriptor_id, g.object.skill.grade_descriptors, :id, -> (o) { "#{o.mark} - #{o.grade_description}" }, { include_blank: t(:ungraded) }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
                 </div>
               <% end %>
                 <div class="p-2">
-                  <%= f.submit t(:create_grade_button), class: 'px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 cursor-pointer' %>
+                  <%= f.submit t(:create_grade_button), class: 'px-4 py-2 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 cursor-pointer' %>
                   <div class="dangerous-button" data-action="click->modal#close"><%= t(:cancel) %></div>
                 </div>
             <% end %>

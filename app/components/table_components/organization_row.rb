@@ -8,6 +8,7 @@ class TableComponents::OrganizationRow < TableComponents::BaseRow
         <div class="table-cell "><%= @item.chapter_count %></div>
         <div class="table-cell "><%= @item.group_count %></div>
         <div class="table-cell "><%= @item.student_count %></div>
+        <div class="table-cell text-right"><%= @item.country %></div>
         <div class="table-cell "><%= @item.created_at.strftime('%F') %></div>
         <div class="text-right table-cell ">
           <% if can_update? %>
@@ -25,6 +26,7 @@ class TableComponents::OrganizationRow < TableComponents::BaseRow
       { order_key: :chapter_count, column_name: I18n.t(:number_of_chapters), numeric: true },
       { order_key: :group_count, column_name: I18n.t(:number_of_groups), numeric: true },
       { order_key: :student_count, column_name: I18n.t(:number_of_students), numeric: true },
+      { order_key: :country, column_name: I18n.t(:country) },
       { order_key: :created_at, column_name: I18n.t(:created), numeric: true },
       { column_name: I18n.t(:actions) }
     ]

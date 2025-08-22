@@ -76,7 +76,7 @@ RSpec.describe OrganizationsController, type: :controller do
     let(:existing_org) { create :organization, organization_name: 'Existing Org', mlid: 'EX1' }
     describe 'successful update' do
       before :each do
-        post :update, params: { id: existing_org.id, organization: { organization_name: 'Updated Org', mlid: 'UP1' } }
+        post :update, params: { id: existing_org.id, organization: { organization_name: 'Updated Org', mlid: 'UP1', country_code: 'MK' } }
       end
 
       it { should redirect_to organizations_url }
@@ -86,6 +86,8 @@ RSpec.describe OrganizationsController, type: :controller do
         existing_org.reload
         expect(existing_org.organization_name).to eq 'Updated Org'
         expect(existing_org.mlid).to eq 'UP1'
+        expect(existing_org.country).to eq 'North Macedonia'
+        expect(existing_org.country_code).to eq 'MK'
       end
     end
     describe 'Failed update' do
