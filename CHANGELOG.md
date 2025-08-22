@@ -1,5 +1,6 @@
 ## Unreleased
 - Filtered out deleted data when viewing group analytics
+- Upgraded Tailwind from V3 to V4
 
 ## 0.36.0 - Reworked Student MLIDs and Tags 
 - Added the ability to delete Tags
