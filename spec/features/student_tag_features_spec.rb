@@ -87,7 +87,7 @@ RSpec.describe 'User interacts with Student Tags' do
       @org = create :organization, country: 'Aruba'
       @chapter = create :chapter, organization: @org
       @group = create :group, chapter: @chapter
-      @student = create :student, group: @group
+      @student = create :enrolled_student, organization: @org, groups: [@group]
       @tag = create :tag, tag_name: 'Used Tag', organization: @org
       create :student_tag, student: @student, tag: @tag
     end
