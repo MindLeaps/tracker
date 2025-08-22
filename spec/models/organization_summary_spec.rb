@@ -4,6 +4,7 @@
 #
 #  id                :integer          primary key
 #  chapter_count     :integer
+#  country           :string
 #  deleted_at        :datetime
 #  group_count       :integer
 #  organization_mlid :string(3)

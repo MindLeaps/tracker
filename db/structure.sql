@@ -681,6 +681,7 @@ SELECT
     NULL::integer AS chapter_count,
     NULL::integer AS group_count,
     NULL::integer AS student_count,
+    NULL::character varying AS country,
     NULL::timestamp without time zone AS updated_at,
     NULL::timestamp without time zone AS created_at,
     NULL::timestamp without time zone AS deleted_at;
@@ -698,6 +699,8 @@ CREATE TABLE public.organizations (
     image character varying DEFAULT 'https://placeholdit.imgix.net/~text?txtsize=23&txt=200%C3%97200&w=200&h=200'::character varying,
     deleted_at timestamp without time zone,
     mlid character varying(3) NOT NULL,
+    country character varying,
+    country_code character varying,
     CONSTRAINT uppercase CHECK (((mlid)::text = upper((mlid)::text)))
 );
 
@@ -990,7 +993,8 @@ SELECT
     NULL::boolean AS shared,
     NULL::bigint AS organization_id,
     NULL::character varying AS organization_name,
-    NULL::bigint AS student_count;
+    NULL::bigint AS student_count,
+    NULL::character varying AS country;
 
 
 --
@@ -1658,37 +1662,6 @@ CREATE OR REPLACE VIEW public.lesson_skill_summaries AS
 
 
 --
--- Name: organization_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.organization_summaries AS
- SELECT o.id,
-    o.organization_name,
-    o.mlid AS organization_mlid,
-    (sum(
-        CASE
-            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN 1
-            ELSE 0
-        END))::integer AS chapter_count,
-    (sum(
-        CASE
-            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN c.group_count
-            ELSE 0
-        END))::integer AS group_count,
-    (sum(
-        CASE
-            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN c.student_count
-            ELSE 0
-        END))::integer AS student_count,
-    o.updated_at,
-    o.created_at,
-    o.deleted_at
-   FROM (public.organizations o
-     LEFT JOIN public.chapter_summaries c ON ((c.organization_id = o.id)))
-  GROUP BY o.id;
-
-
---
 -- Name: performance_per_group_per_skill_per_lessons _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
@@ -1710,23 +1683,6 @@ CREATE OR REPLACE VIEW public.performance_per_group_per_skill_per_lessons AS
      JOIN public.skills s ON ((s.id = g.skill_id)))
   GROUP BY gr.id, c.id, l.id, s.id, su.id
   ORDER BY gr.id, l.date, s.id;
-
-
---
--- Name: student_tag_table_rows _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.student_tag_table_rows AS
- SELECT t.id,
-    t.tag_name,
-    t.shared,
-    t.organization_id,
-    o.organization_name,
-    count(st.student_id) AS student_count
-   FROM ((public.tags t
-     JOIN public.organizations o ON ((t.organization_id = o.id)))
-     LEFT JOIN public.student_tags st ON ((t.id = st.tag_id)))
-  GROUP BY t.id, t.organization_id, o.organization_name;
 
 
 --
@@ -1891,6 +1847,56 @@ CREATE OR REPLACE VIEW public.group_lesson_summaries AS
   WHERE (slu.deleted_at IS NULL)
   GROUP BY slu.lesson_id, gr.id, c.id, slu.subject_id, slu.lesson_date
   ORDER BY slu.lesson_date;
+
+
+--
+-- Name: organization_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.organization_summaries AS
+ SELECT o.id,
+    o.organization_name,
+    o.mlid AS organization_mlid,
+    (sum(
+        CASE
+            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN 1
+            ELSE 0
+        END))::integer AS chapter_count,
+    (sum(
+        CASE
+            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN c.group_count
+            ELSE 0
+        END))::integer AS group_count,
+    (sum(
+        CASE
+            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN c.student_count
+            ELSE 0
+        END))::integer AS student_count,
+    o.country,
+    o.updated_at,
+    o.created_at,
+    o.deleted_at
+   FROM (public.organizations o
+     LEFT JOIN public.chapter_summaries c ON ((c.organization_id = o.id)))
+  GROUP BY o.id;
+
+
+--
+-- Name: student_tag_table_rows _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.student_tag_table_rows AS
+ SELECT t.id,
+    t.tag_name,
+    t.shared,
+    t.organization_id,
+    o.organization_name,
+    count(st.student_id) AS student_count,
+    o.country
+   FROM ((public.tags t
+     JOIN public.organizations o ON ((t.organization_id = o.id)))
+     LEFT JOIN public.student_tags st ON ((t.id = st.tag_id)))
+  GROUP BY t.id, t.organization_id, o.organization_name, o.country;
 
 
 --
@@ -2099,6 +2105,7 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20250701124808'),
 ('20250505014040'),
 ('20250419013904'),
 ('20250419013751'),
