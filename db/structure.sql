@@ -700,6 +700,7 @@ CREATE TABLE public.organizations (
     deleted_at timestamp without time zone,
     mlid character varying(3) NOT NULL,
     country character varying,
+    country_code character varying,
     CONSTRAINT uppercase CHECK (((mlid)::text = upper((mlid)::text)))
 );
 
