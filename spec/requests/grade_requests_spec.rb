@@ -8,9 +8,10 @@ RSpec.describe 'Grade API', type: :request do
 
   describe 'GET /grades/:id' do
     before :each do
+      @group = create :group
       @gd = create :grade_descriptor
-      @student = create :student
-      @lesson = create :lesson
+      @student = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
+      @lesson = create :lesson, group: @group
       @grade = create :grade, lesson: @lesson, student: @student, grade_descriptor: @gd
     end
 
@@ -57,8 +58,8 @@ RSpec.describe 'Grade API', type: :request do
   describe 'GET /grades' do
     before :each do
       @group = create :group
-      @student = create :student, group: @group
-      @deleted_student = create :student, group: @group, deleted_at: Time.zone.now
+      @student = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
+      @deleted_student = create :enrolled_student, organization: @group.chapter.organization, groups: [@group], deleted_at: Time.zone.now
       @lesson1, @lesson2 = create_list :lesson, 2
 
       @grade1, @grade2 = create_list :grade, 2, student: @student, lesson: @lesson1, created_at: 3.months.ago, updated_at: 3.months.ago
@@ -133,7 +134,7 @@ RSpec.describe 'Grade API', type: :request do
   describe 'POST /grades' do
     before :each do
       @group = create :group
-      @student = create :student, group: @group
+      @student = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
 
       @subject = create :subject
       @skill1 = create :skill, subject: @subject
@@ -200,7 +201,7 @@ RSpec.describe 'Grade API', type: :request do
   describe 'PUT /grades' do
     before :each do
       @group = create :group
-      @student = create :student, group: @group
+      @student = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
 
       @subject = create :subject
       @skill1 = create :skill, subject: @subject

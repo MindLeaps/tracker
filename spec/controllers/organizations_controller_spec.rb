@@ -151,7 +151,7 @@ RSpec.describe OrganizationsController, type: :controller do
 
       @chapters = create_list :chapter, 2, organization: @organization
       @groups = create_list :group, 2, chapter: @chapters.first
-      @students = create_list :student, 2, group: @groups.first
+      @students = create_list :enrolled_student, 2, organization: @groups.first.chapter.organization, groups: [@groups.first]
       @lessons = create_list :lesson, 2, group: @groups.first
       @grades = create_list :grade, 2, lesson: @lessons.first
       @deleted_chapter = create :chapter, organization: @organization, deleted_at: Time.zone.now
@@ -191,7 +191,7 @@ RSpec.describe OrganizationsController, type: :controller do
 
       @chapters = create_list :chapter, 2, organization: @organization, deleted_at: @organization.deleted_at
       @groups = create_list :group, 2, chapter: @chapters.first, deleted_at: @organization.deleted_at
-      @students = create_list :student, 2, group: @groups.first, deleted_at: @organization.deleted_at
+      @students = create_list :student, 2, organization: @groups.first.chapter.organization, groups: [@groups.first], deleted_at: @organization.deleted_at
       @lessons = create_list :lesson, 2, group: @groups.first, deleted_at: @organization.deleted_at
       @grades = create_list :grade, 2, lesson: @lessons.first, deleted_at: @organization.deleted_at
       @deleted_chapter = create :chapter, organization: @organization, deleted_at: Time.zone.now

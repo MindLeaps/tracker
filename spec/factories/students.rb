@@ -27,14 +27,14 @@
 #  year_of_dropout        :integer
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  group_id               :integer
+#  old_group_id           :integer
 #  organization_id        :integer          not null
 #  profile_image_id       :integer
 #
 # Indexes
 #
-#  index_students_on_group_id                  (group_id)
 #  index_students_on_mlid_and_organization_id  (mlid,organization_id) UNIQUE
+#  index_students_on_old_group_id              (old_group_id)
 #  index_students_on_organization_id           (organization_id)
 #  index_students_on_profile_image_id          (profile_image_id)
 #
@@ -42,7 +42,7 @@
 #
 #  fk_rails_...          (organization_id => organizations.id)
 #  fk_rails_...          (profile_image_id => student_images.id)
-#  students_group_id_fk  (group_id => groups.id)
+#  students_group_id_fk  (old_group_id => groups.id)
 #
 FactoryBot.define do
   factory :student do
@@ -52,26 +52,47 @@ FactoryBot.define do
     dob { Faker::Time.between from: 20.years.ago.to_datetime, to: 10.years.ago.to_datetime }
     estimated_dob { Faker::Boolean.boolean true_ratio: 0.2 }
     gender { %w[male female nonbinary].sample }
-    group { create :group }
     tags { create_list :tag, 3 }
-    organization { group.chapter.organization }
+    enrollments { [] }
+    organization { create :organization }
     mlid { MindleapsIdService.generate_student_mlid organization.id }
     transient do
+      groups { [] }
       grades { {} }
       subject { nil }
     end
 
+    factory :enrolled_student do
+      after(:create) do |student, evaluator|
+        unless evaluator.groups.empty?
+          evaluator.groups.each do |group|
+            student.enrollments << create(:enrollment, group: group, student: student, active_since: 1.year.ago.to_date)
+          end
+        end
+      end
+    end
+
     factory :graded_student do
       after :create do |student, evaluator|
+        if evaluator.groups.empty?
+          chapter = create :chapter, organization: student.organization
+          group = create :group, chapter: chapter
+          student.enrollments << create(:enrollment, group: group, student: student, active_since: 1.year.ago.to_date)
+        else
+          evaluator.groups.each do |group|
+            student.enrollments << create(:enrollment, group: group, student: student, active_since: 1.year.ago.to_date)
+          end
+        end
+
         unless evaluator.grades.empty?
           subject = evaluator.subject || create(
             :subject_with_skills,
             skill_names: evaluator.grades.keys,
-            organization: student.group.chapter.organization
+            organization: student.organization
           )
           (0..(evaluator.grades.values.map(&:length).max - 1)).each do |i|
             date = 1.year.ago.to_date + i.days
-            existing_lesson = Lesson.find_by(subject_id: subject.id, group_id: student.group.id, date:)
+            existing_lesson = Lesson.find_by(subject_id: subject.id, group_id: student.enrollments.first.group.id, date:)
             skill_marks = evaluator.grades.transform_values { |v| v[i] }
             if existing_lesson
               skill_marks.each do |skill_name, mark|
@@ -83,7 +104,7 @@ FactoryBot.define do
               create(
                 :lesson_with_grades,
                 subject:,
-                group: student.group,
+                group: student.enrollments.first.group,
                 date:,
                 student_grades: { student.id => skill_marks }
               )

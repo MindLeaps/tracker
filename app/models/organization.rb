@@ -27,6 +27,7 @@ class Organization < ApplicationRecord
 
   has_many :chapters, dependent: :restrict_with_error
   has_many :subjects, dependent: :restrict_with_error
+  has_many :students, dependent: :restrict_with_error
 
   def add_user_with_role(email, role)
     return false unless Role::LOCAL_ROLES.key? role
@@ -43,7 +44,7 @@ class Organization < ApplicationRecord
 
       # rubocop:disable Rails/SkipsModelValidations
       group_ids = delete_chapters_and_groups
-      Student.where(group_id: group_ids, deleted_at: nil).update_all(deleted_at:)
+      students.where(deleted_at: nil).update_all(deleted_at:)
       Lesson.where(group_id: group_ids, deleted_at: nil).update_all(deleted_at:)
       Grade.includes(:lesson).where(lessons: { group_id: group_ids, deleted_at: }, deleted_at: nil).update_all(deleted_at:)
       # rubocop:enable Rails/SkipsModelValidations
@@ -56,7 +57,7 @@ class Organization < ApplicationRecord
     transaction do
       # rubocop:disable Rails/SkipsModelValidations
       group_ids = restore_chapters_and_groups
-      Student.where(group_id: group_ids, deleted_at:).update_all(deleted_at: nil)
+      students.where(deleted_at:).update_all(deleted_at: nil)
       Grade.includes(:lesson).where(lessons: { group_id: group_ids, deleted_at: }, deleted_at:).update_all(deleted_at: nil)
       Lesson.where(group_id: group_ids, deleted_at:).update_all(deleted_at: nil)
       # rubocop:enable Rails/SkipsModelValidations

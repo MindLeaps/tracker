@@ -6,7 +6,7 @@ module Api
     has_scope :exclude_deleted, type: :boolean
 
     def index
-      @students = apply_scopes(@api_version == 2 ? policy_scope(Student) : Student).includes(:group).all
+      @students = apply_scopes(@api_version == 2 ? policy_scope(Student) : Student).includes(:enrollments).all
       respond_with @students, include: included_params, meta: { timestamp: Time.zone.now }
     end
 

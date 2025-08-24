@@ -48,8 +48,8 @@ RSpec.describe 'Enrollments API', type: :request do
     end
 
     it 'responds only with enrollments regarding a specific student' do
-      student = create :student
-      create :enrollment
+      group = create :group
+      student = create :enrolled_student, organization: group.chapter.organization, groups: [group]
 
       get_with_token api_enrollments_path, params: { student_id: student.id }, as: :json
 
@@ -63,7 +63,7 @@ RSpec.describe 'Enrollments API', type: :request do
 
       get_with_token api_enrollments_path, params: { after_timestamp: 5.minutes.ago }, as: :json
 
-      expect(enrollments.length).to eq 3
+      expect(enrollments.length).to eq 1
     end
   end
 end

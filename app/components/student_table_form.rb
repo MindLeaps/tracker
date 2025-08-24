@@ -1,9 +1,9 @@
 class StudentTableForm < ViewComponent::Base
   erb_template <<~ERB
     <%= form_with url: url, model: @student, id: dom_id(@student), class: form_class do |form| %>
-      <div class="table-cell" data-controller="mlid">
-        <input type="text" class="hidden" value="<%= @student.group_id %>" data-mlid-target="group" />
-        <%= render CommonComponents::StudentMlidInput.new(@student.mlid) %>
+      <div class="table-cell" data-controller="mlid" data-mlid-student-id-value="<%= @student.id %>">
+        <input type="text" class="hidden" value="<%= @student.organization_id || @group.chapter.organization.id %>" data-mlid-target="organization" />
+        <%= render CommonComponents::StudentMlidInput.new(@student.mlid, student_id: @student.id) %>
         <%= render ValidationErrorComponent.new(model: @student, key: :mlid) %>
       </div>
       <div class="table-cell text-right">
@@ -53,7 +53,7 @@ class StudentTableForm < ViewComponent::Base
   end
 
   def url
-    @is_edit ? group_student_path(@group, @student) : group_students_path(@group, @student)
+    @is_edit ? helpers.group_student_path(@group.id, @student.id) : helpers.group_students_path(@group.id, @student.id)
   end
 
   def form_class

@@ -10,7 +10,7 @@ RSpec.describe 'User interacts with Student Tags' do
     end
 
     it 'navigates to tags, creates a new tag and assigns it to the student', js: true do
-      create :student, first_name: 'Taggy', last_name: 'Studenty', gender: 'F'
+      create :student, organization: @org, first_name: 'Taggy', last_name: 'Studenty', gender: 'F'
 
       visit '/students'
       click_link 'Student Tags'
@@ -56,7 +56,7 @@ RSpec.describe 'User interacts with Student Tags' do
       @org = create :organization
       @chapter = create :chapter, organization: @org
       @group = create :group, chapter: @chapter
-      @student = create :student, group: @group
+      @student = create :enrolled_student, organization: @org, groups: [@group]
       @used_tag = create :tag, tag_name: 'Used Tag', organization: @org
       @unused_tag = create :tag, tag_name: 'Unused Tag', organization: @org
       create :student_tag, student: @student, tag: @used_tag
@@ -87,7 +87,7 @@ RSpec.describe 'User interacts with Student Tags' do
       @org = create :organization, country: 'Aruba'
       @chapter = create :chapter, organization: @org
       @group = create :group, chapter: @chapter
-      @student = create :student, group: @group
+      @student = create :enrolled_student, organization: @org, groups: [@group]
       @tag = create :tag, tag_name: 'Used Tag', organization: @org
       create :student_tag, student: @student, tag: @tag
     end

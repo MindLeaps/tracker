@@ -107,9 +107,9 @@ RSpec.describe GroupsController, type: :controller do
   describe '#show' do
     before :each do
       @group = create :group
-      @student1 = create :student, group: @group
-      @student2 = create :student, group: @group
-      @deleted_student = create :student, group: @group, deleted_at: Time.zone.now
+      @student1 = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
+      @student2 = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
+      @deleted_student = create :enrolled_student, organization: @group.chapter.organization, groups: [@group], deleted_at: Time.zone.now
     end
 
     context 'regular visit' do
@@ -188,10 +188,10 @@ RSpec.describe GroupsController, type: :controller do
       @group = create :group
       request.env['HTTP_REFERER'] = 'http://example.com/groups?param=1'
 
-      @students = create_list :student, 2, group: @group
+      @students = create_list :enrolled_student, 2, organization: @group.chapter.organization, groups: [@group]
       @lessons = create_list :lesson, 2, group: @group
       @grades = create_list :grade, 2, lesson: @lessons.first
-      @deleted_student = create :student, group: @group, deleted_at: Time.zone.now
+      @deleted_student = create :enrolled_student, organization: @group.chapter.organization, groups: [@group], deleted_at: Time.zone.now
 
       post :destroy, params: { id: @group.id }
     end
@@ -207,7 +207,6 @@ RSpec.describe GroupsController, type: :controller do
     it 'Marks the group\'s dependents as deleted' do
       @group.reload
 
-      @students.each { |student| expect(student.reload.deleted_at).to eq(@group.deleted_at) }
       @lessons.each { |lesson| expect(lesson.reload.deleted_at).to eq(@group.deleted_at) }
       @grades.each { |grade| expect(grade.reload.deleted_at).to eq(@group.deleted_at) }
     end
@@ -223,10 +222,10 @@ RSpec.describe GroupsController, type: :controller do
   describe '#undelete' do
     before :each do
       @group = create :group, deleted_at: Time.zone.now
-      @students = create_list :student, 2, group: @group, deleted_at: @group.deleted_at
+      @students = create_list :enrolled_student, 2, organization: @group.chapter.organization, groups: [@group], deleted_at: @group.deleted_at
       @lessons = create_list :lesson, 2, group: @group, deleted_at: @group.deleted_at
       @grades = create_list :grade, 2, lesson: @lessons.first, deleted_at: @group.deleted_at
-      @deleted_student = create :student, group: @group, deleted_at: Time.zone.now
+      @deleted_student = create :enrolled_student, organization: @group.chapter.organization, groups: [@group], deleted_at: Time.zone.now
 
       post :undelete, params: { id: @group.id }
     end
@@ -238,7 +237,6 @@ RSpec.describe GroupsController, type: :controller do
     end
 
     it 'Removes the group\'s dependents deleted timestamps' do
-      @students.each { |student| expect(student.reload.deleted_at).to be_nil }
       @lessons.each { |lesson| expect(lesson.reload.deleted_at).to be_nil }
       @grades.each { |grade| expect(grade.reload.deleted_at).to be_nil }
     end

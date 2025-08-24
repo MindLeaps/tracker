@@ -1,5 +1,5 @@
 <%= form_with model: @student, class: 'space-y-0.5' do |f| %>
-  <div class="bg-white px-4 py-5 shadow-sm sm:p-4">
+  <div class="bg-white px-4 py-5 shadow sm:p-4">
     <div class="md:grid md:grid-cols-4 md:gap-6">
       <div class="md:col-span-1">
         <h3 class="text-lg font-medium leading-6 text-gray-900"><%= t(:personal_information) %></h3>
@@ -49,26 +49,71 @@
       </div>
     </div>
   </div>
-  <div class="bg-white px-4 py-5 shadow-sm sm:p-4">
-    <div class="md:grid md:grid-cols-4 md:gap-6">
-      <div class="md:col-span-1">
-        <h3 class="text-lg font-medium leading-6 text-gray-900"><%= t(:group_and_mlid) %></h3>
+  <div data-controller="dynamic-fields" class="space-y-0.5">
+    <div class="bg-white px-4 py-5 shadow sm:p-4">
+      <div class="md:grid md:grid-cols-4 md:gap-6">
+        <div class="md:col-span-1">
+          <h3 class="text-lg font-medium leading-6 text-gray-900"><%= t(:organization_and_mlid) %></h3>
+        </div>
+        <div class="mt-5 md:col-span-3 md:mt-0">
+          <div class="grid grid-cols-6 gap-4" data-controller="mlid" data-mlid-show-label-value="true">
+            <div class="col-span-6 lg:col-span-2">
+              <%= f.label :organization_id, class: 'field-label' %>
+              <%= f.collection_select :organization_id, @permitted_organizations, :id, :organization_name, { include_blank: true }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm',
+                data: { 'mlid-target' => 'organization', 'dynamic-fields-target' => 'select', 'action' => 'click->mlid#organizationSelect dynamic-fields#updateFilter', 'name' => 'organization_id',
+                  'dependents' => ['group_id'].to_json, 'resources' => @permitted_organizations.map { |o| { id: o.id, label: o.organization_name} }.to_json }%>
+              <%= render ValidationErrorComponent.new(model: @student, key: :organization) %>
+            </div>
+            <div class="col-span-6 lg:col-span-2">
+              <% if @student.mlid %>
+                <%= render CommonComponents::StudentMlidInput.new(@student.mlid, show_label: true) %>
+              <% else %>
+                <%= helpers.turbo_frame_tag CommonComponents::StudentMlidInput::ELEMENT_ID %>
+              <% end %>
+                <%= render ValidationErrorComponent.new(model: @student, key: :mlid) %>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="mt-5 md:col-span-3 md:mt-0">
-        <div class="grid grid-cols-6 gap-4" data-controller="mlid" data-mlid-show-label-value="true">
-          <div class="col-span-6 lg:col-span-2">
-            <%= f.label :group_id, class: 'field-label' %>
-            <%= f.grouped_collection_select :group_id, @chapter_groups, :groups, :chapter_display, :id, :chapter_group_name_with_full_mlid, { include_blank: true }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm', data: { 'mlid-target' => 'group', 'action' => 'mlid#groupSelect' } %>
-            <%= render ValidationErrorComponent.new(model: @student, key: :group) %>
-          </div>
-          <div class="col-span-6 lg:col-span-2">
-            <% if @student.mlid %>
-              <%= render CommonComponents::StudentMlidInput.new(@student.mlid, show_label: true) %>
-            <% else %>
-              <%= helpers.turbo_frame_tag CommonComponents::StudentMlidInput::ELEMENT_ID %>
-            <% end %>
-              <%= render ValidationErrorComponent.new(model: @student, key: :mlid) %>
-          </div>
+    </div>
+    <div class="bg-white px-4 py-5 shadow sm:p-4">
+      <div class="md:grid md:grid-cols-4 md:gap-6">
+        <div class="md:col-span-1">
+          <h3 class="text-lg font-medium leading-6 text-gray-900"><%= t(:enrollments) %></h3>
+        </div>
+        <div class="mt-5 md:col-span-3 md:mt-0">
+          <%= turbo_frame_tag f.field_id(:enrollments), data: { 'action' => 'turbo:frame-render->dynamic-fields#updateFilter' } do %>
+            <div id="groups" class="divide-y-2 divide-gray-300" data-controller="association">
+              <%= f.fields_for :enrollments, include_id: false do |ef| %>
+                <% id = SecureRandom.uuid %>
+                <div class="grid grid-cols-8 gap-4 py-4 [&:not(:last-child)]:pb-4 [&:not(:first-child)]:pt-4 <%= if ef.object.marked_for_destruction? then 'hidden' else '' end %>" data-association-target="removable" id="<%= id %>">
+                  <div class="col-span-6">
+                    <%= ef.hidden_field :id %>
+                    <%= ef.label :group_id, class: 'block text-sm font-medium text-gray-700' %>
+                    <%= ef.grouped_collection_select :group_id, @chapter_groups, :groups, :chapter_display, :id, :chapter_group_name_with_full_mlid, { include_blank: false }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm',
+                      data: { 'dynamic-fields-target' => 'select', 'name' => 'group_id', 'resources' => @chapter_groups.map { |cg| { id: cg.id, label: cg.chapter_display, depend_id: cg.organization_id, grouped_options: cg.groups.map { |g| { id: g.id, label: g.chapter_group_name_with_full_mlid } } } }.to_json } %>
+                    <%= render ValidationErrorComponent.new(model: ef.object, key: :student, remove_prepend: true) %>
+                    <%= render ValidationErrorComponent.new(model: ef.object, key: :group, remove_prepend: true) %>
+                  </div>
+                  <div class="col-span-2 relative">
+                    <%= ef.check_box :_destroy, class: 'hidden', 'data-association-target': 'checkable', 'data-association-id': id %>
+                    <button class="dangerous-button cursor-pointer relative top-5 mt-[2px]" data-action="association#remove" data-association-remove-id-param="<%= id %>"><%= t(:delete_enrollment) %></button>
+                  </div>
+                  <div class="col-span-2">
+                    <%= ef.label :active_since, t(:enrolled_since), class: 'field-label' %>
+                    <%= render Datepicker.new(date: :active_since || Date.new(Date.current.year, 1, 1), target: 'active_since', form: ef) %>
+                    <%= render ValidationErrorComponent.new(model: ef.object, key: :active_since) %>
+                  </div>
+                  <div class="col-span-2">
+                    <%= ef.label :inactive_since, t(:enrolled_until),class: 'field-label' %>
+                    <%= render Datepicker.new(date: :inactive_since, target: 'inactive_since', form: ef) %>
+                    <%= render ValidationErrorComponent.new(model: ef.object, key: :inactive_since, remove_prepend: true) %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+            <%= f.submit t(:add_group), class: 'normal-button mt-4', name: :add_group, data: { turbo_frame: f.field_id(:enrollments) } %>
+          <% end %>
         </div>
       </div>
     </div>
@@ -84,8 +129,8 @@
           <div class="grid grid-cols-6 gap-4">
             <div class="col-span-6 lg:col-span-2">
               <label for="student_tags" class="block text-sm font-medium text-gray-700"><%= t(:student_tags) %></label>
-              <%= f.collection_select :tag_ids, @permitted_tags, :id, :tag_name, { include_hidden: false }, class: 'hidden', id: 'tags-field', multiple: true, 'data-student-tag-target' => 'tags' %>
-              <%= f.text_field :tags_autocomplete, id: 'tag-autocomplete', 'data-student-tag-target' => 'autocomplete', class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm', role:'combobox', 'aria-controls' => 'options', 'aria-expanded' => false %>
+              <%= f.collection_select :tag_ids, @permitted_tags, :id, :tag_name, { }, class: 'hidden', id: 'tags-field', multiple: true, 'data-student-tag-target' => 'tags' %>
+              <%= f.text_field :tags_autocomplete, id: 'tag-autocomplete', 'data-student-tag-target' => 'autocomplete', class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm', role:'combobox', 'aria-controls' => 'options', 'aria-expanded' => false %>
             </div>
           </div>
         </div>

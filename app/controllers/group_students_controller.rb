@@ -7,21 +7,20 @@ class GroupStudentsController < HtmlController
     @group = Group.find params.require :group_id
     authorize @group
 
-    @student = Student.new(group: @group)
+    @student = Student.new
   end
 
   def edit
-    @group = Group.find params.require :group_id
     @student = Student.find_by(id: params.require(:id))
+    @group = Group.find_by(id: params.require(:group_id))
 
     authorize @student
   end
 
   def create
-    @group = Group.includes(:chapter).find(params.require(:group_id))
-    @student = Student.new(inline_student_params)
-    @student.group = @group
-    @student.organization_id = @group.chapter.organization.id
+    @group = Group.find_by(id: params.require(:group_id))
+    authorize @group
+    @student = populate_new_student
     authorize @student
 
     if @student.save
@@ -33,8 +32,8 @@ class GroupStudentsController < HtmlController
   end
 
   def update
-    @group = Group.find params.require :group_id
     @student = Student.find_by(id: params.require(:id))
+    @group = Group.find_by(id: params.require(:group_id))
     authorize @student
     @pagy, @students = pagy(group_students)
 
@@ -47,10 +46,11 @@ class GroupStudentsController < HtmlController
   end
 
   def cancel_edit
-    @group = Group.find params.require :group_id
+    @group = Group.find_by(id: params.require(:group_id))
     authorize @group, :show?
-    @student = Student.find(params.require(:id))
-    @pagy, @students = pagy(group_students)
+    @student = Student.find_by(id: params.require(:id))
+
+    @pagy, @students = pagy(@group.students)
   end
 
   def destroy
@@ -68,12 +68,20 @@ class GroupStudentsController < HtmlController
   end
 
   def group_students
-    Student.where(group_id: @group.id).includes(:group).where(deleted_at: nil)
+    @group.students.where(deleted_at: nil)
   end
 
   helper_method :group_students
 
   private
+
+  def populate_new_student
+    @student = Student.new(inline_student_params)
+    @student.organization_id = @group.chapter.organization.id
+    @student.enrollments << Enrollment.new(student: @student, group: @group, active_since: Time.zone.now)
+
+    @student
+  end
 
   def inline_student_params
     p = params.require(:student)

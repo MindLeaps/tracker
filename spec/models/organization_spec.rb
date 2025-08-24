@@ -123,7 +123,7 @@ RSpec.describe Organization, type: :model do
 
         @chapters = create_list :chapter, 2, organization: @organization_to_delete
         @groups = create_list :group, 2, chapter: @chapters.first
-        @students = create_list :student, 2, group: @groups.first
+        @students = create_list :enrolled_student, 2, groups: [@groups.first], organization: @organization_to_delete
         @lessons = create_list :lesson, 2, group: @groups.first
         @grades = create_list :grade, 2, lesson: @lessons.first
         @deleted_chapter = create :chapter, organization: @organization_to_delete, deleted_at: Time.zone.now
@@ -155,7 +155,7 @@ RSpec.describe Organization, type: :model do
 
         @chapters = create_list :chapter, 2, organization: @organization_to_restore, deleted_at: @organization_to_restore.deleted_at
         @groups = create_list :group, 2, chapter: @chapters.first, deleted_at: @organization_to_restore.deleted_at
-        @students = create_list :student, 2, group: @groups.first, deleted_at: @organization_to_restore.deleted_at
+        @students = create_list :enrolled_student, 2, groups: [@groups.first], organization: @organization_to_restore, deleted_at: @organization_to_restore.deleted_at
         @lessons = create_list :lesson, 2, group: @groups.first, deleted_at: @organization_to_restore.deleted_at
         @grades = create_list :grade, 2, lesson: @lessons.first, deleted_at: @organization_to_restore.deleted_at
         @deleted_chapter = create :chapter, organization: @organization_to_restore, deleted_at: Time.zone.now

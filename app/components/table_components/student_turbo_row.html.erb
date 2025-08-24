@@ -1,6 +1,6 @@
 <turbo-frame id="<%= dom_id(@item) %>" class="<%= 'shaded-row' if shaded? %> table-row-wrapper student-row">
   <a target="_top" href="<%= helpers.student_path @item %>" class="<%= 'shaded-row' if shaded? %> table-row-wrapper">
-    <div class="table-cell"><span class="faded"><%= "#{@item.group.full_mlid}-" %></span><%= @item.mlid %></div>
+    <div class="table-cell"><%= @item.mlid %></div>
     <div class="table-cell text-right"><%= @item.last_name %></div>
     <div class="table-cell text-right"><%= @item.first_name %></div>
     <div class="table-cell text-right"><%= @item.gender %></div>
@@ -8,7 +8,7 @@
     <div class="table-cell"><%= @item.created_at.strftime('%F') %></div>
     <div class="table-cell text-right">
       <% if can_update? %>
-        <a id="edit-button-<%= @item.id %>" class="table-action-link" href="<%= helpers.edit_group_student_path(@item.group, @item) %>"><%= t(:edit) %></a>
+        <a id="edit-button-<%= @item.id %>" class="table-action-link" href="<%= helpers.edit_group_student_path(@group, @item) %>"><%= t(:edit) %></a>
       <% end %>
     </div>
   </a>

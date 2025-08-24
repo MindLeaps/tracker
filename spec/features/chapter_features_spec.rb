@@ -8,14 +8,14 @@ RSpec.describe 'User interacts with Chapters' do
     before :each do
       chapters = create_list :chapter, 4
       group1 = create :group, chapter: chapters[0], group_name: 'Testing Group 1'
-      create_list :student, 3, group: group1
-      create_list :student, 2, deleted_at: Time.zone.now, group: group1
+      create_list :enrolled_student, 3, organization: group1.chapter.organization, groups: [group1]
+      create_list :enrolled_student, 2, organization: group1.chapter.organization, groups: [group1], deleted_at: Time.zone.now
       group2 = create :group, chapter: chapters[0], group_name: 'Group Testing 2'
-      create_list :student, 2, group: group2
+      create_list :enrolled_student, 2, organization: group2.chapter.organization, groups: [group2]
 
       group3 = create :group, chapter: chapters[1]
-      create_list :student, 2, group: group3
-      create_list :student, 2, group: group3, deleted_at: Time.zone.now
+      create_list :enrolled_student, 2, organization: group3.chapter.organization, groups: [group3]
+      create_list :enrolled_student, 2, organization: group3.chapter.organization, groups: [group3], deleted_at: Time.zone.now
 
       create :group, chapter: chapters[2]
     end

@@ -52,13 +52,12 @@ RSpec.describe 'User interacts with skills', js: true do
 
     it 'shows a skill' do
       org = create :organization, organization_name: 'Skill Feature Show Organization'
-      group = create :group, group_name: 'Skill Feature Group'
+      group = create :group, chapter: create(:chapter, organization: org), group_name: 'Skill Feature Group'
       desc1 = create :grade_descriptor, mark: 1, grade_description: 'Show Skill Feature Test Grade One'
       desc2 = create :grade_descriptor, mark: 2, grade_description: 'Show Skill Feature Test Grade Two'
       skill = create :skill_in_subject, skill_name: 'Some Skill', skill_description: 'This is a skill for feature testing',
                                         organization: org, grade_descriptors: [desc1, desc2]
-      student = create :graded_student, group: group, grades: { 'Some Skill' => [1, 2, 1] }, subject: skill.subjects.first
-      create :enrollment, group: group, student: student, active_since: 1.year.ago
+      create :graded_student, organization: org, groups: [group], grades: { 'Some Skill' => [1, 2, 1] }, subject: skill.subjects.first
       additional_subject = create :subject, organization: org
       skill.subjects << additional_subject
       skill.save!

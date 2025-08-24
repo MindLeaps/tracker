@@ -5,15 +5,16 @@ RSpec.describe 'User interacts with enrollments' do
     include_context 'login_with_global_admin'
 
     it 'only show students enrolled in the group at the time', js: true do
-      first_group = create :group, group_name: 'Enrollment Feature Test Group I'
-      second_group = create :group, group_name: 'Enrollment Feature Test Group II'
-      third_group = create :group, group_name: 'Enrollment Feature Test Group III'
+      chapter = create :chapter
+      first_group = create :group, group_name: 'Enrollment Feature Test Group I', chapter: chapter
+      second_group = create :group, group_name: 'Enrollment Feature Test Group II', chapter: chapter
+      third_group = create :group, group_name: 'Enrollment Feature Test Group III', chapter: chapter
 
-      first_student = create(:student, first_name: 'Marinko', last_name: 'Marinkovic', group: first_group)
-      second_student = create(:student, first_name: 'Ivan', last_name: 'Ivankovic', group: first_group)
-      third_student = (create :student, first_name: 'Roberto', last_name: 'Robertovic', group: second_group)
-      fourth_student = (create :student, first_name: 'Outsider', last_name: 'Outsiderovic', group: third_group)
-      fifth_student = (create :student, first_name: 'Vladimir', last_name: 'Impalerovic', group: first_group)
+      first_student = create(:student, first_name: 'Marinko', last_name: 'Marinkovic', organization: first_group.chapter.organization)
+      second_student = create(:student, first_name: 'Ivan', last_name: 'Ivankovic', organization: first_group.chapter.organization)
+      third_student = (create :student, first_name: 'Roberto', last_name: 'Robertovic', organization: second_group.chapter.organization)
+      fourth_student = (create :student, first_name: 'Outsider', last_name: 'Outsiderovic', organization: third_group.chapter.organization)
+      fifth_student = (create :student, first_name: 'Vladimir', last_name: 'Impalerovic', organization: first_group.chapter.organization)
 
       [first_student, second_student].each { |s| create :enrollment, student: s, group: first_group, active_since: 1.month.ago }
       create :enrollment, student: third_student, group: second_group, active_since: 1.month.ago

@@ -30,7 +30,8 @@ class Group < ApplicationRecord
   validates :mlid, uniqueness: { scope: :chapter_id }, length: { maximum: 2 }
 
   belongs_to :chapter
-  has_many :students, dependent: :restrict_with_error
+  has_many :enrollments, dependent: :restrict_with_error
+  has_many :students, through: :enrollments
   has_many :lessons, dependent: :restrict_with_error
 
   delegate :chapter_name, to: :chapter, allow_nil: true
@@ -54,7 +55,6 @@ class Group < ApplicationRecord
       self.deleted_at = Time.zone.now
 
       # rubocop:disable Rails/SkipsModelValidations
-      Student.where(group_id: id, deleted_at: nil).update_all(deleted_at:)
       Lesson.where(group_id: id, deleted_at: nil).update_all(deleted_at:)
       Grade.includes(:lesson).where(lessons: { group_id: id, deleted_at: }, deleted_at: nil).update_all(deleted_at:)
       # rubocop:enable Rails/SkipsModelValidations
@@ -65,7 +65,6 @@ class Group < ApplicationRecord
   def restore_group_and_dependents
     transaction do
       # rubocop:disable Rails/SkipsModelValidations
-      Student.where(group_id: id, deleted_at:).update_all(deleted_at: nil)
       Grade.includes(:lesson).where(lessons: { group_id: id, deleted_at: }, deleted_at:).update_all(deleted_at: nil)
       Lesson.where(group_id: id, deleted_at:).update_all(deleted_at: nil)
       # rubocop:enable Rails/SkipsModelValidations

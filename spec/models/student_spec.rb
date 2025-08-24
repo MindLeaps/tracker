@@ -27,14 +27,14 @@
 #  year_of_dropout        :integer
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  group_id               :integer
+#  old_group_id           :integer
 #  organization_id        :integer          not null
 #  profile_image_id       :integer
 #
 # Indexes
 #
-#  index_students_on_group_id                  (group_id)
 #  index_students_on_mlid_and_organization_id  (mlid,organization_id) UNIQUE
+#  index_students_on_old_group_id              (old_group_id)
 #  index_students_on_organization_id           (organization_id)
 #  index_students_on_profile_image_id          (profile_image_id)
 #
@@ -42,7 +42,7 @@
 #
 #  fk_rails_...          (organization_id => organizations.id)
 #  fk_rails_...          (profile_image_id => student_images.id)
-#  students_group_id_fk  (group_id => groups.id)
+#  students_group_id_fk  (old_group_id => groups.id)
 #
 require 'rails_helper'
 
@@ -51,7 +51,6 @@ RSpec.describe Student, type: :model do
 
   describe 'relationships' do
     it { should belong_to :organization }
-    it { should belong_to :group }
     it { should have_many :grades }
     it { should have_many :enrollments }
     it { should have_many :student_images }
@@ -68,34 +67,15 @@ RSpec.describe Student, type: :model do
 
     subject { create :student, mlid: 'TS1' }
 
-    describe 'group and organization' do
-      let(:organization1) { create :organization }
-      let(:organization2) { create :organization }
-      let(:group1) { create :group, chapter: create(:chapter, organization: organization1) }
-      let(:group2) { create :group, chapter: create(:chapter, organization: organization2) }
-
-      it 'student is valid when the group belongs to the chapter in the same organization as the student' do
-        student = build :student, group: group1, organization: organization1
-        expect(student).to be_valid
-        student = build :student, group: group2, organization: organization2
-        expect(student).to be_valid
-      end
-
-      it 'student is not valid when belongs to the chapter in a different organization than the student' do
-        student = build :student, group: group1, organization: organization2
-        expect(student).not_to be_valid
-        student = build :student, group: group2, organization: organization1
-        expect(student).not_to be_valid
-      end
-    end
-
     describe 'student is valid' do
-      it 'with first and last name, dob, and gender' do
-        male_student = Student.new mlid: '1S', first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 'male', group: gro, organization: gro.chapter.organization
+      let(:org) { create :organization }
+
+      it 'with first name, last name, dob, and gender' do
+        male_student = Student.new mlid: '1S', first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 'male', organization: org
         expect(male_student).to be_valid
         expect(male_student.save).to eq true
 
-        female_student = Student.new mlid: '2S', first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 'female', group: gro, organization: gro.chapter.organization
+        female_student = Student.new mlid: '2S', first_name: 'First', last_name: 'Last', dob: 10.years.ago, gender: 'female', organization: org
         expect(female_student).to be_valid
         expect(female_student.save).to eq true
       end
@@ -103,33 +83,31 @@ RSpec.describe Student, type: :model do
 
     describe 'MLID' do
       before :each do
-        @chapter = create :chapter
-        @group = create :group, chapter: @chapter
-        @group2 = create :group, chapter: @chapter
+        @org = create :organization
+        @another_org = create :organization
+        @existing_student = create :student, organization: @org, mlid: 'AA1'
       end
 
       describe 'is valid' do
-        it 'when a student is the only student in the organization' do
-          new_student = create :student, group: @group, mlid: 'AA1'
+        it 'when a student is the only student in their organization' do
+          new_student = create :student, organization: @another_org, mlid: 'AA1'
           expect(new_student).to be_valid
         end
 
         it 'when it is unique in an organization' do
-          _existing_student = create :student, group: @group, mlid: 'AA1'
-          new_student = create :student, group: @group2, mlid: 'BB1'
+          new_student = create :student, organization: @org, mlid: 'BB1'
           expect(new_student).to be_valid
         end
       end
 
       describe 'is invalid' do
         it 'when it is duplicated in the same organization' do
-          _existing_student = create :student, group: @group, mlid: 'AA1'
-          new_student = build :student, group: @group, mlid: 'AA1'
+          new_student = build :student, organization: @org, mlid: 'AA1'
           expect(new_student).to be_invalid
         end
 
         it 'when it is longer than 8 characters' do
-          new_student = build :student, group: @group, mlid: '123456789'
+          new_student = build :student, organization: @org, mlid: '123456789'
           expect(new_student).to be_invalid
         end
       end
@@ -148,6 +126,28 @@ RSpec.describe Student, type: :model do
       end
     end
 
+    describe 'update' do
+      it 'is invalid if organization has been changed' do
+        student = create :student
+        student.organization = create :organization
+
+        expect(student.valid?).to be false
+      end
+
+      it 'is invalid if an enrollment which contains grades has been deleted' do
+        group = create :group
+        student = create :graded_student, organization: group.chapter.organization, groups: [group], grades: {
+          'Memorization' => [1, 3, 6], 'Grit' => [2, 4, 7]
+        }
+
+        student.enrollments.first.mark_for_destruction
+
+        expect(student.valid?).to be false
+        expect(student.errors.size).to eq 1
+        expect(student.errors[:base]).to eq [I18n.t(:enrollment_not_deleted_because_grades)]
+      end
+    end
+
     it { should validate_presence_of :mlid }
     it { should validate_presence_of :first_name }
     it { should validate_presence_of :last_name }
@@ -159,27 +159,23 @@ RSpec.describe Student, type: :model do
   end
 
   describe 'when creating or updating' do
-    it 'creates the enrollment if there is an associated group' do
-      @student = create :student
-      expect(@student.enrollments.count).to eq 1
-      expect(@student.enrollments.first.group_id).to eq @student.group_id
+    before :each do
+      @org = create :organization
+      @chapter = create :chapter, organization: @org
+      @first_group = create :group, chapter: @chapter
+      @second_group = create :group, chapter: @chapter
+      @student = create :student, organization: @org
+      @second_student = create :enrolled_student, organization: @org, groups: [@first_group, @second_group]
     end
 
-    it 'updates the enrollments after a students group has been changed' do
-      student = create :student
-      old_group = student.group
-      new_group = create :group, chapter: student.group.chapter
-      student.group = new_group
-      student.save!
-      expect(student.enrollments.count).to eq 2
+    it 'has no enrollments when created' do
+      expect(@student.enrollments.count).to eq 0
+    end
 
-      old_enrollments = student.enrollments.where.not(inactive_since: nil)
-      expect(old_enrollments.count).to eq 1
-      expect(old_enrollments.first.group_id).to eq old_group.id
-
-      new_enrollments = student.enrollments.where(inactive_since: nil)
-      expect(new_enrollments.count).to eq 1
-      expect(new_enrollments.first.group_id).to eq new_group.id
+    it 'has updated enrollments when they are modified' do
+      expect(@second_student.enrollments.count).to eq 2
+      Enrollment.find(@second_student.enrollments.last.id).destroy
+      expect(@second_student.reload.enrollments.count).to eq 1
     end
   end
 
@@ -194,23 +190,17 @@ RSpec.describe Student, type: :model do
     before :each do
       @org1 = create :organization
       @org2 = create :organization
+      @chapter1 = create :chapter, organization: @org1
+      @chapter2 = create :chapter, organization: @org2
+      @group1 = create :group, chapter: @chapter1, group_name: 'A Group'
+      @group2 = create :group, chapter: @chapter2, group_name: 'B Group'
 
-      @group1 = create :group, group_name: 'A Group'
-      @group2 = create :group, group_name: 'B Group'
+      @student1 = create :student, first_name: 'Emberto', organization: @org1
+      @student2 = create :student, first_name: 'Amberto', organization: @org1
+      @student3 = create :student, first_name: 'Omberto', organization: @org1
 
-      @student1 = create :student, first_name: 'Emberto', group: @group1
-      @student2 = create :student, first_name: 'Amberto', group: @group1
-      @student3 = create :student, first_name: 'Omberto', group: @group1
-
-      create :student, first_name: 'Ambuba', group: @group2
-      create :student, first_name: 'Ombuba', group: @group2
-    end
-
-    describe 'by_group' do
-      it 'returns students scoped by group' do
-        expect(Student.by_group(@group1.id).length).to eq 3
-        expect(Student.by_group(@group1.id)).to include @student1, @student2, @student3
-      end
+      create :student, first_name: 'Ambuba', organization: @org2
+      create :student, first_name: 'Ombuba', organization: @org2
     end
 
     describe 'table_order' do

@@ -4,11 +4,9 @@
   {title: "#{t(:edit_student)} - #{@student.proper_name}", href: '' },
 ], buttons: [].compact) do |h|
   h.with_left do
-    render CommonComponents::Breadcrumbs.new(current: { label: student_label(@student.proper_name)}, crumbs: if @student.group
+    render CommonComponents::Breadcrumbs.new(current: { label: student_label(@student.proper_name)}, crumbs: if @student.organization
     [
-      { label: CommonComponents::TagLabel.new(label: @student.group.chapter.organization.organization_name, img_src: 'world.svg'), href: organization_path(@student.group.chapter.organization) },
-      { label: CommonComponents::TagLabel.new(label: @student.group.chapter.chapter_name, img_src: 'chapter.svg'), href: chapter_path(@student.group.chapter) },
-      { label: CommonComponents::TagLabel.new(label: @student.group_name, img_src: 'group.svg'), href: group_path(@student.group) }
+      { label: CommonComponents::TagLabel.new(label: @student.organization.organization_name, img_src: 'world.svg'), href: organization_path(@student.organization) }
     ] else [
       { label: student_label(t(:students).capitalize), href: students_path }
     ] end)

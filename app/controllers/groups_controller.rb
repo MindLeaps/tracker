@@ -14,7 +14,6 @@ class GroupsController < HtmlController
   def show
     @group = Group.includes(:chapter).find params[:id]
     authorize @group
-    @pagy, @students = pagy apply_scopes(Student.where(group_id: @group.id).includes(:group, :organization))
     @group_summaries = GroupLessonSummary.where(group_id: @group.id).where.not(average_mark: nil).order(lesson_date: :asc).last(30).map do |summary|
       {
         lesson_date: summary.lesson_date,

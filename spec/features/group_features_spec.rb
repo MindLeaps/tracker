@@ -7,8 +7,8 @@ RSpec.describe 'User interacts with Groups' do
     groups = []
     before :each do
       groups = create_list :group, 3
-      create_list :student, 3, group: groups[0]
-      students_with_deleted = create_list :student, 3, group: groups[1]
+      create_list :enrolled_student, 3, organization: groups[0].chapter.organization, groups: [groups[0]]
+      students_with_deleted = create_list :enrolled_student, 3, organization: groups[1].chapter.organization, groups: [groups[1]]
       students_with_deleted[2].deleted_at = Time.zone.now
       students_with_deleted[2].save
     end
@@ -57,7 +57,7 @@ RSpec.describe 'User interacts with Groups' do
       @chapter1 = create :chapter, chapter_name: 'Old Chapter'
       @chapter2 = create :chapter, chapter_name: 'New Chapter', organization: @chapter1.organization
       @group = create :group, group_name: 'Test Group', chapter: @chapter1
-      create_list :student, 3, group: @group
+      create_list :enrolled_student, 3, organization: @group.chapter.organization, groups: [@group]
     end
 
     it 'edits the name and chapter of an existing group' do
@@ -81,7 +81,7 @@ RSpec.describe 'User interacts with Groups' do
     before :each do
       @group = create :group, group_name: 'About to be Deleted'
       @deleted_group = create :group, deleted_at: Time.zone.now, group_name: 'Already Deleted'
-      @students = create_list :student, 3, group: @group
+      @students = create_list :enrolled_student, 3, organization: @group.chapter.organization, groups: [@group]
     end
 
     it 'marks the group as deleted' do
@@ -137,8 +137,7 @@ RSpec.describe 'User interacts with Groups' do
     before :each do
       @group = create :group, group_name: 'Report Group'
       @empty_group = create :group, group_name: 'Empty Group'
-      @student = create :graded_student, group: @group, grades: { 'Memorization' => [3, 4, 5, 6, 7], 'Grit' => [2, 3, 2, 4, 5] }
-      create :enrollment, group: @group, student: @student, active_since: 1.year.ago
+      @student = create :graded_student, organization: @group.chapter.organization, groups: [@group], grades: { 'Memorization' => [3, 4, 5, 6, 7], 'Grit' => [2, 3, 2, 4, 5] }
     end
 
     it 'goes to the group report page' do

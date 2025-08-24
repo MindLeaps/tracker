@@ -27,14 +27,14 @@ RSpec.describe 'User interacts with students in Group', js: true do
     it 'renders a new student and updates when form is submitted' do
       visit "/groups/#{@group.id}"
 
-      fill_in 'student_mlid', with: '1A'
+      fill_in 'student_mlid', with: '12345678'
       fill_in 'student_last_name', with: 'Student'
       fill_in 'student_first_name', with: 'New'
       fill_in 'student_dob', with: '2024-01-01'
       find('#student_gender_nb').click
       click_button 'Create Student'
 
-      expect(page).to have_content "#{@group.full_mlid}-1A"
+      expect(page).to have_content '12345678'
       expect(page).to have_content 'Student'
       expect(page).to have_content 'New'
       expect(page).to have_content 'NB'

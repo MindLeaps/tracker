@@ -37,6 +37,17 @@ en:
   group_mlid_error_message: Group MLID has to be up to 2 characters long and can only contain numbers and letters. No special characters.
   student_and_group_in_different_organizations: Student and Group are not in the same organization
   mlid_cannot_contain_special_characters: No special characters allowed in MLID
+  enrollments: Enrollments
+  enrollment_end_before_start: Enrollment cannot end before it started
+  enrollment_duplicate: Active enrollment for this student and group already exists
+  enrollment_not_same_org: Student and Group have to belong to the same organization
+  enrollment_overlap: Enrollments for the same student and group cannot overlap
+  enrolled_since: Enrolled Since
+  enrolled_until: Enrolled Until
+  delete_enrollment: Delete Enrollment
+  enrollment_not_deleted_because_grades: Enrollment not deleted because it has grades associated with it
+  cannot_change_existing_enrollment: Cannot change the group for an existing enrollment
+  cannot_change_enrollment_dates_because_grades: Cannot change the enrollment dates because existing grades will be lost
   students: Students
   student_details: Student Details
   student_deleted_at: Student deleted %{time} ago
@@ -123,6 +134,8 @@ en:
   student_deleted_text: Student "%{student}" deleted.
   student_restored: Student Restored
   student_restored_text: Student "%{name}" restored.
+  unable_to_update_student: Unable to update student
+  cannot_change_organization_existing_student: Cannot change the organization of an existing student
   number_of_students: Number of Students
   number_of_groups: Number of Groups
   number_of_chapters: Number of Chapters
@@ -324,6 +337,7 @@ en:
   middle_lesson: Middle Lesson
   last_lesson: Last Lesson
   group_and_mlid: Group and MLID
+  organization_and_mlid: Organization and MLID
 
   title_chart_2: Quantity of Data Collected By Month
   title_chart_4: Histogram of student performance values

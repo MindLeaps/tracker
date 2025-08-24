@@ -53,7 +53,6 @@ class Chapter < ApplicationRecord
 
       # rubocop:disable Rails/SkipsModelValidations
       group_ids = delete_groups_for_chapter
-      Student.where(group_id: group_ids, deleted_at: nil).update_all(deleted_at:)
       Lesson.where(group_id: group_ids, deleted_at: nil).update_all(deleted_at:)
       Grade.includes(:lesson).where(lessons: { group_id: group_ids, deleted_at: }, deleted_at: nil).update_all(deleted_at:)
       # rubocop:enable Rails/SkipsModelValidations
@@ -66,7 +65,6 @@ class Chapter < ApplicationRecord
     transaction do
       # rubocop:disable Rails/SkipsModelValidations
       group_ids = restore_groups_for_chapter
-      Student.where(group_id: group_ids, deleted_at:).update_all(deleted_at: nil)
       Grade.includes(:lesson).where(lessons: { group_id: group_ids, deleted_at: }, deleted_at:).update_all(deleted_at: nil)
       Lesson.where(group_id: group_ids, deleted_at:).update_all(deleted_at: nil)
       # rubocop:enable Rails/SkipsModelValidations

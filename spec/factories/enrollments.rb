@@ -14,6 +14,7 @@
 #
 #  index_enrollments_on_group_id    (group_id)
 #  index_enrollments_on_student_id  (student_id)
+#  non_overlapping_enrollments      (student_id, group_id, tsrange((active_since)::timestamp without time zone, (inactive_since)::timestamp without time zone)) USING gist
 #
 # Foreign Keys
 #
@@ -22,8 +23,8 @@
 #
 FactoryBot.define do
   factory :enrollment do
-    student { create :student }
-    group { create :group }
+    group { create :group, chapter: create(:chapter) }
+    student { create :student, organization: group.chapter.organization }
     active_since { Time.zone.today }
   end
 end

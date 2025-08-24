@@ -9,9 +9,7 @@
 ].compact) do |h|
   h.with_left do
     render CommonComponents::Breadcrumbs.new(crumbs: [
-      { label: CommonComponents::TagLabel.new(label: @student.group.chapter.organization.organization_name, img_src: 'world.svg'), href: organization_path(@student.group.chapter.organization) },
-      { label: CommonComponents::TagLabel.new(label: @student.group.chapter.chapter_name, img_src: 'chapter.svg'), href: chapter_path(@student.group.chapter) },
-      { label: CommonComponents::TagLabel.new(label: @student.group_name, img_src: 'group.svg'), href: group_path(@student.group) }
+      { label: CommonComponents::TagLabel.new(label: @student.organization.organization_name, img_src: 'world.svg'), href: organization_path(@student.organization) }
     ])
   end
 end %>
@@ -38,7 +36,7 @@ end %>
               <dl>
                 <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                   <dt class="text-sm font-medium text-gray-500"><%= t(:mlid) %></dt>
-                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><span class="text-gray-500"><%= "#{@student.group.chapter.organization.mlid}-#{@student.group.chapter.mlid}-#{@student.group.mlid}-" %></span><%= @student.mlid %></dd>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><span class="text-gray-500"></span><%= @student.mlid %></dd>
                 </div>
                 <div class="bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                   <dt class="text-sm font-medium text-gray-500"><%= t(:first_name) %></dt>
@@ -57,8 +55,11 @@ end %>
                   <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= @student.gender_i18n %></dd>
                 </div>
                 <div class="bg-gray-100 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                  <dt class="text-sm font-medium text-gray-500"><%= t(:group) %></dt>
-                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><%= @student.group.group_name %></dd>
+                  <dt class="text-sm font-medium text-gray-500"><%= t(:groups) %></dt>
+                  <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2"><% @student.groups.uniq { |group| group.group_name }.each do |group|%>
+                      <span class="inline-flex items-center px-2.5 py-0.25 rounded-md text-sm font-medium bg-purple-100 text-purple-80 mr-1"><%= group.group_name %></span>
+                    <% end %>
+                  </dd>
                 </div>
                 <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                   <dt class="text-sm font-medium text-gray-500"><%= t(:country_of_nationality) %></dt>

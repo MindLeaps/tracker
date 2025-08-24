@@ -38,7 +38,7 @@ RSpec.describe Tag, type: :model do
       @org = create :organization
       @chapter = create :chapter, organization: @org
       @group = create :group, chapter: @chapter
-      @student = create :student, group: @group
+      @student = create :enrolled_student, organization: @org, groups: [@group]
       @unused_tag = create :tag, tag_name: 'Empty tag', organization: @org
       @used_tag = create :tag, tag_name: 'First tag', organization: @org
       create :student_tag, tag: @used_tag, student: @student

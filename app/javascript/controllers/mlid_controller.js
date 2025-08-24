@@ -1,13 +1,20 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-    static targets = ['mlid', 'group']
+    static targets = ['mlid', 'organization']
     static values = {
-        showLabel: Boolean
+        showLabel: Boolean,
+        studentId: Number
     }
 
-    groupSelect() {
-        if ((!this.hasMlidTarget || this.mlidTarget.value === '') && this.groupTarget.value) {
+    initialize() {
+        if ((!this.hasMlidTarget || this.mlidTarget.value === '') && this.organizationTarget.value) {
+            this.generateMlid()
+        }
+    }
+
+    organizationSelect() {
+        if ((!this.hasMlidTarget || this.mlidTarget.value === '') && this.organizationTarget.value) {
             this.generateMlid()
         }
     }
@@ -18,11 +25,16 @@ export default class extends Controller {
     }
 
     generateMlid() {
-            let groupId = this.groupTarget.value
-            let url = '/students/mlid/' + groupId
+            let organizationId = this.organizationTarget.value
+            let url = '/students/mlid/' + organizationId
+
+            if (this.studentIdValue) {
+                url += `?student_id=${this.studentIdValue}`
+            }
             if (this.showLabelValue) {
                 url += '?show_label'
             }
+
             fetch(url, {
                 headers: { 'Accept': 'text/vnd.turbo-stream.html'}
             }).then(r => r.text()).then(html => Turbo.renderStreamMessage(html))

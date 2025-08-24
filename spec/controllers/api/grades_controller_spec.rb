@@ -35,8 +35,9 @@ RSpec.describe Api::GradesController, type: :controller do
 
   describe 'create' do
     before :each do
-      @group = create :group
-      @student = create :student, group: @group
+      @org = create :organization
+      @group = create :group, chapter: create(:chapter, organization: @org)
+      @student = create :student, organization: @org
 
       @subject = create :subject
       @skill = create :skill, subject: @subject
@@ -94,8 +95,9 @@ RSpec.describe Api::GradesController, type: :controller do
 
   describe 'put_v2' do
     before :each do
-      @group = create :group
-      @student = create :student, group: @group
+      @org = create :organization
+      @group = create :group, chapter: create(:chapter, organization: @org)
+      @student = create :student, organization: @org
 
       @subject = create :subject
       @skill = create :skill, subject: @subject
