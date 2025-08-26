@@ -11,7 +11,7 @@ class RenameGroupIdToOldGroupIdAndUpdateAffectedViews < ActiveRecord::Migration[
     update_view :student_table_rows, version: 5
 
     create_view :chapter_summaries, version: 3
-    create_view :organization_summaries, version: 3
+    create_view :organization_summaries, version: 4
   end
 
   def down
@@ -26,6 +26,6 @@ class RenameGroupIdToOldGroupIdAndUpdateAffectedViews < ActiveRecord::Migration[
     update_view :student_table_rows, version: 4
 
     create_view :chapter_summaries, version: 3
-    create_view :organization_summaries, version: 3
+    create_view :organization_summaries, version: 4
   end
 end

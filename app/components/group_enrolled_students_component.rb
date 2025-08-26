@@ -1,5 +1,6 @@
 class GroupEnrolledStudentsComponent < ViewComponent::Base
   include Pagy::Backend
+
   erb_template <<~ERB
     <%= render CommonComponents::Card.new(title: t(:students_in_group).capitalize) do |card| %>
       <% card.with_card_content do %>
@@ -10,7 +11,6 @@ class GroupEnrolledStudentsComponent < ViewComponent::Base
   ERB
 
   def initialize(students:, group:)
-    super
     @student_records = students
     @group = group
     @new_student = Student.new

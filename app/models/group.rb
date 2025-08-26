@@ -21,6 +21,7 @@
 #
 class Group < ApplicationRecord
   include Mlid
+
   validates :group_name, presence: true
   validates :group_name, uniqueness: {
     scope: :chapter_id,

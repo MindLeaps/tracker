@@ -8,12 +8,12 @@
         <div class="grid grid-cols-6 gap-4">
           <div class="col-span-6 lg:col-span-2">
             <%= f.label :first_name, class: 'field-label' %>
-            <%= f.text_field :first_name, autofocus: true, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            <%= f.text_field :first_name, autofocus: true, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
             <%= render ValidationErrorComponent.new(model: @student, key: :first_name) %>
           </div>
           <div class="col-span-6 lg:col-span-2">
             <%= f.label :last_name, class: 'field-label' %>
-            <%= f.text_field :last_name, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            <%= f.text_field :last_name, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
             <%= render ValidationErrorComponent.new(model: @student, key: :last_name) %>
           </div>
           <fieldset class="col-span-6 lg:col-span-2" name="gender">
@@ -35,7 +35,7 @@
           </fieldset>
           <div class="col-span-6 lg:col-span-2">
             <%= f.label :country_of_nationality, class: 'field-label' %>
-            <%= f.select :country_of_nationality, countries_for_select_box, { include_blank: true }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            <%= f.select :country_of_nationality, countries_for_select_box, { include_blank: true }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
             <%= render ValidationErrorComponent.new(model: @student, key: :country_of_nationality) %>
           </div>
           <div class="col-span-6 lg:col-span-4">
@@ -118,7 +118,7 @@
       </div>
     </div>
   </div>
-  <div class="bg-white px-4 py-5 shadow sm:p-4">
+  <div class="bg-white px-4 py-5 shadow-sm sm:p-4">
     <div class="md:grid md:grid-cols-4 md:gap-6">
       <div class="md:col-span-1">
         <h3 class="text-lg font-medium leading-6 text-gray-900"><%= t(:student_tags) %></h3>
@@ -137,7 +137,7 @@
       </div>
     </div>
   </div>
-  <div class="bg-white px-4 py-5 shadow sm:p-4">
+  <div class="bg-white px-4 py-5 shadow-sm sm:p-4">
     <div class="md:grid md:grid-cols-4 md:gap-6">
       <div class="md:col-span-1">
         <h3 class="text-lg font-medium leading-6 text-gray-900"><%= t(:school_information) %></h3>
@@ -146,25 +146,25 @@
         <div class="grid grid-cols-6 gap-4">
           <div class="col-span-6 lg:col-span-2">
             <%= f.label :name_of_school, class: 'field-label' %>
-            <%= f.text_field :name_of_school, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            <%= f.text_field :name_of_school, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
           </div>
           <div class="col-span-6 lg:col-span-2">
             <%= f.label :school_level_completed, class: 'field-label' %>
-            <%= f.text_field :school_level_completed, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            <%= f.text_field :school_level_completed, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
           </div>
           <div class="col-span-6 lg:col-span-2">
             <%= f.label :year_of_dropout, class: 'field-label' %>
-            <%= f.select :year_of_dropout, (Time.zone.now.year - 50)..(Time.zone.now.year), { include_blank: true }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            <%= f.select :year_of_dropout, (Time.zone.now.year - 50)..(Time.zone.now.year), { include_blank: true }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
           </div>
           <div class="col-span-6 lg:col-span-2">
             <%= f.label :reason_for_leaving, class: 'field-label' %>
-            <%= f.text_field :reason_for_leaving, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            <%= f.text_field :reason_for_leaving, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="bg-white px-4 py-5 shadow sm:p-4">
+  <div class="bg-white px-4 py-5 shadow-sm sm:p-4">
     <div class="md:grid md:grid-cols-4 md:gap-6">
       <div class="md:col-span-1">
         <h3 class="text-lg font-medium leading-6 text-gray-900"><%= t(:health_and_family) %></h3>
@@ -173,11 +173,11 @@
         <div class="grid grid-cols-6 gap-4">
           <div class="col-span-6 lg:col-span-2">
             <%= f.label :health_insurance, class: 'field-label' %>
-            <%= f.text_field :health_insurance, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            <%= f.text_field :health_insurance, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
           </div>
           <div class="col-span-6 lg:col-span-2">
             <%= f.label :health_issues, class: 'field-label' %>
-            <%= f.text_field :health_issues, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            <%= f.text_field :health_issues, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
           </div>
           <div class="col-span-6 lg:col-span-2">
             <%= f.label :hiv_tested, class: 'ml-3 text-sm font-medium text-gray-700 cursor-pointer' %>
@@ -187,25 +187,25 @@
           </div>
           <div class="col-span-6 lg:col-span-2">
             <%= f.label :guardian_name, class: 'field-label' %>
-            <%= f.text_field :guardian_name, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            <%= f.text_field :guardian_name, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
           </div>
           <div class="col-span-6 lg:col-span-2">
             <%= f.label :guardian_occupation, class: 'field-label' %>
-            <%= f.text_field :guardian_occupation, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            <%= f.text_field :guardian_occupation, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
           </div>
           <div class="col-span-6 lg:col-span-2">
             <%= f.label :guardian_contact, class: 'field-label' %>
-            <%= f.text_field :guardian_contact, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            <%= f.text_field :guardian_contact, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
           </div>
           <div class="col-span-6 lg:col-span-4">
             <%= f.label :family_members, class: 'field-label' %>
-            <%= f.text_area :family_members, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            <%= f.text_area :family_members, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="bg-white px-4 py-5 shadow sm:p-4">
+  <div class="bg-white px-4 py-5 shadow-sm sm:p-4">
     <div class="md:grid md:grid-cols-4 md:gap-6">
       <div class="md:col-span-1">
         <h3 class="text-lg font-medium leading-6 text-gray-900"><%= t(:notes) %></h3>
@@ -214,19 +214,19 @@
         <div class="grid grid-cols-6 gap-4">
           <div class="col-span-6 lg:col-span-4">
             <%= f.label :notes, class: 'field-label' %>
-            <%= f.text_area :notes, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            <%= f.text_area :notes, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="bg-white px-4 py-5 shadow sm:p-4">
+  <div class="bg-white px-4 py-5 shadow-sm sm:p-4">
     <div class="md:grid md:grid-cols-4 md:gap-6">
       <div class="md:col-span-1"></div>
       <div class="mt-5 md:col-span-3 md:mt-0">
         <div class="grid grid-cols-6 gap-4">
           <div class="col-span-6 lg:col-span-4">
-            <%= f.submit class: 'px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 cursor-pointer' %>
+            <%= f.submit class: 'px-4 py-2 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 cursor-pointer' %>
           </div>
         </div>
       </div>

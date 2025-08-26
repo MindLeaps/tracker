@@ -17,6 +17,7 @@
 #
 class ChapterSummary < ApplicationRecord
   include PgSearch::Model
+
   self.primary_key = :id
   singleton_class.send(:alias_method, :table_order_chapters, :table_order)
 

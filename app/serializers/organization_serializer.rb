@@ -3,6 +3,8 @@
 # Table name: organizations
 #
 #  id                :integer          not null, primary key
+#  country           :string
+#  country_code      :string
 #  deleted_at        :datetime
 #  image             :string           default("https://placeholdit.imgix.net/~text?txtsize=23&txt=200%C3%97200&w=200&h=200")
 #  mlid              :string(3)        not null

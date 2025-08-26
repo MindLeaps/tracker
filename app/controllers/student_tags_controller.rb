@@ -1,5 +1,6 @@
 class StudentTagsController < HtmlController
   include Pagy::Backend
+
   has_scope :table_order, only: [:index, :show], type: :hash
   has_scope :search, only: [:index, :show]
 

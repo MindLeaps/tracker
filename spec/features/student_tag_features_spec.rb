@@ -81,4 +81,27 @@ RSpec.describe 'User interacts with Student Tags' do
       expect(Tag.exists?(@unused_tag.id)).to be false
     end
   end
+
+  describe 'Tag searching and filtering' do
+    before :each do
+      @org = create :organization, country: 'Aruba'
+      @chapter = create :chapter, organization: @org
+      @group = create :group, chapter: @chapter
+      @student = create :enrolled_student, organization: @org, groups: [@group]
+      @tag = create :tag, tag_name: 'Used Tag', organization: @org
+      create :student_tag, student: @student, tag: @tag
+    end
+
+    it 'searches tags by country of organization', js: true do
+      visit '/student_tags'
+
+      fill_in 'search-field', with: 'Test'
+
+      expect(page).not_to have_content 'Used Tag'
+
+      fill_in 'search-field', with: 'Aruba'
+
+      expect(page).to have_content 'Used Tag'
+    end
+  end
 end

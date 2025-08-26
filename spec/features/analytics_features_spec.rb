@@ -7,6 +7,7 @@ RSpec.describe 'User interacts with Analytics' do
     before :each do
       @chapter = create :chapter
       @group = create :group, chapter: @chapter
+      @deleted_group = create :group, chapter: @chapter, deleted_at: Time.zone.now
       @student = create :graded_student, organization: @group.chapter.organization, groups: [@group], grades: { 'Memorization' => [3, 4, 5, 6, 7], 'Grit' => [2, 3, 2, 4, 5] }
       @organization = @chapter.organization
     end
@@ -14,7 +15,7 @@ RSpec.describe 'User interacts with Analytics' do
     it 'displays general, subject, and group analytics', js: true do
       visit '/'
       click_link 'Analytics'
-      select @organization.organization_name, from: 'organization_select', wait: 10
+      select @organization.organization_name, from: 'organization_select'
       click_link 'Filter'
       expect(page).to have_content('General analytics')
       expect(page).to have_link('Subject analytics')
@@ -37,6 +38,18 @@ RSpec.describe 'User interacts with Analytics' do
       select @organization.organization_name, from: 'organization_select'
       click_link 'Filter'
       expect(page).to have_content(@group.group_chapter_name)
+    end
+
+    it 'does not display deleted group analytics', js: true do
+      visit '/'
+      click_link 'Analytics'
+      click_link 'Group analytics'
+
+      select @organization.organization_name, from: 'organization_select'
+      click_link 'Filter'
+
+      expect(page).to have_content(@group.group_chapter_name)
+      expect(page).not_to have_content(@deleted_group.group_chapter_name)
     end
   end
 end

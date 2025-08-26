@@ -16,7 +16,7 @@ config:
     secure: v1:1kXrFELPTlheRL8M:jAWkeLGSRwLRQ+nyJO1nh3ZHaU95zsPK1BqT5GWE936VLzo2e+WWJ2YKjsYevo7lHcs2V0eiEeqyOyr6zwnUiGh3/F/hj/cSzhp36AEZ7THFzH46XaFNVZw=
   mindleaps-tracker:google_client_secret:
     secure: v1:WEyRtsEqHR+cKMbO:MGTIC5cY/CZV3fh6VpblrI8NPaS/ALyUfUmnllK1R3Wuf7e+XV+vxw==
-  mindleaps-tracker:image: ghcr.io/mindleaps/tracker/mindleaps-tracker:v0.35.0
+  mindleaps-tracker:image: ghcr.io/mindleaps/tracker/mindleaps-tracker:v0.37.0
   mindleaps-tracker:main_vpc_availability_zones:
   - eu-central-1a
   - eu-central-1b

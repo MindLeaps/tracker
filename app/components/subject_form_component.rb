@@ -1,5 +1,6 @@
 class SubjectFormComponent < ViewComponent::Base
   include Turbo::FramesHelper
+
   erb_template <<~ERB
     <%= form_with model: @subject, class: 'space-y-0.5' do |f| %>
       <%= render FormWrapperComponent.new do |fw| %>
@@ -11,11 +12,11 @@ class SubjectFormComponent < ViewComponent::Base
             <div class="grid grid-cols-6 gap-4">
               <div class="col-span-6 lg:col-span-2">
                 <%= f.label :subject_name, class: 'block text-sm font-medium text-gray-700' %>
-                <%= f.text_field :subject_name, autofocus: true, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+                <%= f.text_field :subject_name, autofocus: true, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
               </div>
               <div class="col-span-6 lg:col-span-2">
                 <%= f.label :organization_id, class: 'block text-sm font-medium text-gray-700' %>
-                <%= f.collection_select :organization_id, @permitted_organizations, :id, :organization_name, {}, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+                <%= f.collection_select :organization_id, @permitted_organizations, :id, :organization_name, {}, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
               </div>
             </div>
           </div>
@@ -31,7 +32,7 @@ class SubjectFormComponent < ViewComponent::Base
                     <div class="col-span-2">
                       <%= sf.hidden_field :id %>
                       <%= sf.label :skill_id, class: 'block text-sm font-medium text-gray-700' %>
-                      <%= sf.collection_select :skill_id, @permitted_skills, :id, :skill_name, {}, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+                      <%= sf.collection_select :skill_id, @permitted_skills, :id, :skill_name, {}, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
                     </div>
                     <%= sf.check_box :_destroy, class: 'hidden', 'data-association-target': 'checkable', 'data-association-id': id %>
                     <div class="col-span-2 relative">

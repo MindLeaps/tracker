@@ -10,9 +10,9 @@ module Analytics
     # rubocop:disable Metrics/MethodLength
     def performance_per_group
       groups_lesson_summaries = if selected_param_present_but_not_all?(@selected_chapter_id)
-                                  GroupLessonSummary.where(chapter_id: @selected_chapter_id)
+                                  GroupLessonSummary.joins(:group).where(groups: { deleted_at: nil }).where(chapter_id: @selected_chapter_id)
                                 else
-                                  GroupLessonSummary.joins(:chapter).where(chapters: { organization_id: @selected_organization_id })
+                                  GroupLessonSummary.joins(:group).where(groups: { deleted_at: nil }).joins(:chapter).where(chapters: { organization_id: @selected_organization_id })
                                 end
 
       groups_lesson_summaries

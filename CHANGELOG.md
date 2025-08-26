@@ -1,3 +1,12 @@
+## 0.37.0 - Student Enrollments Overhaul
+- Changed serializing and scoping for students to go through organization and by groups found in their enrollments
+- Modified generation of new MLIDs to go through `organization_id` for students
+- Overhauled student logic and related views to go exclusively through enrollments
+- Dropped DB trigger to update enrollments on group change and added constraint for non-overlapping enrollments 
+- Renamed `group_id` column to `old_group_id` for students
+- Filtered out deleted data when viewing group analytics
+- Upgraded Tailwind from V3 to V4
+
 ## 0.36.0 - Reworked Student MLIDs and Tags 
 - Added the ability to delete Tags
 - Added ability to search students by both organization and tag name

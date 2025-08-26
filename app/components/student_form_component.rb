@@ -1,5 +1,6 @@
 class StudentFormComponent < ViewComponent::Base
   include Turbo::FramesHelper
+
   attr_reader :chapter_groups, :permitted_tags
 
   class ChapterGroups
@@ -27,7 +28,7 @@ class StudentFormComponent < ViewComponent::Base
   end
 
   def countries_for_select_box
-    I18nData.countries(locale.to_s).map { |k, v| [v, k] }.sort_alphabetical_by(&:first)
+    I18nData.countries(helpers.locale.to_s).map { |k, v| [v, k] }.sort_alphabetical_by(&:first)
   end
 
   private
