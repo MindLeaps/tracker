@@ -4,7 +4,16 @@ import * as pikaday from 'pikaday'
 // Connects to data-controller="datepicker"
 export default class extends Controller {
     static values = { date: String }
-    static targets = [ "picker" ]
+    static targets = [ "picker", "anchor" ]
+
+    updateFilter() {
+        let newDate = this.pickerTarget.value
+        let url = new URL(this.anchorTarget.href)
+
+        url.searchParams.set("selected_date", newDate)
+        this.anchorTarget.href = url.href
+    }
+
     connect() {
        const picker = new Pikaday({
            field: this.pickerTarget,

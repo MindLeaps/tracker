@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class OrganizationsController < HtmlController
   include Pagy::Backend
 
@@ -69,6 +70,9 @@ class OrganizationsController < HtmlController
     @pagy_users, @members = pagy apply_scopes(@organization.members, member_order_scope)
     @new_member = User.new
     @roles = Role::LOCAL_ROLES.keys
+
+    @selected_date = params[:selected_date] || Time.zone.today
+    @lesson_summaries = GroupLessonSummary.where(chapter_id: @organization.chapters, lesson_date: @selected_date)
   end
 
   def chapter_order_scope
@@ -130,3 +134,4 @@ class OrganizationsController < HtmlController
     render :show, status: :conflict
   end
 end
+# rubocop:enable Metrics/ClassLength
