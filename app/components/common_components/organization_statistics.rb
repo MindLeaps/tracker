@@ -7,9 +7,6 @@ class CommonComponents::OrganizationStatistics < ViewComponent::Base
     @selected_date = selected_date
     @number_of_lessons = @lesson_summaries.count
     @total_data_points = @lesson_summaries.sum(&:grade_count)
-    @sum_of_average_marks = @lesson_summaries.where.not(average_mark: nil).sum(:average_mark)
-    @average_mark_across_groups = @lesson_summaries.any? ? (@sum_of_average_marks / @lesson_summaries.count.to_f).round(2) : 0
-    @average_attendance_across_groups = average_from_array(@lesson_summaries.map(&:attendance)).round(2)
   end
 
   erb_template <<~ERB

@@ -1,3 +1,6 @@
+## Unreleased
+- Added organization statistics in separate component when viewing an organization
+
 ## 0.37.0 - Student Enrollments Overhaul
 - Changed serializing and scoping for students to go through organization and by groups found in their enrollments
 - Modified generation of new MLIDs to go through `organization_id` for students

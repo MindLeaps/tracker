@@ -15,7 +15,7 @@ RSpec.describe 'Interaction with Organizations' do
     end
   end
 
-  describe 'Viewing single organization' do
+  describe 'Viewing single organization', js: true do
     before :each do
       @organization = create :organization
       @existing_members = create_list(:teacher_in, 3, organization: @organization)
@@ -27,12 +27,11 @@ RSpec.describe 'Interaction with Organizations' do
       }
 
       visit '/organizations'
-      click_link @organization.organization_name
+      find('div.table-cell', text: @organization.organization_name).click
     end
 
     it 'displays the organization\'s members and chapters' do
       @existing_members.each { |m| expect(page).to have_content m.name }
-
       @chapters.each { |c| expect(page).to have_content c.chapter_name }
     end
 
@@ -50,6 +49,12 @@ RSpec.describe 'Interaction with Organizations' do
       expect(page).to have_content 'Nr. of Lessons'
       expect(page).to have_content 'Nr. of Assessments'
       expect(page).to have_content 'Groups with Lessons'
+
+      statistic_components = all('dd.tracking-tight')
+
+      expect(statistic_components[0]).to have_content 1
+      expect(statistic_components[1]).to have_content 3
+      expect(statistic_components[2]).to have_content @groups.first.group_chapter_name
     end
   end
 
