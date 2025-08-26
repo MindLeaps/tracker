@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class OrganizationsController < HtmlController
   include Pagy::Backend
 
@@ -133,3 +134,4 @@ class OrganizationsController < HtmlController
     render :show, status: :conflict
   end
 end
+# rubocop:enable Metrics/ClassLength

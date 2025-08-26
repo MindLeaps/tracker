@@ -21,6 +21,10 @@ RSpec.describe 'Interaction with Organizations' do
       @existing_members = create_list(:teacher_in, 3, organization: @organization)
       @existing_members << create(:admin_of, organization: @organization)
       @chapters = create_list(:chapter, 3, organization: @organization)
+      @groups = create_list(:group, 3, chapter: @chapters.first)
+      create :graded_student, organization: @organization, groups: [@groups.first], grades: {
+        'Memorization' => [1], 'Grit' => [2], 'Teamwork' => [3]
+      }
 
       visit '/organizations'
       click_link @organization.organization_name
@@ -30,6 +34,22 @@ RSpec.describe 'Interaction with Organizations' do
       @existing_members.each { |m| expect(page).to have_content m.name }
 
       @chapters.each { |c| expect(page).to have_content c.chapter_name }
+    end
+
+    it 'does not display the organization\'s statistics when there is no data' do
+      expect(page).to have_content 'No data for the selected date'
+      expect(page).to have_content 'Statistics'
+    end
+
+    it 'does display the organization\'s statistics when there is data' do
+      expect(page).to have_content 'Statistics'
+
+      fill_in 'select_date', with: 1.year.ago.to_date
+      click_link 'Filter'
+
+      expect(page).to have_content 'Nr. of Lessons'
+      expect(page).to have_content 'Nr. of Assessments'
+      expect(page).to have_content 'Groups with Lessons'
     end
   end
 
