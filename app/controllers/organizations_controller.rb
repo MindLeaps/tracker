@@ -94,18 +94,18 @@ class OrganizationsController < HtmlController
     authorize @organization
     @students = params.require(:students)
 
-    @students = @students.map do |_student|
-      new_student = Student.new import_student_params
-      new_student
+    @students = @students.values.map do |student|
+      Student.new(student.permit(*Student.permitted_params))
     end
 
     if @organization.create_imported_students?(@students)
       success(title: 'Students successfully imported', text: 'successful import')
+      redirect_to organization_path(@organization)
     else
-      failure(title: 'Students failed to import', text: 'unsuccessful import')
+      @new_students = @students
+      failure_now(title: 'Students failed to import', text: 'unsuccessful import')
+      render :import_students, status: :bad_request
     end
-
-    redirect_to organization_path(@organization)
   end
 
   def initialize_organization(id)
@@ -163,10 +163,6 @@ class OrganizationsController < HtmlController
   end
 
   private
-
-  def import_student_params
-    params.permit(*Student.permitted_params)
-  end
 
   def file_is_csv?(content_type)
     %w[text/csv text/x-csv application/vnd.ms-excel application/vnd.openxmlformats-officedocument.spreadsheetml.sheet application/csv application/x-csv].include? content_type

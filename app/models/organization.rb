@@ -92,18 +92,13 @@ class Organization < ApplicationRecord
   end
 
   def create_imported_students?(students)
-    begin
-      Student.transaction do
-        students.each do |student|
-          student.gender = :F
-          student.organization = self
-          student.mlid = MindleapsIdService.generate_student_mlid(id)
-          Rails.logger.debug { "Student not saved: #{student.errors.full_messages.join(', ')}" } unless student.save
-
-        end
+    Student.transaction do
+      students.each(&:valid?)
+      students.each do |student|
+        student.organization = self
+        student.mlid = MindleapsIdService.generate_student_mlid(id)
+        return false unless student.save
       end
-    rescue StandardError
-      return false
     end
 
     true
