@@ -84,8 +84,8 @@ class OrganizationsController < HtmlController
 
       render :import_students
     else
-      failure(title: 'Invalid File', text: "Make sure the file is a 'csv' type file")
-      redirect_to organization_path(@organization)
+      failure title: t(:invalid_file), text: t(:file_is_not_csv)
+      render :import, status: :bad_request
     end
   end
 
@@ -99,11 +99,11 @@ class OrganizationsController < HtmlController
     end
 
     if @organization.create_imported_students?(@students)
-      success(title: 'Students successfully imported', text: 'successful import')
+      success(title: t(:students_imported), text: t(:students_imported_text, total: @students.size))
       redirect_to organization_path(@organization)
     else
       @new_students = @students
-      failure_now(title: 'Students failed to import', text: 'unsuccessful import')
+      failure title: t(:import_failed), text: t(:fix_form_errors)
       render :import_students, status: :bad_request
     end
   end
@@ -165,7 +165,7 @@ class OrganizationsController < HtmlController
   private
 
   def file_is_csv?(content_type)
-    %w[text/csv text/x-csv application/vnd.ms-excel application/vnd.openxmlformats-officedocument.spreadsheetml.sheet application/csv application/x-csv].include? content_type
+    %w[text/csv text/x-csv application/vnd.ms-excel application/csv application/x-csv].include? content_type
   end
 
   def member_params
