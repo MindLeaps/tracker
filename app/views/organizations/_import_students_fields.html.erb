@@ -1,25 +1,25 @@
 <div class='nested-fields student-fields'>
   <div class="table-cell text-right">
-    <%= form.text_field :last_name, class: "w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm" %>
+    <%= text_field_tag "students[#{index}][first_name]", student[:first_name], class: "w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm" %>
   </div>
   <div class="table-cell text-right">
-    <%= form.text_field :first_name, class: "w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm" %>
+    <%= text_field_tag "students[#{index}][last_name]", student[:last_name], class: "w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm" %>
   </div>
   <div class="table-cell text-right">
     <div class="inline-flex items-center h-full">
-      <%= form.radio_button :gender, :M, class: 'h-4 w-4 border-purple-500 text-green-600 focus:ring-green-600 cursor-pointer', checked: form.object[:gender] == 'M' || form.object[:gender].nil? %>
+      <%= radio_button_tag "students[#{index}][gender]", :M, class: 'h-4 w-4 border-purple-500 text-green-600 focus:ring-green-600 cursor-pointer', checked: student[:gender] == 'M' || student[:gender].nil? %>
       <label class="ml-1 text-sm font-medium text-gray-700 cursor-pointer"><%= t(:enums)[:student][:gender][:M] %></label>
     </div>
     <div class="inline-flex items-center h-full">
-      <%= form.radio_button :gender, :F, class: 'h-4 w-4 border-purple-500 text-green-600 focus:ring-green-600 cursor-pointer', checked: form.object[:gender] == 'F' %>
+      <%= radio_button_tag "students[#{index}][gender]", :F, class: 'h-4 w-4 border-purple-500 text-green-600 focus:ring-green-600 cursor-pointer', checked: student[:gender] == 'F' %>
       <label class="ml-1 text-sm font-medium text-gray-700 cursor-pointer"><%= t(:enums)[:student][:gender][:F] %></label>
     </div>
     <div class="inline-flex items-center h-full">
-      <%= form.radio_button :gender, :NB, class: 'h-4 w-4 border-purple-500 text-green-600 focus:ring-green-600 cursor-pointer', checked: form.object[:gender] == 'NB' %>
+      <%= radio_button_tag "students[#{index}][gender]", :NB, class: 'h-4 w-4 border-purple-500 text-green-600 focus:ring-green-600 cursor-pointer', checked: student[:gender] == 'NB' %>
       <label class="ml-1 text-sm font-medium text-gray-700 cursor-pointer"><%= t(:enums)[:student][:gender][:NB] %></label>
     </div>
   </div>
   <div class="table-cell flex justify-start gap-4 items-center">
-    <%= render Datepicker.new(date: form.object[:dob] || Date.new(Date.current.year, 1, 1), target: 'dob', form: form) %>
+    <%= render Datepicker.new(date: student[:dob] || Date.new(Date.current.year, 1, 1), target: 'dob', custom_name: "students[#{index}][dob]") %>
   </div>
 </div>

@@ -7,9 +7,9 @@
           <%= render CommonComponents::Card.new(title: 'Import Students') do |card| %>
             <% card.with_card_content do %>
               <%= form_tag confirm_import_organization_path, :method => :post, :class => 'bg-white p-4' do %>
-                <% @new_students.each do |student| %>
+                <% @new_students.each_with_index do |student, i| %>
                   <%= fields_for 'students[]', student do |f|  %>
-                    <%= render 'import_students_fields', :form => f %>
+                    <%= render 'import_students_fields', :form => f , :student => student, :index => i %>
                   <% end %>
                 <% end %>
                 <%= submit_tag "Confirm", class: 'button normal-button' %>
