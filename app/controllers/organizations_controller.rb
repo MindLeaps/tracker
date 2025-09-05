@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class OrganizationsController < HtmlController
   include Pagy::Backend
 
@@ -84,11 +85,12 @@ class OrganizationsController < HtmlController
 
       render :import_students
     else
-      failure title: t(:invalid_file), text: t(:file_is_not_csv)
+      failure_now title: t(:invalid_file), text: t(:file_is_not_csv)
       render :import, status: :bad_request
     end
   end
 
+  # rubocop:disable Metrics/MethodLength
   def confirm_import
     @organization = Organization.find params.require :id
     authorize @organization
@@ -103,10 +105,11 @@ class OrganizationsController < HtmlController
       redirect_to organization_path(@organization)
     else
       @new_students = @students
-      failure title: t(:import_failed), text: t(:fix_form_errors)
+      failure_now title: t(:import_failed), text: t(:fix_form_errors)
       render :import_students, status: :bad_request
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   def initialize_organization(id)
     @pagy_chapters, @chapters = pagy apply_scopes(ChapterSummary.where(organization_id: id), chapter_order_scope)
@@ -178,3 +181,4 @@ class OrganizationsController < HtmlController
     render :show, status: :conflict
   end
 end
+# rubocop:enable Metrics/ClassLength
