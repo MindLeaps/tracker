@@ -31,3 +31,11 @@
     </div>
   </div>
 <% end %>
+<%= turbo_stream.update('flashes', partial: 'shared/flashes') %>
+
+<style>
+    /* Bring notification to front so that error messages are not greyed out */
+    div[aria-live="assertive"] {
+        z-index: 99;
+    }
+</style>

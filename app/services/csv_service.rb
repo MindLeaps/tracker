@@ -19,15 +19,7 @@ class CsvService
     def safe_parse_date(date_text)
       date_text.present? ? Date.parse(date_text) : Time.zone.today
     rescue Date::Error
-      if date_text.include?('/')
-        date_parts = date_text.split('/')
-        Date.new(date_parts.last.to_i, date_parts.first.to_i, date_parts.second.to_i)
-      elsif date_text.include?('-')
-        date_parts = date_text.split('-')
-        Date.new(date_parts.last.to_i, date_parts.second.to_i, date_parts.first.to_i)
-      else
-        Time.zone.today
-      end
+      Time.zone.today
     end
   end
 end
