@@ -327,6 +327,15 @@ en:
   health_issues: Health Issues
   hiv_tested: HIV Tested
 
+  confirm: Confirm
+  import: Import
+  import_students: Import Students
+  invalid_file: Invalid File
+  file_is_not_csv: File is not of type '.csv'
+  students_imported: Students Imported
+  students_imported_text: Successfully imported %{total} students.
+  import_failed: Import Failed
+
   personal_information: Personal Information
   group_information: Group Information
   chapter_information: Chapter Information
