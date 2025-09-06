@@ -100,7 +100,7 @@ class OrganizationsController < HtmlController
       Student.new(student.permit(*Student.permitted_params))
     end
 
-    if @organization.create_imported_students?(@students)
+    if @organization.create_and_assign_students?(@students)
       success(title: t(:students_imported), text: t(:students_imported_text, total: @students.size))
       redirect_to organization_path(@organization)
     else

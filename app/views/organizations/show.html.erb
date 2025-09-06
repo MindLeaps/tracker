@@ -4,7 +4,7 @@
   {title: CommonComponents::TagLabel.new(label: @organization.organization_name, img_src: 'world.svg'), href: '' },
 ], buttons: [
   (CommonComponents::ButtonComponent.new(label: t(:edit_organization), href: edit_organization_path(@organization)) if policy(@organization).edit?),
-  (CommonComponents::ButtonComponent.new(label: 'Import Students', href: import_organization_path(@organization), options: { data: { turbo_stream: true } })  if policy(Organization).import?),
+  (CommonComponents::ButtonComponent.new(label: t(:import_students), href: import_organization_path(@organization), options: { data: { turbo_stream: true } })  if policy(Organization).import?),
   (CommonComponents::FormButtonComponent.new(label: t(:restore_organization), path: undelete_organization_path(@organization), method: :post) if policy(@organization).destroy? && @organization.deleted_at),
   (CommonComponents::DangerousFormButtonComponent.new(label: t(:delete_organization), path: organization_path(@organization), method: :delete) if policy(@organization).destroy? && !@organization.deleted_at)
 ].compact)  do |h|
