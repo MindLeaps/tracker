@@ -276,7 +276,6 @@ RSpec.describe OrganizationsController, type: :controller do
       end
     end
 
-
     context 'students are invalid' do
       before :each do
         invalid_student = { first_name: 'Test', last_name: '', gender: :F, dob: Time.zone.today }.with_indifferent_access
@@ -284,7 +283,6 @@ RSpec.describe OrganizationsController, type: :controller do
 
         post :confirm_import, format: :turbo_stream, params: { id: @organization.id, students: hash_to_send }
       end
-
 
       it { should respond_with :unprocessable_entity }
       it { should render_template :import_students }
