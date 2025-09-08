@@ -2,14 +2,14 @@ class Datepicker < ViewComponent::Base
   renders_one :input_field
 
   erb_template <<~ERB
-    <div class="inline-block" data-controller="datepicker" data-datepicker-date-value=<%= @date %>  >
+    <div class="inline-block" data-controller="datepicker" data-datepicker-date-value=<%= @date %> >
       <% if @form %>
         <%= @form.text_field @target, data: { 'datepicker-target' => 'picker' },
          class: 'mt-1 rounded-md border-purple-500 text-sm focus:border-green-600 focus:outline-hidden focus:ring-green-600', autocomplete: 'disabled' %>
       <% else %>
         <%= input_field %>
       <% end %>
-    </div/>
+    </div>
   ERB
 
   def initialize(date:, target:, form: nil)
