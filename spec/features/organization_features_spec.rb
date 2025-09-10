@@ -152,4 +152,35 @@ RSpec.describe 'Interaction with Organizations' do
       expect(page).to have_content 'Aruba'
     end
   end
+
+  describe 'Importing students to Organization', js: true do
+    before :each do
+      @organization = create :organization
+    end
+
+    it 'successfully adds students to the organization' do
+      visit "/organizations/#{@organization.id}"
+      click_link 'Import Students'
+
+      expect(page).to have_content 'Import file'
+
+      attach_file('file', file_fixture('students_to_import.csv'), make_visible: true)
+      click_button 'Import'
+
+      within('#modal') do
+        expect(page).to have_content 'FIRST NAME'
+        expect(page).to have_content 'LAST NAME'
+        expect(page).to have_content 'GENDER'
+        expect(page).to have_content 'DATE OF BIRTH'
+
+        click_button 'Confirm'
+      end
+
+      expect(page).to have_content 'Students Imported'
+      expect(page).to have_content 'Successfully imported 2 students.'
+
+      @organization.reload
+      expect(@organization.students.count).to eq 2
+    end
+  end
 end

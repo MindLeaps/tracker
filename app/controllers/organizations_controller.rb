@@ -7,6 +7,7 @@ class OrganizationsController < HtmlController
   has_scope :table_order_chapters, type: :hash, only: :show
   has_scope :table_order_members, type: :hash, only: :show
   has_scope :search, only: :index
+
   def index
     authorize Organization
     @pagy, @organizations = pagy apply_scopes(policy_scope(OrganizationSummary, policy_scope_class: OrganizationPolicy::Scope))
@@ -64,6 +65,51 @@ class OrganizationsController < HtmlController
     failure title: t(:organization_invalid), text: t(:fix_form_errors)
     render :edit, status: :bad_request
   end
+
+  def import
+    @organization = Organization.find params.require :id
+    authorize @organization
+    respond_to(&:turbo_stream)
+  end
+
+  def import_students
+    @organization = Organization.find params.require :id
+    authorize @organization
+    file = params[:file]
+
+    if file.present? && file_is_csv?(file.content_type)
+      @students_to_import = CsvService.deserialize_students(file)
+      @new_students = @students_to_import.map do |student|
+        Student.build(student)
+      end
+
+      render :import_students
+    else
+      failure_now title: t(:invalid_file), text: t(:file_is_not_csv)
+      render :import, status: :unprocessable_entity
+    end
+  end
+
+  # rubocop:disable Metrics/MethodLength
+  def confirm_import
+    @organization = Organization.find params.require :id
+    authorize @organization
+    @students = params.require(:students)
+
+    @students = @students.values.map do |student|
+      Student.new(student.permit(*Student.permitted_params))
+    end
+
+    if @organization.create_and_assign_students?(@students)
+      success(title: t(:students_imported), text: t(:students_imported_text, total: @students.size))
+      redirect_to organization_path(@organization)
+    else
+      @new_students = @students
+      failure_now title: t(:import_failed), text: t(:fix_form_errors)
+      render :import_students, status: :unprocessable_entity
+    end
+  end
+  # rubocop:enable Metrics/MethodLength
 
   def initialize_organization(id)
     @pagy_chapters, @chapters = pagy apply_scopes(ChapterSummary.where(organization_id: id), chapter_order_scope)
@@ -123,6 +169,10 @@ class OrganizationsController < HtmlController
   end
 
   private
+
+  def file_is_csv?(content_type)
+    %w[text/csv text/x-csv application/vnd.ms-excel application/csv application/x-csv].include? content_type
+  end
 
   def member_params
     params.require(:user).permit(:email, :role)

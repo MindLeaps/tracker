@@ -219,4 +219,78 @@ RSpec.describe OrganizationsController, type: :controller do
       expect(@deleted_chapter.deleted_at).to_not be_nil
     end
   end
+
+  describe '#import' do
+    before :each do
+      @organization = create :organization
+
+      get :import, format: :turbo_stream, params: { id: @organization.id }
+    end
+
+    it { should respond_with 200 }
+    it { should render_template :import }
+  end
+
+  describe '#import_students' do
+    before :each do
+      @organization = create :organization
+      @valid_file = file_fixture_upload('students_to_import.csv', 'text/csv')
+
+      post :import_students, format: :turbo_stream, params: { id: @organization.id, file: @valid_file }
+    end
+
+    it { should respond_with 200 }
+    it { should render_template :import_students }
+
+    context 'file is invalid' do
+      before :each do
+        @invalid_file = file_fixture_upload('test.txt', 'text/plain')
+
+        post :import_students, format: :turbo_stream, params: { id: @organization.id, file: @invalid_file }
+      end
+
+      it { should respond_with :unprocessable_entity }
+      it { should set_flash.now[:failure_notice] }
+    end
+  end
+
+  describe '#confirm_import' do
+    before :each do
+      @organization = create :organization
+    end
+
+    context 'students are valid' do
+      before :each do
+        first_student = { first_name: 'Test', last_name: 'Student', gender: :M, dob: Time.zone.today }.with_indifferent_access
+        second_student = { first_name: 'Test', last_name: 'Student', gender: :F, dob: Time.zone.today }.with_indifferent_access
+        hash_to_send = [first_student, second_student].each_with_index.to_h { |item, index| [index, item] }
+
+        post :confirm_import, format: :turbo_stream, params: { id: @organization.id, students: hash_to_send }
+      end
+
+      it { should redirect_to organization_path(@organization) }
+      it { should set_flash[:success_notice] }
+      it 'should create and assign students to the organization' do
+        @organization.reload
+        expect(@organization.students.count).to eq 2
+      end
+    end
+
+    context 'students are invalid' do
+      before :each do
+        invalid_student = { first_name: 'Test', last_name: '', gender: :F, dob: Time.zone.today }.with_indifferent_access
+        hash_to_send = [invalid_student].each_with_index.to_h { |item, index| [index, item] }
+
+        post :confirm_import, format: :turbo_stream, params: { id: @organization.id, students: hash_to_send }
+      end
+
+      it { should respond_with :unprocessable_entity }
+      it { should render_template :import_students }
+      it { should set_flash.now[:failure_notice] }
+      it 'should not create and assign students to organization' do
+        @organization.reload
+        expect(@organization.students.count).to eq 0
+      end
+    end
+  end
 end
