@@ -12,7 +12,7 @@ class Datepicker < ViewComponent::Base
       <% else %>
         <%= input_field %>
       <% end %>
-    </div/>
+    </div>
   ERB
 
   def initialize(date:, target:, form: nil, custom_name: nil)

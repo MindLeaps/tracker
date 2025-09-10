@@ -31,6 +31,13 @@ end %>
           <% end %>
         <% end %>
       <% end %>
+      <%= render CommonComponents::Card.new(title: "Statistics".capitalize) do |card| %>
+        <% card.with_card_content do %>
+          <div class="bg-white py-1 px-4 pb-8">
+            <%= render CommonComponents::OrganizationStatistics.new(@lesson_summaries, @selected_date) %>
+          </div>
+          <% end %>
+      <% end %>
     </section>
     <section class="flex-1 pr-2">
       <%= render CommonComponents::Card.new(title: t(:members).capitalize) do |card| %>

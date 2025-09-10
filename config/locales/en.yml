@@ -356,11 +356,14 @@ en:
   title_chart_9: Performance data for each student versus time in program
   number_of_datapoints: Number of Data Points
 
+  groups_with_lessons: Groups with Lessons
   performance_change: Performance change
   nr_of_lessons: Nr. of Lessons
   nr_of_assessments: Nr. of Assessments
   nr_of_graded_students: Nr. of Graded students
   average_mark_across_students: Average mark across students
+  average_mark_across_groups: Average mark across groups
+  average_attendance_across_groups: Average attendance across groups
   nr_of_absent_students: Nr. of absent students
   total_nr_of_students: Total nr. of students
   frequency_perc: Frequency %
