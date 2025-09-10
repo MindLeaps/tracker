@@ -37,6 +37,7 @@ RSpec.describe GroupStudentsController, type: :controller do
           last_name: 'Henderson',
           'dob(1i)' => '2015', 'dob(2i)' => '11', 'dob(3i)' => '17',
           gender: 'M',
+          enrollment_start_date: 2.days.ago,
           estimated_dob: true
         } }
 
@@ -46,6 +47,7 @@ RSpec.describe GroupStudentsController, type: :controller do
         expect(student.first_name).to eql 'Stoic'
         expect(student.last_name).to eql 'Henderson'
         expect(student.gender).to eql 'M'
+        expect(student.enrollments.last.active_since.to_date).to eql 2.days.ago.to_date
       end
 
       it 'does not create a student when passed invalid params' do

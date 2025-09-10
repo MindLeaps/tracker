@@ -34,7 +34,11 @@ class StudentTableForm < ViewComponent::Base
         <label class="text-xs font-medium text-gray-700 cursor-pointer"><%= t(:dob_estimated) %></label>
         <%= render ValidationErrorComponent.new(model: @student, key: :dob) %>
       </div>
-      <div class="table-cell"></div>
+      <div class="table-cell">
+        <% unless @is_edit || @lesson_dates.empty? %>
+          <%= form.select :enrollment_start_date, options_for_select(@lesson_dates), { include_blank: 'Select starting date' }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+        <% end %>
+      </div>
       <div class="table-cell">
         <%= form.submit class: "px-4 py-2 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 cursor-pointer" %>
         <% if @is_edit %>
@@ -50,6 +54,7 @@ class StudentTableForm < ViewComponent::Base
     @organization = group.chapter.organization
     @is_edit = is_edit
     @student.mlid = MindleapsIdService.generate_student_mlid @organization.id unless @is_edit
+    @lesson_dates = @group.lessons.map(&:date).sort.reverse
   end
 
   def url
