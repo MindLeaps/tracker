@@ -54,7 +54,7 @@ class StudentTableForm < ViewComponent::Base
     @organization = group.chapter.organization
     @is_edit = is_edit
     @student.mlid = MindleapsIdService.generate_student_mlid @organization.id unless @is_edit
-    @lesson_dates = @group.lessons.map(&:date).sort.reverse
+    @lesson_dates = @group.lessons.map(&:date).sort.last(10).reverse
   end
 
   def url
