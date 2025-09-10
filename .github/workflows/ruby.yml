@@ -24,6 +24,7 @@ jobs:
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: 3.3.1
+
     - name: Install Dependencies
       run: |
         sudo apt-get update
@@ -31,6 +32,7 @@ jobs:
         sudo apt-get install -y postgresql-client
         gem install bundler
         bundle install --jobs 4 --retry 3
+
     - name: Migrate Database
       env:
         RAILS_ENV: test
@@ -40,14 +42,15 @@ jobs:
       run: |
         bundle exec rake db:create
         bundle exec rake db:migrate
+
     - name: Test
       env:
         RAILS_ENV: test
         DATABASE_USER: postgres
         DATABASE_PASSWORD: postgres
         DATABASE_URL: postgres://postgres:@localhost:5432
+        PARALLEL_WORKERS: 1   # 👈 disable parallel tests in CI
       run: |
-        bundle exec rake assets:precompile
         bundle exec rake test
 
   build_image:
