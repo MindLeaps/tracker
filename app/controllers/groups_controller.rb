@@ -78,6 +78,22 @@ class GroupsController < HtmlController
     redirect_to group_path
   end
 
+  def enroll_students
+    @group = Group.find params.require :id
+    authorize @group
+
+    @unenrolled_students = Student.where(organization_id: @group.chapter.organization.id).filter { |s| !s.active_enrollment? }
+    respond_to(&:turbo_stream)
+  end
+
+  def confirm_enrollments
+    @group = Group.find params.require :id
+    authorize @group
+
+    @students = params.require(:students)
+    @student_values = @students.values
+  end
+
   private
 
   def group_params

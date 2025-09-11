@@ -15,6 +15,14 @@ class GroupPolicy < ApplicationPolicy
     show?
   end
 
+  def enroll_students?
+    update?
+  end
+
+  def confirm_enrollments?
+    enroll_students?
+  end
+
   class Scope
     attr_reader :user, :scope
 
