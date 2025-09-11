@@ -1,4 +1,5 @@
 ## Unreleased
+- Added dropdown to select enrollment starting date for new students in a group
 - Added organization statistics in separate component when viewing an organization
 
 ## 0.37.0 - Student Enrollments Overhaul
