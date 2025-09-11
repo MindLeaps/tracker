@@ -33,7 +33,7 @@ RSpec.describe 'User interacts with students in Group', js: true do
       fill_in 'student_first_name', with: 'New'
       find('#student_gender_nb').click
       fill_in 'student_dob', with: '2024-01-01'
-      select 2.days.ago.to_date.to_s, from: 'student_enrollment_start_date'
+      fill_in 'student_enrollment_start_date', with: 2.days.ago.to_date.to_s
       click_button 'Create Student'
 
       expect(page).to have_content '12345678'
