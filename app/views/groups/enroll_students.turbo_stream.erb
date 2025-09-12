@@ -6,8 +6,18 @@
         <div class="modal-out transition-all transform-gpu" data-modal-target="modal" data-action="click->modal#stopPropagation">
           <%= render CommonComponents::Card.new(title: 'Enroll Students') do |card| %>
             <% card.with_card_content do %>
-              <%= form_for @unenrolled_students, url: confirm_enrollments_group_path(@group), html: { :method => :post, :class => 'bg-white', name: 'students[]' } do %>
-                 <%= render TableComponents::Table.new(pagy: @pagy, options: { no_pagination: true }, rows: @unenrolled_students, row_component: TableComponents::UnenrolledStudentRow) %>
+              <%= form_for @unenrolled_students, url: confirm_enrollments_group_path(@group), html: { :method => :post, :class => 'bg-white grid grid-cols-4', name: 'students[]' } do %>
+                <% [t(:first_name), t(:last_name), 'To Enroll', t(:enrolled_since)].each do |column| %>
+                  <%= render TableComponents::UnorderedColumn.new(column: { column_name: column, numeric: true }) %>
+                <% end %>
+
+                <% @unenrolled_students.each_with_index do |student, i| %>
+                  <%= fields_for 'students[]', student do %>
+                    <%= render TableComponents::UnenrolledStudentRow.new(pagy: @pagy, item: student, item_counter: i)%>
+                  <% end %>
+                <% end %>
+
+                 <%#= render TableComponents::Table.new(pagy: @pagy, options: { no_pagination: true }, rows: @unenrolled_students, row_component: TableComponents::UnenrolledStudentRow) %>
 
                 <div class="p-4">
                   <%= submit_tag 'Confirm', class: 'button normal-button' %>

@@ -89,9 +89,16 @@ class GroupsController < HtmlController
   def confirm_enrollments
     @group = Group.find params.require :id
     authorize @group
-
     @students = params.require(:students)
-    @student_values = @students.values
+
+    @students.filter! { |s| s[:to_enroll] }.each do |s|
+      student = Student.find s[:id]
+      student.enrollments << Enrollment.new(student: @student, group: @group, active_since: s[:enrollment_start_date])
+      student.save
+    end
+
+    success(title: 'Students enrolled', text: "Successfully enrolled #{@students.count} students")
+    redirect_to group_path(@group)
   end
 
   private
