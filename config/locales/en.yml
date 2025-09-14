@@ -39,6 +39,7 @@ en:
   mlid_cannot_contain_special_characters: No special characters allowed in MLID
   enrollments: Enrollments
   enroll: Enroll
+  enroll_students: Enroll Students
   enrollment_end_before_start: Enrollment cannot end before it started
   enrollment_duplicate: Active enrollment for this student and group already exists
   enrollment_not_same_org: Student and Group have to belong to the same organization
