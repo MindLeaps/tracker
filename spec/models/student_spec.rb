@@ -179,10 +179,35 @@ RSpec.describe Student, type: :model do
     end
   end
 
-  describe '#proper_name' do
-    it 'returns last and first name concatenated' do
-      student = Student.new first_name: 'Ignazio', last_name: 'Sorbos'
-      expect(student.proper_name).to eq 'Sorbos, Ignazio'
+  describe 'methods' do
+    describe '#proper_name' do
+      it 'returns last and first name concatenated' do
+        student = Student.new first_name: 'Ignazio', last_name: 'Sorbos'
+        expect(student.proper_name).to eq 'Sorbos, Ignazio'
+      end
+    end
+
+    describe '#active_enrollment?' do
+      before :each do
+        @group = create :group
+        @first_student = create :student, organization: @group.chapter.organization
+        @second_student = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
+        @third_student = create :student, organization: @group.chapter.organization
+        @fourth_student = create :student, organization: @group.chapter.organization
+
+        @third_student.enrollments << create(:enrollment, group: @group, student: @third_student, active_since: 1.year.ago, inactive_since: 1.day.ago)
+        @fourth_student.enrollments << create(:enrollment, group: @group, student: @fourth_student, active_since: 1.year.ago, inactive_since: 1.day.from_now)
+      end
+
+      it 'returns false if student has no active enrollments' do
+        expect(@first_student.active_enrollment?).to be false
+        expect(@third_student.active_enrollment?).to be false
+      end
+
+      it 'returns true if student has an active enrollment' do
+        expect(@second_student.active_enrollment?).to be true
+        expect(@fourth_student.active_enrollment?).to be true
+      end
     end
   end
 

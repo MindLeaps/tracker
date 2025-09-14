@@ -4,7 +4,7 @@
     <div class="fixed inset-0 z-10 w-screen overflow-y-auto" data-action="click->modal#close">
       <div class="flex min-h-full items-end justify-center p-4 sm:items-center sm:p-0">
         <div class="modal-out transition-all transform-gpu" data-modal-target="modal" data-action="click->modal#stopPropagation">
-          <%= render CommonComponents::Card.new(title: 'Enroll Students') do |card| %>
+          <%= render CommonComponents::Card.new(title: t(:enroll_students)) do |card| %>
             <% card.with_card_content do %>
               <%= form_for @unenrolled_students, url: confirm_enrollments_group_path(@group), html: { :method => :post, :class => 'bg-white grid grid-cols-4', name: 'students[]' } do %>
                 <% [t(:first_name), t(:last_name), t(:enroll), t(:enrolled_since)].each do |column| %>
