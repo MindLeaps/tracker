@@ -1,4 +1,5 @@
 ## Unreleased
+- Added ability to enroll students with no active enrollments in a group
 - Added organization statistics in separate component when viewing an organization
 
 ## 0.37.0 - Student Enrollments Overhaul
