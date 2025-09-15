@@ -35,7 +35,7 @@ jobs:
         bundle install --jobs 4 --retry 3
 
     - name: Cache assets
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: public/assets
         key: ${{ runner.os }}-assets-${{ github.sha }}
@@ -55,6 +55,8 @@ jobs:
     - name: Precompile Assets
       env:
         RAILS_ENV: test
+        DATABASE_USER: postgres
+        DATABASE_PASSWORD: postgres
         DATABASE_URL: postgres://postgres:@localhost:5432
       run: |
         bundle exec rake assets:clobber
@@ -75,7 +77,7 @@ jobs:
     if: github.ref == 'refs/heads/master'
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v1
       - uses: docker/build-push-action@v1
         env:
           DOCKER_BUILDKIT: 1
