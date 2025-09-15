@@ -10,6 +10,7 @@ require 'pundit/rspec'
 require 'webmock/rspec'
 require 'devise'
 require 'database_cleaner/active_record'
+require 'rspec/retry'
 
 WebMock.disable_net_connect!(allow: ['localhost', '127.0.0.1', 'chromedriver.storage.googleapis.com'], net_http_connect_on_start: true)
 
@@ -57,6 +58,7 @@ RSpec.configure do |config|
     # Clean tmp/uploads before each run
     FileUtils.rm_rf(Dir[Rails.root.join('tmp/storage').to_s])
     FileUtils.rm_rf(Dir[Rails.root.join('tmp/screenshots').to_s])
+    FileUtils.rm_rf(Rails.root.join('tmp/capybara'))
     FileUtils.rm_rf(Dir[Rails.public_path.join('assets').to_s])
   end
 
@@ -76,10 +78,10 @@ RSpec.configure do |config|
     FileUtils.rm_rf(Dir[Rails.root.join('tmp/storage/*').to_s])
   end
 
-  # Ensure tmp capybara files are cleared after each run
-  config.after(:suite) do
-    FileUtils.rm_rf(Rails.root.join('tmp/capybara'))
-  end
+  # Retry configuration
+  config.verbose_retry = true
+  config.display_try_failure_messages = true
+  config.default_retry_count = 2
 
   # Setup Bullet for detecting N+1 queries
   if Bullet.enable?
