@@ -53,6 +53,11 @@ RSpec.configure do |config|
     DatabaseCleaner.strategy = :truncation
     DatabaseCleaner.clean_with :truncation
     # FactoryBot.lint
+
+    # Clean tmp/uploads before each run
+    FileUtils.rm_rf(Dir[Rails.root.join('tmp/storage').to_s])
+    FileUtils.rm_rf(Dir[Rails.root.join('tmp/screenshots').to_s])
+    FileUtils.rm_rf(Dir[Rails.public_path.join('assets').to_s])
   end
 
   config.before(:each) do
@@ -64,6 +69,16 @@ RSpec.configure do |config|
     DatabaseCleaner.cleaning do
       example.run
     end
+  end
+
+  # Ensure tmp files are cleared after each example
+  config.after(:each) do
+    FileUtils.rm_rf(Dir[Rails.root.join('tmp/storage/*').to_s])
+  end
+
+  # Ensure tmp capybara files are cleared after each run
+  config.after(:suite) do
+    FileUtils.rm_rf(Rails.root.join('tmp/capybara'))
   end
 
   # Setup Bullet for detecting N+1 queries
