@@ -35,7 +35,7 @@ jobs:
         bundle install --jobs 4 --retry 3
 
     - name: Cache assets
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: public/assets
         key: ${{ runner.os }}-assets-${{ github.sha }}
