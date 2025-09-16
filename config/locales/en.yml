@@ -38,6 +38,8 @@ en:
   student_and_group_in_different_organizations: Student and Group are not in the same organization
   mlid_cannot_contain_special_characters: No special characters allowed in MLID
   enrollments: Enrollments
+  enroll: Enroll
+  enroll_students: Enroll Students
   enrollment_end_before_start: Enrollment cannot end before it started
   enrollment_duplicate: Active enrollment for this student and group already exists
   enrollment_not_same_org: Student and Group have to belong to the same organization
@@ -51,6 +53,8 @@ en:
   students: Students
   student_details: Student Details
   student_deleted_at: Student deleted %{time} ago
+  students_enrolled: Students enrolled
+  students_enrolled_in_group_text: Successfully enrolled %{count} students in group "%{group}".
   group_deleted_at: Group deleted %{time} ago
   date_of_birth: Date of Birth
   join_date: Join Date
@@ -326,6 +330,15 @@ en:
   health_insurance: Health Insurance
   health_issues: Health Issues
   hiv_tested: HIV Tested
+
+  confirm: Confirm
+  import: Import
+  import_students: Import Students
+  invalid_file: Invalid File
+  file_is_not_csv: File is not of type '.csv'
+  students_imported: Students Imported
+  students_imported_text: Successfully imported %{total} students.
+  import_failed: Import Failed
 
   personal_information: Personal Information
   group_information: Group Information

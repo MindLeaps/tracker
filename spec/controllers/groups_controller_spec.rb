@@ -247,4 +247,39 @@ RSpec.describe GroupsController, type: :controller do
       expect(@deleted_student.deleted_at).to_not be_nil
     end
   end
+
+  describe 'enrollments' do
+    before :each do
+      @group = create :group
+      @unenrolled_students = create_list :student, 2, organization: @group.chapter.organization
+    end
+
+    describe '#enroll_students' do
+      before :each do
+        get :enroll_students, format: :turbo_stream,  params: { id: @group.id }
+      end
+
+      it { should respond_with 200 }
+      it { should render_template :enroll_students }
+    end
+
+    describe '#confirm_enrollments' do
+      before :each do
+        first_student = { id: @unenrolled_students[0].id, to_enroll: true, enrollment_start_date: 5.days.ago.to_date.to_s }
+        second_student = { id: @unenrolled_students[1].id, enrollment_start_date: 5.days.ago.to_date.to_s }
+        post :confirm_enrollments, params: { id: @group.id, students: [first_student, second_student] }
+      end
+
+      it { should redirect_to group_path(@group) }
+      it 'should enroll checked students' do
+        @group.reload
+        @unenrolled_students.each(&:reload)
+        student = @unenrolled_students[0]
+
+        expect(@group.students.count).to eq 1
+        expect(student.enrollments.count).to eq 1
+        expect(student.enrollments.first.active_since).to eq 5.days.ago.to_date
+      end
+    end
+  end
 end
