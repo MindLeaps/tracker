@@ -45,8 +45,6 @@ jobs:
     - name: Migrate Database
       env:
         RAILS_ENV: test
-        DATABASE_USER: postgres
-        DATABASE_PASSWORD: postgres
         DATABASE_URL: postgres://postgres:@localhost:5432
       run: |
         bundle exec rake db:create
@@ -55,8 +53,6 @@ jobs:
     - name: Precompile Assets
       env:
         RAILS_ENV: test
-        DATABASE_USER: postgres
-        DATABASE_PASSWORD: postgres
         DATABASE_URL: postgres://postgres:@localhost:5432
       run: |
         bundle exec rake assets:clobber
@@ -65,9 +61,8 @@ jobs:
     - name: Run Tests
       env:
         RAILS_ENV: test
-        DATABASE_USER: postgres
-        DATABASE_PASSWORD: postgres
         DATABASE_URL: postgres://postgres:@localhost:5432
+        CI: true
       run: |
         bundle exec rake test
 

@@ -81,7 +81,7 @@ RSpec.configure do |config|
   # Retry configuration
   config.verbose_retry = true
   config.display_try_failure_messages = true
-  config.default_retry_count = 2
+  config.default_retry_count = ENV['CI'] ? 2 : 0 # Do retries only in CI
 
   # Setup Bullet for detecting N+1 queries
   if Bullet.enable?
