@@ -91,6 +91,29 @@ class Organization < ApplicationRecord
     # rubocop:enable Rails/SkipsModelValidations
   end
 
+  # rubocop:disable Metrics/MethodLength
+  def create_and_assign_students?(students)
+    errors = []
+    ActiveRecord::Base.transaction do
+      students.each do |student|
+        student.organization = self
+        student.mlid = MindleapsIdService.generate_student_mlid(id)
+        errors << { student: student, errors: student.errors.full_messages } unless student.valid?
+      end
+
+      if errors.any?
+        raise ActiveRecord::Rollback
+      else
+        students.each(&:save!)
+      end
+    end
+
+    return true if errors.empty?
+
+    false
+  end
+  # rubocop:enable Metrics/MethodLength
+
   def members
     OrganizationMember.where(organization_id: id)
   end

@@ -92,6 +92,10 @@ class Student < ApplicationRecord
     enrollments.each(&:valid?)
   end
 
+  def active_enrollment?
+    enrollments.any? { |e| (e.active_since...e.inactive_since).cover?(Time.zone.now) }
+  end
+
   def validate_organization_has_not_been_changed
     existing_student_organization = Student.find_by(id: id).organization
     errors.add :organization, I18n.t(:cannot_change_organization_existing_student) if existing_student_organization.id != organization.id
@@ -101,6 +105,10 @@ class Student < ApplicationRecord
     { id: id, first_name: first_name, last_name: last_name, date_of_birth: dob, age: age, country_of_nationality: country_of_nationality, gender: gender,
       organization_id: organization_id, enrolled_at: Enrollment.where(student_id: id, group_id: group_id).maximum(:active_since), group_id: group_id,
       group_name: Group.find(group_id).group_name, total_average_score: StudentLessonSummary.where(student_id: id, group_id: group_id).average(:average_mark)&.round(2) || 'No scores yet' }
+  end
+
+  def self.unenrolled_for_organization(org_id)
+    Student.where(organization_id: org_id).includes(:enrollments).filter { |s| !s.active_enrollment? }
   end
 
   def self.permitted_params
