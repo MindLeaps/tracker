@@ -47,6 +47,9 @@ Rails.application.routes.draw do
   resources :organizations, only: %i[index new create show edit update destroy] do
     member { post :add_member }
     member { post :undelete }
+    member { post :import_students }
+    member { post :confirm_import }
+    member { get :import }
   end
   resources :chapters, only: %i[index new create show edit update destroy] do
     member { post :undelete }
@@ -64,6 +67,7 @@ Rails.application.routes.draw do
 
   resources :students, only: %i[index new create show edit update destroy] do
     member { post :undelete }
+
     collection { get '/mlid/:organization_id', to: 'students#mlid' }
 
     resources :student_images, only: %i[create destroy]
