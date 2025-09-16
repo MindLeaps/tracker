@@ -1,0 +1,51 @@
+<%= turbo_stream.replace 'modal' do %>
+  <div id="modal" class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true" data-controller="modal">
+    <div class="fixed inset-0 bg-gray-500/50 transition-opacity backdrop-out transform-gpu" data-modal-target="backdrop"></div>
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto" data-action="click->modal#close">
+      <div class="flex min-h-full items-end justify-center p-4 sm:items-center sm:p-0">
+        <div class="modal-out transition-all transform-gpu" data-modal-target="modal" data-action="click->modal#stopPropagation">
+          <%= render CommonComponents::Card.new(title: 'Import Students') do |card| %>
+            <% card.with_card_content do %>
+              <%= form_with url: import_students_organization_path, method: :post, class: 'bg-white p-4 space-y-0.5' do |f| %>
+                <div class="p-2">
+                  <%= f.label :import_file, class: 'field-label' %>
+                  <%= f.file_field :file %>
+                </div>
+                <div class="p-2">
+                  <%= f.submit t(:import), class: 'px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 cursor-pointer' %>
+                  <div class="dangerous-button" data-action="click->modal#close"><%= t(:cancel) %></div>
+                </div>
+              <% end %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+<%= turbo_stream.update('flashes', partial: 'shared/flashes') %>
+
+<style>
+  /* Custom styles for file browsing button in this modal */
+  input[type="file"]::file-selector-button {
+    margin-right: 1rem;
+    padding-block: var(--spacing);
+    padding-inline: calc(var(--spacing)*2);
+    background: var(--color-gray-400);
+    border: transparent;
+    border-radius: var(--radius-md);
+    color: white;
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+  }
+
+  input[type="file"]::file-selector-button:hover {
+    background: var(--color-gray-600);
+  }
+
+  /* Bring notification to front so that error messages are not greyed out */
+  div[aria-live="assertive"] {
+      z-index: 99;
+  }
+</style>

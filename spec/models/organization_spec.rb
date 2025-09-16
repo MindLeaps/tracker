@@ -180,5 +180,39 @@ RSpec.describe Organization, type: :model do
         expect(@deleted_chapter.reload.deleted_at).to_not be_nil
       end
     end
+
+    describe 'create_and_assign_students?' do
+      before :each do
+        @organization = create :organization
+      end
+
+      context 'when students are valid' do
+        before :each do
+          @valid_students = build_list :student, 2, organization: nil, mlid: nil
+        end
+
+        it 'creates and assign students to organization' do
+          result = @organization.create_and_assign_students?(@valid_students)
+
+          @organization.reload
+          expect(result).to be true
+          expect(@organization.students.size).to eq 2
+        end
+      end
+
+      context 'when students are invalid' do
+        before :each do
+          @invalid_students = build_list :student, 2, first_name: '', organization: nil, mlid: nil
+        end
+
+        it 'creates and assign students to organization' do
+          result = @organization.create_and_assign_students?(@invalid_students)
+
+          @organization.reload
+          expect(result).to be false
+          expect(@organization.students.size).to eq 0
+        end
+      end
+    end
   end
 end
