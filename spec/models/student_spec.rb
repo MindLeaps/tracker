@@ -209,6 +209,25 @@ RSpec.describe Student, type: :model do
         expect(@fourth_student.active_enrollment?).to be true
       end
     end
+
+    describe '#unenrolled_for_organization' do
+      before :each do
+        @organization = create :organization
+        @chapter = create :chapter, organization: @organization
+        @group = create :group, chapter: @chapter
+
+        @unenrolled_students = create_list :student, 2, organization: @organization
+        @enrolled_students = create_list :enrolled_student, 2, organization: @organization, groups: [@group]
+      end
+
+      it 'returns students with no active enrollments in an organization' do
+        result = Student.unenrolled_for_organization(@organization.id)
+
+        expect(result.count).to eq 2
+        expect(result).to match_array @unenrolled_students
+        expect(result).not_to match_array @enrolled_students
+      end
+    end
   end
 
   describe 'scopes' do

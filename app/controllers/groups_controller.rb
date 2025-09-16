@@ -14,7 +14,7 @@ class GroupsController < HtmlController
   def show
     @group = Group.includes(:chapter).find params[:id]
     authorize @group
-    @unenrolled_students = Student.where(organization_id: @group.chapter.organization.id).includes(:enrollments).filter { |s| !s.active_enrollment? }
+    @unenrolled_students = Student.unenrolled_for_organization(@group.chapter.organization_id)
     @group_summaries = GroupLessonSummary.where(group_id: @group.id).where.not(average_mark: nil).order(lesson_date: :asc).last(30).map do |summary|
       {
         lesson_date: summary.lesson_date,
@@ -83,7 +83,7 @@ class GroupsController < HtmlController
     @group = Group.find params.require :id
     authorize @group
 
-    @unenrolled_students = Student.where(organization_id: @group.chapter.organization.id).includes(:enrollments).filter { |s| !s.active_enrollment? }
+    @unenrolled_students = Student.unenrolled_for_organization(@group.chapter.organization_id)
     respond_to(&:turbo_stream)
   end
 

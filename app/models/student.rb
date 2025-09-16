@@ -107,6 +107,10 @@ class Student < ApplicationRecord
       group_name: Group.find(group_id).group_name, total_average_score: StudentLessonSummary.where(student_id: id, group_id: group_id).average(:average_mark)&.round(2) || 'No scores yet' }
   end
 
+  def self.unenrolled_for_organization(org_id)
+    Student.where(organization_id: org_id).includes(:enrollments).filter { |s| !s.active_enrollment? }
+  end
+
   def self.permitted_params
     [:mlid, :first_name, :last_name, :dob, :estimated_dob, :gender, :country_of_nationality, :quartier,
      :guardian_name, :guardian_occupation, :guardian_contact, :family_members, :health_insurance,
