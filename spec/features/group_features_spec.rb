@@ -163,4 +163,37 @@ RSpec.describe 'User interacts with Groups' do
       expect(page).to_not have_content 'Export Students'
     end
   end
+
+  describe 'Group enrollments', js: true do
+    before :each do
+      @group = create :group
+      @unenrolled_students = create_list :student, 2, organization: @group.chapter.organization
+    end
+
+    it 'enrolls students with no active enrollments' do
+      visit "/groups/#{@group.id}"
+      click_link 'Enroll Students'
+
+      within('#modal') do
+        expect(page).to have_content 'FIRST NAME'
+        expect(page).to have_content 'LAST NAME'
+        expect(page).to have_content 'ENROLL'
+        expect(page).to have_content 'ENROLLED SINCE'
+
+        all('input[id="students__to_enroll"]').each(&:check)
+        all('input[id="students__enrollment_start_date"]').each { |df| df.set(2.days.ago.to_date.to_s) }
+
+        click_button 'Confirm'
+      end
+
+      expect(page).to have_content 'Students enrolled'
+      expect(page).to have_content "Successfully enrolled 2 students in group \"#{@group.group_name}\"."
+      expect(@group.reload.students.count).to eql 2
+      @unenrolled_students.each do |student|
+        student.reload
+        expect(student.enrollments.count).to eql 1
+        expect(student.enrollments.first.active_since.to_date.to_s).to eql 2.days.ago.to_date.to_s
+      end
+    end
+  end
 end

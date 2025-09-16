@@ -3,9 +3,10 @@
   {title: CommonComponents::TagLabel.new(label: @group.group_name, img_src: 'group.svg'), href: '' },
 ], buttons: [
   (CommonComponents::ButtonComponent.new(label: t(:add_student_to_group), href: new_student_path(group_id: @group.id)) if policy(@group).update?),
-  (CommonComponents::ButtonComponent.new(label: t(:edit_group), href: edit_group_path(@group)) if policy(@group).edit?),
+  (CommonComponents::ButtonComponent.new(label: t(:enroll_students), href: enroll_students_group_path(@group), options: { data: { turbo_stream: true } }) if policy(@group).update? && @unenrolled_students&.length.positive?),
   (CommonComponents::ButtonComponent.new(label: t(:generate_report), href: reports_group_path(@group), options: { target: '_blank' } ) if @group.students.length > 0),
   (CommonComponents::ButtonComponent.new(label: t(:export_students_csv), href: students_url(group_id: @group.id, format: :csv)) if @group.students.length > 0),
+  (CommonComponents::ButtonComponent.new(label: t(:edit_group), href: edit_group_path(@group)) if policy(@group).edit?),
   (CommonComponents::FormButtonComponent.new(label: t(:restore_group), path: undelete_group_path(@group), method: :post) if policy(@group).destroy? && @group.deleted_at),
   (CommonComponents::DangerousFormButtonComponent.new(label: t(:delete_group), path: group_path(@group), method: :delete) if policy(@group).destroy? && !@group.deleted_at)
 ].compact)  do |h|
@@ -32,7 +33,7 @@ end %>
 <turbo-frame id="students-table">
   <%= render GroupEnrolledStudentsComponent.new(students: @group.students, group: @group) %>
 </turbo-frame>
-
+<div id="modal"></div>
 <%= javascript_tag do %>
   function onChartsLoad() {
     displayAveragesGraph && displayAveragesGraph('.ct-chart', '', <%= @group_summaries.to_json.html_safe %>);

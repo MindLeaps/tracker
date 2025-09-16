@@ -14,6 +14,7 @@ class GroupsController < HtmlController
   def show
     @group = Group.includes(:chapter).find params[:id]
     authorize @group
+    @unenrolled_students = Student.unenrolled_for_organization(@group.chapter.organization_id)
     @group_summaries = GroupLessonSummary.where(group_id: @group.id).where.not(average_mark: nil).order(lesson_date: :asc).last(30).map do |summary|
       {
         lesson_date: summary.lesson_date,
@@ -76,6 +77,31 @@ class GroupsController < HtmlController
 
     success(title: t(:group_restored), text: t(:group_restored_text, group: @group.group_name))
     redirect_to group_path
+  end
+
+  def enroll_students
+    @group = Group.find params.require :id
+    authorize @group
+
+    @unenrolled_students = Student.unenrolled_for_organization(@group.chapter.organization_id)
+    respond_to(&:turbo_stream)
+  end
+
+  def confirm_enrollments
+    @group = Group.find params.require :id
+    authorize @group
+    @students = params.require(:students)
+
+    count = 0
+    @students.filter { |s| s[:to_enroll] }&.each do |s|
+      student = Student.find s[:id]
+      student.enrollments << Enrollment.new(student: @student, group: @group, active_since: s[:enrollment_start_date])
+      student.save
+      count += 1
+    end
+
+    success(title: t(:students_enrolled), text: t(:students_enrolled_in_group_text, count: count, group: @group.group_name))
+    redirect_to group_path(@group)
   end
 
   private
