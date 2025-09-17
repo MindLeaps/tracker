@@ -42,6 +42,12 @@ jobs:
         restore-keys: |
             ${{ runner.os }}-assets
 
+    - name: Cleanup tmp dirs
+      run: |
+        rm -rf tmp/storage
+        rm -rf tmp/screenshots
+        rm -rf tmp/capybara
+
     - name: Migrate Database
       env:
         RAILS_ENV: test
@@ -71,6 +77,12 @@ jobs:
         CI: true
       run: |
         bundle exec rake test
+
+    - name: Save assets back to cache
+      uses: actions/cache@v2
+      with:
+        path: public/assets
+        key: ${{ runner.os }}-assets-${{ github.sha }}
 
   build_image:
     runs-on: ubuntu-latest
