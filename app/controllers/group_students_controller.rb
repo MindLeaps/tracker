@@ -76,9 +76,10 @@ class GroupStudentsController < HtmlController
   private
 
   def populate_new_student
-    @enrollment_starting_date = params[:student][:enrollment_start_date]&.to_time || Time.zone.now
+    @enrollment_starting_date = params[:student][:enrollment_start_date]&.to_time
     @student = Student.new(inline_student_params)
     @student.organization_id = @group.chapter.organization.id
+    @student.enrollments.clear
     @student.enrollments << Enrollment.new(student: @student, group: @group, active_since: @enrollment_starting_date)
 
     @student

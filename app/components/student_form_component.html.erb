@@ -40,7 +40,7 @@
           </div>
           <div class="col-span-6 lg:col-span-4">
             <%= f.label :dob, t(:date_of_birth),class: 'field-label' %>
-            <%= render Datepicker.new(date: @student.dob || Date.new(Date.current.year, 1, 1), target: 'dob', form: f) %>
+            <%= render Datepicker.new(date: @student.dob || Date.current, target: 'dob', form: f) %>
             <%= f.check_box :estimated_dob, class: 'h-4 w-4 ml-4 border-purple-500 text-green-600 focus:ring-green-600 cursor-pointer', checked: estimated_dob_checked? %>
             <label for="student_estimated_dob" class="ml-3 text-sm font-medium text-gray-700 cursor-pointer"><%= t(:dob_estimated) %></label>
             <%= render ValidationErrorComponent.new(model: @student, key: :dob) %>

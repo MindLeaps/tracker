@@ -34,14 +34,15 @@ class StudentTableForm < ViewComponent::Base
           </div>
         </div>
         <div class="table-cell flex justify-start gap-4 items-center">
-          <%= render Datepicker.new(date: @student.dob || Date.new(Date.current.year, 1, 1), target: 'dob', form: form) %>
+          <%= render Datepicker.new(date: @student.dob || Date.current, target: 'dob', form: form) %>
           <%= form.check_box :estimated_dob, checked: @student.estimated_dob , class: 'h-4 w-4 border-purple-500 text-green-600 focus:ring-green-600 cursor-pointer ml-1' %>
           <label class="text-xs font-medium text-gray-700 cursor-pointer"><%= t(:dob_estimated) %></label>
           <%= render ValidationErrorComponent.new(model: @student, key: :dob) %>
         </div>
         <div class="table-cell">
           <% unless @is_edit %>
-            <%= render Datepicker.new(date: Date.current, target: 'enrollment_start_date', form: form) %>
+            <%= render Datepicker.new(date: @student.enrollments.first.active_since || Date.current, target: 'enrollment_start_date', form: form) %>
+            <%= render ValidationErrorComponent.new(model: @student, key: 'enrollments.active_since') %>
           <% end %>
         </div>
         <div class="table-cell text-right">
