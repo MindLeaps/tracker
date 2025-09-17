@@ -79,7 +79,7 @@ jobs:
         bundle exec rake test
 
     - name: Save assets back to cache
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: public/assets
         key: ${{ runner.os }}-assets-${{ github.sha }}
