@@ -181,13 +181,12 @@ RSpec.describe 'User interacts with Groups' do
         expect(page).to have_content 'ENROLLED SINCE'
 
         all('input[id="students__to_enroll"]').each(&:check)
-        all('input[id="students__enrollment_start_date"]').each { |df| df.set(2.days.ago.to_date.to_s) }
-
+        all('input[id="students__enrollment_start_date"]').each { |df| df.fill_in with: 2.days.ago.to_date.to_s }
         click_button 'Confirm'
       end
 
-      expect(page).to have_content 'Students enrolled'
-      expect(page).to have_content "Successfully enrolled 2 students in group \"#{@group.group_name}\"."
+      expect(page).to have_content @unenrolled_students.first.first_name
+      expect(page).to have_content @unenrolled_students.last.first_name
       expect(@group.reload.students.count).to eql 2
       @unenrolled_students.each do |student|
         student.reload

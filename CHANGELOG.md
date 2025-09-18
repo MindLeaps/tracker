@@ -1,4 +1,5 @@
 ## Unreleased
+- Added dropdown to select enrollment starting date for new students in a group
 - Added ability to enroll students with no active enrollments in a group
 - Added ability to import students to an organization from `.csv` files
 - Added organization statistics in separate component when viewing an organization
