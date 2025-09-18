@@ -24,6 +24,8 @@ jobs:
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: 3.3.1
+        bundler-cache: true
+
     - name: Install Dependencies
       run: |
         sudo apt-get update
@@ -31,6 +33,21 @@ jobs:
         sudo apt-get install -y postgresql-client
         gem install bundler
         bundle install --jobs 4 --retry 3
+
+    - name: Cache assets
+      uses: actions/cache@v4
+      with:
+        path: public/assets
+        key: ${{ runner.os }}-assets-${{ github.sha }}
+        restore-keys: |
+            ${{ runner.os }}-assets
+
+    - name: Cleanup tmp dirs
+      run: |
+        rm -rf tmp/storage
+        rm -rf tmp/screenshots
+        rm -rf tmp/capybara
+
     - name: Migrate Database
       env:
         RAILS_ENV: test
@@ -40,20 +57,38 @@ jobs:
       run: |
         bundle exec rake db:create
         bundle exec rake db:migrate
-    - name: Test
+
+    - name: Precompile Assets
       env:
         RAILS_ENV: test
         DATABASE_USER: postgres
         DATABASE_PASSWORD: postgres
         DATABASE_URL: postgres://postgres:@localhost:5432
       run: |
+        bundle exec rake assets:clobber
         bundle exec rake assets:precompile
+
+    - name: Run Tests
+      env:
+        RAILS_ENV: test
+        DATABASE_USER: postgres
+        DATABASE_PASSWORD: postgres
+        DATABASE_URL: postgres://postgres:@localhost:5432
+        CI: true
+      run: |
         bundle exec rake test
+
+    - name: Save assets back to cache
+      uses: actions/cache@v4
+      with:
+        path: public/assets
+        key: ${{ runner.os }}-assets-${{ github.sha }}
 
   build_image:
     runs-on: ubuntu-latest
     needs: test
     if: github.ref == 'refs/heads/master'
+
     steps:
       - uses: actions/checkout@v1
       - uses: docker/build-push-action@v1

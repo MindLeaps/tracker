@@ -409,6 +409,8 @@ GEM
       rspec-expectations (~> 3.13)
       rspec-mocks (~> 3.13)
       rspec-support (~> 3.13)
+    rspec-retry (0.6.2)
+      rspec-core (> 3.3)
     rspec-support (3.13.4)
     rubocop (1.80.2)
       json (~> 2.3)
@@ -563,6 +565,7 @@ DEPENDENCIES
   rails_semantic_logger
   rolify
   rspec-rails
+  rspec-retry
   rubocop
   rubocop-performance
   rubocop-rails
