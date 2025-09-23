@@ -60,6 +60,7 @@ group :development, :test do
   gem 'json_matchers'
   gem 'pundit-matchers'
   gem 'rspec-rails'
+  gem 'rspec-retry'
   gem 'selenium-webdriver'
   gem 'shoulda-matchers'
   gem 'smarter_csv'
