@@ -7,5 +7,8 @@ module Helpers
     )
     visit '/'
     click_button 'Log in'
+  rescue Capybara::ElementNotFound
+    page.refresh
+    click_button 'Log in'
   end
 end

@@ -10,6 +10,7 @@ require 'pundit/rspec'
 require 'webmock/rspec'
 require 'devise'
 require 'database_cleaner/active_record'
+require 'rspec/retry'
 
 WebMock.disable_net_connect!(allow: ['localhost', '127.0.0.1', 'chromedriver.storage.googleapis.com'], net_http_connect_on_start: true)
 
@@ -65,6 +66,11 @@ RSpec.configure do |config|
       example.run
     end
   end
+
+  # Retry configuration
+  config.verbose_retry = true
+  config.display_try_failure_messages = true
+  config.default_retry_count = ENV['CI'] ? 2 : 0 # Do retries only in CI
 
   # Setup Bullet for detecting N+1 queries
   if Bullet.enable?

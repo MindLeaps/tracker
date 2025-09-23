@@ -390,7 +390,7 @@ GEM
     responders (3.1.1)
       actionpack (>= 5.2)
       railties (>= 5.2)
-    rexml (3.4.1)
+    rexml (3.4.2)
     rolify (6.0.1)
     rouge (4.2.0)
     rspec-core (3.13.5)
@@ -409,6 +409,8 @@ GEM
       rspec-expectations (~> 3.13)
       rspec-mocks (~> 3.13)
       rspec-support (~> 3.13)
+    rspec-retry (0.6.2)
+      rspec-core (> 3.3)
     rspec-support (3.13.4)
     rubocop (1.80.2)
       json (~> 2.3)
@@ -454,8 +456,8 @@ GEM
     shoulda-matchers (6.5.0)
       activesupport (>= 5.2.0)
     simple_po_parser (1.1.6)
-    skylight (6.0.4)
-      activesupport (>= 5.2.0)
+    skylight (7.0.0)
+      activesupport (>= 7.1.0)
     smarter_csv (1.14.4)
     snaky_hash (2.0.1)
       hashie
@@ -563,6 +565,7 @@ DEPENDENCIES
   rails_semantic_logger
   rolify
   rspec-rails
+  rspec-retry
   rubocop
   rubocop-performance
   rubocop-rails
