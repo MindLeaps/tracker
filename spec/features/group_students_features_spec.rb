@@ -12,6 +12,7 @@ RSpec.describe 'User interacts with students in Group', js: true do
   describe 'Student creation and editing' do
     before :each do
       @group = create :group, group_name: 'Group One'
+      create :lesson, group: @group, date: 2.days.ago
     end
 
     it 'renders error messages when student form is incomplete' do
@@ -30,8 +31,9 @@ RSpec.describe 'User interacts with students in Group', js: true do
       fill_in 'student_mlid', with: '12345678'
       fill_in 'student_last_name', with: 'Student'
       fill_in 'student_first_name', with: 'New'
-      fill_in 'student_dob', with: '2024-01-01'
       find('#student_gender_nb').click
+      fill_in 'student_dob', with: '2024-01-01'
+      fill_in 'student_enrollment_start_date', with: 2.days.ago.to_date.to_s
       click_button 'Create Student'
 
       expect(page).to have_content '12345678'
@@ -40,7 +42,9 @@ RSpec.describe 'User interacts with students in Group', js: true do
       expect(page).to have_content 'NB'
 
       student = Student.find_by! first_name: 'New', last_name: 'Student'
-      expect(student.gender).to eq('NB')
+      expect(student.gender).to eq 'NB'
+      expect(student.dob).to eq Date.parse('2024-01-01')
+      expect(student.enrollments.last.active_since.to_date).to eql 2.days.ago.to_date
 
       click_link 'Edit'
       find("#student_#{student.id} #student_first_name").fill_in with: 'Updated'
