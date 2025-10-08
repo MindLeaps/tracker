@@ -96,6 +96,10 @@ class Student < ApplicationRecord
     enrollments.any? { |e| (e.active_since...e.inactive_since).cover?(Time.zone.now) }
   end
 
+  def enrolled_group_ids
+    enrollments.pluck(&:group_id)
+  end
+
   def validate_organization_has_not_been_changed
     existing_student_organization = Student.find_by(id: id).organization
     errors.add :organization, I18n.t(:cannot_change_organization_existing_student) if existing_student_organization.id != organization.id
