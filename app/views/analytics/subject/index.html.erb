@@ -29,7 +29,7 @@
     </div>
     <div class="pl-2">
       <%= label_tag :student_label, "Student", class: 'block text-sm font-medium text-gray-700' %>
-      <%= select_tag :student_select, options_from_collection_for_select(@available_students, :id, :proper_name, @selected_student_id), :class => 'mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md', :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'student_id', 'data-resources' => @available_students.map { |s| { id: s.id, label: s.proper_name, depend_id: s.old_group_id } }.to_json %>
+      <%= select_tag :student_select, options_from_collection_for_select(@available_students, :id, :proper_name, @selected_student_id), :class => 'mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md', :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'student_id', 'data-resources' => @available_students.map { |s| { id: s.id, label: s.proper_name, depend_id: s.old_group_id, dependent_ids: s.enrolled_group_ids } }.to_json %>
     </div>
     <div class="pl-2 pt-5">
       <%= render CommonComponents::ButtonComponent.new(label: t(:filter), options: { 'data-analytics-filter-target' => 'anchor' })%>

@@ -7,10 +7,8 @@ module Analytics
       @available_organizations = policy_scope Organization.where(deleted_at: nil).order(:organization_name)
       @available_chapters = policy_scope Chapter.where(deleted_at: nil).order(:chapter_name)
       @available_groups = policy_scope Group.where(deleted_at: nil).order(:group_name)
-      @available_students = policy_scope Student.where(deleted_at: nil).order(:last_name, :first_name)
+      @available_students = policy_scope StudentAnalyticsSummary
       @available_subjects = policy_scope Subject.where(deleted_at: nil)
-
-      @mapped_students_json = @available_students.map { |s| { id: s.id, label: s.proper_name, depend_id: s.old_group_id, dependent_ids: s.enrolled_group_ids } }.uniq.to_json
 
       @selected_organization_id = params[:organization_id] || @available_organizations.first.id
       @selected_chapter_id = params[:chapter_id]

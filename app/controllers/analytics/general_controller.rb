@@ -3,8 +3,8 @@ module Analytics
     def index
       selected_organizations = find_resource_by_id_param @selected_organization_id, Organization
       selected_chapters = find_resource_by_id_param(@selected_chapter_id, Chapter) { |c| c.where(organization: selected_organizations) }
-      @selected_groups = find_resource_by_id_param(@selected_group_id, Group) { |g| g.where(chapter: selected_chapters) }
-      @selected_students = find_resource_by_id_param(@selected_student_id, Student) { |s| s.includes(:enrollments).where(enrollments: { group_id: @selected_groups }, deleted_at: nil) }
+      selected_groups = find_resource_by_id_param(@selected_group_id, Group) { |g| g.where(chapter: selected_chapters) }
+      @selected_students = find_resource_by_id_param(@selected_student_id, Student) { |s| s.joins(:enrollments).where(enrollments: { group_id: selected_groups }, deleted_at: nil) }
 
       @assessments_per_month = assessments_per_month
       @student_performance = histogram_of_student_performance.to_json
@@ -57,7 +57,7 @@ module Analytics
 
     def assessments_per_month # rubocop:disable Metrics/MethodLength
       conn = ActiveRecord::Base.connection.raw_connection
-      lesson_ids = Lesson.where(group_id: @selected_students.map(&:old_group_id).uniq).ids
+      lesson_ids = Lesson.where(group_id: @selected_students.map(&:enrolled_group_ids).flatten.uniq).ids
       lesson_ids_formatted = lesson_ids.map { |str| "'#{str}'" }.join(', ')
 
       res = if lesson_ids.blank?
@@ -81,8 +81,10 @@ module Analytics
     end
 
     def average_performance_per_group_by_lesson
+      groups = Array(groups_for_average_performance)
+
       conn = ActiveRecord::Base.connection.raw_connection
-      @selected_groups.map do |group|
+      groups.map do |group|
         result = conn.exec(Sql.average_mark_in_group_lessons(group)).values
         {
           name: "#{t(:group)} #{group.group_chapter_name}",
@@ -101,6 +103,10 @@ module Analytics
           date: e[3]
         }
       end
+    end
+
+    def groups_for_average_performance
+      Group.where(id: @selected_students.map(&:enrolled_group_ids).flatten.uniq)
     end
   end
 end
