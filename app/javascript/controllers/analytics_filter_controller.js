@@ -37,9 +37,8 @@ export default class extends Controller {
     dropdown.append(createOption('All', null));
 
     let valueExists = false;
-    const filteredIds = values.filter(v => !parentIds ||
-        parentIds.includes(v.depend_id) ||
-        ( v.dependendt_ids && v.dependent_ids.some(id => parentIds.includes(id))))
+    const filteredIds = values.filter(v => !parentIds || parentIds.includes(v.depend_id) ||
+        ( v.dependent_ids && v.dependent_ids.some(id => parentIds.includes(id))))
       .map((v) => {
         if (currentValue === v.id) {
           valueExists = true;

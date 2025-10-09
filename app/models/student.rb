@@ -97,7 +97,7 @@ class Student < ApplicationRecord
   end
 
   def enrolled_group_ids
-    enrollments.pluck(&:group_id)
+    enrollments.pluck(:group_id)
   end
 
   def validate_organization_has_not_been_changed
