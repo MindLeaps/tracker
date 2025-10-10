@@ -819,6 +819,18 @@ ALTER SEQUENCE public.skills_id_seq OWNED BY public.skills.id;
 
 
 --
+-- Name: student_analytics_summaries; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.student_analytics_summaries AS
+SELECT
+    NULL::integer AS id,
+    NULL::character varying AS first_name,
+    NULL::character varying AS last_name,
+    NULL::integer AS old_group_id,
+    NULL::bigint[] AS enrolled_group_ids;
+
+--
 -- Name: student_averages; Type: VIEW; Schema: public; Owner: -
 --
 
@@ -1955,6 +1967,24 @@ CREATE OR REPLACE VIEW public.organization_summaries AS
 
 
 --
+-- Name: student_analytics_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.student_analytics_summaries AS
+ SELECT s.id,
+    s.first_name,
+    s.last_name,
+    s.old_group_id,
+    COALESCE(array_agg(en.group_id) FILTER (WHERE (en.group_id IS NOT NULL)), '{}'::bigint[]) AS enrolled_group_ids
+   FROM ((public.students s
+     JOIN public.organizations o ON ((s.organization_id = o.id)))
+     JOIN public.enrollments en ON ((s.id = en.student_id)))
+  WHERE (s.deleted_at IS NULL)
+  GROUP BY s.id, s.first_name, s.last_name
+  ORDER BY s.last_name, s.first_name;
+
+
+--
 -- Name: assignments assignments_skill_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2153,6 +2183,7 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251009215138'),
 ('20250701124811'),
 ('20250701124810'),
 ('20250701124809'),
