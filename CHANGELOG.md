@@ -1,3 +1,6 @@
+## 0.38.1 - Fix Student Analytics Summaries
+- Fixed Student Analytics Summaries causing crash when viewing Analytics 
+
 ## 0.38.0 - Student Imports & Enrollments
 - Added dropdown to select enrollment starting date for new students in a group
 - Modified CI workflow with caching and cleanup separation, added retries using `rspec-retry` gem
