@@ -15,10 +15,10 @@ const BASTION_NAME = `BASTION-${env}`;
 
 // Fetch latest
 const BASTION_AMI = pulumi.output(ec2.getAmi({
-    filters: [{
-        name: "name",
-        values: ['amzn2-ami-hvm-*'],
-    }],
+    filters: [
+        { name: "name", values: ['amzn2-ami-hvm-*-x86_64-gp2'] },
+        { name: "architecture", values: ["x86_64"] },
+    ],
     owners: ["137112412989"], // This owner ID is Amazon
     mostRecent: true,
 }));
