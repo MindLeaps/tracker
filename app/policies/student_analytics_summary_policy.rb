@@ -1,3 +1,22 @@
-# We need to have a policy for StudentAnalyticsSummary model which is used in analytics. The policy should be the same as the one for student
 class StudentAnalyticsSummaryPolicy < StudentPolicy
+  def index?
+    true
+  end
+
+  class Scope
+    attr_reader :user, :scope
+
+    def initialize(user, scope)
+      @user = user
+      @scope = scope
+    end
+
+    def resolve
+      if user.global_role?
+        scope.all
+      else
+        scope.where(organization_id: user.membership_organizations)
+      end
+    end
+  end
 end

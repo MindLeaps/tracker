@@ -7,6 +7,7 @@
 #  first_name         :string
 #  last_name          :string
 #  old_group_id       :integer
+#  organization_id    :integer
 #
 class StudentAnalyticsSummary < ApplicationRecord
   self.table_name = 'student_analytics_summaries'

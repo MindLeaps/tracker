@@ -7,6 +7,7 @@
 #  first_name         :string
 #  last_name          :string
 #  old_group_id       :integer
+#  organization_id    :integer
 #
 require 'rails_helper'
 
