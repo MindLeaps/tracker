@@ -1,4 +1,4 @@
-## Unreleased
+## 0.38.0 - Student Imports & Enrollments
 - Added dropdown to select enrollment starting date for new students in a group
 - Modified CI workflow with caching and cleanup separation, added retries using `rspec-retry` gem
 - Added ability to enroll students with no active enrollments in a group
