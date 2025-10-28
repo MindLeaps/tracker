@@ -14,6 +14,7 @@ RSpec.describe 'User interacts with lessons' do
 
       select 'Lesson Group', from: 'lesson_group_id'
       select 'Feature Testing I', from: 'lesson_subject_id'
+      fill_in 'lesson_date', with: Date.current.to_date.to_s
       click_button 'Create'
 
       expect(page).to have_content 'Lesson Added'

@@ -34,7 +34,7 @@ class LessonsController < HtmlController
     if @lesson.valid? && @lesson.save
       authorize @lesson
       success(title: t(:lesson_added), text: t(:lesson_added_text, date: @lesson.date, group: @lesson.group.group_name, subject: @lesson.subject.subject_name))
-      redirect_to @lesson
+      return redirect_to @lesson
     end
 
     skip_authorization
