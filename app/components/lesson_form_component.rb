@@ -40,7 +40,7 @@ class LessonFormComponent < ViewComponent::Base
               <div class="col-span-6 lg:col-span-2"></div>
               <div class="col-span-6 lg:col-span-2">
                 <%= f.label :date, class: 'block text-sm font-medium text-gray-700' %>
-                <%= render Datepicker.new(date: @lesson.date, target: 'date', form: f, prepopulate: true) %>
+                <%= render Datepicker.new(date: @lesson.date, target: 'date', form: f) %>
                 <%= render ValidationErrorComponent.new(model: @lesson, key: :date) %>
               </div>
             </div>
