@@ -27,16 +27,21 @@ class LessonFormComponent < ViewComponent::Base
             <div class="grid grid-cols-6 gap-4">
               <div class="col-span-6 lg:col-span-2">
                 <%= f.label :group, class: 'block text-sm font-medium text-gray-700' %>
-                <%= f.grouped_collection_select :group_id, @chapter_groups, :groups, :chapter_display, :id, :chapter_group_name_with_full_mlid, { include_blank: true }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+                <%= f.grouped_collection_select :group_id, @chapter_groups, :groups, :chapter_display, :id, :chapter_group_name_with_full_mlid, { include_blank: true }, disabled: @action == :update,
+                 class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm disabled:bg-gray-200 disabled:text-gray-400 disabled:border-gray-100' %>
+                <%= render ValidationErrorComponent.new(model: @lesson, key: :group) %>
               </div>
               <div class="col-span-6 lg:col-span-2">
                 <%= f.label :subject, class: 'block text-sm font-medium text-gray-700' %>
-                <%= f.grouped_collection_select :subject_id, @org_subjects, :subjects, :org_display, :id, :subject_name, { include_blank: true }, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+                <%= f.grouped_collection_select :subject_id, @org_subjects, :subjects, :org_display, :id, :subject_name, { include_blank: true }, disabled: @action == :update,
+                 class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm disabled:bg-gray-200 disabled:text-gray-400 disabled:border-gray-100' %>
+                <%= render ValidationErrorComponent.new(model: @lesson, key: :subject) %>
               </div>
               <div class="col-span-6 lg:col-span-2"></div>
               <div class="col-span-6 lg:col-span-2">
                 <%= f.label :date, class: 'block text-sm font-medium text-gray-700' %>
-                <%= f.date_select :date, {}, class: 'mt-1 rounded-md border-purple-500 text-sm focus:border-green-600 focus:outline-hidden focus:ring-green-600' %>
+                <%= render Datepicker.new(date: @lesson.date, target: 'date', form: f, prepopulate: true) %>
+                <%= render ValidationErrorComponent.new(model: @lesson, key: :date) %>
               </div>
             </div>
           </div>
