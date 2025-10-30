@@ -33,8 +33,10 @@ RSpec.describe OrganizationSummary, type: :model do
     organizations = []
     before :each do
       organizations = create_list :organization, 3
-      create_list :chapter, 3, organization: organizations[0]
+      chapters = create_list :chapter, 3, organization: organizations[0]
       create_list :chapter, 2, organization: organizations[0], deleted_at: Time.zone.now
+      create_list :group, 2, chapter: chapters[0]
+      create_list :group, 2, chapter: chapters[1], deleted_at: Time.zone.now
 
       create_list :chapter, 2, organization: organizations[1], deleted_at: Time.zone.now
     end
@@ -43,6 +45,10 @@ RSpec.describe OrganizationSummary, type: :model do
       expect(OrganizationSummary.find(organizations[0].id).chapter_count).to eq 3
       expect(OrganizationSummary.find(organizations[1].id).chapter_count).to eq 0
       expect(OrganizationSummary.find(organizations[2].id).chapter_count).to eq 0
+    end
+
+    it 'calculates the correct number of groups, excluding deleted ones' do
+      expect(OrganizationSummary.find(organizations[0].id).group_count).to eq 2
     end
   end
 end
