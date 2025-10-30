@@ -1,3 +1,6 @@
+## Unreleased
+- Added ability to filter by single group in 'Group analytics'
+
 ## 0.38.1 - Fix Student Analytics Summaries
 - Fixed Student Analytics Summaries causing crash when viewing Analytics 
 
