@@ -1,9 +1,9 @@
 <div class="table-cell">
-  <%= text_field_tag "students[#{index}][first_name]", student[:first_name], class: "w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm" %>
+  <%= text_field_tag "students[#{index}][first_name]", student[:first_name], class: "w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 text-xs" %>
   <%= render ValidationErrorComponent.new(model: student, key: :first_name) %>
 </div>
 <div class="table-cell">
-  <%= text_field_tag "students[#{index}][last_name]", student[:last_name], class: "w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm" %>
+  <%= text_field_tag "students[#{index}][last_name]", student[:last_name], class: "w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 text-xs" %>
   <%= render ValidationErrorComponent.new(model: student, key: :last_name) %>
 </div>
 <div class="table-cell text-right">
@@ -23,4 +23,13 @@
 <div class="table-cell flex justify-start gap-4 items-center">
   <%= render Datepicker.new(date: student[:dob] || Date.new(Date.current.year, 1, 1), target: 'dob', custom_name: "students[#{index}][dob]") %>
   <%= render ValidationErrorComponent.new(model: student, key: :dob) %>
+</div>
+<div class="table-cell">
+  <%= text_field_tag "students[#{index}][country_of_nationality]", student[:country_of_nationality], class: "w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 text-xs" %>
+</div>
+<div class="table-cell">
+  <%= text_field_tag "students[#{index}][family_members]", student[:family_members], class: "w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 text-xs" %>
+</div>
+<div class="table-cell">
+  <%= text_field_tag "students[#{index}][guardian_contact]", student[:guardian_contact], class: "w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 text-xs" %>
 </div>
