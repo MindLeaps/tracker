@@ -14,9 +14,37 @@ RSpec.describe 'User interacts with lessons' do
 
       select 'Lesson Group', from: 'lesson_group_id'
       select 'Feature Testing I', from: 'lesson_subject_id'
+      fill_in 'lesson_date', with: Date.current.to_date.to_s
       click_button 'Create'
 
       expect(page).to have_content 'Lesson Added'
+    end
+
+    it 'updates a lesson', js: true do
+      @group = create :group
+      @subject = create :subject, subject_name: 'Feature Testing II'
+      create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
+      @lesson = create :lesson, subject: @subject, group: @group
+      previous_date = @lesson.date
+      new_date = 2.days.ago.to_date
+
+      visit '/'
+      click_link 'Lessons'
+      find('div.table-cell', text: @lesson.group.group_chapter_name).click
+      click_link 'Edit Lesson'
+
+      expect(page).to have_field 'lesson_group_id', disabled: true
+      expect(page).to have_field 'lesson_subject_id', disabled: true
+
+      fill_in 'lesson_date', with: new_date.to_s
+      find("button.pika-day[data-pika-day=\"#{new_date.day}\"]").hover
+      find("button.pika-day[data-pika-day=\"#{new_date.day}\"]").click
+      find('label', text: 'Group').click(force: true)
+      click_button 'Update Lesson'
+
+      expect(page).to have_content 'Lesson updated'
+      expect(@lesson.reload.date).not_to eq previous_date
+      expect(@lesson.date).to eq new_date
     end
 
     it 'lists all existing lessons' do

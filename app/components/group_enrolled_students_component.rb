@@ -15,7 +15,7 @@ class GroupEnrolledStudentsComponent < ViewComponent::Base
   ERB
 
   def initialize(students:, group:)
-    @student_records = students
+    @student_records = students.where(deleted_at: nil)
     @group = group
     @new_student = Student.new
     @new_student.enrollments.build(group: @group)

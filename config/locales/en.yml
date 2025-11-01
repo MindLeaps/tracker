@@ -195,6 +195,9 @@ en:
   subject_updated: Subject updated
   subject_updated_text: Subject "%{subject}" updated.
   subject_invalid: Subject Invalid
+  lesson_updated: Lesson updated
+  lesson_updated_text: Lesson with group %{group} in subject %{subject} updated.
+  edit_lesson: Edit Lesson
   lesson_added: Lesson Added
   lesson_added_text: Lesson on %{date} with group %{group} in subject %{subject} added.
   lesson_invalid: Lesson Invalid
