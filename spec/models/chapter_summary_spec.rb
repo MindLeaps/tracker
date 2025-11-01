@@ -31,8 +31,11 @@ RSpec.describe ChapterSummary, type: :model do
 
       groups1 = create_list :group, 3, chapter: chapters[0]
       create_list :enrolled_student, 5, organization: chapters[0].organization, groups: [groups1[0]]
-      create_list :enrolled_student, 3, organization: chapters[0].organization, groups: [groups1[0]], deleted_at: Time.zone.now
       create_list :enrolled_student, 3, organization: chapters[0].organization, groups: [groups1[1]]
+      create_list :enrolled_student, 3, organization: chapters[0].organization, groups: [groups1[0]], deleted_at: Time.zone.now
+
+      not_currently_enrolled_student = create :student, organization: chapters[0].organization
+      create :enrollment, student: not_currently_enrolled_student, group: groups1[0], active_since: 1.day.from_now
 
       create_list :group, 2, chapter: chapters[0], deleted_at: Time.zone.now
       create_list :group, 2, chapter: chapters[1], deleted_at: Time.zone.now
@@ -48,7 +51,7 @@ RSpec.describe ChapterSummary, type: :model do
       expect(ChapterSummary.find(chapters[2].id).group_count).to eq 0
     end
 
-    it 'calculates the correct student counts, excluding deleted students' do
+    it 'calculates the correct student counts, excluding deleted and unenrolled students' do
       expect(ChapterSummary.find(chapters[0].id).student_count).to eq 8
       expect(ChapterSummary.find(chapters[1].id).student_count).to eq 0
       expect(ChapterSummary.find(chapters[2].id).student_count).to eq 0
