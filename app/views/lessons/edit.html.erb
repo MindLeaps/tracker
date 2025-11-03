@@ -1,0 +1,14 @@
+<%- content_for :title, "#{t(:edit_lesson)} - #{@lesson.date} - #{@lesson.group.group_chapter_name}" %>
+
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  {title: "#{ @lesson.subject.subject_name } @ #{ @lesson.date }", href: '' },
+], buttons: [
+].compact)  do |h|
+  h.with_left do
+    render CommonComponents::Breadcrumbs.new(crumbs: [
+      { label: CommonComponents::TagLabel.new(label: t(:lessons), img_src: 'clipboard.svg'), href: lessons_path },
+    ])
+  end
+end %>
+
+<%= render LessonFormComponent.new(current_user: current_user, lesson: @lesson, action: :update) %>
