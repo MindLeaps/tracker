@@ -12,7 +12,6 @@
 # Pagy.options[:jsonapi] = true           # Use JSON:API compliant URLs
 Pagy.options[:limit] = 50
 Pagy.options[:overflow] = :last_page # (other options: :last_page, :empty_page and :exception)
-Pagy.options[:raise_range_error] = true
 
 ############ JavaScript ####################################################################
 # See https://ddnexus.github.io/pagy/resources/javascript/ for details.
