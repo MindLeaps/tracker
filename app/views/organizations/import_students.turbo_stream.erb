@@ -1,3 +1,19 @@
+<%
+  @columns = [
+    { id: 'firstName', name: t(:first_name) },
+    { id: 'lastName', name: t(:last_name) },
+    { id: 'gender', name: t(:gender) },
+    { id: 'dob', name: t(:date_of_birth) },
+    { id: 'country', name: t(:country_of_nationality) },
+    { id: 'familyMembers', name: t(:family_members) },
+    { id: 'guardianName', name: t(:guardian_name) },
+    { id: 'guardianContact', name: t(:guardian_contact) },
+    { id: 'guardianOccupation', name: t(:guardian_occupation) },
+    { id: 'nameOfSchool', name: t(:name_of_school) },
+    { id: 'schoolLevel', name: t(:school_level_completed) }
+  ]
+%>
+
 <%= turbo_stream.replace 'modal' do %>
   <div id="modal" class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true" data-controller="modal">
     <div class="fixed inset-0 bg-gray-500/50 transition-opacity backdrop-out transform-gpu" data-modal-target="backdrop"></div>
@@ -7,10 +23,11 @@
           <%= render CommonComponents::Card.new(title: 'Import Students') do |card| %>
             <% card.with_card_content do %>
               <%= form_tag confirm_import_organization_path, :method => :post, :class => 'bg-white max-h-[80vh] overflow-y-scroll' do %>
-                <div class="grid grid-cols-11">
-                  <% [t(:first_name), t(:last_name), t(:gender), t(:date_of_birth), t(:country_of_nationality), t(:family_members),
-                      t(:guardian_name), t(:guardian_contact), t(:guardian_occupation), t(:name_of_school), t(:school_level_completed)].each do |column| %>
-                    <%= render TableComponents::UnorderedColumn.new(column: { column_name: column, numeric: true }) %>
+                <div id="column-grid" class="grid grid-cols-11">
+                  <% @columns.each do |c| %>
+                    <div class="<%= c[:id] %> text-left px-4 py-3 border-b border-gray-200 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <span class="align-sub"><%= c[:name] %></span>
+                    </div>
                   <% end %>
 
                   <% @new_students.each_with_index do |student, i| %>
@@ -20,9 +37,17 @@
                   <% end %>
                 </div>
 
-                <div class="p-4">
+                <div class="p-4 flex gap-4">
                   <%= submit_tag t(:confirm), class: 'button normal-button' %>
                   <div class="dangerous-button" data-action="click->modal#close"><%= t(:cancel) %></div>
+                  <div class="w-full flex-column items-start gap-4">
+                    <label class="text-xs font-medium text-gray-500 uppercase tracking-wider">Additional column controls</label>
+                    <div class="flex gap-4 items-center mt-1">
+                      <% @columns.slice(4..-1).each do |c| %>
+                        <%= render CommonComponents::ToggleComponent.new(id: "#{c[:id]}Toggle", text: c[:name], is_toggled: false) %>
+                      <% end %>
+                    </div>
+                  </div>
                 </div>
               <% end %>
             <% end %>
