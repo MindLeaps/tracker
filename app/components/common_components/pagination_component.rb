@@ -1,5 +1,4 @@
 class CommonComponents::PaginationComponent < ViewComponent::Base
-
   def initialize(pagy:)
     @pagy = pagy
   end
