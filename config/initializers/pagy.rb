@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # Pagy initializer file (43.0.0.rc4)
 # See https://ddnexus.github.io/pagy/resources/initializer/
 
@@ -26,7 +24,6 @@ Pagy.options[:raise_range_error] = true
 # javascript_dir = Rails.root.join('app/javascript')
 # Pagy.sync_javascript(javascript_dir, 'pagy.mjs') if Rails.env.development?
 
-
 ############# Overriding Pagy::I18n Lookup #################################################
 # Refer to https://ddnexus.github.io/pagy/resources/i18n/ for details.
 # Override the dictionary lookup for customization by dropping your customized
@@ -34,12 +31,10 @@ Pagy.options[:raise_range_error] = true
 #
 # Pagy::I18n.pathnames << Rails.root.join('config/locales')
 
-
 ############# I18n Gem Translation #########################################################
 # See https://ddnexus.github.io/pagy/resources/i18n/ for details.
 #
 # Pagy.translate_with_the_slower_i18n_gem!
-
 
 ############# Calendar Localization for non-en locales ####################################
 # See https://ddnexus.github.io/pagy/toolbox/paginators/calendar#localization for details.
