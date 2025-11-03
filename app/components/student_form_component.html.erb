@@ -101,7 +101,7 @@
                   </div>
                   <div class="col-span-2">
                     <%= ef.label :active_since, t(:enrolled_since), class: 'field-label' %>
-                    <%= render Datepicker.new(date: :active_since || Date.new(Date.current.year, 1, 1), target: 'active_since', form: ef) %>
+                    <%= render Datepicker.new(date: :active_since || Date.current, target: 'active_since', form: ef) %>
                     <%= render ValidationErrorComponent.new(model: ef.object, key: :active_since) %>
                   </div>
                   <div class="col-span-2">

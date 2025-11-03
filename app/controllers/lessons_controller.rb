@@ -24,10 +24,16 @@ class LessonsController < HtmlController
     @lesson = Lesson.new
   end
 
+  def edit
+    @lesson = Lesson.find params.require :id
+    authorize @lesson
+  end
+
   def create
     @lesson = Lesson.new params.require(:lesson).permit :group_id, :date, :subject_id
     authorize @lesson
-    if @lesson.save
+
+    if @lesson.valid? && @lesson.save
       success(title: t(:lesson_added), text: t(:lesson_added_text, date: @lesson.date, group: @lesson.group.group_name, subject: @lesson.subject.subject_name))
       redirect_to @lesson
     else
@@ -36,7 +42,24 @@ class LessonsController < HtmlController
     end
   end
 
+  def update
+    @lesson = Lesson.find params.require :id
+    authorize @lesson
+
+    if @lesson.valid? && @lesson.update(lesson_params)
+      success title: t(:lesson_updated), text: t(:lesson_updated_text, group: @lesson.group.group_name, subject: @lesson.subject.subject_name)
+      redirect_to(flash[:redirect] || lesson_path(@lesson))
+    else
+      failure(title: t(:lesson_invalid), text: t(:fix_form_errors))
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
   private
+
+  def lesson_params
+    params.require(:lesson).permit :group_id, :date, :subject_id
+  end
 
   def student_lesson_order_scope
     {

@@ -5,10 +5,10 @@
 ], buttons: [].compact) do |h|
   h.with_left do
     render CommonComponents::Breadcrumbs.new(crumbs: if @group.chapter
-                                                       [
-                                                         { label: CommonComponents::TagLabel.new(label: @group.chapter.organization.organization_name, img_src: 'world.svg'), href: organization_path(@group.chapter.organization) },
-                                                         { label: CommonComponents::TagLabel.new(label: @group.chapter.chapter_name, img_src: 'chapter.svg'), href: chapter_path(@group.chapter) },
-                                                       ] else [
+     [
+       { label: CommonComponents::TagLabel.new(label: @group.chapter.organization.organization_name, img_src: 'world.svg'), href: organization_path(@group.chapter.organization) },
+       { label: CommonComponents::TagLabel.new(label: @group.chapter.chapter_name, img_src: 'chapter.svg'), href: chapter_path(@group.chapter) },
+     ] else [
       { label: CommonComponents::TagLabel.new(label: t(:groups).capitalize, img_src: 'group.svg'), href: groups_path }
     ]
                                                      end)
