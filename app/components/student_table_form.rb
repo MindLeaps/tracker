@@ -41,6 +41,7 @@ class StudentTableForm < ViewComponent::Base
         </div>
         <div class="table-cell">
           <% if @is_edit %>
+            <%= hidden_field_tag sprintf("student[enrollments_attributes][%d][id]", @enrollment_index), @active_enrollment.id %>
             <%= render Datepicker.new(date: @active_enrollment.active_since, target: :active_since, custom_name: sprintf("student[enrollments_attributes][%d][active_since]", @enrollment_index)) %>
             <%= render ValidationErrorComponent.new(model: @student, key: 'enrollments.active_since') %>
           <% else %>
