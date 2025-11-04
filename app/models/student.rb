@@ -96,6 +96,10 @@ class Student < ApplicationRecord
     enrollments.any? { |e| (e.active_since...e.inactive_since).cover?(Time.zone.now) }
   end
 
+  def latest_enrollment_for_group(group)
+    enrollments.where(group: group).max_by(&:active_since)
+  end
+
   def enrolled_group_ids
     enrollments.pluck(:group_id)
   end

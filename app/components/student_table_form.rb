@@ -2,7 +2,7 @@ class StudentTableForm < ViewComponent::Base
   erb_template <<~ERB
     <%= form_with url: url, model: @student, id: dom_id(@student), class: form_class do |form| %>
         <% unless @is_edit%>
-          <% { t(:mlid) => true, t(:last_name) => false, t(:first_name) => false, t(:gender) => false, t(:date_of_birth) => true, t(:enrolled_since) => true, '' => false }.each do |name, numeric| %>
+          <% { t(:mlid) => true, t(:last_name) => false, t(:first_name) => false, t(:gender) => false, t(:date_of_birth) => true, t(:enrolled_since) => true, 'Submit' => false }.each do |name, numeric| %>
             <%= render TableComponents::UnorderedColumn.new(column: { column_name: name, numeric: numeric }) %>
           <% end %>
         <% end %>
@@ -33,15 +33,18 @@ class StudentTableForm < ViewComponent::Base
             <label class="ml-1 text-sm font-medium text-gray-700 cursor-pointer"><%= t(:enums)[:student][:gender][:NB] %></label>
           </div>
         </div>
-        <div class="table-cell flex justify-start gap-4 items-center">
+        <div class="table-cell flex justify-start gap-2 items-center">
           <%= render Datepicker.new(date: @student.dob || Date.current, target: 'dob', form: form) %>
           <%= form.check_box :estimated_dob, checked: @student.estimated_dob , class: 'h-4 w-4 border-purple-500 text-green-600 focus:ring-green-600 cursor-pointer ml-1' %>
           <label class="text-xs font-medium text-gray-700 cursor-pointer"><%= t(:dob_estimated) %></label>
           <%= render ValidationErrorComponent.new(model: @student, key: :dob) %>
         </div>
         <div class="table-cell">
-          <% unless @is_edit %>
-            <%= render Datepicker.new(date: @student.enrollments.first.active_since || Date.current, target: 'enrollment_start_date', form: form) %>
+          <% if @is_edit %>
+            <%= render Datepicker.new(date: @active_enrollment.active_since, target: :active_since, custom_name: sprintf("student[enrollments_attributes][%d][active_since]", @enrollment_index)) %>
+            <%= render ValidationErrorComponent.new(model: @student, key: 'enrollments.active_since') %>
+          <% else %>
+            <%= render Datepicker.new(date: Date.current, target: 'enrollment_start_date', form: form) %>
             <%= render ValidationErrorComponent.new(model: @student, key: 'enrollments.active_since') %>
           <% end %>
         </div>
@@ -61,6 +64,10 @@ class StudentTableForm < ViewComponent::Base
     @is_edit = is_edit
     @student.mlid = MindleapsIdService.generate_student_mlid @organization.id unless @is_edit
     @lesson_dates = @group.lessons.map(&:date).sort.last(10).reverse
+
+    # needed when editing a student directly
+    @active_enrollment = @student.latest_enrollment_for_group(@group)
+    @enrollment_index = @student.enrollments.index(@active_enrollment) || 0
   end
 
   def url
@@ -71,7 +78,7 @@ class StudentTableForm < ViewComponent::Base
     if @is_edit
       'table-row-wrapper student-row'
     else
-      'w-full flex items-center justify-between bg-gray-50 border-b border-gray-200 grid grid-cols-7'
+      'w-full bg-gray-50 border-b border-gray-200 grid grid-cols-7 justify-between'
     end
   end
 end
