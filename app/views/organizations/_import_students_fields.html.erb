@@ -46,3 +46,6 @@
 <div class="<%= 'shaded-cell' if index.even? %> table-cell schoolLevel hidden!">
   <%= text_field_tag "students[#{index}][school_level_completed]", student[:school_level_completed], class: "w-fit rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 text-xs" %>
 </div>
+<div class="<%= 'shaded-cell' if index.even? %> table-cell hivTested hidden!">
+  <%= check_box_tag name="students[#{index}][hiv_tested]", class: 'h-4 w-4 border-purple-500 focus:ring-green-600 cursor-pointer', checked: student[:hiv_tested] %>
+</div>
