@@ -1,6 +1,8 @@
 ## Unreleased
 - Extended importing students to handle all student fields
+- Added ability to update a lesson's date
 - Added ability to filter by single group in 'Group analytics'
+- Fixed Organization and Chapter summaries showing incorrect counts
 
 ## 0.38.1 - Fix Student Analytics Summaries
 - Fixed Student Analytics Summaries causing crash when viewing Analytics 
