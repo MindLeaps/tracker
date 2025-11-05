@@ -1,4 +1,5 @@
 ## Unreleased
+- Extended importing students to handle all student fields
 - Added ability to filter by single group in 'Group analytics'
 
 ## 0.38.1 - Fix Student Analytics Summaries
