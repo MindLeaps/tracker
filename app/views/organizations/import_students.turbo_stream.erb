@@ -1,16 +1,16 @@
 <%
   @columns = [
-    { id: 'firstName', name: t(:first_name) },
-    { id: 'lastName', name: t(:last_name) },
-    { id: 'gender', name: t(:gender) },
-    { id: 'dob', name: t(:date_of_birth) },
-    { id: 'country', name: t(:country_of_nationality) },
-    { id: 'familyMembers', name: t(:family_members) },
-    { id: 'guardianName', name: t(:guardian_name) },
-    { id: 'guardianContact', name: t(:guardian_contact) },
-    { id: 'guardianOccupation', name: t(:guardian_occupation) },
-    { id: 'nameOfSchool', name: t(:name_of_school) },
-    { id: 'schoolLevel', name: t(:school_level_completed) }
+    { id: 'firstName', name: t(:first_name), displayed: true },
+    { id: 'lastName', name: t(:last_name), displayed: true },
+    { id: 'gender', name: t(:gender), displayed: true},
+    { id: 'dob', name: t(:date_of_birth), displayed: true },
+    { id: 'country', name: t(:country_of_nationality), displayed: false },
+    { id: 'familyMembers', name: t(:family_members), displayed: false },
+    { id: 'guardianName', name: t(:guardian_name), displayed: false },
+    { id: 'guardianContact', name: t(:guardian_contact), displayed: false },
+    { id: 'guardianOccupation', name: t(:guardian_occupation), displayed: false },
+    { id: 'nameOfSchool', name: t(:name_of_school), displayed: false },
+    { id: 'schoolLevel', name: t(:school_level_completed), displayed: false }
   ]
 %>
 
@@ -23,9 +23,9 @@
           <%= render CommonComponents::Card.new(title: 'Import Students') do |card| %>
             <% card.with_card_content do %>
               <%= form_tag confirm_import_organization_path, :method => :post, :class => 'bg-white max-h-[80vh] overflow-y-scroll' do %>
-                <div id="column-grid" class="grid grid-cols-11">
+                <div id="column-grid" class="grid <%= "grid-cols-#{@columns.select { |c| c[:displayed] }.size}" %>" data-controller="column-toggle" data-column-toggle-columns-value="<%= @columns.to_json %>">
                   <% @columns.each do |c| %>
-                    <div class="<%= c[:id] %> text-left px-4 py-3 border-b border-gray-200 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <div class="<%= c[:id] %> text-left px-4 py-3 border-b border-gray-200 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider <%= 'hidden!' unless @columns.select { |e| e[:displayed] }.map { |e| e[:id] }.include?(c[:id]) %>">
                       <span class="align-sub"><%= c[:name] %></span>
                     </div>
                   <% end %>

@@ -6,7 +6,7 @@
   <%= text_field_tag "students[#{index}][last_name]", student[:last_name], class: "w-fit rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 text-xs" %>
   <%= render ValidationErrorComponent.new(model: student, key: :last_name) %>
 </div>
-<div class="<%= 'shaded-cell' if index.even? %> table-cell text-right">
+<div class="<%= 'shaded-cell' if index.even? %> table-cell">
   <div class="inline-flex items-center h-full">
     <%= radio_button_tag "students[#{index}][gender]", :M, class: 'h-4 w-4 border-purple-500 text-green-600 focus:ring-green-600 cursor-pointer', checked: student[:gender] == 'M' || student[:gender].nil? %>
     <label class="ml-1 text-xs font-medium text-gray-700 cursor-pointer"><%= t(:enums)[:student][:gender][:M] %></label>
@@ -25,24 +25,24 @@
                             custom_class: 'w-fit rounded-md border-purple-500 focus:border-green-600 focus:outline-hidden focus:ring-green-600 text-xs') %>
   <%= render ValidationErrorComponent.new(model: student, key: :dob) %>
 </div>
-<div class="<%= 'shaded-cell' if index.even? %> table-cell country">
+<div class="<%= 'shaded-cell' if index.even? %> table-cell country hidden! %>">
   <%= text_field_tag "students[#{index}][country_of_nationality]", student[:country_of_nationality], class: "w-fit rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 text-xs" %>
 </div>
-<div class="<%= 'shaded-cell' if index.even? %> table-cell familyMembers">
+<div class="<%= 'shaded-cell' if index.even? %> table-cell familyMembers hidden!">
   <%= text_field_tag "students[#{index}][family_members]", student[:family_members], class: "w-fit rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 text-xs" %>
 </div>
-<div class="<%= 'shaded-cell' if index.even? %> table-cell guardianName">
+<div class="<%= 'shaded-cell' if index.even? %> table-cell guardianName hidden!">
   <%= text_field_tag "students[#{index}][guardian_name]", student[:guardian_name], class: "w-fit rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 text-xs" %>
 </div>
-<div class="<%= 'shaded-cell' if index.even? %> table-cell guardianContact">
+<div class="<%= 'shaded-cell' if index.even? %> table-cell guardianContact hidden!">
   <%= text_field_tag "students[#{index}][guardian_contact]", student[:guardian_contact], class: "w-fit rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 text-xs" %>
 </div>
-<div class="<%= 'shaded-cell' if index.even? %> table-cell guardianOccupation">
+<div class="<%= 'shaded-cell' if index.even? %> table-cell guardianOccupation hidden!">
   <%= text_field_tag "students[#{index}][guardian_occupation]", student[:guardian_occupation], class: "w-fit rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 text-xs" %>
 </div>
-<div class="<%= 'shaded-cell' if index.even? %> table-cell nameOfSchool">
+<div class="<%= 'shaded-cell' if index.even? %> table-cell nameOfSchool hidden!">
   <%= text_field_tag "students[#{index}][name_of_school]", student[:name_of_school], class: "w-fit rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 text-xs" %>
 </div>
-<div class="<%= 'shaded-cell' if index.even? %> table-cell schoolLevel">
+<div class="<%= 'shaded-cell' if index.even? %> table-cell schoolLevel hidden!">
   <%= text_field_tag "students[#{index}][school_level_completed]", student[:school_level_completed], class: "w-fit rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 text-xs" %>
 </div>

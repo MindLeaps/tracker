@@ -13,16 +13,31 @@
       let componentToToggle = document.getElementById(componentIdentifier);
       let componentsToToggle = document.getElementsByClassName(componentIdentifier);
 
-      if (<%= "#{@id}" %>.getAttribute('data-toggled')) {
+      if(<%= "#{@id}" %>.getAttribute('data-toggled')) {
         <%= "#{@id}" %>.removeAttribute('data-toggled');
 
-        if(componentToToggle) componentToToggle.style.display = 'none';
-        if(componentsToToggle) [...componentsToToggle].forEach(c => c.style.display = 'none');
-      } else {
+        if(componentToToggle) {
+          componentToToggle.classList.add('hidden!')
+        }
+
+        if(componentsToToggle) {
+          [...componentsToToggle].forEach(c => {
+              c.classList.add('hidden!')
+          });
+        }
+      }
+      else {
         <%= "#{@id}" %>.setAttribute('data-toggled', true);
 
-        if(componentToToggle) componentToToggle.style.display = 'block';
-        if(componentsToToggle) [...componentsToToggle].forEach(c => c.style.display = 'block');
+        if(componentToToggle) {
+          componentToToggle.classList.remove('hidden!')
+        }
+
+        if(componentsToToggle) {
+          [...componentsToToggle].forEach(c => {
+              c.classList.remove('hidden!')
+          });
+        }
       }
     })
 </script>
