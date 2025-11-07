@@ -15,7 +15,7 @@ class GroupsController < HtmlController
     @group = Group.includes(:chapter).find params[:id]
     authorize @group
     @unenrolled_students = Student.unenrolled_for_organization(@group.chapter.organization_id)
-    @students_with_grades_before_enrollment = @group.students_with_grades_before_enrollment
+    @students_with_prior_grades = @group.students_with_grades_before_enrollment
     @group_summaries = GroupLessonSummary.where(group_id: @group.id).where.not(average_mark: nil).order(lesson_date: :asc).last(30).map do |summary|
       {
         lesson_date: summary.lesson_date,

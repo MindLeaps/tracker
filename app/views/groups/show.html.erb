@@ -21,11 +21,8 @@ end %>
   <%= render AlertComponent.new(title: t(:group_deleted, name: @group.group_name), text: t(:group_deleted_at, time: distance_of_time_in_words(@group.deleted_at, Time.zone.now))) %>
 <% end %>
 
-<% if @students_with_grades_before_enrollment.any?  %>
-  <%= render AlertComponent.new(title: 'Check Students', text: 'Some students have grades prior their enrollment, please check this') %>
-  <% @students_with_grades_before_enrollment.each do |student| %>
-    <div><%= student.proper_name %></div>
-  <% end %>
+<% if @students_with_prior_grades.any?  %>
+  <%= render AlertComponent.new(title: t(:students_graded_before_enrollment), text: t(:students_graded_prior_enrollment_alert)) %>
 <% end %>
 
 <section>
@@ -38,7 +35,7 @@ end %>
     </div>
 </section>
 <turbo-frame id="students-table">
-  <%= render GroupEnrolledStudentsComponent.new(students: @group.students, group: @group) %>
+  <%= render GroupEnrolledStudentsComponent.new(students: @group.students, group: @group, students_with_prior_grades: @students_with_prior_grades) %>
 </turbo-frame>
 <div id="modal"></div>
 <%= javascript_tag do %>

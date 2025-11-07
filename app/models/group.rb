@@ -79,9 +79,8 @@ class Group < ApplicationRecord
 
     students.each do |s|
       last_enrolled_since_date = enrollments.where(student_id: s).maximum(:active_since)
-      graded_lessons = Grade.where(student_id: s, lesson_id: lessons).map(&:lesson_id)
-      flag = Lesson.where(id: graded_lessons).where(date: ...last_enrolled_since_date).count
-      result << s if flag > 0
+      graded_lessons = Grade.where(student_id: s, lesson_id: lessons, deleted_at: nil).map(&:lesson_id)
+      result << s if Lesson.where(id: graded_lessons).where(date: ...last_enrolled_since_date).any?
     end
 
     result

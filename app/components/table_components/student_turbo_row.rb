@@ -15,8 +15,9 @@ class TableComponents::StudentTurboRow < TableComponents::BaseRow
     "grid-template-columns: repeat(#{TableComponents::StudentTurboRow.columns.count}, auto);"
   end
 
-  def initialize(item:, item_counter:, pagy:, group:)
+  def initialize(item:, item_counter:, pagy:, group:, students_with_prior_grades: nil)
     super(item: item, item_counter: item_counter, pagy: pagy)
     @group = group
+    @students_with_prior_grades = students_with_prior_grades
   end
 end
