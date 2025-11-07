@@ -7,7 +7,7 @@
           <%= render CommonComponents::Card.new(title: t(:enroll_students)) do |card| %>
             <% card.with_card_content do %>
               <% if @unenrolled_students.any? %>
-                <%= form_for @unenrolled_students, url: confirm_enrollments_group_path(@group), html: { :method => :post, :class => 'bg-white grid grid-cols-4', name: 'students[]' } do %>
+                <%= form_with url: confirm_enrollments_group_path(@group), html: { :method => :post, :class => 'bg-white grid grid-cols-4', name: 'students[]' } do %>
                   <% [t(:first_name), t(:last_name), t(:enroll), t(:enrolled_since)].each do |column| %>
                     <%= render TableComponents::UnorderedColumn.new(column: { column_name: column, numeric: true }) %>
                   <% end %>
