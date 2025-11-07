@@ -5,7 +5,7 @@
     <div class="table-cell text-right"><%= @item.first_name %></div>
     <div class="table-cell text-right"><%= @item.gender %></div>
     <div class="table-cell"><%= "#{@item.estimated_dob ? t(:circa) : ''}#{@item.dob}" %></div>
-    <div class="table-cell"><%= @item.created_at.strftime('%F') %></div>
+    <div class="table-cell"><%= @item.latest_enrollment_for_group(@group).active_since %></div>
     <div class="table-cell text-right">
       <% if can_update? %>
         <a id="edit-button-<%= @item.id %>" class="table-action-link" href="<%= helpers.edit_group_student_path(@group, @item) %>"><%= t(:edit) %></a>
