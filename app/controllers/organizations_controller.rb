@@ -1,6 +1,6 @@
 # rubocop:disable Metrics/ClassLength
 class OrganizationsController < HtmlController
-  include Pagy::Backend
+  include Pagy::Method
 
   has_scope :exclude_deleted, type: :boolean, default: true
   has_scope :table_order, type: :hash, default: { key: :created_at, order: :desc }, only: :index
