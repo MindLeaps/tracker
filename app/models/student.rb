@@ -116,7 +116,7 @@ class Student < ApplicationRecord
   end
 
   def self.unenrolled_for_organization(org_id)
-    Student.where(organization_id: org_id).includes(:enrollments).filter { |s| !s.active_enrollment? }
+    Student.where(organization_id: org_id).filter { |s| !s.active_enrollment? }
   end
 
   def self.permitted_params

@@ -6,19 +6,26 @@
         <div class="modal-out transition-all transform-gpu" data-modal-target="modal" data-action="click->modal#stopPropagation">
           <%= render CommonComponents::Card.new(title: t(:enroll_students)) do |card| %>
             <% card.with_card_content do %>
-              <%= form_for @unenrolled_students, url: confirm_enrollments_group_path(@group), html: { :method => :post, :class => 'bg-white grid grid-cols-4', name: 'students[]' } do %>
-                <% [t(:first_name), t(:last_name), t(:enroll), t(:enrolled_since)].each do |column| %>
-                  <%= render TableComponents::UnorderedColumn.new(column: { column_name: column, numeric: true }) %>
-                <% end %>
-
-                <% @unenrolled_students.each_with_index do |student, i| %>
-                  <%= fields_for 'students[]', student do %>
-                    <%= render TableComponents::UnenrolledStudentRow.new(pagy: @pagy, item: student, item_counter: i, pass_id: true)%>
+              <% if @unenrolled_students.any? %>
+                <%= form_for @unenrolled_students, url: confirm_enrollments_group_path(@group), html: { :method => :post, :class => 'bg-white grid grid-cols-4', name: 'students[]' } do %>
+                  <% [t(:first_name), t(:last_name), t(:enroll), t(:enrolled_since)].each do |column| %>
+                    <%= render TableComponents::UnorderedColumn.new(column: { column_name: column, numeric: true }) %>
                   <% end %>
-                <% end %>
 
-                <div class="p-4">
-                  <%= submit_tag 'Confirm', class: 'button normal-button' %>
+                  <% @unenrolled_students.each_with_index do |student, i| %>
+                    <%= fields_for 'students[]', student do %>
+                      <%= render TableComponents::UnenrolledStudentRow.new(pagy: @pagy, item: student, item_counter: i, pass_id: true)%>
+                    <% end %>
+                  <% end %>
+
+                  <div class="p-4">
+                    <%= submit_tag 'Confirm', class: 'button normal-button' %>
+                    <div class="dangerous-button" data-action="click->modal#close"><%= t(:cancel) %></div>
+                  </div>
+                <% end %>
+              <% else %>
+                <div class="p-4 bg-white flex items-center gap-2">
+                  <span class="text-md font-medium text-gray-700">No students to be enrolled</span>
                   <div class="dangerous-button" data-action="click->modal#close"><%= t(:cancel) %></div>
                 </div>
               <% end %>
