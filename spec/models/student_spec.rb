@@ -228,6 +228,27 @@ RSpec.describe Student, type: :model do
         expect(result).not_to match_array @enrolled_students
       end
     end
+
+    describe '#latest_enrollment_for_group' do
+      before :each do
+        @group = create :group
+        @other_group = create :group, chapter: @group.chapter
+        @student = create :student, organization: @group.chapter.organization
+        @first_enrollment = create(:enrollment, group: @group, student: @student, active_since: 1.year.ago, inactive_since: 1.day.ago)
+        @second_enrollment = create(:enrollment, group: @group, student: @student, active_since: Time.zone.today)
+
+        @student.enrollments << @first_enrollment
+        @student.enrollments << @second_enrollment
+      end
+
+      it 'returns the latest enrollment for an existing group' do
+        expect(@student.latest_enrollment_for_group(@group)).to eq @second_enrollment
+      end
+
+      it 'returns nil if an enrollment for the group does not exist' do
+        expect(@student.latest_enrollment_for_group(@other_group)).to be nil
+      end
+    end
   end
 
   describe 'scopes' do

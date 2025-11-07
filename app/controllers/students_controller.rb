@@ -1,6 +1,6 @@
 # rubocop:disable Metrics/ClassLength
 class StudentsController < HtmlController
-  include Pagy::Backend
+  include Pagy::Method
   include CollectionHelper
 
   has_scope :exclude_deleted, only: :index, type: :boolean, default: true
