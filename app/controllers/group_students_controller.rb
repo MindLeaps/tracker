@@ -1,5 +1,5 @@
 class GroupStudentsController < HtmlController
-  include Pagy::Backend
+  include Pagy::Method
 
   skip_after_action :verify_policy_scoped
 

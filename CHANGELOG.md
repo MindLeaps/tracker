@@ -1,5 +1,6 @@
 ## Unreleased
 - Extended importing students to handle all student fields
+- Removed 'Created' and added 'Enrolled Since' column to student table in group view
 - Added ability to update a lesson's date
 - Added ability to filter by single group in 'Group analytics'
 - Fixed Organization and Chapter summaries showing incorrect counts

@@ -1,5 +1,5 @@
 class UsersController < HtmlController
-  include Pagy::Backend
+  include Pagy::Method
 
   has_scope :table_order, type: :hash, default: { key: :created_at, order: :desc }
   has_scope :search, only: [:index, :show]

@@ -65,8 +65,8 @@
 
 @utility deleted-row {
   & > div {
-    @apply bg-red-200;
-    @apply line-through;
+    @apply bg-red-200!;
+    @apply line-through!;
   }
 }
 

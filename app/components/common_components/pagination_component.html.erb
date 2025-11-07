@@ -1,11 +1,11 @@
 <nav class="flex items-center justify-center bg-white">
   <div class="px-2">
-    <a href="<%= first_url %>" class="first_page border-b-2 border-transparent py-4 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-green-700 <%= 'pointer-events-none text-gray-300' unless @pagy.prev %>">
+    <a href="<%= first_url %>" class="first_page border-b-2 border-transparent py-4 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-green-700 <%= 'pointer-events-none text-gray-300' unless @pagy.previous %>">
       <%= helpers.inline_svg_tag 'double-arrow-left.svg', class: 'mr-3 h-5 w-5' %>
     </a>
   </div>
   <div class="px-2">
-    <a href="<%= previous_url %>" class="previous-page border-b-2 border-transparent py-4 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-green-700 <%= 'pointer-events-none text-gray-300' unless @pagy.prev %>">
+    <a href="<%= previous_url %>" class="previous-page border-b-2 border-transparent py-4 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-green-700 <%= 'pointer-events-none text-gray-300' unless @pagy.previous %>">
       <%= helpers.inline_svg_tag 'arrow-left.svg', class: 'mr-3 h-5 w-5' %>
     </a>
   </div>

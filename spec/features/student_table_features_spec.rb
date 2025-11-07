@@ -53,7 +53,7 @@ RSpec.describe 'User searches and navigates through students table', js: true do
       expect(page).to have_selector('.student-row', count: 3)
     end
 
-    it 'shows deleted, navigates to 2nd page where there are only deleted students and then hides deleted' do
+    it 'shows deleted, navigates to 2nd page where there are only deleted students and then hides deleted, then navigates back to 1st page' do
       create :student, first_name: 'test_prefix_Umborato', last_name: 'Aco', mlid: 'ACO', deleted_at: Time.zone.now
       create :student, first_name: 'test_prefix_Umberto', last_name: 'Eco', mlid: 'ECO', deleted_at: Time.zone.now
       create :student, first_name: 'test_prefix_Umbdeleto', last_name: 'Del', mlid: 'DEL', deleted_at: Time.zone.now
@@ -67,6 +67,9 @@ RSpec.describe 'User searches and navigates through students table', js: true do
       find('.next-page').click
       expect(page).to have_selector('.student-row', count: 4)
       click_link_compat('Show Deleted')
+      expect(page).not_to have_selector('.student-row')
+      expect(page).to have_selector('.previous-page')
+      find('.previous-page').click
       expect(page).to have_selector('.student-row', count: 50)
     end
   end

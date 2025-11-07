@@ -1,6 +1,6 @@
 class ReportsController < HtmlController
   skip_after_action :verify_policy_scoped
-  include Pagy::Backend
+  include Pagy::Method
 
   def show
     @available_organizations = policy_scope Organization.where(deleted_at: nil).order(:organization_name)
