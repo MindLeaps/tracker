@@ -168,10 +168,20 @@ RSpec.describe 'Interaction with Organizations' do
       click_button 'Import'
 
       within('#modal') do
+        expect(page).not_to have_content 'COUNTRY OF NATIONALITY'
+        expect(page).not_to have_content 'FAMILY MEMBERS'
+
         expect(page).to have_content 'FIRST NAME'
         expect(page).to have_content 'LAST NAME'
         expect(page).to have_content 'GENDER'
         expect(page).to have_content 'DATE OF BIRTH'
+        expect(page).to have_content 'ADDITIONAL COLUMN CONTROLS'
+
+        click_button 'countryToggle'
+        click_button 'familyMembersToggle'
+
+        expect(page).to have_content 'COUNTRY OF NATIONALITY'
+        expect(page).to have_content 'FAMILY MEMBERS'
 
         click_button 'Confirm'
       end
