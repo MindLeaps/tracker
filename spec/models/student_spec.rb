@@ -249,6 +249,23 @@ RSpec.describe Student, type: :model do
         expect(@student.latest_enrollment_for_group(@other_group)).to be nil
       end
     end
+
+    describe '#first_lesson_in_group' do
+      before :each do
+        @group = create :group
+        @enrolled_student = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
+
+        @first_lesson = create :lesson, group: @group, date: 10.days.ago
+        @second_lesson = create :lesson, group: @group, date: 5.days.ago
+        @ungraded_lesson = create :lesson, group: @group, date: 30.days.ago
+        create :grade, student: @enrolled_student, lesson: @first_lesson
+        create :grade, student: @enrolled_student, lesson: @second_lesson
+      end
+
+      it 'returns the first lesson a student had grades on' do
+        expect(@enrolled_student.first_lesson_in_group(@group)).to eq @first_lesson
+      end
+    end
   end
 
   describe 'scopes' do
