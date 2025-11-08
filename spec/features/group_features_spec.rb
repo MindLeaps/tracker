@@ -206,8 +206,12 @@ RSpec.describe 'User interacts with Groups' do
       expect(page).to have_content 'Students graded before enrollment'
       expect(page).to have_content 'Some students have grades prior their enrollment, please review them below'
 
-      find('span.group > svg').hover
-      expect(page).to have_content "First grade on '#{lesson.date.strftime('%Y-%m-%d')}'"
+      alert_icon = find('span.group > svg')
+      tooltip = find('span.group > .tooltip', visible: :all)
+
+      alert_icon.hover
+      expect(tooltip).to have_text("First grade on '#{lesson.date.strftime('%Y-%m-%d')}'")
+      expect(tooltip).to be_visible
     end
   end
 end
