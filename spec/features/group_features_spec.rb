@@ -167,6 +167,7 @@ RSpec.describe 'User interacts with Groups' do
   describe 'Group enrollments', js: true do
     before :each do
       @group = create :group
+      @other_group = create :group
       @unenrolled_students = create_list :student, 2, organization: @group.chapter.organization
     end
 
@@ -192,6 +193,15 @@ RSpec.describe 'User interacts with Groups' do
         student.reload
         expect(student.enrollments.count).to eql 1
         expect(student.enrollments.first.active_since.to_date.to_s).to eql 2.days.ago.to_date.to_s
+      end
+    end
+
+    it 'gets message when there are no students which can be enrolled' do
+      visit "/groups/#{@other_group.id}"
+      click_link 'Enroll Students'
+
+      within('#modal') do
+        expect(page).to have_content 'No students to be enrolled'
       end
     end
   end

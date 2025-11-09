@@ -121,7 +121,9 @@ class Student < ApplicationRecord
   end
 
   def self.unenrolled_for_organization(org_id)
-    Student.where(organization_id: org_id).includes(:enrollments).filter { |s| !s.active_enrollment? }
+    now = Time.zone.now
+    active_enrollments = Enrollment.where('enrollments.active_since <= ? AND (enrollments.inactive_since IS NULL OR enrollments.inactive_since > ?)', now, now).pluck(:student_id)
+    Student.where(organization_id: org_id).where.not(id: active_enrollments)
   end
 
   def self.permitted_params
