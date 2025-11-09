@@ -117,5 +117,22 @@ RSpec.describe Group, type: :model do
         expect(@deleted_lesson.reload.deleted_at).to_not be_nil
       end
     end
+
+    describe '#students_with_grades_before_enrollment' do
+      before :each do
+        @group = create :group
+        @students = create_list :enrolled_student, 3, organization: @group.chapter.organization, groups: [@group]
+        @lesson = create :lesson, group: @group, date: 2.years.ago
+
+        create :grade, lesson: @lesson, student: @students[0]
+        create :grade, lesson: @lesson, student: @students[1]
+      end
+
+      it 'returns students who have grades before their enrollment in the group' do
+        result = @group.students_with_grades_before_enrollment
+
+        expect(result).to eq [@students[0], @students[1]]
+      end
+    end
   end
 end

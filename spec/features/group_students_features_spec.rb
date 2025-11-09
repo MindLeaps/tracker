@@ -3,12 +3,6 @@ require 'rails_helper'
 RSpec.describe 'User interacts with students in Group', js: true do
   include_context 'login_with_global_admin'
 
-  describe 'Viewing' do
-    before :each do
-      @group = create :group, group_name: 'Group One'
-    end
-  end
-
   describe 'Student creation and editing' do
     before :each do
       @group = create :group, group_name: 'Group One'

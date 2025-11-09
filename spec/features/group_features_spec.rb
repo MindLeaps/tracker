@@ -204,5 +204,18 @@ RSpec.describe 'User interacts with Groups' do
         expect(page).to have_content 'No students to be enrolled'
       end
     end
+
+    it 'alerts if the group has students with grades before their enrollment' do
+      group = create :group
+      student = create :enrolled_student, organization: group.chapter.organization, groups: [group]
+      lesson = create :lesson, group: group, date: 2.years.ago
+      create :grade, lesson: lesson, student: student
+
+      visit "/groups/#{group.id}"
+
+      expect(page).to have_content 'Students graded before enrollment'
+      expect(page).to have_content 'Some students have grades prior their enrollment, please review them below'
+      expect(page).to have_selector('span.group > .tooltip', visible: :all, text: "First grade on '#{lesson.date.strftime('%Y-%m-%d')}'")
+    end
   end
 end
