@@ -209,17 +209,18 @@ RSpec.describe 'User interacts with Groups' do
       group = create :group
       student = create :student, organization: group.chapter.organization, groups: [group]
       enrollment = create :enrollment, student: student, group: group, active_since: 1.day.ago
-      enrolled_since_date_formatted = enrollment.active_since.strftime('%Y-%m-%d')
       lesson = create :lesson, group: group, date: 2.days.ago
-      lesson_date_formatted = lesson.date.strftime('%Y-%m-%d')
       create :grade, lesson: lesson, student: student
+      enrolled_since_date_formatted = enrollment.active_since.strftime('%Y-%m-%d')
+      lesson_date_formatted = lesson.date.strftime('%Y-%m-%d')
+      expected_alert_text = "Student graded outside of enrollment. Enrolled since \"#{enrolled_since_date_formatted}\" but has grades for \"#{lesson_date_formatted}\""
 
       visit "/groups/#{group.id}"
 
       expect(page).to have_content 'Students graded before enrollment'
       expect(page).to have_content 'Some students have grades prior their enrollment, please review them below'
       expect(page).to have_content 'Update Enrollment'
-      expect(page).to have_selector('span.group > .tooltip', visible: :all, text: "Student graded outside of enrollment. Enrolled since \"#{enrolled_since_date_formatted}\" but has grades for \"#{lesson_date_formatted}\"")
+      expect(page).to have_selector('span.group > .tooltip', visible: :all, text: expected_alert_text)
 
       click_button 'Update Enrollment'
 
