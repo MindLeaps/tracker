@@ -250,7 +250,7 @@ RSpec.describe Student, type: :model do
       end
     end
 
-    describe '#first_lesson_in_group' do
+    describe '#first_graded_lesson_in_group' do
       before :each do
         @group = create :group
         @enrolled_student = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
@@ -263,7 +263,7 @@ RSpec.describe Student, type: :model do
       end
 
       it 'returns the first lesson a student had grades on' do
-        expect(@enrolled_student.first_lesson_in_group(@group)).to eq @first_lesson
+        expect(@enrolled_student.first_graded_lesson_in_group(@group)).to eq @first_lesson
       end
     end
   end

@@ -205,20 +205,27 @@ RSpec.describe 'User interacts with Groups' do
       end
     end
 
-    it 'alerts if the group has students with grades before their enrollment' do
+    it 'alerts if the group has a student with grades before their enrollment and corrects the enrollment' do
       group = create :group
       student = create :student, organization: group.chapter.organization, groups: [group]
       enrollment = create :enrollment, student: student, group: group, active_since: 1.day.ago
-      enrolled_since_date = enrollment.active_since.strftime('%Y-%m-%d')
+      enrolled_since_date_formatted = enrollment.active_since.strftime('%Y-%m-%d')
       lesson = create :lesson, group: group, date: 2.days.ago
-      lesson_date = lesson.date.strftime('%Y-%m-%d')
+      lesson_date_formatted = lesson.date.strftime('%Y-%m-%d')
       create :grade, lesson: lesson, student: student
 
       visit "/groups/#{group.id}"
 
       expect(page).to have_content 'Students graded before enrollment'
       expect(page).to have_content 'Some students have grades prior their enrollment, please review them below'
-      expect(page).to have_selector('span.group > .tooltip', visible: :all, text: "Student graded outside of enrollment. Enrolled since '#{enrolled_since_date}' but has grades for '#{lesson_date}'")
+      expect(page).to have_content 'Update Enrollment'
+      expect(page).to have_selector('span.group > .tooltip', visible: :all, text: "Student graded outside of enrollment. Enrolled since \"#{enrolled_since_date_formatted}\" but has grades for \"#{lesson_date_formatted}\"")
+
+      click_button 'Update Enrollment'
+
+      expect(page).to have_content 'Enrollment Updated'
+      expect(page).to have_content "Successfully updated enrollment for student \"#{student.proper_name}\""
+      expect(enrollment.reload.active_since.to_date).to eql lesson.date
     end
   end
 end
