@@ -100,7 +100,7 @@ class Student < ApplicationRecord
     enrollments.where(group: group).max_by(&:active_since)
   end
 
-  def first_lesson_in_group(group)
+  def first_graded_lesson_in_group(group)
     grades_in_lessons = grades.where(lesson_id: group.lessons).pluck(:lesson_id)
     Lesson.where(id: grades_in_lessons).order(:date).first
   end

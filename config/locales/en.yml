@@ -46,6 +46,10 @@ en:
   enrollment_overlap: Enrollments for the same student and group cannot overlap
   enrolled_since: Enrolled Since
   enrolled_until: Enrolled Until
+  update_enrollment: Update Enrollment
+  enrollment_invalid: Enrollment Invalid
+  enrollment_updated: Enrollment Updated
+  enrollment_student_updated_text: Successfully updated enrollment for student "%{student}"
   delete_enrollment: Delete Enrollment
   enrollment_not_deleted_because_grades: Enrollment not deleted because it has grades associated with it
   cannot_change_existing_enrollment: Cannot change the group for an existing enrollment
@@ -57,7 +61,7 @@ en:
   students_enrolled_in_group_text: Successfully enrolled %{count} students in group "%{group}".
   students_graded_before_enrollment: Students graded before enrollment
   students_graded_prior_enrollment_alert: Some students have grades prior their enrollment, please review them below
-  graded_outside_enrollment_text: Student graded outside of enrollment. Enrolled since '%{enrollment_date}' but has grades for '%{grade_date}'
+  graded_outside_enrollment_text: Student graded outside of enrollment. Enrolled since "%{enrollment_date}" but has grades for "%{grade_date}"
   group_deleted_at: Group deleted %{time} ago
   date_of_birth: Date of Birth
   join_date: Join Date

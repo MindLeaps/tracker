@@ -53,6 +53,22 @@ class GroupStudentsController < HtmlController
     @pagy, @students = pagy(@group.students)
   end
 
+  def correct_enrollment_date
+    @student = Student.find_by(id: params.require(:id))
+    @group = Group.find_by(id: params.require(:group_id))
+    authorize @student
+    @pagy, @students = pagy(group_students)
+
+    @student_enrollment = @student.latest_enrollment_for_group(@group)
+    corrected_enrollment_date = @student.first_graded_lesson_in_group(@group).date
+
+    if @student_enrollment.update(active_since: corrected_enrollment_date)
+      success_now title: t(:enrollment_updated), text: t(:enrollment_student_updated_text, student: @student.proper_name)
+    else
+      failure_now title: t(:enrollment_invalid), text: t(:fix_form_errors)
+    end
+  end
+
   def destroy
     @student = Student.find_by(id: params.require(:id))
     authorize @student
