@@ -207,15 +207,18 @@ RSpec.describe 'User interacts with Groups' do
 
     it 'alerts if the group has students with grades before their enrollment' do
       group = create :group
-      student = create :enrolled_student, organization: group.chapter.organization, groups: [group]
-      lesson = create :lesson, group: group, date: 2.years.ago
+      student = create :student, organization: group.chapter.organization, groups: [group]
+      enrollment = create :enrollment, student: student, group: group, active_since: 1.day.ago
+      enrolled_since_date = enrollment.active_since.strftime('%Y-%m-%d')
+      lesson = create :lesson, group: group, date: 2.days.ago
+      lesson_date = lesson.date.strftime('%Y-%m-%d')
       create :grade, lesson: lesson, student: student
 
       visit "/groups/#{group.id}"
 
       expect(page).to have_content 'Students graded before enrollment'
       expect(page).to have_content 'Some students have grades prior their enrollment, please review them below'
-      expect(page).to have_selector('span.group > .tooltip', visible: :all, text: "First grade on '#{lesson.date.strftime('%Y-%m-%d')}'")
+      expect(page).to have_selector('span.group > .tooltip', visible: :all, text: "Student graded outside of enrollment. Enrolled since '#{enrolled_since_date}' but has grades for '#{lesson_date}'")
     end
   end
 end
