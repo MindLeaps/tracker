@@ -62,7 +62,6 @@ Rails.application.routes.draw do
 
     resources :students, controller: :group_students, only: %i[new create edit update] do
       member { post :cancel_edit }
-      member { post :correct_enrollment_date }
     end
   end
 

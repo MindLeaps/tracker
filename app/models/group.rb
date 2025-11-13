@@ -74,13 +74,19 @@ class Group < ApplicationRecord
     end
   end
 
-  def students_with_grades_before_enrollment
+  def students_with_grades_outside_enrollment
+    students = students.includes(:enrollments, grades: :lesson)
     result = []
 
     students.each do |s|
-      last_enrolled_since_date = enrollments.where(student_id: s).maximum(:active_since)
-      graded_lessons = Grade.where(student_id: s, lesson_id: lessons, deleted_at: nil).map(&:lesson_id)
-      result << s if Lesson.where(id: graded_lessons).where(date: ...last_enrolled_since_date).any?
+      student_enrollment_periods = s.enrollments.map(&:range)
+      latest_enrollment = s.latest_enrollment_for_group(self)
+      graded_lesson_ids = Grade.where(student_id: s, lesson_id: lessons, deleted_at: nil).map(&:lesson_id)
+      graded_lessons_outside_enrollment = Lesson.where(id: graded_lesson_ids, deleted_at: nil).reject { |l| student_enrollment_periods.any? { |se| se.cover?(l.date) } }
+      lessons_before_enrollment = graded_lessons_outside_enrollment.filter { |l| l.date < latest_enrollment.active_since.to_date }
+      lessons_after_enrollment = graded_lessons_outside_enrollment.filter { |l| latest_enrollment.inactive_since and l.date > latest_enrollment.inactive_since.to_date }
+
+      result << s if lessons_before_enrollment.any? || lessons_after_enrollment.any?
     end
 
     result

@@ -22,7 +22,7 @@ end %>
 <% end %>
 
 <% if @students_with_prior_grades.any?  %>
-  <%= render AlertComponent.new(title: t(:students_graded_before_enrollment), text: t(:students_graded_prior_enrollment_alert)) %>
+  <%= render AlertComponent.new(title: t(:students_graded_outside_enrollment), text: t(:students_graded_outside_enrollment_alert)) %>
 <% end %>
 
 <section>

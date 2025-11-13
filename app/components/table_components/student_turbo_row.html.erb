@@ -8,7 +8,6 @@
     <div class="table-cell"><%= @item.latest_enrollment_for_group(@group).active_since %></div>
     <div class="table-cell text-right">
       <% if @students_with_prior_grades&.include?(@item) %>
-        <%= render CommonComponents::FormButtonComponent.new(label: t(:update_enrollment), path: helpers.correct_enrollment_date_group_student_path(@group, @item), method: :post) if can_update? %>
         <span class="group relative">
           <%= render CommonComponents::TooltipComponent.new(text: t(:graded_outside_enrollment_text, enrollment_date: @item.latest_enrollment_for_group(@group).active_since , grade_date: @item.first_graded_lesson_in_group(@group).date),
             custom_class: 'min-w-xs tooltip p-2 absolute top-1/2 -translate-y-1/2 right-[110%] rounded-sm bg-red-100! border border-red-300 whitespace-normal! text-center text-sm hidden group-hover:block') %>
