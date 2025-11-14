@@ -15,10 +15,6 @@ class StudentPolicy < ApplicationPolicy
     user.administrator?(record&.organization) || user.is_teacher_of?(record&.organization)
   end
 
-  def correct_enrollment_date?
-    edit?
-  end
-
   def undelete?
     destroy?
   end

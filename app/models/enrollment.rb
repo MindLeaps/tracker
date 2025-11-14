@@ -53,10 +53,6 @@ class Enrollment < ApplicationRecord
     group.chapter.organization
   end
 
-  def range
-    inactive_since.present? ? (active_since..inactive_since) : (active_since..)
-  end
-
   def validate_enrollments_do_not_overlap
     errors.add(:student, I18n.t(:enrollment_overlap)) if student.present? && group.present? && overlapping_enrollment?
   end

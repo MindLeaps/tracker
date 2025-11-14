@@ -106,7 +106,7 @@ class Student < ApplicationRecord
     Lesson
       .joins(:grades)
       .where(grades: { student_id: id, deleted_at: nil }, lessons: { group_id: group, date: ...latest.active_since })
-      .where(prev.present? ? ["lessons.date > ?", prev.inactive_since] : nil)
+      .where(prev.present? ? ['lessons.date > ?', prev.inactive_since] : nil)
       .order(date: :asc)
       .first
   end
