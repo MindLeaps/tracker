@@ -21,7 +21,7 @@ end %>
   <%= render AlertComponent.new(title: t(:group_deleted, name: @group.group_name), text: t(:group_deleted_at, time: distance_of_time_in_words(@group.deleted_at, Time.zone.now))) %>
 <% end %>
 
-<% if @students_with_prior_grades.any?  %>
+<% if @students_with_invalid_grades.any?  %>
   <%= render AlertComponent.new(title: t(:students_graded_outside_enrollment), text: t(:students_graded_outside_enrollment_alert)) %>
 <% end %>
 
@@ -35,7 +35,7 @@ end %>
     </div>
 </section>
 <turbo-frame id="students-table">
-  <%= render GroupEnrolledStudentsComponent.new(students: @group.students, group: @group, students_with_prior_grades: @students_with_prior_grades) %>
+  <%= render GroupEnrolledStudentsComponent.new(students: @group.students, group: @group, students_with_invalid_grades: @students_with_invalid_grades) %>
 </turbo-frame>
 <div id="modal"></div>
 <%= javascript_tag do %>

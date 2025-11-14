@@ -75,20 +75,17 @@ class Group < ApplicationRecord
   end
 
   def students_with_grades_outside_enrollment
-    students = students.includes(:enrollments, grades: :lesson)
-    result = []
-
-    students.each do |s|
-      student_enrollment_periods = s.enrollments.map(&:range)
-      latest_enrollment = s.latest_enrollment_for_group(self)
-      graded_lesson_ids = Grade.where(student_id: s, lesson_id: lessons, deleted_at: nil).map(&:lesson_id)
-      graded_lessons_outside_enrollment = Lesson.where(id: graded_lesson_ids, deleted_at: nil).reject { |l| student_enrollment_periods.any? { |se| se.cover?(l.date) } }
-      lessons_before_enrollment = graded_lessons_outside_enrollment.filter { |l| l.date < latest_enrollment.active_since.to_date }
-      lessons_after_enrollment = graded_lessons_outside_enrollment.filter { |l| latest_enrollment.inactive_since and l.date > latest_enrollment.inactive_since.to_date }
-
-      result << s if lessons_before_enrollment.any? || lessons_after_enrollment.any?
-    end
-
-    result
+    students.joins(grades: :lesson).where(grades: { deleted_at: nil }, lessons: { group_id: id })
+            .where.not(
+              <<~SQL.squish
+                EXISTS (
+                  SELECT 1
+                  FROM enrollments e
+                  WHERE e.student_id = students.id
+                    AND e.group_id = lessons.group_id
+                    AND lessons.date BETWEEN e.active_since AND COALESCE(e.inactive_since, 'infinity')
+                )
+              SQL
+            )
   end
 end
