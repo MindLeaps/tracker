@@ -103,21 +103,5 @@ RSpec.describe GroupStudentsController, type: :controller do
         expect(student.reload.first_name).to eq('Student')
       end
     end
-
-    describe '#correct_enrollment_date' do
-      it 'corrects a student\'s enrollment date to the first lesson' do
-        group = create :group
-        student = create :student, organization: group.chapter.organization, groups: [group]
-        enrollment = create :enrollment, student: student, group: group, active_since: 1.day.ago
-        lesson = create :lesson, group: group, date: 2.days.ago
-        create :grade, lesson: lesson, student: student
-
-        response = post :correct_enrollment_date, as: :turbo_stream, params: { group_id: group.id, id: student.id }
-
-        enrollment.reload
-        expect(response).to be_successful
-        expect(enrollment.active_since.to_date).to eql lesson.date
-      end
-    end
   end
 end

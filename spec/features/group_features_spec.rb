@@ -205,28 +205,38 @@ RSpec.describe 'User interacts with Groups' do
       end
     end
 
-    it 'alerts if the group has a student with grades before their enrollment and corrects the enrollment' do
+    it 'alerts if the group has a student with grades before their enrollment' do
       group = create :group
-      student = create :student, organization: group.chapter.organization, groups: [group]
+      student = create :student, organization: group.chapter.organization
       enrollment = create :enrollment, student: student, group: group, active_since: 1.day.ago
       lesson = create :lesson, group: group, date: 2.days.ago
       create :grade, lesson: lesson, student: student
       enrolled_since_date_formatted = enrollment.active_since.strftime('%Y-%m-%d')
       lesson_date_formatted = lesson.date.strftime('%Y-%m-%d')
-      expected_alert_text = "Student graded outside of enrollment. Enrolled since \"#{enrolled_since_date_formatted}\" but has grades for \"#{lesson_date_formatted}\""
+      expected_alert_text = "Student graded before enrollment. Enrolled since \"#{enrolled_since_date_formatted}\" but has grades for \"#{lesson_date_formatted}\""
 
       visit "/groups/#{group.id}"
 
-      expect(page).to have_content 'Students graded before enrollment'
-      expect(page).to have_content 'Some students have grades prior their enrollment, please review them below'
-      expect(page).to have_content 'Update Enrollment'
+      expect(page).to have_content 'Students graded outside enrollment'
+      expect(page).to have_content 'Some students have grades outside their enrollment, please review them below'
       expect(page).to have_selector('span.group > .tooltip', visible: :all, text: expected_alert_text)
+    end
 
-      click_button 'Update Enrollment'
+    it 'alerts if the group has a student with grades after their enrollment' do
+      group = create :group
+      student = create :student, organization: group.chapter.organization
+      enrollment = create :enrollment, student: student, group: group, active_since: 2.days.ago, inactive_since: 1.day.ago
+      lesson = create :lesson, group: group, date: Time.zone.today
+      create :grade, lesson: lesson, student: student
+      enrollment_ended_since_date_formatted = enrollment.inactive_since.strftime('%Y-%m-%d')
+      lesson_date_formatted = lesson.date.strftime('%Y-%m-%d')
+      expected_alert_text = "Student graded after enrollment. Enrollment ended since \"#{enrollment_ended_since_date_formatted}\" but has grades for \"#{lesson_date_formatted}\""
 
-      expect(page).to have_content 'Enrollment Updated'
-      expect(page).to have_content "Successfully updated enrollment for student \"#{student.proper_name}\""
-      expect(enrollment.reload.active_since.to_date).to eql lesson.date
+      visit "/groups/#{group.id}"
+
+      expect(page).to have_content 'Students graded outside enrollment'
+      expect(page).to have_content 'Some students have grades outside their enrollment, please review them below'
+      expect(page).to have_selector('span.group > .tooltip', visible: :all, text: expected_alert_text)
     end
   end
 end
