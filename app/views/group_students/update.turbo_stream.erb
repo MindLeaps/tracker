@@ -1,2 +1,3 @@
-<%= turbo_stream.replace(@student, TableComponents::StudentTurboRow.new(item: @student, item_counter: @students.find_index(@student), group: @group, pagy: @pagy)) %>
+<%= turbo_stream.replace(@student, TableComponents::StudentTurboRow.new(item: @student, item_counter: @students.find_index(@student),
+  pagy: @pagy, group: @group, students_with_invalid_grades: @group.students_with_grades_outside_enrollment)) %>
 <%= turbo_stream.update('flashes', partial: 'shared/flashes') %>
