@@ -84,7 +84,7 @@ class StudentTableForm < ViewComponent::Base
   end
 
   def columns
-    [{ column_name: t(:mlid), numeric: true }, { column_name: t(:first_name), numeric: false }, { column_name: t(:last_name), numeric: false }, { column_name: t(:gender), numeric: false },
+    [{ column_name: t(:mlid), numeric: true }, { column_name: t(:last_name), numeric: false }, { column_name: t(:first_name), numeric: false }, { column_name: t(:gender), numeric: false },
      { column_name: t(:date_of_birth), numeric: true, column_span: 2 }, { column_name: t(:enrolled_since), numeric: true }, { column_name: t(:submit), numeric: false }]
   end
 end
