@@ -123,7 +123,7 @@ RSpec.describe LessonsController, type: :controller do
         end
 
         it { should render_template :new }
-        it { should respond_with :unprocessable_entity }
+        it { should respond_with :unprocessable_content }
         it { should set_flash[:failure_notice] }
       end
 
@@ -137,7 +137,7 @@ RSpec.describe LessonsController, type: :controller do
         end
 
         it { should render_template :new }
-        it { should respond_with :unprocessable_entity }
+        it { should respond_with :unprocessable_content }
         it { should set_flash[:failure_notice] }
       end
     end

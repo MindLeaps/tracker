@@ -81,7 +81,7 @@ class StudentsController < HtmlController
       redirect_to(flash[:redirect] || student_path(@student))
     else
       failure_now(title: t(:student_invalid), text: t(:fix_form_errors))
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -98,7 +98,7 @@ class StudentsController < HtmlController
       redirect_to(flash[:redirect] || student_path(@student))
     else
       failure title: t(:student_invalid), text: t(:fix_form_errors)
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 

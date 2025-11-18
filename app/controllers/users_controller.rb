@@ -35,7 +35,7 @@ class UsersController < HtmlController
       return redirect_to user_path(@user)
     end
     failure title: t(:user_invalid), text: @user.errors.full_messages.join('\n')
-    render :new, status: :unprocessable_entity
+    render :new, status: :unprocessable_content
   end
 
   def destroy

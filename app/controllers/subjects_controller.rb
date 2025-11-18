@@ -35,7 +35,7 @@ class SubjectsController < HtmlController
       redirect_to @subject
     else
       failure title: t(:subject_invalid), text: t(:fix_form_errors)
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -50,7 +50,7 @@ class SubjectsController < HtmlController
       redirect_to @subject
     else
       failure(title: t(:subject_invalid), text: t(:fix_form_errors))
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 
