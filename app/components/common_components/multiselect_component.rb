@@ -1,5 +1,4 @@
 class CommonComponents::MultiselectComponent < ViewComponent::Base
-
   erb_template <<~ERB
     <div data-controller="multiselect" data-multiselect-label-value="<%= @label %>" data-multiselect-select-name-value="<%= @target %>" class="col-span-6 lg:col-span-2 relative">
       <!-- Hidden inputs for each selected item from the menu-->
