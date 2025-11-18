@@ -43,9 +43,14 @@ class StudentTagsController < HtmlController
   def update
     @tag = Tag.find params.require(:id)
     authorize @tag
-    return redirect_to student_tag_path(@tag) if @tag.update tag_params
 
-    render :edit
+    if @tag.update tag_params
+      success title: t(:tag_updated), text: t(:tag_updated_text, tag: @tag.tag_name)
+      redirect_to student_tag_path(@tag)
+    else
+      failure title: t(:tag_invalid), text: t(:fix_form_errors)
+      render :edit, status: :unprocessable_content
+    end
   end
 
   def destroy
@@ -66,6 +71,9 @@ class StudentTagsController < HtmlController
   private
 
   def tag_params
-    params.require(:tag).permit(:tag_name, :organization_id, :shared)
+    permitted = params.require(:tag).permit(:tag_name, :organization_id, :shared, shared_organization_ids: [])
+    permitted[:shared_organization_ids] = permitted[:shared_organization_ids].compact_blank
+
+    permitted
   end
 end
