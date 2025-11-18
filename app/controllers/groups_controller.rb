@@ -58,7 +58,7 @@ class GroupsController < HtmlController
     skip_authorization
 
     failure title: t(:group_invalid), text: t(:fix_form_errors)
-    render :edit, status: :unprocessable_entity
+    render :edit, status: :unprocessable_content
   end
 
   def destroy

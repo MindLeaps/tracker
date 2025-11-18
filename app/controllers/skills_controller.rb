@@ -38,7 +38,7 @@ class SkillsController < HtmlController
       redirect_to @skill
     else
       failure(title: t(:skill_invalid), text: t(:fix_form_errors))
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 

@@ -53,7 +53,7 @@ RSpec.describe OrganizationsController, type: :controller do
         post :create, params: { organization: { organizations_name: 'Some Name' } }
       end
 
-      it { should respond_with :unprocessable_entity }
+      it { should respond_with :unprocessable_content }
       it { should render_template :new }
       it { should set_flash[:failure_notice] }
     end
@@ -249,7 +249,7 @@ RSpec.describe OrganizationsController, type: :controller do
         post :import_students, format: :turbo_stream, params: { id: @organization.id, file: @invalid_file }
       end
 
-      it { should respond_with :unprocessable_entity }
+      it { should respond_with :unprocessable_content }
       it { should set_flash.now[:failure_notice] }
     end
   end
@@ -284,7 +284,7 @@ RSpec.describe OrganizationsController, type: :controller do
         post :confirm_import, format: :turbo_stream, params: { id: @organization.id, students: hash_to_send }
       end
 
-      it { should respond_with :unprocessable_entity }
+      it { should respond_with :unprocessable_content }
       it { should render_template :import_students }
       it { should set_flash.now[:failure_notice] }
       it 'should not create and assign students to organization' do

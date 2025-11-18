@@ -86,7 +86,7 @@ class OrganizationsController < HtmlController
       render :import_students
     else
       failure_now title: t(:invalid_file), text: t(:file_is_not_csv)
-      render :import, status: :unprocessable_entity
+      render :import, status: :unprocessable_content
     end
   end
 
@@ -106,7 +106,7 @@ class OrganizationsController < HtmlController
     else
       @new_students = @students
       failure_now title: t(:import_failed), text: t(:fix_form_errors)
-      render :import_students, status: :unprocessable_entity
+      render :import_students, status: :unprocessable_content
     end
   end
   # rubocop:enable Metrics/MethodLength
