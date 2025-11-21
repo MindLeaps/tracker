@@ -6,6 +6,7 @@ RSpec.describe 'User interacts with Student Tags' do
   describe 'Create Tag' do
     before :each do
       @org = create :organization
+      @other_organizations = create_list :organization, 2
       @tags = create_list :tag, 3, organization: @org
     end
 
@@ -17,11 +18,15 @@ RSpec.describe 'User interacts with Student Tags' do
       click_link 'Add Tag'
       fill_in 'Tag name', with: 'My Test Tag'
       select(@org.organization_name, from: 'Organization')
-      find('label', text: 'Shared').click
+      find('button', text: 'Select Organizations').click
+      find('span', text: @other_organizations[0].organization_name).click
+
+      expect(page).to have_content '1 selected'
+
+      find('input[name="tag[shared]"]').click
       click_button 'Create'
 
       expect(page).to have_content 'Tag "My Test Tag" added'
-
       expect(page).to have_content 'My Test Tag'
       expect(page).to have_content @tags[0].tag_name
       expect(page).to have_content @tags[1].tag_name
