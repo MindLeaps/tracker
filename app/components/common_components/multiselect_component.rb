@@ -3,7 +3,7 @@ class CommonComponents::MultiselectComponent < ViewComponent::Base
     <div data-controller="multiselect" data-multiselect-label-value="<%= @label %>" data-multiselect-select-name-value="<%= @target %>" class="col-span-6 lg:col-span-2 relative">
       <!-- Hidden inputs for each selected item from the menu-->
       <div data-multiselect-target="hiddenField">
-        <% @selected_values.each do |value| %>
+        <% @selected_values&.each do |value| %>
           <input type="hidden" name="<%= @target %>" value="<%= value %>">
         <% end %>
       </div>
