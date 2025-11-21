@@ -25,12 +25,29 @@ RSpec.describe Tag, type: :model do
 
   describe 'validations' do
     it { should validate_presence_of :tag_name }
+
     it 'when the same tag is created for an organization' do
       @org = create :organization
       create :tag, tag_name: 'Existing Tag', organization: @org
       new_tag = Tag.new tag_name: 'Existing Tag', organization_id: @org
 
       expect(new_tag).to_not be_valid
+    end
+
+    it 'when tag has duplicate shared organization ids' do
+      @organizations = create_list :organization, 3
+      new_tag = Tag.new tag_name: 'New Tag', organization_id: @organizations[0].id, shared_organization_ids: [@organizations[1].id, @organizations[2].id, @organizations[2].id]
+
+      expect(new_tag).to_not be_valid
+      expect(new_tag.errors[:shared_organization_ids]).to include I18n.t(:'errors.messages.must_contain_unique')
+    end
+
+    it 'when tag has duplicate shared organization ids' do
+      @org = create :organization
+      new_tag = Tag.new tag_name: 'New Tag', organization_id: @org.id, shared_organization_ids: [5]
+
+      expect(new_tag).to_not be_valid
+      expect(new_tag.errors[:shared_organization_ids]).to include I18n.t(:selected_organizations_must_exist)
     end
   end
 

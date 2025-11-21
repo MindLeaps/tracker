@@ -36,6 +36,7 @@ en:
   chapter_mlid_error_message: Chapter MLID has to be up to 2 characters long and can only contain numbers and letters. No special characters.
   group_mlid_error_message: Group MLID has to be up to 2 characters long and can only contain numbers and letters. No special characters.
   student_and_group_in_different_organizations: Student and Group are not in the same organization
+  selected_organizations_must_exist: Selected Organizations must exist
   mlid_cannot_contain_special_characters: No special characters allowed in MLID
   enrollments: Enrollments
   enroll: Enroll
@@ -439,6 +440,7 @@ en:
     messages:
       extension_whitelist_error: File is not an image
       invalid_email: is not valid
+      must_contain_unique: must contain only unique values
 
   enums:
     student:

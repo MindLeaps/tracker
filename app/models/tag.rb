@@ -30,11 +30,11 @@ class Tag < ApplicationRecord
   validate :shared_organization_ids_exist
 
   def no_duplicate_shared_organization_ids
-    errors.add(:shared_organization_ids, 'must contain only unique values') if shared_organization_ids.any? && shared_organization_ids.uniq.length != shared_organization_ids.length
+    errors.add(:shared_organization_ids, I18n.t(:'errors.messages.must_contain_unique')) if shared_organization_ids.any? && shared_organization_ids.uniq.length != shared_organization_ids.length
   end
 
   def shared_organization_ids_exist
-    errors.add(:shared_organization_ids, 'Organization selected must exist') if shared_organization_ids.any? { |id| !Organization.exists?(id) }
+    errors.add(:shared_organization_ids, I18n.t(:selected_organizations_must_exist)) if shared_organization_ids.any? { |id| !Organization.exists?(id) }
   end
 
   def can_delete?
