@@ -72,6 +72,7 @@ class StudentTagsController < HtmlController
 
   def tag_params
     permitted = params.require(:tag).permit(:tag_name, :organization_id, :shared, shared_organization_ids: [])
+    permitted[:shared_organization_ids] ||= []
     permitted[:shared_organization_ids] = permitted[:shared_organization_ids].compact_blank
 
     permitted
