@@ -1,5 +1,7 @@
 ## Unreleased
 - Extended importing students to handle all student fields
+- Added alert when viewing a group with students graded outside their enrollment
+- Improved speed when querying students which have no active enrollments 
 - Removed 'Created' and added 'Enrolled Since' column to student table in group view
 - Added ability to update a lesson's date
 - Added ability to filter by single group in 'Group analytics'

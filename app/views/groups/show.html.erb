@@ -3,7 +3,7 @@
   {title: CommonComponents::TagLabel.new(label: @group.group_name, img_src: 'group.svg'), href: '' },
 ], buttons: [
   (CommonComponents::ButtonComponent.new(label: t(:add_student_to_group), href: new_student_path(group_id: @group.id)) if policy(@group).update?),
-  (CommonComponents::ButtonComponent.new(label: t(:enroll_students), href: enroll_students_group_path(@group), options: { data: { turbo_stream: true } }) if policy(@group).update? && @unenrolled_students&.length.positive?),
+  (CommonComponents::ButtonComponent.new(label: t(:enroll_students), href: enroll_students_group_path(@group), options: { data: { turbo_stream: true } }) if policy(@group).update?),
   (CommonComponents::ButtonComponent.new(label: t(:generate_report), href: reports_group_path(@group), options: { target: '_blank' } ) if @group.students.length > 0),
   (CommonComponents::ButtonComponent.new(label: t(:export_students_csv), href: students_url(group_id: @group.id, format: :csv)) if @group.students.length > 0),
   (CommonComponents::ButtonComponent.new(label: t(:edit_group), href: edit_group_path(@group)) if policy(@group).edit?),
@@ -21,6 +21,10 @@ end %>
   <%= render AlertComponent.new(title: t(:group_deleted, name: @group.group_name), text: t(:group_deleted_at, time: distance_of_time_in_words(@group.deleted_at, Time.zone.now))) %>
 <% end %>
 
+<% if @students_with_invalid_grades.any?  %>
+  <%= render AlertComponent.new(title: t(:students_graded_outside_enrollment), text: t(:students_graded_outside_enrollment_alert)) %>
+<% end %>
+
 <section>
    <div class="w-1/2">
        <%= render CommonComponents::Card.new(title: t(:average_performance_for_last_30_lessons).capitalize) do |card| %>
@@ -31,7 +35,7 @@ end %>
     </div>
 </section>
 <turbo-frame id="students-table">
-  <%= render GroupEnrolledStudentsComponent.new(students: @group.students, group: @group) %>
+  <%= render GroupEnrolledStudentsComponent.new(students: @group.students, group: @group, students_with_invalid_grades: @students_with_invalid_grades) %>
 </turbo-frame>
 <div id="modal"></div>
 <%= javascript_tag do %>

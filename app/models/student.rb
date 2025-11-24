@@ -97,7 +97,37 @@ class Student < ApplicationRecord
   end
 
   def latest_enrollment_for_group(group)
-    enrollments.where(group: group).max_by(&:active_since)
+    enrollments.where(group: group).order(active_since: :desc).first
+  end
+
+  def first_graded_lesson_before_enrollment_in_group(group)
+    latest = latest_enrollment_for_group(group)
+    prev = enrollments.where(group: group, active_since: ...latest.active_since).order(active_since: :desc).first
+    Lesson
+      .joins(:grades)
+      .where(grades: { student_id: id, deleted_at: nil }, lessons: { group_id: group, date: ...latest.active_since })
+      .where(prev.present? ? ['lessons.date > ?', prev.inactive_since] : nil)
+      .order(date: :asc)
+      .first
+  end
+
+  def first_graded_lesson_after_enrollment_in_group(group)
+    latest = latest_enrollment_for_group(group)
+    return if latest.inactive_since.blank?
+
+    Lesson
+      .joins(:grades)
+      .where(grades: { student_id: id, deleted_at: nil }, lessons: { group_id: group, date: latest.inactive_since... })
+      .order(date: :asc)
+      .first
+  end
+
+  def graded_lesson_after_enrollment_in_group(group)
+    latest_enrollment = latest_enrollment_for_group(group)
+    return if latest_enrollment.inactive_since.nil?
+
+    grades_in_lessons = grades.where(lesson_id: group.lessons).pluck(:lesson_id)
+    Lesson.where(id: grades_in_lessons, date: latest_enrollment...inactive_since.to_date).order(:date).first
   end
 
   def enrolled_group_ids
@@ -116,7 +146,9 @@ class Student < ApplicationRecord
   end
 
   def self.unenrolled_for_organization(org_id)
-    Student.where(organization_id: org_id).includes(:enrollments).filter { |s| !s.active_enrollment? }
+    now = Time.zone.now
+    active_enrollments = Enrollment.where('enrollments.active_since <= ? AND (enrollments.inactive_since IS NULL OR enrollments.inactive_since > ?)', now, now).pluck(:student_id)
+    Student.where(organization_id: org_id).where.not(id: active_enrollments)
   end
 
   def self.permitted_params

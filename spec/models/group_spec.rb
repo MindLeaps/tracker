@@ -117,5 +117,27 @@ RSpec.describe Group, type: :model do
         expect(@deleted_lesson.reload.deleted_at).to_not be_nil
       end
     end
+
+    describe '#students_with_grades_outside_enrollment' do
+      before :each do
+        @group = create :group
+        @students = create_list :student, 5, organization: @group.chapter.organization
+        create :enrollment, group: @group, student: @students[0], active_since: Time.zone.now
+        create :enrollment, group: @group, student: @students[1], active_since: Time.zone.now
+        create :enrollment, group: @group, student: @students[2], active_since: 1.week.ago, inactive_since: 2.days.ago
+        create :enrollment, group: @group, student: @students[3], active_since: 1.week.ago, inactive_since: 2.days.ago
+        create :enrollment, group: @group, student: @students[4], active_since: 1.day.ago
+
+        @lesson = create :lesson, group: @group, date: 1.day.ago
+        @students.each { |s| create :grade, student: s, lesson: @lesson }
+      end
+
+      it 'returns students who have grades outside their enrollment in the group' do
+        result = @group.students_with_grades_outside_enrollment
+
+        expect(result).to include @students[0], @students[1], @students[2], @students[3]
+        expect(result).not_to include @students[4]
+      end
+    end
   end
 end

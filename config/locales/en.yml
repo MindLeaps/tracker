@@ -55,6 +55,10 @@ en:
   student_deleted_at: Student deleted %{time} ago
   students_enrolled: Students enrolled
   students_enrolled_in_group_text: Successfully enrolled %{count} students in group "%{group}".
+  students_graded_outside_enrollment: Students graded outside enrollment
+  students_graded_outside_enrollment_alert: Some students have grades outside their enrollment, please review them below
+  graded_before_enrollment_text: Student graded before enrollment. Enrolled since "%{enrollment_date}" but has grades for "%{grade_date}"
+  graded_after_enrollment_text: Student graded after enrollment. Enrollment ended since "%{enrollment_date}" but has grades for "%{grade_date}"
   group_deleted_at: Group deleted %{time} ago
   date_of_birth: Date of Birth
   join_date: Join Date

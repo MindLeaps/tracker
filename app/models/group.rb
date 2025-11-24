@@ -73,4 +73,19 @@ class Group < ApplicationRecord
       save
     end
   end
+
+  def students_with_grades_outside_enrollment
+    students.joins(grades: :lesson).where(grades: { deleted_at: nil }, lessons: { group_id: id })
+            .where.not(
+              <<~SQL.squish
+                EXISTS (
+                  SELECT 1
+                  FROM enrollments e
+                  WHERE e.student_id = students.id
+                    AND e.group_id = lessons.group_id
+                    AND lessons.date BETWEEN e.active_since AND COALESCE(e.inactive_since, 'infinity')
+                )
+              SQL
+            )
+  end
 end

@@ -14,7 +14,7 @@ class GroupsController < HtmlController
   def show
     @group = Group.includes(:chapter).find params[:id]
     authorize @group
-    @unenrolled_students = Student.unenrolled_for_organization(@group.chapter.organization_id)
+    @students_with_invalid_grades = @group.students_with_grades_outside_enrollment
     @group_summaries = GroupLessonSummary.where(group_id: @group.id).where.not(average_mark: nil).order(lesson_date: :asc).last(30).map do |summary|
       {
         lesson_date: summary.lesson_date,
@@ -58,7 +58,7 @@ class GroupsController < HtmlController
     skip_authorization
 
     failure title: t(:group_invalid), text: t(:fix_form_errors)
-    render :edit, status: :unprocessable_entity
+    render :edit, status: :unprocessable_content
   end
 
   def destroy

@@ -249,6 +249,50 @@ RSpec.describe Student, type: :model do
         expect(@student.latest_enrollment_for_group(@other_group)).to be nil
       end
     end
+
+    describe '#first_graded_lesson_before_enrollment_in_group' do
+      before :each do
+        @group = create :group
+        @student = create :student, organization: @group.chapter.organization
+        create :enrollment, group: @group, student: @student, active_since: Time.zone.now
+
+        @first_lesson = create :lesson, group: @group, date: 10.days.ago
+        @second_lesson = create :lesson, group: @group, date: 5.days.ago
+        @ungraded_lesson = create :lesson, group: @group, date: 30.days.ago
+        create :grade, student: @student, lesson: @first_lesson
+        create :grade, student: @student, lesson: @second_lesson
+      end
+
+      it 'returns the first lesson a student had grades on before their enrollment' do
+        expect(@student.first_graded_lesson_before_enrollment_in_group(@group)).to eq @first_lesson
+      end
+    end
+
+    describe '#first_graded_lesson_after_enrollment_in_group' do
+      before :each do
+        @group = create :group
+        @student = create :student, organization: @group.chapter.organization
+        @other_student = create :student, organization: @group.chapter.organization
+        create :enrollment, group: @group, student: @student, active_since: 1.week.ago
+        create :enrollment, group: @group, student: @other_student, active_since: 1.week.ago, inactive_since: 1.day.ago
+
+        @first_lesson = create :lesson, group: @group, date: Time.zone.today
+        @second_lesson = create :lesson, group: @group, date: 1.day.from_now
+        @ungraded_lesson = create :lesson, group: @group, date: 1.week.from_now
+        create :grade, student: @student, lesson: @first_lesson
+        create :grade, student: @student, lesson: @second_lesson
+        create :grade, student: @other_student, lesson: @first_lesson
+        create :grade, student: @other_student, lesson: @second_lesson
+      end
+
+      it 'returns nil if the enrollment of the student is open' do
+        expect(@student.first_graded_lesson_after_enrollment_in_group(@group)).to be nil
+      end
+
+      it 'returns the first lesson a student had grades on after their enrollment' do
+        expect(@other_student.first_graded_lesson_after_enrollment_in_group(@group)).to eq @first_lesson
+      end
+    end
   end
 
   describe 'scopes' do
