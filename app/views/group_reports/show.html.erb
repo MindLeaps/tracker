@@ -140,19 +140,5 @@
 
     document.addEventListener('DOMContentLoaded', handlePrint)
   }
-
-  const enableComponentToggles = () => {
-    const components = <%= @components.to_json.html_safe %>;
-    components.forEach(c => {
-        let component = document.getElementById(c.id)
-        let componentToggle = document.getElementById(`${c.id}Toggle`)
-
-        componentToggle.addEventListener('click', () => {
-            !componentToggle.getAttribute('data-toggled') ? component.style.display = 'none' : component.style.display = 'block'
-        })
-    })
-  }
-
-  enableComponentToggles();
 </script>
 <%= javascript_include_tag "charts", onload: 'onChartsLoad()' %>
