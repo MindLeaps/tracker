@@ -36,11 +36,11 @@ class HtmlController < ApplicationController
     respond_to do |format|
       format.turbo_stream do
         flash.now[:failure_notice] = error_flash_hash
-        render :new, status: :unprocessable_entity
+        render :new, status: :unprocessable_content
       end
       format.html do
         flash[:failure_notice] = error_flash_hash
-        render :new, status: :unprocessable_entity
+        render :new, status: :unprocessable_content
       end
     end
   end

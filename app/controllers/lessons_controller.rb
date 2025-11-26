@@ -38,7 +38,7 @@ class LessonsController < HtmlController
       redirect_to @lesson
     else
       failure(title: t(:lesson_invalid), text: t(:fix_form_errors))
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -51,7 +51,7 @@ class LessonsController < HtmlController
       redirect_to(flash[:redirect] || lesson_path(@lesson))
     else
       failure(title: t(:lesson_invalid), text: t(:fix_form_errors))
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 

@@ -48,7 +48,7 @@ class ChaptersController < HtmlController
       return redirect_to(flash[:redirect] || chapter_url)
     end
     failure title: t(:chapter_invalid), text: t(:fix_form_errors)
-    render :edit, status: :unprocessable_entity
+    render :edit, status: :unprocessable_content
   end
 
   def destroy

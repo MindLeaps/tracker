@@ -27,7 +27,7 @@ class GroupStudentsController < HtmlController
       success_now title: t(:student_added), text: t(:student_name_added, name: @student.proper_name)
     else
       failure_now title: t(:student_invalid), text: t(:fix_form_errors)
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -41,7 +41,7 @@ class GroupStudentsController < HtmlController
       success_now title: t(:student_updated), text: t(:student_name_updated, name: @student.proper_name)
     else
       failure_now title: t(:student_invalid), text: t(:fix_form_errors)
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 

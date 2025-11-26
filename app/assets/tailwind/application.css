@@ -51,6 +51,10 @@
   }
 }
 
+@utility shaded-cell {
+  @apply bg-slate-100;
+}
+
 @utility table-action-link {
   @apply text-purple-800;
 
