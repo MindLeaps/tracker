@@ -14,6 +14,7 @@ class CsvService
           last_name: row['Last Name'],
           gender: safe_parse_gender(row['Gender']),
           dob: safe_parse_date(row['Date of Birth']),
+          estimated_dob: safe_parse_bool?(row['DOB Estimated']),
           country_of_nationality: row['Country of Nationality'],
           family_members: row['Family Members'],
           guardian_name: row['Guardian Name'],
