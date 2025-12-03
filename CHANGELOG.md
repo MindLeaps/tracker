@@ -1,5 +1,6 @@
 ## Unreleased
 - Added ability to share tags only to certain organizations
+- Extended importing students to handle all student fields
 - Added alert when viewing a group with students graded outside their enrollment
 - Improved speed when querying students which have no active enrollments 
 - Removed 'Created' and added 'Enrolled Since' column to student table in group view
