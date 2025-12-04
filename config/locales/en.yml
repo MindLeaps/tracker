@@ -444,3 +444,6 @@ en:
         M: Male
         F: Female
         NB: Nonbinary
+        M_Short: M
+        F_Short: F
+        NB_Short: NB

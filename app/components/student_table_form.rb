@@ -22,19 +22,22 @@ class StudentTableForm < ViewComponent::Base
         <div class="table-cell flex! items-center gap-1 justify-end">
           <div class="inline-flex items-center gap-1">
             <%= form.radio_button :gender, :M, class: 'h-4 w-4 border-purple-500 text-green-600 focus:ring-green-600 cursor-pointer', checked: @student.gender == 'M' || @student.gender.nil? %>
-            <label class="text-sm font-medium text-gray-700 cursor-pointer"><%= t(:enums)[:student][:gender][:M] %></label>
+            <label class="text-sm md:hidden 2xl:inline font-medium text-gray-700 cursor-pointer"><%= t(:enums)[:student][:gender][:M] %></label>
+            <label class="text-xs font-medium 2xl:hidden text-gray-700 cursor-pointer"><%= t(:enums)[:student][:gender][:M_Short] %></label>
           </div>
           <div class="inline-flex items-center gap-1">
             <%= form.radio_button :gender, :F, class: 'h-4 w-4 border-purple-500 text-green-600 focus:ring-green-600 cursor-pointer', checked: @student.gender == 'F' %>
-            <label class="text-sm font-medium text-gray-700 cursor-pointer"><%= t(:enums)[:student][:gender][:F] %></label>
+            <label class="text-sm md:hidden 2xl:inline font-medium text-gray-700 cursor-pointer"><%= t(:enums)[:student][:gender][:F] %></label>
+            <label class="text-xs font-medium 2xl:hidden text-gray-700 cursor-pointer"><%= t(:enums)[:student][:gender][:F_Short] %></label>
           </div>
           <div class="inline-flex items-center gap-1">
             <%= form.radio_button :gender, :NB, class: 'h-4 w-4 border-purple-500 text-green-600 focus:ring-green-600 cursor-pointer', checked: @student.gender == 'NB' %>
-            <label class="text-sm font-medium text-gray-700 cursor-pointer"><%= t(:enums)[:student][:gender][:NB] %></label>
+            <label class="text-sm md:hidden 2xl:inline font-medium text-gray-700 cursor-pointer"><%= t(:enums)[:student][:gender][:NB] %></label>
+            <label class="text-xs font-medium 2xl:hidden text-gray-700 cursor-pointer"><%= t(:enums)[:student][:gender][:NB_Short] %></label>
           </div>
         </div>
         <div class="table-cell <%= @is_edit ? '' : 'col-span-2' %>">
-          <%= render Datepicker.new(date: @student.dob || Date.current, target: 'dob', form: form) %>
+          <%= render Datepicker.new(date: @student.dob || Date.current, target: 'dob', form: form, custom_class: 'rounded-md border-purple-500 text-sm focus:border-green-600 focus:outline-hidden focus:ring-green-600 md:field-sizing-fixed md:w-28 2xl:w-full') %>
           <%= form.check_box :estimated_dob, checked: @student.estimated_dob , class: 'h-4 w-4 border-purple-500 text-green-600 focus:ring-green-600 cursor-pointer ml-1' %>
           <label class="text-xs font-medium text-gray-700 cursor-pointer"><%= t(:dob_estimated) %></label>
           <%= render ValidationErrorComponent.new(model: @student, key: :dob) %>
@@ -42,10 +45,11 @@ class StudentTableForm < ViewComponent::Base
         <div class="table-cell">
           <% if @is_edit %>
             <%= hidden_field_tag sprintf("student[enrollments_attributes][%d][id]", @enrollment_index), @active_enrollment.id %>
-            <%= render Datepicker.new(date: @active_enrollment.active_since, target: :active_since, custom_name: sprintf("student[enrollments_attributes][%d][active_since]", @enrollment_index)) %>
+            <%= render Datepicker.new(date: @active_enrollment.active_since, target: :active_since, custom_name: sprintf("student[enrollments_attributes][%d][active_since]", @enrollment_index),
+              custom_class: 'rounded-md border-purple-500 text-sm focus:border-green-600 focus:outline-hidden focus:ring-green-600 field-sizing-fixed md:w-28 2xl:w-full') %>
             <%= render ValidationErrorComponent.new(model: @student, key: 'enrollments.active_since') %>
           <% else %>
-            <%= render Datepicker.new(date: Date.current, target: 'enrollment_start_date', form: form) %>
+            <%= render Datepicker.new(date: Date.current, target: 'enrollment_start_date', form: form, custom_class: 'rounded-md border-purple-500 text-sm focus:border-green-600 focus:outline-hidden focus:ring-green-600 field-sizing-fixed md:w-28 2xl:w-full') %>
             <%= render ValidationErrorComponent.new(model: @student, key: 'enrollments.active_since') %>
           <% end %>
         </div>
@@ -79,7 +83,7 @@ class StudentTableForm < ViewComponent::Base
     if @is_edit
       'table-row-wrapper student-row'
     else
-      'w-full bg-gray-50 border-b border-gray-200 grid grid-cols-8 justify-between'
+      'w-full bg-gray-50 border-b border-gray-200 grid grid-cols-8 justify-between items-center'
     end
   end
 
