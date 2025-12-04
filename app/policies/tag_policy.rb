@@ -19,12 +19,16 @@ class TagPolicy < ApplicationPolicy
       if user.global_role?
         scope.all
       else
-        scope.where(organization_id: user.membership_organizations).or(scope.where(shared: true))
+        scope.where(organization_id: user.membership_organizations)
+             .or(scope.where(shared: true))
+             .or(scope.where('shared_organization_ids && ARRAY[?]::bigint[]', user.membership_organizations.map(&:id)))
       end
     end
 
     def resolve_for_organization_id(organization_id)
-      scope.where(organization_id:).or(scope.where(shared: true))
+      scope.where(organization_id:)
+           .or(scope.where(shared: true))
+           .or(scope.where('shared_organization_ids && ARRAY[?]::bigint[]', user.membership_organizations.map(&:id)))
     end
   end
 end
