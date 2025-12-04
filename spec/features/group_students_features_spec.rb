@@ -42,8 +42,8 @@ RSpec.describe 'User interacts with students in Group', js: true do
 
       click_link 'Edit'
       find("#student_#{student.id} #student_first_name").fill_in with: 'Updated'
-      find("#student_#{student.id} #student_gender_m").click
       fill_in 'student_enrollments_attributes_0_active_since', with: 10.days.ago.to_date.to_s
+      find("#student_#{student.id} #student_gender_m").click
       click_button 'Update Student'
 
       expect(page).to have_content 'Updated'
