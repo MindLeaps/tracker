@@ -18,6 +18,7 @@
   --color-current: 'currentColor';
 
   --breakpoint-print: 'print';
+  --breakpoint-3xl: 110rem;
 }
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,

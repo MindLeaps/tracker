@@ -31,6 +31,7 @@ en:
   name: Name
   full_name: Full Name
   undo: Undo
+  submit: Submit
   created: Created
   organization_mlid_error_message: Organization MLID has to be 3 characters long and can only contain numbers and letters. No special characters.
   chapter_mlid_error_message: Chapter MLID has to be up to 2 characters long and can only contain numbers and letters. No special characters.
@@ -64,6 +65,7 @@ en:
   join_date: Join Date
   leave_date: Leave Date
   dob_estimated: DOB Estimated
+  estimated: Estimated
   circa: "c. "
   global_role: Global Role
   global_roles: Global Roles
@@ -443,3 +445,6 @@ en:
         M: Male
         F: Female
         NB: Nonbinary
+        M_Short: M
+        F_Short: F
+        NB_Short: NB
