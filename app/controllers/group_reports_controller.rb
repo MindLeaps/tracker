@@ -9,7 +9,6 @@ class GroupReportsController < HtmlController
 
     @enrollments_for_group = Enrollment.where(group_id: @group.id)
     @group_lesson_summaries = group_summaries_for_group.map { |summary| lesson_summary(summary) }
-    @student_lesson_summaries = StudentLessonSummary.where(group_id: @group.id).order(lesson_date: :asc)
     @student_enrollments_component = TableComponents::Table.new(rows: enrolled_students.sort_by { |e| e[:full_name] }, row_component: TableComponents::StudentEnrollmentReport)
     @enrollment_timelines = []
     @reports = []
@@ -102,9 +101,10 @@ class GroupReportsController < HtmlController
   end
 
   def student_row_reports
-    students = @student_lesson_summaries.pluck(:student_id, :first_name, :last_name, :subject_id).uniq
+    student_summaries = StudentLessonSummary.where(group_id: @group.id)
+    students = student_summaries.pluck(:student_id, :first_name, :last_name, :subject_id).uniq
     students.map do |student|
-      summaries_for_student = @student_lesson_summaries.where(student_id: student[0], subject_id: student[3])
+      summaries_for_student = student_summaries.where(student_id: student[0], subject_id: student[3]).order(lesson_date: :asc)
 
       {
         first_name: student[1],
