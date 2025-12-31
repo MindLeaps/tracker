@@ -104,7 +104,7 @@ class GroupReportsController < HtmlController
     student_summaries = StudentLessonSummary.where(group_id: @group.id)
     students = student_summaries.pluck(:student_id, :first_name, :last_name, :subject_id).uniq
     students.map do |student|
-      summaries_for_student = student_summaries.where(student_id: student[0], subject_id: student[3]).order(lesson_date: :asc)
+      summaries_for_student = student_summaries.where(student_id: student[0], subject_id: student[3]).where.not(grade_count: 0).order(lesson_date: :asc)
 
       {
         first_name: student[1],
