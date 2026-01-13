@@ -1,3 +1,6 @@
+## Unreleased
+- Fixed student lesson summaries showing empty on report screen
+
 ## 0.39.0
 - Extended importing students to handle all student fields
 - Added alert when viewing a group with students graded outside their enrollment
