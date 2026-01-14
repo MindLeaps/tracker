@@ -3,7 +3,8 @@
 <%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
   { title: t(:general_analytics).capitalize, href: general_analytics_url },
   { title: t(:subject_analytics).capitalize, href: '' },
-  { title: t(:group_analytics).capitalize, href: group_analytics_url }
+  { title: t(:group_analytics).capitalize, href: group_analytics_url },
+  { title: t(:new_analytics).capitalize, href: new_analytics_url },
 ]) do |h| %>
   <% h.with_left do %>
   <% end %>
