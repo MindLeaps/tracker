@@ -7,13 +7,16 @@ export default class extends Controller {
 
     connect() {
         // Collect initial values from hidden inputs
-        this.selected = [...this.hiddenFieldTarget.querySelectorAll("input")].map(input => input.value)
+        this.selected = [...this.hiddenFieldTarget.querySelectorAll("input")].map(input => input.value).filter(v => v !== "")
         this.applyInitialSelection()
         this.updateLabel()
 
         // Close menu if anything outside is clicked
         this.outsideClick = this.handleClickOutside.bind(this)
         document.addEventListener("click", this.outsideClick)
+
+        // Notify other controllers of readyness
+        this.element.dispatchEvent(new CustomEvent("multiselect:ready", { bubbles: true }))
     }
 
     disconnect() {
@@ -58,6 +61,9 @@ export default class extends Controller {
 
         this.rebuildHiddenInputs()
         this.updateLabel()
+
+        // notify other controllers listening for option toggles
+        this.element.dispatchEvent(new CustomEvent("multiselect:change", { bubbles: true, detail: { name: this.selectNameValue, selected: this.selected } }))
     }
 
     rebuildHiddenInputs() {
@@ -91,14 +97,17 @@ export default class extends Controller {
 
     // callable method for filtering options by external id values
     filterOptions(parentIds) {
-        const parents = (parentIds || []).map(String).filter(v => v !== "")
+        const parents = (parentIds || []).map(String)
+
+        // If no filter list provided, show everything
+        const filterActive = parents.length > 0
 
         let selectionChanged = false
 
         this.optionTargets.forEach(opt => {
             const id = opt.dataset.value
             const dependId = opt.dataset.dependId ? String(opt.dataset.dependId) : ""
-            const visible = parents.length === 0 || (dependId && parents.includes(dependId))
+            const visible = !filterActive || (dependId && parents.includes(dependId))
 
             opt.classList.toggle("hidden", !visible)
 
@@ -114,6 +123,7 @@ export default class extends Controller {
         if (selectionChanged) {
             this.rebuildHiddenInputs()
             this.updateLabel()
+            this.element.dispatchEvent(new CustomEvent("multiselect:change", { bubbles: true }))
         }
     }
 }

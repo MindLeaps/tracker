@@ -14,6 +14,7 @@ export default class extends Controller {
   static targets = ['select', 'anchor', 'multiselect']
 
   connect() {
+    this.allowedIdsByName = {}
     this.updateFilter()
   }
 
@@ -21,7 +22,7 @@ export default class extends Controller {
     // filter dropdowns
     this.updateDropdown(this.selectTargets[0], JSON.parse(this.selectTargets[0].dataset.resources))
 
-    // filter multiselect dropdowns
+    // filter multiselect dropdown
     this.updateMultiselectOptions()
 
     // update anchor link
@@ -70,6 +71,9 @@ export default class extends Controller {
         return v.id;
     });
 
+    // store allowed ids for this select to use in multiselect component
+    this.allowedIdsByName[dropdown.dataset.name] = filteredIds
+
     if (valueExists) {
       dropdown.value = currentValue;
     }
@@ -78,26 +82,43 @@ export default class extends Controller {
     if (dependents) {
       dependents.forEach(dependentSelectName => {
         const targetSelect = this.selectTargets.find(t => t.dataset.name === dependentSelectName);
-        this.updateDropdown(targetSelect, JSON.parse(targetSelect.dataset.resources), valueExists ? [currentValue] : filteredIds)
+
+        if(targetSelect){
+          this.updateDropdown(targetSelect, JSON.parse(targetSelect.dataset.resources), valueExists ? [currentValue] : filteredIds)
+        }
       })
     }
   }
 
   updateMultiselectOptions() {
-    // your selects are: organization_id, chapter_id
+    // possible select dropdowns are for: organization_id, chapter_id
+    const orgSelect = this.selectTargets.find(t => t.dataset.name === "organization_id")
     const chapterSelect = this.selectTargets.find(t => t.dataset.name === "chapter_id")
-    const chapterId = this.toId(chapterSelect?.value)
+    const orgId = this.toId(orgSelect?.value) // "" when All
+    const chapterId = this.toId(chapterSelect?.value) // "" when All
 
-    // Parent ids used for filtering multi selectable groups:
-    // - if chapter selected => filter by chapter
-    const parentIds = chapterId ? [chapterId] : []
+    let allowedChapterIds = []
+
+    if (chapterId) {
+      // specific chapter selected
+      allowedChapterIds = [chapterId]
+    } else if (orgId) {
+      // specific org selected, chapter = All => use the allowed chapters computed by updateDropdown
+      allowedChapterIds = (this.allowedIdsByName["chapter_id"] || []).map(String)
+    } else {
+      // org = All and chapter = All => no filtering, show all groups
+      allowedChapterIds = []
+    }
 
     this.multiselectTargets.forEach(wrapper => {
       const el = wrapper.querySelector('[data-controller~="multiselect"]')
-      if (!el) return
+
+      if (!el) {
+        return
+      }
 
       const controller = this.application.getControllerForElementAndIdentifier(el, "multiselect")
-      controller?.filterOptions(parentIds)
+      controller?.filterOptions(allowedChapterIds)
     })
   }
 }

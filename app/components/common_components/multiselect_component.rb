@@ -8,7 +8,7 @@ class CommonComponents::MultiselectComponent < ViewComponent::Base
         <% end %>
       </div>
       <button type="button" data-action="click->multiselect#toggleMenu"
-        class="w-full border border-purple-500 p-2 rounded-md bg-white flex justify-between items-center text-md sm:text-sm font-medium focus:border-green-600 focus:ring-green-600">
+        class="w-full min-w-24 border border-purple-500 p-2 rounded-md bg-white flex justify-between items-center text-md sm:text-sm font-medium focus:border-green-600 focus:ring-green-600">
         <span data-multiselect-target="label" > <%= @label %> </span>
         <%= helpers.inline_svg_tag("arrow_down.svg", class: "w-5 h-5 fill-gray-500") %>
       </button>

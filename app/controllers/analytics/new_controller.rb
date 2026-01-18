@@ -1,14 +1,15 @@
 module Analytics
   class NewController < AnalyticsController
     def index
+      @selected_group_ids = params[:group_ids]
       @group_series = performance_per_group
     end
 
     # rubocop:disable Metrics/AbcSize
     # rubocop:disable Metrics/MethodLength
     def performance_per_group
-      groups_lesson_summaries = if selected_param_present_but_not_all?(@selected_group_id)
-                                  GroupLessonSummary.joins(:group).where(group_id: @selected_group_id, groups: { deleted_at: nil })
+      groups_lesson_summaries = if @selected_group_ids.present?
+                                  GroupLessonSummary.joins(:group).where(group_id: @selected_group_ids, groups: { deleted_at: nil })
                                 elsif selected_param_present_but_not_all?(@selected_chapter_id)
                                   GroupLessonSummary.joins(:group).where(groups: { deleted_at: nil }).where(chapter_id: @selected_chapter_id)
                                 else
