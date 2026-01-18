@@ -300,7 +300,7 @@ GEM
       actionpack (>= 4.2)
       omniauth (~> 2.0)
     orm_adapter (0.5.0)
-    pagy (43.2.4)
+    pagy (43.2.5)
       json
       yaml
     parallel (1.27.0)
