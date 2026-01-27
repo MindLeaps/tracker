@@ -8,12 +8,12 @@ class CommonComponents::MultiselectComponent < ViewComponent::Base
         <% end %>
       </div>
       <button type="button" data-action="click->multiselect#toggleMenu"
-        class="w-full min-w-24 border border-purple-500 p-2 rounded-md bg-white flex justify-between items-center text-md sm:text-sm font-medium focus:border-green-600 focus:ring-green-600">
+        class="w-full min-w-36 border border-gray-300 p-2 rounded-md bg-white flex justify-between items-center text-md sm:text-sm font-medium focus:ring-indigo-500 focus:border-indigo-500">
         <span data-multiselect-target="label" > <%= @label %> </span>
         <%= helpers.inline_svg_tag("arrow_down.svg", class: "w-5 h-5 fill-gray-500") %>
       </button>
       <!-- Dropdown Menu -->
-      <div class="absolute p-1 w-full border rounded-md bg-white hidden z-10" data-multiselect-target="menu">
+      <div class="absolute p-1 w-full border rounded-md bg-white hidden z-10 max-h-80 overflow-y-auto" data-multiselect-target="menu" >
         <% @options.each do |option| %>
           <div class="hover:bg-gray-100 cursor-pointer flex justify-between p-2 rounded-md flex justify-between items-center text-md sm:text-sm font-medium"
                data-value="<%= option[:id] %>"

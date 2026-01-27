@@ -2,42 +2,41 @@ module Analytics
   class NewController < AnalyticsController
     def index
       @selected_group_ids = params[:group_ids]
-      @group_series = performance_per_group
+      @group_series = performance_per_group_by_lesson
     end
 
-    # rubocop:disable Metrics/AbcSize
     # rubocop:disable Metrics/MethodLength
-    def performance_per_group
-      groups_lesson_summaries = if @selected_group_ids.present?
-                                  GroupLessonSummary.joins(:group).where(group_id: @selected_group_ids, groups: { deleted_at: nil })
-                                elsif selected_param_present_but_not_all?(@selected_chapter_id)
-                                  GroupLessonSummary.joins(:group).where(groups: { deleted_at: nil }).where(chapter_id: @selected_chapter_id)
-                                else
-                                  GroupLessonSummary.joins(:group).where(groups: { deleted_at: nil }).joins(:chapter).where(chapters: { organization_id: @selected_organization_id })
-                                end
+    def performance_per_group_by_lesson
+      selected_groups = if @selected_group_ids.present?
+                          Group.where(id: @selected_group_ids, deleted_at: nil)
+                        elsif selected_param_present_but_not_all?(@selected_chapter_id)
+                          Group.where(chapter_id: @selected_chapter_id, deleted_at: nil)
+                        else
+                          Group.joins(:chapter).where(chapters: { organization_id: @selected_organization_id }).where(deleted_at: nil)
+                        end
+      groups = Array(selected_groups)
+      conn = ActiveRecord::Base.connection.raw_connection
 
-      groups_lesson_summaries
-        .group_by(&:group_id)
-        .map do |group_id, summaries|
-          group_series = []
-          group_series << {
-            name: summaries[0].group_chapter_name,
-            data: summaries.map.with_index { |summary, i| { x: i + 1, y: summary.average_mark, date: summary.lesson_date, lesson_url: lesson_path(summary.lesson_id), grade_count: summary.grade_count } },
-            regression: summaries.length > 1,
-            color: get_color(0),
-            regressionSettings: {
-              type: 'polynomial',
-              order: 4,
-              color: get_color(0),
-              name: "#{t(:group)} #{summaries[0].group_chapter_name} - Regression",
-              lineWidth: 1
-            }
-          }
-          { group: "#{t(:group)} #{summaries[0].group_chapter_name}", series: group_series, group_id: }
+      groups.map do |group|
+        result = conn.exec(Sql.average_mark_in_group_lessons(group)).values
+        {
+          name: "#{t(:group)} #{group.group_chapter_name}",
+          data: format_point_data(result)
+        }
       end
-        .sort_by { |e| e[:group_id] }
     end
-    # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/MethodLength
+
+    def format_point_data(data)
+      data.map do |e|
+        {
+          # Increment 'No. of Lessons' to start from 1
+          x: e[0] + 1,
+          y: e[1],
+          lesson_url: lesson_path(e[2]),
+          date: e[3]
+        }
+      end
+    end
   end
 end
