@@ -20,6 +20,7 @@ module Analytics
       groups.map do |group|
         result = conn.exec(Sql.average_mark_in_group_lessons(group)).values
         {
+          id: group.id,
           name: "#{t(:group)} #{group.group_chapter_name}",
           data: format_point_data(result)
         }

@@ -31,8 +31,14 @@
     </div>
   </div>
 
-  <div class="w-full h-[600px] bg-white rounded-md border">
-    <canvas id="groups-performance-chart"></canvas>
+  <div class="w-full h-[600px] bg-white rounded-md border relative" data-controller="charts-download">
+    <button
+      type="button"
+      class="normal-button absolute top-2 right-2"
+      data-action="click->charts-download#download">
+      Download PNG
+    </button>
+    <canvas id="groups-performance-chart" data-charts-download-target="canvas"></canvas>
   </div>
 </div>
 

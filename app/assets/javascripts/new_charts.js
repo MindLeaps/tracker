@@ -4,12 +4,13 @@
 function whiteBackgroundPlugin() {
     return {
         id: "whiteBackground",
-        beforeDraw: (chart) => {
-            const { ctx, chartArea } = chart
-            if (!chartArea) return
+        beforeDraw: (chart, args, options) => {
+            const { ctx, canvas } = chart
+
             ctx.save()
-            ctx.fillStyle = "white"
-            ctx.fillRect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top)
+            ctx.globalCompositeOperation = "destination-over"
+            ctx.fillStyle = (options && options.color) ? options.color : "white"
+            ctx.fillRect(0, 0, canvas.width, canvas.height)
             ctx.restore()
         }
     }
@@ -56,20 +57,31 @@ function polynomialLineForGroup(group, order = 4) {
 }
 
 function colorForIndex(i) {
-    const colors = ["#4F46E5", "#16A34A", "#DC2626", "#D97706", "#0891B2", "#7C3AED", "#DB2777", "#111827"]
+    const colors = ["#7cb5ec", "#434348", "#90ed7d", "#f7a35c", "#8085e9", "#f15c80", "#e4d354", "#2b908f", "#f45b5b", "#91e8e1"]
+
     return colors[i % colors.length]
+}
+
+function withAlpha(hex, a) {
+    // accepts "#RRGGBB"
+    const r = parseInt(hex.slice(1, 3), 16)
+    const g = parseInt(hex.slice(3, 5), 16)
+    const b = parseInt(hex.slice(5, 7), 16)
+
+    return `rgba(${r}, ${g}, ${b}, ${a})`
 }
 
 function buildDatasetsForGroups(groups) {
     const datasets = []
 
     groups.forEach((g, idx) => {
-        const c = colorForIndex(idx)
+        const color = colorForIndex(idx)
 
         // 1) scatter points
         datasets.push({
             label: g.name,
             type: "scatter",
+            groupKey: g.id,
             data: (g.data || []).map(p => ({
                 x: p.x,
                 y: p.y,
@@ -77,8 +89,8 @@ function buildDatasetsForGroups(groups) {
                 date: p.date
             })),
             pointRadius: 3,
-            backgroundColor: c,
-            borderColor: c
+            backgroundColor: color,
+            borderColor: color
         })
 
         // 2) polynomial regression line for that group
@@ -86,13 +98,15 @@ function buildDatasetsForGroups(groups) {
         if (curve) {
             datasets.push({
                 label: `${g.name} - Regression`,
+                groupKey: g.id,
                 type: "line",
                 data: curve,
                 pointRadius: 0,
-                borderWidth: 2,
-                borderColor: c,
-                backgroundColor: c,
-                tension: 0
+                borderWidth: 3,
+                borderColor: withAlpha(color, .75),
+                borderDash: [5, 5],
+                tension: 0,
+                hiddenFromLegend: true
             })
         }
     })
@@ -120,7 +134,38 @@ function displayAveragePerformancePerGroupByLesson(groups) {
             maintainAspectRatio: false,
             clip: false,
             plugins: {
-                legend: { display: true },
+                legend: {
+                    display: true,
+                    labels:
+                    {
+                        padding: 30,
+                        font: {
+                            size: 15
+                        },
+                        filter: (legendItem, chartData) => {
+                            const dataSet = chartData.datasets[legendItem.datasetIndex]
+
+                            return !dataSet.hiddenFromLegend
+                        }
+                    },
+                    onClick: (e, legendItem, legend) => {
+                        const chart = legend.chart
+                        const clickedDataset = chart.data.datasets[legendItem.datasetIndex]
+
+                        // Determine new hidden state: toggle based on the scatter dataset state
+                        const scatterMeta = chart.getDatasetMeta(legendItem.datasetIndex)
+                        const nextHidden = !scatterMeta.hidden
+
+                        // Apply to all datasets with same groupKey (scatter + regression)
+                        chart.data.datasets.forEach((dataset, i) => {
+                            if (dataset.groupKey === clickedDataset.groupKey) {
+                                chart.getDatasetMeta(i).hidden = nextHidden
+                            }
+                        })
+
+                        chart.update()
+                    }
+                },
                 tooltip: {
                     backgroundColor: "#ffffff",
                     titleColor: "#111827",
@@ -158,6 +203,9 @@ function displayAveragePerformancePerGroupByLesson(groups) {
                             return parts
                         }
                     }
+                },
+                whiteBackground: {
+                    color: 'white'
                 }
             },
             scales: {
@@ -173,7 +221,7 @@ function displayAveragePerformancePerGroupByLesson(groups) {
                     ticks: { precision: 0 }
                 }
             },
-            onClick: function (_evt, elements) {
+            onClick: function (event, elements) {
                 if (!elements || elements.length === 0) return
                 const el = elements[0]
                 const ds = this.data.datasets[el.datasetIndex]
@@ -183,8 +231,21 @@ function displayAveragePerformancePerGroupByLesson(groups) {
 
                 const point = ds.data[el.index]
                 if (point && point.lesson_url) window.open(point.lesson_url, "_blank")
+            },
+            onHover: function (event, elements) {
+                const canvas = event.native?.target || event.chart?.canvas
+                if (!canvas) return
+
+                if (elements.length > 0) {
+                    const el = elements[0]
+                    const ds = this.data.datasets[el.datasetIndex]
+
+                    canvas.style.cursor = ds.type === "scatter" ? "pointer" : "default"
+                } else {
+                    canvas.style.cursor = "default"
+                }
             }
         },
-        plugins: [whiteBackgroundPlugin]
+        plugins: [whiteBackgroundPlugin()]
     })
 }
