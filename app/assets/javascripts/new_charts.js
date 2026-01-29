@@ -117,7 +117,6 @@ function buildDatasetsForGroups(groups) {
 function displayAveragePerformancePerGroupByLesson(groups) {
     const canvas = document.getElementById("groups-performance-chart")
     if (!canvas) return
-
     if (!window.Chart) {
         console.error("Chart.js not found (window.Chart undefined).")
         return
@@ -133,6 +132,16 @@ function displayAveragePerformancePerGroupByLesson(groups) {
             responsive: true,
             maintainAspectRatio: false,
             clip: false,
+            animation: {
+                duration: 1000,
+                easing: "easeOutQuart",
+                delay: (ctx) => {
+                    if (ctx.type !== "data") return 0
+                    const ds = ctx.chart.data.datasets[ctx.datasetIndex]
+                    if (ds.type === "line") return 0
+                    return ctx.dataIndex * 12
+                }
+            },
             plugins: {
                 legend: {
                     display: true,
