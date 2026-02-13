@@ -4,14 +4,10 @@ import * as pikaday from 'pikaday'
 // Connects to data-controller="datepicker"
 export default class extends Controller {
     static values = { date: String }
-    static targets = [ "picker", "anchor" ]
+    static targets = [ "picker" ]
 
-    updateFilter() {
-        let newDate = this.pickerTarget.value
-        let url = new URL(this.anchorTarget.href)
-
-        url.searchParams.set("selected_date", newDate)
-        this.anchorTarget.href = url.href
+    onChange() {
+        this.element.dispatchEvent(new CustomEvent("datepicker:change", { bubbles: true }))
     }
 
     connect() {

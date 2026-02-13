@@ -26,6 +26,18 @@
         <%= render CommonComponents::MultiselectComponent.new(label: 'All', target: 'group_ids[]', options: @available_groups.map { |g| { id: g.id, label: g.group_name, depend_id: g.chapter_id } }, selected_values: @selected_group_ids) %>
       </div>
     </div>
+    <div class="pl-2">
+      <%= label_tag :from_label, "From", class: 'block text-sm font-medium text-gray-700' %>
+      <div data-analytics-filter-target="date" data-action="datepicker:change->analytics-filter#updateAnchor">
+      <%= render Datepicker.new(date: @from, target: 'from', custom_name: "from_date", custom_class: 'mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md') %>
+      </div>
+    </div>
+    <div class="pl-2">
+      <%= label_tag :to_label, "To", class: 'block text-sm font-medium text-gray-700' %>
+      <div data-analytics-filter-target="date" data-action="datepicker:change->analytics-filter#updateAnchor">
+      <%= render Datepicker.new(date: @to, target: 'to', custom_name: "to_date", custom_class: 'mt -1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md') %>
+      </div>
+    </div>
     <div class="pl-2 pt-5">
       <%= render CommonComponents::ButtonComponent.new(label: t(:filter), options: { 'data-analytics-filter-target' => 'anchor', 'data-turbo-prefetch' => 'false' })%>
     </div>

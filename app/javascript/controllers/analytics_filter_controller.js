@@ -11,7 +11,7 @@ function createOption(label, value) {
 }
 
 export default class extends Controller {
-  static targets = ['select', 'anchor', 'multiselect']
+  static targets = ['select', 'anchor', 'multiselect', 'date']
 
   connect() {
     this.allowedIdsByName = {}
@@ -41,6 +41,14 @@ export default class extends Controller {
     // add multiselect params (hidden inputs)
     this.multiselectTargets.forEach(wrapper => {
       const inputs = wrapper.querySelectorAll('input[type="hidden"]')
+      inputs.forEach(i => {
+        if (i.value !== '') params.append(i.name, i.value)
+      })
+    })
+
+    // add date params
+    this.dateTargets.forEach(wrapper => {
+      const inputs = wrapper.querySelectorAll('input')
       inputs.forEach(i => {
         if (i.value !== '') params.append(i.name, i.value)
       })

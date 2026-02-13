@@ -2,6 +2,8 @@ module Analytics
   class NewController < AnalyticsController
     def index
       @selected_group_ids = params[:group_ids]
+      @from = params[:from_date] || Date.new(Date.current.year, 1 ,1)
+      @to = params[:to_date] || Date.current
       @group_series = performance_per_group_by_lesson
     end
 
@@ -18,7 +20,14 @@ module Analytics
       conn = ActiveRecord::Base.connection.raw_connection
 
       groups.map do |group|
-        result = conn.exec(Sql.average_mark_in_group_lessons(group)).values
+        sql = Sql.average_mark_for_group_lessons
+        params = [
+          group.id,
+          @from,
+          @to
+        ]
+        result = conn.exec_params(sql, params).values
+
         {
           id: group.id,
           name: "#{t(:group)} #{group.group_chapter_name}",
