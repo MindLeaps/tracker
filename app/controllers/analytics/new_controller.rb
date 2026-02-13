@@ -2,7 +2,7 @@ module Analytics
   class NewController < AnalyticsController
     def index
       @selected_group_ids = params[:group_ids]
-      @from = params[:from_date] || Date.new(Date.current.year, 1 ,1)
+      @from = params[:from_date] || Date.new(Date.current.year, 1, 1)
       @to = params[:to_date] || Date.current
       @group_series = performance_per_group_by_lesson
     end
