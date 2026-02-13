@@ -163,5 +163,6 @@ end
 def add_and_select_group(chapter_group_name, group_index)
   click_button 'Add Group'
   select chapter_group_name, from: "student_enrollments_attributes_#{group_index}_group_id"
-  fill_in "student_enrollments_attributes_#{group_index}_active_since", with: Time.zone.now.to_date.to_s
+  find("input#student_enrollments_attributes_#{group_index}_active_since").click
+  find('td.is-today').click
 end
