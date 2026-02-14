@@ -167,12 +167,12 @@ GEM
       railties (>= 6.1.0)
     faker (3.6.0)
       i18n (>= 1.8.11, < 2)
-    faraday (2.13.0)
+    faraday (2.14.1)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
-    faraday-net_http (3.4.0)
-      net-http (>= 0.5.0)
+    faraday-net_http (3.4.2)
+      net-http (~> 0.5)
     fastimage (2.2.4)
     ffi (1.17.2)
     fog-aws (3.33.1)
@@ -261,8 +261,8 @@ GEM
     multi_json (1.17.0)
     multi_xml (0.8.0)
       bigdecimal (>= 3.1, < 5)
-    net-http (0.6.0)
-      uri
+    net-http (0.9.1)
+      uri (>= 0.11.1)
     net-imap (0.5.12)
       date
       net-protocol
@@ -510,7 +510,7 @@ GEM
     unicode-emoji (4.2.0)
     unicode_utils (1.4.0)
     uniform_notifier (1.18.0)
-    uri (1.0.4)
+    uri (1.1.1)
     useragent (0.16.11)
     version_gem (1.1.7)
     view_component (4.2.0)
