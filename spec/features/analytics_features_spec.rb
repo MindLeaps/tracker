@@ -37,7 +37,7 @@ RSpec.describe 'User interacts with Analytics' do
       click_link 'Group analytics'
       select @organization.organization_name, from: 'organization_select'
       click_link 'Filter'
-      expect(page).to have_content(@group.group_chapter_name)
+      expect(page).to have_content('Download PNG')
     end
   end
 end

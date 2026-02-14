@@ -1,4 +1,8 @@
 ## Unreleased
+- Updated database engine versions in pulumi
+- Modified current Group analytics tab to use new charting logic
+- Added UI component for multiselect capabilities
+- Added new charting library using vendored `chart.js` and `regression.js`
 - Fixed student lesson summaries showing empty on report screen
 
 ## 0.39.0
