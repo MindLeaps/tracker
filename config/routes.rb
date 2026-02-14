@@ -33,7 +33,6 @@ Rails.application.routes.draw do
     get 'general' => 'general#index', as: :general_analytics
     get 'subject' => 'subject#index', as: :subject_analytics
     get 'group' => 'group#index', as: :group_analytics
-    get 'new' => 'new#index', as: :new_analytics
   end
 
   resources :users, only: %i[index new create destroy show] do

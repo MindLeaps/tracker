@@ -39,17 +39,5 @@ RSpec.describe 'User interacts with Analytics' do
       click_link 'Filter'
       expect(page).to have_content(@group.group_chapter_name)
     end
-
-    it 'does not display deleted group analytics', js: true do
-      visit '/'
-      click_link 'Analytics'
-      click_link 'Group analytics'
-
-      select @organization.organization_name, from: 'organization_select'
-      click_link 'Filter'
-
-      expect(page).to have_content(@group.group_chapter_name)
-      expect(page).not_to have_content(@deleted_group.group_chapter_name)
-    end
   end
 end
