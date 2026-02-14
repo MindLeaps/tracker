@@ -3,6 +3,7 @@ name: Build and Publish Docker Image
 on:
   release:
     types: [published]
+  workflow_dispatch:
 
 jobs:
   build_image:
@@ -24,7 +25,7 @@ jobs:
       - uses: docker/build-push-action@v6
         with:
           context: .
-          push: true
+          push: ${{ github.event_name == 'release' }}
           build-args: |
             APP_ENV=prod
           tags: |
