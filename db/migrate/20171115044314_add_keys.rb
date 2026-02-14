@@ -1,4 +1,3 @@
-# rubocop:disable Metrics/MethodLength
 class AddKeys < ActiveRecord::Migration[5.1]
   def change
     add_foreign_key 'assignments', 'skills', name: 'assignments_skill_id_fk'
@@ -20,4 +19,3 @@ class AddKeys < ActiveRecord::Migration[5.1]
     add_foreign_key 'users_roles', 'users', name: 'users_roles_user_id_fk'
   end
 end
-# rubocop:enable Metrics/MethodLength
