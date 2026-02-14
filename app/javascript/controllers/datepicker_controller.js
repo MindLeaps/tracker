@@ -14,6 +14,10 @@ export default class extends Controller {
         this.anchorTarget.href = url.href
     }
 
+    onChange() {
+        this.element.dispatchEvent(new CustomEvent("datepicker:change", { bubbles: true }))
+    }
+
     connect() {
        const picker = new Pikaday({
            field: this.pickerTarget,

@@ -7,7 +7,7 @@ class Datepicker < ViewComponent::Base
         <%= @form.text_field @target, data: { 'datepicker-target' => 'picker' },
          class: @custom_class || 'rounded-md border-purple-500 text-sm focus:border-green-600 focus:outline-hidden focus:ring-green-600', autocomplete: 'disabled' %>
       <% elsif @custom_name %>
-        <%= text_field_tag @custom_name, @date, data: { 'datepicker-target' => 'picker' },
+        <%= text_field_tag @custom_name, @date, data: { 'datepicker-target' => 'picker', 'action' => 'change->datepicker#onChange' },
          class: @custom_class || 'rounded-md border-purple-500 text-sm focus:border-green-600 focus:outline-hidden focus:ring-green-600', autocomplete: 'disabled' %>
       <% else %>
         <%= input_field %>

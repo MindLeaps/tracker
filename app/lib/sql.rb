@@ -73,4 +73,22 @@ class Sql
       group by l.id;
     SQL
   end
+
+  def self.average_mark_for_group_lessons
+    <<~SQL.squish
+      SELECT
+        row_number() OVER (ORDER BY l.date) - 1 AS idx,
+        round(avg(g.mark), 2)::FLOAT AS avg_mark,
+        l.id AS lesson_id,
+        l.date AS lesson_date
+      FROM lessons l
+      JOIN grades g ON g.lesson_id = l.id
+      WHERE l.group_id = $1
+        AND g.deleted_at IS NULL
+        AND ($2::date IS NULL OR l.date >= $2::date)
+        AND ($3::date IS NULL OR l.date <= $3::date)
+      GROUP BY l.id, l.date
+      ORDER BY l.date;
+    SQL
+  end
 end

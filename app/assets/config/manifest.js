@@ -3,6 +3,7 @@
 //= link tailwind.css
 //= link application.js
 //= link charts.js
+//= link new_charts.js
 //= link analytics.js
 //= link pikaday.js
 //= link frappe-gantt.css

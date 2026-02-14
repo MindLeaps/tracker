@@ -3,7 +3,7 @@
 <%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
   { title: t(:general_analytics).capitalize, href: general_analytics_url },
   { title: t(:subject_analytics).capitalize, href: subject_analytics_url },
-  { title: t(:group_analytics).capitalize, href: '' }
+  { title: t(:group_analytics).capitalize, href: '' },
 ]) do |h| %>
   <% h.with_left do %>
   <% end %>
@@ -20,108 +20,47 @@
       <%= select_tag :chapter_select, options_from_collection_for_select(@available_chapters, :id, :chapter_name, @selected_chapter_id), :class => 'mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md', :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'chapter_id', 'data-dependents' => ['group_id'].to_json, 'data-resources' => @available_chapters.map { |c| { id: c.id, label: c.chapter_name, depend_id: c.organization_id } }.to_json %>
     </div>
     <div class="pl-2">
-      <%= label_tag :group_label, "Group", class: 'block text-sm font-medium text-gray-700' %>
-      <%= select_tag :group_select, options_from_collection_for_select(@available_groups, :id, :group_name, @selected_group_id), :class => 'mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md', :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'group_id', 'data-resources' => @available_groups.map { |g| { id: g.id, label: g.group_name, depend_id: g.chapter_id } }.uniq.to_json %>
+      <%= label_tag :chapter_label, "Group", class: 'block text-sm font-medium text-gray-700' %>
+      <div data-analytics-filter-target="multiselect" data-action="multiselect:ready->analytics-filter#updateFilter multiselect:change->analytics-filter#updateAnchor">
+        <%= render CommonComponents::MultiselectComponent.new(label: 'All', target: 'group_ids[]', options: @available_groups.map { |g| { id: g.id, label: g.group_name, depend_id: g.chapter_id } }, selected_values: @selected_group_ids) %>
+      </div>
+    </div>
+    <div class="pl-2">
+      <%= label_tag :from_label, "From", class: 'block text-sm font-medium text-gray-700' %>
+      <div data-analytics-filter-target="date" data-action="datepicker:change->analytics-filter#updateAnchor">
+        <%= render Datepicker.new(date: @from, target: 'from', custom_name: "from_date", custom_class: 'mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md') %>
+      </div>
+    </div>
+    <div class="pl-2">
+      <%= label_tag :to_label, "To", class: 'block text-sm font-medium text-gray-700' %>
+      <div data-analytics-filter-target="date" data-action="datepicker:change->analytics-filter#updateAnchor">
+        <%= render Datepicker.new(date: @to, target: 'to', custom_name: "to_date", custom_class: 'mt -1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md') %>
+      </div>
     </div>
     <div class="pl-2 pt-5">
-      <%= render CommonComponents::ButtonComponent.new(label: t(:filter), options: { 'data-analytics-filter-target' => 'anchor' })%>
+      <%= render CommonComponents::ButtonComponent.new(label: t(:filter), options: { 'data-analytics-filter-target' => 'anchor', 'data-turbo-prefetch' => 'false' })%>
     </div>
   </div>
 
-  <div class="grid gap-2" style="grid-template-columns: repeat(2, minmax(min-content, 50%))">
-    <% @group_series.each_slice(2) do |d1, d2| %>
-      <div id="group-<%= d1[:group] %>" class="w-full h-96"></div>
-      <% if d2 %>
-        <div id="group-<%= d2[:group] %>" class="w-full h-96"></div>
-      <% end %>
-    <% end %>
+  <div class="w-full h-[800px] bg-white rounded-md border relative" data-controller="charts-download">
+    <button
+      type="button"
+      class="normal-button absolute top-2 right-2"
+      data-action="click->charts-download#download">
+      Download PNG
+    </button>
+    <canvas id="groups-performance-chart" data-charts-download-target="canvas"></canvas>
   </div>
 </div>
 
 <script>
-  function startAnalytics() {
-    let datasets = <%= @group_series.to_json.html_safe %>;
+    function drawGroupPerformanceCharts() {
+        let data = <%= @group_series.to_json.html_safe %>;
 
-    datasets.forEach(function(dataset) {
-      new Highcharts.Chart({
-        chart: {
-            renderTo: 'group-' + dataset.group,
-            zoomType: 'x',
-            type: 'scatter'
-        },
-        exporting: {
-          filename: dataset.group + '-chart',
-          buttons: {
-            contextButton: {
-              menuItems: [
-                'downloadPNG',
-                'downloadJPEG',
-                'downloadPDF',
-                'downloadSVG'
-              ]
-            }
-          },
-          fallbackToExportServer: false
-        },
-        title: {
-            text: dataset.group
-        },
-        credits: {
-            enabled: false
-        },
-        tooltip: {
-          formatter: function () {
-            return '<span style="color:' + this.point.color + '">\u25CF</span> ' + this.series.name +
-              '<br/><span>x: <span style="font-weight: bold">' + this.point.x + '</span></span>' +
-              '<br/><span>y: <span style="font-weight: bold">' + this.point.y + '</span></span>' +
-              (this.point.grade_count ? '<br/><span><%= t(:grades) %>: ' + this.point.grade_count + '</span>' : '') +
-              (this.point.date ? '<br/><span><%= t(:lesson_date) %>: ' + this.point.date + '</span>' : '');
-          }
-        },
-        xAxis: {
-            allowDecimals: false,
-            title: {
-                text: '<%= t(:nr_of_lessons) %>'
-            },
-            min: 1
-        },
-        yAxis: {
-            allowDecimals: false,
-            title: {
-                text: '<%= t(:performance) %>'
-            },
-            max: 7,
-            endOnTick: false
-        },
-        legend: {
-            enabled: false
-        },
-        plotOptions: {
-            series: {
-                events: {
-                  click: function (e, a1, a2) {
-                    if (e.point.lesson_url) {
-                      window.open(e.point.lesson_url, '_blank');
-                    }
-                  }
-                },
-                marker: {
-                    radius: 2
-                }
-            }
-        },
-        series: dataset.series
-    });
-  });
-  }
-
-  function pollForHighcharts(cb) {
-    if (window.Highcharts) {
-      cb()
-    } else {
-      setTimeout(pollForHighcharts.bind(this, cb), 100);
+        if(data && data.length > 0) {
+            displayAveragePerformancePerGroupByLesson && displayAveragePerformancePerGroupByLesson(data)
+        }
     }
-  }
-
-  pollForHighcharts(startAnalytics);
 </script>
+
+<%= javascript_include_tag "new_charts", onload: 'drawGroupPerformanceCharts()' %>
