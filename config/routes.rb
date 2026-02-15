@@ -35,6 +35,10 @@ Rails.application.routes.draw do
     get 'group' => 'group#index', as: :group_analytics
   end
 
+  namespace :analytics do
+    get :students, to: 'students#index'
+  end
+
   resources :users, only: %i[index new create destroy show] do
     member do
       post :create_api_token
