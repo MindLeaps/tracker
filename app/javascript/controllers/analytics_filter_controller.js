@@ -11,7 +11,7 @@ function createOption(label, value) {
 }
 
 export default class extends Controller {
-  static targets = ['select', 'anchor', 'multiselect', 'date']
+  static targets = ['select', 'anchor', 'multiselect', 'date', 'studentSelect']
 
   connect() {
     this.allowedIdsByName = {}
@@ -35,7 +35,9 @@ export default class extends Controller {
     // add select params
     this.selectTargets.forEach(e => {
       const value = this.toId(e.value)
-      params.set(e.getAttribute('data-name'), value)
+      const name = e.getAttribute('data-name')
+
+      if (value !== '') params.set(name, value)
     })
 
     // add multiselect params (hidden inputs)
@@ -65,6 +67,8 @@ export default class extends Controller {
   }
 
   updateDropdown(dropdown, values, parentIds) {
+    if (!dropdown || !values) return // return if dropdown has no resources
+
     const currentValue = Number(dropdown.value);
     dropdown.innerHTML = '';
     dropdown.append(createOption('All', null));
@@ -128,5 +132,91 @@ export default class extends Controller {
       const controller = this.application.getControllerForElementAndIdentifier(el, "multiselect")
       controller?.filterOptions(allowedChapterIds)
     })
+  }
+
+  async preloadStudents() {
+    // Find hidden inputs for group_ids[] in any multiselect wrapper
+    const wrapper = this.multiselectTargets.find(m => m.querySelector('input[type="hidden"][name="group_ids[]"]'))
+    if (!wrapper) return
+
+    const selectedGroupIds = [...wrapper.querySelectorAll('input[type="hidden"][name="group_ids[]"]')]
+        .map(i => i.value)
+        .filter(v => v !== '')
+
+    await this.loadStudentsForGroupIds(selectedGroupIds)
+    this.updateAnchor()
+  }
+
+  async loadStudentsForGroupIds(groupIds) {
+    const studentSelect = this.studentSelectTarget
+    const url = studentSelect.dataset.studentsUrl
+    const ids = (groupIds || []).map(String).filter(v => v !== '')
+
+    if (ids.length === 0) {
+      this.resetStudentSelect()
+      return
+    }
+
+    // load students
+    studentSelect.disabled = true
+    studentSelect.innerHTML = ''
+    studentSelect.append(createOption('Loading...', ''))
+
+    const params = new URLSearchParams()
+    ids.forEach(id => params.append('group_ids[]', id))
+
+    const resp = await fetch(`${url}?${params.toString()}`, {
+      headers: { Accept: 'application/json' }
+    })
+
+    if (!resp.ok) {
+      this.resetStudentSelect()
+      return
+    }
+
+    const students = await resp.json()
+
+    studentSelect.innerHTML = ''
+    studentSelect.append(createOption('All', ''))
+    students.forEach(s => studentSelect.append(createOption(s.label, s.id)))
+
+    studentSelect.disabled = false
+    this.applySelectedStudentIfPresent()
+
+    // If no preselected student, reset to All (useful when groups change)
+    if (!studentSelect.value) {
+      studentSelect.value = ''
+    }
+  }
+
+  applySelectedStudentIfPresent() {
+    const studentSelect = this.studentSelectTarget
+    const selectedId = String(studentSelect.dataset.selectedStudentId || '').trim()
+    if (!selectedId) return
+
+    // only set if the option exists
+    const hasOption = [...studentSelect.options].some(o => String(o.value) === selectedId)
+    if (hasOption) {
+      studentSelect.value = selectedId
+    }
+  }
+
+  resetStudentSelect(message = 'Select groups to load students') {
+    const studentSelect = this.studentSelectTarget
+
+    studentSelect.innerHTML = ''
+    studentSelect.append(createOption(message, ''))
+    studentSelect.disabled = true
+    studentSelect.value = ''
+  }
+
+  // called when group multiselect changes
+  async handleGroupChange(event) {
+    // event.detail: { name, selected }
+    if (event.detail?.name === 'group_ids[]') {
+      await this.loadStudentsForGroupIds(event.detail.selected || [])
+    }
+
+    this.updateAnchor()
   }
 }
