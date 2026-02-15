@@ -7,13 +7,13 @@ module Analytics
       @available_organizations = policy_scope Organization.where(deleted_at: nil).order(:organization_name)
       @available_chapters = policy_scope Chapter.where(deleted_at: nil).order(:chapter_name)
       @available_groups = policy_scope Group.where(deleted_at: nil).order(:group_name)
-      @available_students = policy_scope StudentAnalyticsSummary
       @available_subjects = policy_scope Subject.where(deleted_at: nil)
+      @available_students = []
 
       @selected_organization_id = params[:organization_id] || @available_organizations.first.id
       @selected_chapter_id = params[:chapter_id]
       @subject = params[:subject_id] || @available_subjects.first&.id
-      @selected_group_id = params[:group_id]
+      @selected_group_ids = params[:group_ids]
       @selected_student_id = params[:student_id]
     end
 

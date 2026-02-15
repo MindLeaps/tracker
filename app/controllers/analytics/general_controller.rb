@@ -3,7 +3,7 @@ module Analytics
     def index
       selected_organizations = find_resource_by_id_param @selected_organization_id, Organization
       selected_chapters = find_resource_by_id_param(@selected_chapter_id, Chapter) { |c| c.where(organization: selected_organizations) }
-      selected_groups = find_resource_by_id_param(@selected_group_id, Group) { |g| g.where(chapter: selected_chapters) }
+      selected_groups = find_resource_by_id_param(@selected_group_ids, Group) { |g| g.where(chapter: selected_chapters) }
       @selected_students = find_resource_by_id_param(@selected_student_id, Student) { |s| s.joins(:enrollments).where(enrollments: { group_id: selected_groups }, deleted_at: nil) }
 
       @assessments_per_month = assessments_per_month
