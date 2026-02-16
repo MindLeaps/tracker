@@ -151,7 +151,7 @@ export default class extends Controller {
     const params = new URLSearchParams()
     groupIds.forEach(id => params.append('group_ids[]', id))
 
-    // preserve student_id from URL (optional, but usually desired)
+    // preserve student_id from url
     const urlParams = new URLSearchParams(window.location.search)
     const studentId = urlParams.get('student_id')
     if (studentId) params.set('student_id', studentId)
