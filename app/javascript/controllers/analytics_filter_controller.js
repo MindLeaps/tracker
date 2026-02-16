@@ -134,7 +134,7 @@ export default class extends Controller {
     })
   }
 
-  async preloadStudents() {
+  preloadStudents() {
     const frame = document.getElementById('student_select_frame')
     if (!frame) return
 
@@ -161,7 +161,7 @@ export default class extends Controller {
   }
 
   // called when group multiselect changes
-  async handleGroupChange(event) {
+  handleGroupChange(event) {
     if (event.detail?.name !== 'group_ids[]') return
 
     const frame = document.getElementById('student_select_frame')
