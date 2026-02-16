@@ -21,18 +21,22 @@
     </div>
     <div class="pl-2">
       <%= label_tag :group_label, "Group", class: 'block text-sm font-medium text-gray-700' %>
-      <%= select_tag :group_select, options_from_collection_for_select(@available_groups, :id, :group_name, @selected_group_id), :class => 'mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md', :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'group_id', 'data-dependents' => ['student_id'].to_json, 'data-resources' => @available_groups.map { |g| { id: g.id, label: g.group_name, depend_id: g.chapter_id } }.to_json %>
+      <div data-analytics-filter-target="multiselect" data-action="multiselect:ready->analytics-filter#preloadStudents multiselect:ready->analytics-filter#updateFilter multiselect:change->analytics-filter#handleGroupChange">
+        <%= render CommonComponents::MultiselectComponent.new(label: t(:all), target: 'group_ids[]', options: @available_groups.map { |g| { id: g.id, label: g.group_name, depend_id: g.chapter_id } }, selected_values: @selected_group_ids) %>
+      </div>
     </div>
     <div class="pl-2">
       <%= label_tag :subject_label, "Subject", class: 'block text-sm font-medium text-gray-700' %>
       <%= select_tag :subject_select, options_from_collection_for_select(@available_subjects, :id, :subject_name, @subject), :class => 'mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md', :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'subject_id', 'data-resources' => @available_subjects.map { |s| { id: s.id, label: s.subject_name, depend_id: s.organization_id } }.to_json %>
     </div>
     <div class="pl-2">
-      <%= label_tag :student_label, "Student", class: 'block text-sm font-medium text-gray-700' %>
-      <%= select_tag :student_select, options_from_collection_for_select(@available_students, :id, :proper_name, @selected_student_id), :class => 'mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md', :prompt => 'All', 'data-analytics-filter-target' => 'select', 'data-action' => 'analytics-filter#updateFilter', 'data-name' => 'student_id', 'data-resources' => @available_students.map { |s| { id: s.id, label: s.proper_name, depend_id: s.old_group_id, dependent_ids: s.enrolled_group_ids } }.to_json %>
+      <%= label_tag :student_label, "Student", class: "block text-sm font-medium text-gray-700" %>
+      <%= turbo_frame_tag "student_select_frame", data: { src_base: analytics_student_select_path } do %>
+        <%= render 'analytics/students/student_select', students: [], selected_student_id: nil, disabled: true %>
+      <% end %>
     </div>
     <div class="pl-2 pt-5">
-      <%= render CommonComponents::ButtonComponent.new(label: t(:filter), options: { 'data-analytics-filter-target' => 'anchor' })%>
+      <%= render CommonComponents::ButtonComponent.new(label: t(:filter), options: { 'data-analytics-filter-target' => 'anchor', 'data-turbo-prefetch' => 'false' })%>
     </div>
   </div>
 
