@@ -36,7 +36,7 @@ Rails.application.routes.draw do
   end
 
   namespace :analytics do
-    get :students, to: 'students#index'
+    get :student_select, to: 'students#index'
   end
 
   resources :users, only: %i[index new create destroy show] do

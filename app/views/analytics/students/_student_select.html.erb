@@ -1,0 +1,9 @@
+<% placeholder = disabled ? t(:select_groups_to_load_students) : t(:all) %>
+<%= select_tag :student_id,
+               options_for_select([[placeholder, ""]] + students.map { |s| [s.proper_name, s.id] }, selected_student_id),
+               disabled: disabled,
+               class: "disabled:bg-gray-300 mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md",
+               "data-analytics-filter-target" => "select",
+               "data-name" => "student_id",
+               "data-action" => "analytics-filter#updateAnchor"
+%>

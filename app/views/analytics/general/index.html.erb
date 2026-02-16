@@ -26,18 +26,10 @@
       </div>
     </div>
     <div class="pl-2">
-      <%= label_tag :student_label, "Student", class: 'block text-sm font-medium text-gray-700' %>
-      <%= select_tag :student_select,
-                     options_for_select([]),
-                     disabled: true,
-                     class: 'disabled:bg-gray-300 mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md',
-                     prompt: 'Select groups to load students',
-                     'data-analytics-filter-target' => 'select studentSelect',
-                     'data-name' => 'student_id',
-                     'data-students-url' => analytics_students_url,
-                     'data-selected-student-id' => @selected_student_id,
-                     'data-action' => 'analytics-filter#updateFilter'
-      %>
+      <%= label_tag :student_label, "Student", class: "block text-sm font-medium text-gray-700" %>
+      <%= turbo_frame_tag "student_select_frame", data: { src_base: analytics_student_select_path } do %>
+          <%= render 'analytics/students/student_select', students: [], selected_student_id: nil, disabled: true %>
+        <% end %>
     </div>
     <div class="pl-2 pt-5">
       <%= render CommonComponents::ButtonComponent.new(label: t(:filter), options: { 'data-analytics-filter-target' => 'anchor', 'data-turbo-prefetch' => 'false' })%>

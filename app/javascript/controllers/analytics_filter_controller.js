@@ -11,7 +11,7 @@ function createOption(label, value) {
 }
 
 export default class extends Controller {
-  static targets = ['select', 'anchor', 'multiselect', 'date', 'studentSelect']
+  static targets = ['select', 'anchor', 'multiselect', 'date']
 
   connect() {
     this.allowedIdsByName = {}
@@ -135,87 +135,51 @@ export default class extends Controller {
   }
 
   async preloadStudents() {
-    // Find hidden inputs for group_ids[] in any multiselect wrapper
-    const wrapper = this.multiselectTargets.find(m => m.querySelector('input[type="hidden"][name="group_ids[]"]'))
+    const frame = document.getElementById('student_select_frame')
+    if (!frame) return
+
+    // read selected groups from hidden inputs created by multiselect
+    const wrapper = this.multiselectTargets.find(mt => mt.querySelector('input[type="hidden"][name="group_ids[]"]'))
     if (!wrapper) return
 
-    const selectedGroupIds = [...wrapper.querySelectorAll('input[type="hidden"][name="group_ids[]"]')]
+    const groupIds = [...wrapper.querySelectorAll('input[type="hidden"][name="group_ids[]"]')]
         .map(i => i.value)
         .filter(v => v !== '')
 
-    await this.loadStudentsForGroupIds(selectedGroupIds)
-    this.updateAnchor()
-  }
-
-  async loadStudentsForGroupIds(groupIds) {
-    const studentSelect = this.studentSelectTarget
-    const url = studentSelect.dataset.studentsUrl
-    const ids = (groupIds || []).map(String).filter(v => v !== '')
-
-    if (ids.length === 0) {
-      this.resetStudentSelect()
-      return
-    }
-
-    // load students
-    studentSelect.disabled = true
-    studentSelect.innerHTML = ''
-    studentSelect.append(createOption('Loading...', ''))
+    if (groupIds.length === 0) return
 
     const params = new URLSearchParams()
-    ids.forEach(id => params.append('group_ids[]', id))
+    groupIds.forEach(id => params.append('group_ids[]', id))
 
-    const resp = await fetch(`${url}?${params.toString()}`, {
-      headers: { Accept: 'application/json' }
-    })
+    // preserve student_id from URL (optional, but usually desired)
+    const urlParams = new URLSearchParams(window.location.search)
+    const studentId = urlParams.get('student_id')
+    if (studentId) params.set('student_id', studentId)
 
-    if (!resp.ok) {
-      this.resetStudentSelect()
-      return
-    }
-
-    const students = await resp.json()
-
-    studentSelect.innerHTML = ''
-    studentSelect.append(createOption('All', ''))
-    students.forEach(s => studentSelect.append(createOption(s.label, s.id)))
-
-    studentSelect.disabled = false
-    this.applySelectedStudentIfPresent()
-
-    // If no preselected student, reset to All (useful when groups change)
-    if (!studentSelect.value) {
-      studentSelect.value = ''
-    }
-  }
-
-  applySelectedStudentIfPresent() {
-    const studentSelect = this.studentSelectTarget
-    const selectedId = String(studentSelect.dataset.selectedStudentId || '').trim()
-    if (!selectedId) return
-
-    // only set if the option exists
-    const hasOption = [...studentSelect.options].some(o => String(o.value) === selectedId)
-    if (hasOption) {
-      studentSelect.value = selectedId
-    }
-  }
-
-  resetStudentSelect(message = 'Select groups to load students') {
-    const studentSelect = this.studentSelectTarget
-
-    studentSelect.innerHTML = ''
-    studentSelect.append(createOption(message, ''))
-    studentSelect.disabled = true
-    studentSelect.value = ''
+    frame.src = `${frame.dataset.srcBase}?${params.toString()}`
+    frame.reload()
   }
 
   // called when group multiselect changes
   async handleGroupChange(event) {
-    // event.detail: { name, selected }
-    if (event.detail?.name === 'group_ids[]') {
-      await this.loadStudentsForGroupIds(event.detail.selected || [])
-    }
+    if (event.detail?.name !== 'group_ids[]') return
+
+    const frame = document.getElementById('student_select_frame')
+    if (!frame) return
+
+    const params = new URLSearchParams();
+
+    (event.detail.selected || [])
+        .filter(v => v !== '')
+        .forEach(id => params.append('group_ids[]', id))
+
+    // keep current student selection if possible
+    const studentSelect = this.selectTargets.find(t => t.dataset.name === 'student_id')
+    const currentStudentId = studentSelect?.value
+    if (currentStudentId) params.set('student_id', currentStudentId)
+
+    frame.src = `${frame.dataset.srcBase}?${params.toString()}`
+    frame.reload()
 
     this.updateAnchor()
   }
