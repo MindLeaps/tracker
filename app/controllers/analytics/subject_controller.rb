@@ -18,7 +18,8 @@ module Analytics
       conn = ActiveRecord::Base.connection.raw_connection
       students = {}
 
-      query_result = conn.exec(Sql.performance_per_skill_in_lessons_per_student_query([@selected_student_id])).values
+      sql = Sql.performance_per_skill_in_lessons_per_student_query_with_dates([@selected_student_id.to_i])
+      query_result = conn.exec_params(sql, [@from, @to]).values
       result = query_result.reduce({}) do |acc, e|
         student_id = e[-1]
         student_name = students[student_id] ||= Student.find(student_id).proper_name
@@ -53,7 +54,7 @@ module Analytics
 
       return [] if groups.empty?
 
-      result = PerformancePerGroupPerSkillPerLesson.where(group: groups).reduce({}) do |acc, e|
+      result = PerformancePerGroupPerSkillPerLesson.where(group: groups, date: @from..@to).reduce({}) do |acc, e|
         acc.tap do |a|
           if a.key?(e.skill_name)
             if a[e.skill_name].key?(e.group_chapter_name)

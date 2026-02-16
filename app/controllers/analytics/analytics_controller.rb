@@ -10,6 +10,9 @@ module Analytics
       @available_subjects = policy_scope Subject.where(deleted_at: nil)
       @available_students = []
 
+      @from = params[:from_date] || Date.new(Date.current.year, 1, 1)
+      @to = params[:to_date] || Date.current
+
       @selected_organization_id = params[:organization_id] || @available_organizations.first.id
       @selected_chapter_id = params[:chapter_id]
       @subject = params[:subject_id] || @available_subjects.first&.id

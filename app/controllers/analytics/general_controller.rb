@@ -3,24 +3,32 @@ module Analytics
     def index
       selected_organizations = find_resource_by_id_param @selected_organization_id, Organization
       selected_chapters = find_resource_by_id_param(@selected_chapter_id, Chapter) { |c| c.where(organization: selected_organizations) }
-      selected_groups = find_resource_by_id_param(@selected_group_ids, Group) { |g| g.where(chapter: selected_chapters) }
-      @selected_students = find_resource_by_id_param(@selected_student_id, Student) { |s| s.joins(:enrollments).where(enrollments: { group_id: selected_groups }, deleted_at: nil) }
+      @selected_groups = find_resource_by_id_param(@selected_group_ids, Group) { |g| g.where(chapter: selected_chapters) }
+      @selected_students = find_resource_by_id_param(@selected_student_id, Student) { |s| s.joins(:enrollments).where(enrollments: { group_id: @selected_groups }, deleted_at: nil) }
 
       @assessments_per_month = assessments_per_month
       @student_performance = histogram_of_student_performance.to_json
       @student_performance_change = histogram_of_student_performance_change.to_json
       @gender_performance_change = histogram_of_student_performance_change_by_gender.to_json
       @average_group_performance = average_performance_per_group_by_lesson.to_json
+      @number_of_data_points = data_points
     end
 
     private
+
+    def data_points
+      Grade.joins(:lesson)
+           .where(student: @selected_students.select(:id), deleted_at: nil)
+           .where(lessons: { date: @from..@to }).count
+    end
 
     def histogram_of_student_performance
       conn = ActiveRecord::Base.connection.raw_connection
       res = if @selected_students.blank?
               []
             else
-              conn.exec(Sql.student_performance_query(@selected_students)).values
+              sql = Sql.student_performance_query_with_dates(@selected_students.ids)
+              conn.exec_params(sql, [@from, @to]).values
             end
 
       [{ name: t(:frequency_perc), data: res }]
@@ -41,7 +49,8 @@ module Analytics
       students_by_gender = @selected_students.where(gender:)
       return unless students_by_gender.length.positive?
 
-      result << { name: "#{t(:gender)} #{gender}", data: conn.exec(Sql.performance_change_query(students_by_gender)).values }
+      sql = Sql.performance_change_query_with_dates(students_by_gender.ids)
+      result << { name: "#{t(:gender)} #{gender}", data: conn.exec_params(sql, [@from, @to]).values }
     end
 
     def histogram_of_student_performance_change
@@ -50,42 +59,49 @@ module Analytics
       res = if @selected_students.blank?
               []
             else
-              conn.exec(Sql.performance_change_query(@selected_students)).values
+              sql = Sql.performance_change_query_with_dates(@selected_students.ids)
+              conn.exec_params(sql, [@from, @to]).values
             end
+
       [{ name: t(:frequency_perc), data: res }]
     end
 
-    def assessments_per_month # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/MethodLength
+    def assessments_per_month
       conn = ActiveRecord::Base.connection.raw_connection
-      lesson_ids = Lesson.where(group_id: @selected_students.map(&:enrolled_group_ids).flatten.uniq).ids
+      group_ids = @selected_students.map(&:enrolled_group_ids).flatten.uniq
+      lesson_ids = Lesson.where(group_id: group_ids).pluck(:id)
       lesson_ids_formatted = lesson_ids.map { |str| "'#{str}'" }.join(', ')
+      return { categories: [], series: [{ name: t(:nr_of_assessments), data: [] }] } if lesson_ids.blank?
 
-      res = if lesson_ids.blank?
-              []
-            else
-              conn.exec("select to_char(date_trunc('month', l.date), 'YYYY-MM') as month, count(distinct(l.id, g.student_id)) as assessments
-                                            from lessons as l
-                                              inner join grades as g
-                                                on l.id = g.lesson_id
-                                              inner join groups as gr
-                                                on gr.id = l.group_id
-                                            where l.id IN (#{lesson_ids_formatted})
-                                            group by month
-                                            order by month;").values
-            end
+      sql = <<~SQL
+        select to_char(date_trunc('month', l.date), 'YYYY-MM') as month,
+               count(distinct(l.id, g.student_id)) as assessments
+        from lessons l
+        inner join grades g on l.id = g.lesson_id
+        where l.id IN (#{lesson_ids_formatted})
+          and g.deleted_at IS NULL
+          and ($1::date IS NULL OR l.date >= $1::date)
+          and ($2::date IS NULL OR l.date <= $2::date)
+        group by month
+        order by month;
+      SQL
 
+      res = conn.exec_params(sql, [@from, @to]).values
       {
         categories: res.pluck(0),
         series: [{ name: t(:nr_of_assessments), data: res.pluck(1) }]
       }
     end
+    # rubocop:enable Metrics/MethodLength
 
     def average_performance_per_group_by_lesson
-      groups = Array(groups_for_average_performance)
-
+      groups = Array(@selected_groups)
       conn = ActiveRecord::Base.connection.raw_connection
+      sql = Sql.average_mark_for_group_lessons
+
       groups.map do |group|
-        result = conn.exec(Sql.average_mark_in_group_lessons(group)).values
+        result = conn.exec_params(sql, [group.id, @from, @to]).values
         {
           name: "#{t(:group)} #{group.group_chapter_name}",
           data: format_point_data(result)
@@ -103,10 +119,6 @@ module Analytics
           date: e[3]
         }
       end
-    end
-
-    def groups_for_average_performance
-      Group.where(id: @selected_students.map(&:enrolled_group_ids).flatten.uniq)
     end
   end
 end
