@@ -25,7 +25,7 @@ module Analytics
     end
 
     def all_selected?(id_selected)
-      id_selected.nil? || id_selected == '' || id_selected == 'All'
+      id_selected.nil? || id_selected == '' || id_selected == t(:all)
     end
 
     def colors
@@ -37,7 +37,7 @@ module Analytics
     end
 
     def selected_param_present_but_not_all?(selected_param)
-      selected_param.present? && (selected_param != 'All')
+      selected_param.present? && (selected_param != t(:all))
     end
   end
 end

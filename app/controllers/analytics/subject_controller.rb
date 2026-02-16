@@ -5,7 +5,7 @@ module Analytics
     # rubocop:disable Metrics/CyclomaticComplexity
     # rubocop:disable Metrics/AbcSize
     def index
-      @subject_series = if @selected_student_id.present? && @selected_student_id != 'All'
+      @subject_series = if @selected_student_id.present? && @selected_student_id != t(:all)
                           performance_per_skill_single_student
                         else
                           performance_per_skill
@@ -40,11 +40,11 @@ module Analytics
 
     def performance_per_skill
       groups = policy_scope(
-        if @selected_group_id.present? && @selected_group_id != 'All'
-          Group.where(id: @selected_group_id)
-        elsif @selected_chapter_id.present? && @selected_chapter_id != 'All'
+        if @selected_group_ids.present? && @selected_group_ids != t(:all)
+          Group.where(id: @selected_group_ids)
+        elsif @selected_chapter_id.present? && @selected_chapter_id != t(:all)
           Group.where(chapter_id: @selected_chapter_id)
-        elsif @selected_organization_id.present? && @selected_organization_id != 'All'
+        elsif @selected_organization_id.present? && @selected_organization_id != t(:all)
           Group.includes(:chapter).where(chapters: { organization_id: @selected_organization_id })
         else
           Group
