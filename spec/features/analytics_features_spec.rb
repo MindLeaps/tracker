@@ -17,6 +17,8 @@ RSpec.describe 'User interacts with Analytics' do
       visit '/'
       click_link 'Analytics'
       select @organization.organization_name, from: 'organization_select'
+      fill_in 'from_date', with: 1.year.ago.to_date.to_s
+
       click_link 'Filter'
       expect(page).to have_content('General analytics')
       expect(page).to have_link('Subject analytics')
@@ -31,6 +33,8 @@ RSpec.describe 'User interacts with Analytics' do
 
       click_link 'Subject analytics'
       select @organization.organization_name, from: 'organization_select'
+      fill_in 'from_date', with: 1.year.ago.to_date.to_s
+
       click_link 'Filter'
       expect(page).to have_content 'Memorization'
       expect(page).to have_content 'Grit'
