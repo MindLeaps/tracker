@@ -18,12 +18,19 @@ export default class extends Controller {
     this.updateFilter()
   }
 
-  updateFilter() {
+  updateFilter(event) {
+    const changedName = event?.target?.dataset?.name
+
     // filter dropdowns
     this.updateDropdown(this.selectTargets[0], JSON.parse(this.selectTargets[0].dataset.resources))
 
     // filter multiselect dropdown
     this.updateMultiselectOptions()
+
+    // refresh student dropdown if org or chapter changed
+    if (changedName === "organization_id" || changedName === "chapter_id") {
+      this.refreshStudentsForCurrentGroups()
+    }
 
     // update anchor link
     this.updateAnchor()
@@ -134,18 +141,42 @@ export default class extends Controller {
     })
   }
 
+  resetStudents() {
+    const frame = document.getElementById('student_select_frame')
+    if (!frame) return
+
+    frame.src = `${frame.dataset.srcBase}`
+    frame.reload()
+  }
+
+  refreshStudentsForCurrentGroups() {
+    const groupIds = this.readSelectedGroups()
+    if (groupIds.length === 0) {
+      this.resetStudents()
+      return
+    }
+
+    // reload frame according to groups
+    const frame = document.getElementById('student_select_frame')
+    if (!frame) return
+
+    const params = new URLSearchParams()
+    groupIds.forEach(id => params.append('group_ids[]', id))
+
+    // keep current student selection if possible
+    const studentSelect = this.selectTargets.find(t => t.dataset.name === 'student_id')
+    const currentStudentId = studentSelect?.value
+    if (currentStudentId) params.set('student_id', currentStudentId)
+
+    frame.src = `${frame.dataset.srcBase}?${params.toString()}`
+    frame.reload()
+  }
+
   preloadStudents() {
     const frame = document.getElementById('student_select_frame')
     if (!frame) return
 
-    // read selected groups from hidden inputs created by multiselect
-    const wrapper = this.multiselectTargets.find(mt => mt.querySelector('input[type="hidden"][name="group_ids[]"]'))
-    if (!wrapper) return
-
-    const groupIds = [...wrapper.querySelectorAll('input[type="hidden"][name="group_ids[]"]')]
-        .map(i => i.value)
-        .filter(v => v !== '')
-
+    const groupIds = this.readSelectedGroups()
     if (groupIds.length === 0) return
 
     const params = new URLSearchParams()
@@ -158,6 +189,15 @@ export default class extends Controller {
 
     frame.src = `${frame.dataset.srcBase}?${params.toString()}`
     frame.reload()
+  }
+
+  readSelectedGroups() {
+    const wrapper = this.multiselectTargets.find(mt => mt.querySelector('input[type="hidden"][name="group_ids[]"]'))
+    if (!wrapper) return []
+
+    return [...wrapper.querySelectorAll('input[type="hidden"][name="group_ids[]"]')]
+        .map(i => i.value)
+        .filter(v => v !== '')
   }
 
   // called when group multiselect changes
