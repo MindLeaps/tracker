@@ -1,4 +1,4 @@
-## Unreleased
+## 0.40.0
 - Added ability to filter analytics data by date
 - Added ability to select multiple groups in analytics
 - Updated database engine versions in pulumi
