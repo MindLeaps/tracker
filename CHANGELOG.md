@@ -1,4 +1,6 @@
 ## Unreleased
+- Added ability to filter analytics data by date
+- Added ability to select multiple groups in analytics
 - Updated database engine versions in pulumi
 - Modified current Group analytics tab to use new charting logic
 - Added UI component for multiselect capabilities
