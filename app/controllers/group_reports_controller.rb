@@ -109,10 +109,10 @@ class GroupReportsController < HtmlController
       {
         first_name: student[1],
         last_name: student[2],
-        first_lesson: summaries_for_student.first.average_mark,
-        middle_lesson: middle_from_rel(summaries_for_student).average_mark,
-        last_lesson: summaries_for_student.last.average_mark,
-        subject_id: summaries_for_student.first.subject_id
+        first_lesson: summaries_for_student.first&.average_mark,
+        middle_lesson: middle_from_rel(summaries_for_student)&.average_mark,
+        last_lesson: summaries_for_student.last&.average_mark,
+        subject_id: summaries_for_student.first&.subject_id
       }
     end
   end
