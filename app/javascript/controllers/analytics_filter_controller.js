@@ -18,12 +18,19 @@ export default class extends Controller {
     this.updateFilter()
   }
 
-  updateFilter() {
+  updateFilter(event) {
+    const changedName = event?.target?.dataset?.name
+
     // filter dropdowns
     this.updateDropdown(this.selectTargets[0], JSON.parse(this.selectTargets[0].dataset.resources))
 
     // filter multiselect dropdown
     this.updateMultiselectOptions()
+
+    // refresh student dropdown if org or chapter changed
+    if (changedName === "organization_id" || changedName === "chapter_id") {
+      this.refreshStudentsForCurrentGroups()
+    }
 
     // update anchor link
     this.updateAnchor()
@@ -35,7 +42,9 @@ export default class extends Controller {
     // add select params
     this.selectTargets.forEach(e => {
       const value = this.toId(e.value)
-      params.set(e.getAttribute('data-name'), value)
+      const name = e.getAttribute('data-name')
+
+      if (value !== '') params.set(name, value)
     })
 
     // add multiselect params (hidden inputs)
@@ -65,6 +74,8 @@ export default class extends Controller {
   }
 
   updateDropdown(dropdown, values, parentIds) {
+    if (!dropdown || !values) return // return if dropdown has no resources
+
     const currentValue = Number(dropdown.value);
     dropdown.innerHTML = '';
     dropdown.append(createOption('All', null));
@@ -128,5 +139,88 @@ export default class extends Controller {
       const controller = this.application.getControllerForElementAndIdentifier(el, "multiselect")
       controller?.filterOptions(allowedChapterIds)
     })
+  }
+
+  resetStudents() {
+    const frame = document.getElementById('student_select_frame')
+    if (!frame) return
+
+    frame.src = `${frame.dataset.srcBase}`
+    frame.reload()
+  }
+
+  refreshStudentsForCurrentGroups() {
+    const groupIds = this.readSelectedGroups()
+    if (groupIds.length === 0) {
+      this.resetStudents()
+      return
+    }
+
+    // reload frame according to groups
+    const frame = document.getElementById('student_select_frame')
+    if (!frame) return
+
+    const params = new URLSearchParams()
+    groupIds.forEach(id => params.append('group_ids[]', id))
+
+    // keep current student selection if possible
+    const studentSelect = this.selectTargets.find(t => t.dataset.name === 'student_id')
+    const currentStudentId = studentSelect?.value
+    if (currentStudentId) params.set('student_id', currentStudentId)
+
+    frame.src = `${frame.dataset.srcBase}?${params.toString()}`
+    frame.reload()
+  }
+
+  preloadStudents() {
+    const frame = document.getElementById('student_select_frame')
+    if (!frame) return
+
+    const groupIds = this.readSelectedGroups()
+    if (groupIds.length === 0) return
+
+    const params = new URLSearchParams()
+    groupIds.forEach(id => params.append('group_ids[]', id))
+
+    // preserve student_id from url
+    const urlParams = new URLSearchParams(window.location.search)
+    const studentId = urlParams.get('student_id')
+    if (studentId) params.set('student_id', studentId)
+
+    frame.src = `${frame.dataset.srcBase}?${params.toString()}`
+    frame.reload()
+  }
+
+  readSelectedGroups() {
+    const wrapper = this.multiselectTargets.find(mt => mt.querySelector('input[type="hidden"][name="group_ids[]"]'))
+    if (!wrapper) return []
+
+    return [...wrapper.querySelectorAll('input[type="hidden"][name="group_ids[]"]')]
+        .map(i => i.value)
+        .filter(v => v !== '')
+  }
+
+  // called when group multiselect changes
+  handleGroupChange(event) {
+    if (event.detail?.name !== 'group_ids[]') return
+
+    const frame = document.getElementById('student_select_frame')
+    if (!frame) return
+
+    const params = new URLSearchParams();
+
+    (event.detail.selected || [])
+        .filter(v => v !== '')
+        .forEach(id => params.append('group_ids[]', id))
+
+    // keep current student selection if possible
+    const studentSelect = this.selectTargets.find(t => t.dataset.name === 'student_id')
+    const currentStudentId = studentSelect?.value
+    if (currentStudentId) params.set('student_id', currentStudentId)
+
+    frame.src = `${frame.dataset.srcBase}?${params.toString()}`
+    frame.reload()
+
+    this.updateAnchor()
   }
 }

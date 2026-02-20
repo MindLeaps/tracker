@@ -5,7 +5,7 @@ module Analytics
     # rubocop:disable Metrics/CyclomaticComplexity
     # rubocop:disable Metrics/AbcSize
     def index
-      @subject_series = if @selected_student_id.present? && @selected_student_id != 'All'
+      @subject_series = if @selected_student_id.present? && @selected_student_id != t(:all)
                           performance_per_skill_single_student
                         else
                           performance_per_skill
@@ -18,7 +18,8 @@ module Analytics
       conn = ActiveRecord::Base.connection.raw_connection
       students = {}
 
-      query_result = conn.exec(Sql.performance_per_skill_in_lessons_per_student_query([@selected_student_id])).values
+      sql = Sql.performance_per_skill_in_lessons_per_student_query_with_dates([@selected_student_id.to_i])
+      query_result = conn.exec_params(sql, [@from, @to]).values
       result = query_result.reduce({}) do |acc, e|
         student_id = e[-1]
         student_name = students[student_id] ||= Student.find(student_id).proper_name
@@ -40,11 +41,11 @@ module Analytics
 
     def performance_per_skill
       groups = policy_scope(
-        if @selected_group_id.present? && @selected_group_id != 'All'
-          Group.where(id: @selected_group_id)
-        elsif @selected_chapter_id.present? && @selected_chapter_id != 'All'
+        if @selected_group_ids.present? && @selected_group_ids != t(:all)
+          Group.where(id: @selected_group_ids)
+        elsif @selected_chapter_id.present? && @selected_chapter_id != t(:all)
           Group.where(chapter_id: @selected_chapter_id)
-        elsif @selected_organization_id.present? && @selected_organization_id != 'All'
+        elsif @selected_organization_id.present? && @selected_organization_id != t(:all)
           Group.includes(:chapter).where(chapters: { organization_id: @selected_organization_id })
         else
           Group
@@ -53,7 +54,7 @@ module Analytics
 
       return [] if groups.empty?
 
-      result = PerformancePerGroupPerSkillPerLesson.where(group: groups).reduce({}) do |acc, e|
+      result = PerformancePerGroupPerSkillPerLesson.where(group: groups, date: @from..@to).reduce({}) do |acc, e|
         acc.tap do |a|
           if a.key?(e.skill_name)
             if a[e.skill_name].key?(e.group_chapter_name)

@@ -9,6 +9,7 @@ RSpec.describe 'User interacts with Analytics' do
       @group = create :group, chapter: @chapter
       @deleted_group = create :group, chapter: @chapter, deleted_at: Time.zone.now
       @student = create :graded_student, organization: @group.chapter.organization, groups: [@group], grades: { 'Memorization' => [3, 4, 5, 6, 7], 'Grit' => [2, 3, 2, 4, 5] }
+      @other_student = create :graded_student, organization: @group.chapter.organization, groups: [@group], grades: { 'Memorization' => [3, 4, 5, 6, 7], 'Grit' => [2, 3, 2, 4, 5] }
       @organization = @chapter.organization
     end
 
@@ -16,6 +17,8 @@ RSpec.describe 'User interacts with Analytics' do
       visit '/'
       click_link 'Analytics'
       select @organization.organization_name, from: 'organization_select'
+      fill_in 'from_date', with: 1.year.ago.to_date.to_s
+
       click_link 'Filter'
       expect(page).to have_content('General analytics')
       expect(page).to have_link('Subject analytics')
@@ -30,6 +33,8 @@ RSpec.describe 'User interacts with Analytics' do
 
       click_link 'Subject analytics'
       select @organization.organization_name, from: 'organization_select'
+      fill_in 'from_date', with: 1.year.ago.to_date.to_s
+
       click_link 'Filter'
       expect(page).to have_content 'Memorization'
       expect(page).to have_content 'Grit'
@@ -38,6 +43,24 @@ RSpec.describe 'User interacts with Analytics' do
       select @organization.organization_name, from: 'organization_select'
       click_link 'Filter'
       expect(page).to have_content('Download PNG')
+    end
+
+    it 'displays students only when groups are selected', js: true do
+      visit '/'
+      click_link 'Analytics'
+
+      student_select = find '#student_id'
+
+      expect(student_select).to have_selector('option', count: 1)
+      expect(student_select.find('option').text).to eq 'Select groups to load students'
+
+      multiselect_button = find('button[data-action="click->multiselect#toggleMenu"]')
+      multiselect_button.click
+
+      find('div[data-multiselect-target="option"]', text: @group.group_name).click
+
+      student_select.reload
+      expect(student_select).to have_selector('option', count: @group.students.count + 1) # for option 'All'
     end
   end
 end

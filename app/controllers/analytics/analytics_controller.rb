@@ -7,13 +7,16 @@ module Analytics
       @available_organizations = policy_scope Organization.where(deleted_at: nil).order(:organization_name)
       @available_chapters = policy_scope Chapter.where(deleted_at: nil).order(:chapter_name)
       @available_groups = policy_scope Group.where(deleted_at: nil).order(:group_name)
-      @available_students = policy_scope StudentAnalyticsSummary
       @available_subjects = policy_scope Subject.where(deleted_at: nil)
+      @available_students = []
+
+      @from = params[:from_date] || Date.new(Date.current.year, 1, 1)
+      @to = params[:to_date] || Date.current
 
       @selected_organization_id = params[:organization_id] || @available_organizations.first.id
       @selected_chapter_id = params[:chapter_id]
       @subject = params[:subject_id] || @available_subjects.first&.id
-      @selected_group_id = params[:group_id]
+      @selected_group_ids = params[:group_ids]
       @selected_student_id = params[:student_id]
     end
 
@@ -25,7 +28,7 @@ module Analytics
     end
 
     def all_selected?(id_selected)
-      id_selected.nil? || id_selected == '' || id_selected == 'All'
+      id_selected.nil? || id_selected == '' || id_selected == t(:all)
     end
 
     def colors
@@ -37,7 +40,7 @@ module Analytics
     end
 
     def selected_param_present_but_not_all?(selected_param)
-      selected_param.present? && (selected_param != 'All')
+      selected_param.present? && (selected_param != t(:all))
     end
   end
 end

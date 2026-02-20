@@ -145,6 +145,8 @@ en:
   student_restored: Student Restored
   student_restored_text: Student "%{name}" restored.
   unable_to_update_student: Unable to update student
+  all: All
+  select_groups_to_load_students: Select groups to load students
   cannot_change_organization_existing_student: Cannot change the organization of an existing student
   number_of_students: Number of Students
   number_of_groups: Number of Groups
