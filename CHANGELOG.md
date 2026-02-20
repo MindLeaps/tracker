@@ -1,3 +1,6 @@
+## Unreleased
+- Fixed issue where group reports crashed when students had no summaries
+
 ## 0.40.0
 - Added ability to filter analytics data by date
 - Added ability to select multiple groups in analytics
