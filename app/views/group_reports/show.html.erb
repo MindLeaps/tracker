@@ -131,7 +131,7 @@
         displayAveragesGraph && displayAveragesGraph(`#subject-${r.subject_id}-last_30`, '', takeLast(r.group_summaries, 30))
       }
       displayAveragesGraph && displayAveragesGraph(`#subject-${r.subject_id}-group_history`, '', r.group_summaries)
-      displayPercentagesGraph && displayPercentagesGraph(`#subject-${r.subject_id}-group_attendance`, r.group_summaries)
+      displayAttendanceGraph && displayAttendanceGraph(`#subject-${r.subject_id}-group_attendance`, r.group_summaries)
     })
 
     let enrollmentTimelines = <%= @enrollment_timelines.to_json.html_safe %>;
@@ -141,4 +141,4 @@
     document.addEventListener('DOMContentLoaded', handlePrint)
   }
 </script>
-<%= javascript_include_tag "charts", onload: 'onChartsLoad()' %>
+<%= javascript_include_tag "new_charts", onload: 'onChartsLoad()' %>

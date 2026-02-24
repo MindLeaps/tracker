@@ -1,6 +1,7 @@
 //= require chartjs.js
 //= require regression.js
 
+// Shared helpers
 function whiteBackgroundPlugin() {
     return {
         id: "whiteBackground",
@@ -14,6 +15,37 @@ function whiteBackgroundPlugin() {
             ctx.restore()
         }
     }
+}
+
+function ensureCanvasIsPresent(containerSelector, opts = {}) {
+    const id = containerSelector.startsWith("#") ? containerSelector.slice(1) : containerSelector
+    const container = document.getElementById(id)
+    if (!container) return null
+
+    // if a div was passed, create a canvas inside
+    let canvas = container.tagName.toLowerCase() === "canvas" ? container : container.querySelector("canvas")
+
+    if (!canvas) {
+        canvas = document.createElement("canvas")
+        canvas.style.width = "100%"
+        canvas.style.height = (opts.heightPx ? `${opts.heightPx}px` : "500px")
+        container.innerHTML = ""
+        container.appendChild(canvas)
+    }
+
+    return canvas
+}
+
+function destroyIfExists(canvas) {
+    if (canvas && canvas.__chart) {
+        canvas.__chart.destroy()
+        canvas.__chart = null
+    }
+}
+
+function toUSdateFormat(date) {
+    const d = (date instanceof Date) ? date : new Date(date)
+    return d.toLocaleDateString("en-US")
 }
 
 function polynomialLineForGroup(group, order = 4) {
@@ -257,4 +289,158 @@ function displayAveragePerformancePerGroupByLesson(groups) {
         },
         plugins: [whiteBackgroundPlugin()]
     })
+}
+
+// ---------- Averages Graph ----------
+function displayAveragesGraph(containerId, lessonId, data) {
+    if (!window.Chart) {
+        console.error("Chart.js not found (window.Chart undefined).")
+        return
+    }
+
+    const canvas = ensureCanvasIsPresent(containerId)
+    if (!canvas) return
+
+    destroyIfExists(canvas)
+
+    const points = (data || []).map(e => ({
+        x: Number(e.timestamp) * 1000,   // seconds -> ms
+        y: Number(e.average_mark),
+        lesson_id: e.lesson_id,
+        lesson_url: e.lesson_url
+    }))
+
+    const chart = new Chart(canvas.getContext("2d"), {
+        type: "line",
+        data: {
+            datasets: [{
+                label: "Grades",
+                data: points,
+                parsing: false,
+                borderWidth: 2,
+                pointRadius: (ctx) => {
+                    const raw = ctx.raw
+                    return (raw && String(raw.lesson_id) === String(lessonId)) ? 6 : 3
+                },
+                pointBackgroundColor: (ctx) => {
+                    const raw = ctx.raw
+                    return (raw && String(raw.lesson_id) === String(lessonId)) ? "#4CAF50" : "#2563EB"
+                },
+                pointBorderColor: (ctx) => {
+                    const raw = ctx.raw
+                    return (raw && String(raw.lesson_id) === String(lessonId)) ? "#4CAF50" : "#2563EB"
+                }
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    type: "linear",
+                    ticks: {
+                        callback: (value) => toUSdateFormat(Number(value))
+                    }
+                },
+                y: {
+                    min: 1,
+                    max: 7,
+                    ticks: { precision: 0 }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        title: (ctx) => toUSdateFormat(ctx[0].parsed.x),
+                        label: (ctx) => `Average: ${ctx.parsed.y}`
+                    }
+                },
+                whiteBackground: { color: "white" }
+            },
+            onClick: function (event, elements) {
+                if (!elements?.length) return
+                const el = elements[0]
+                const p = this.data.datasets[el.datasetIndex].data[el.index]
+                if (p?.lesson_url) window.location = (p.lesson_url + window.location.search)
+            },
+            onHover: function (event, elements) {
+                const c = event.native?.target || event.chart?.canvas
+                if (!c) return
+                c.style.cursor = elements?.length ? "pointer" : "default"
+            }
+        },
+        plugins: [whiteBackgroundPlugin()]
+    })
+
+    canvas.__chart = chart
+}
+
+// ---------- Attendance Graph ----------
+function displayAttendanceGraph(containerId, data) {
+    if (!window.Chart) {
+        console.error("Chart.js not found (window.Chart undefined).")
+        return
+    }
+
+    const canvas = ensureCanvasIsPresent(containerId)
+    if (!canvas) return
+
+    destroyIfExists(canvas)
+
+    const points = (data || []).map(e => ({
+        x: new Date(e.lesson_date).getTime(),
+        y: Number(e.attendance)
+    }))
+
+    // Start graph one day before first lesson
+    let minX = undefined
+    if (points.length) {
+        const first = new Date(points[0].x)
+        const dayBefore = new Date(first.getTime())
+        dayBefore.setDate(first.getDate() - 1)
+        minX = dayBefore.getTime()
+    }
+
+    const chart = new Chart(canvas.getContext("2d"), {
+        type: "bar",
+        data: {
+            datasets: [{
+                label: "Attendance",
+                data: points,
+                parsing: false,
+                barPercentage: 0.75,
+                minBarLength: 2,
+                backgroundColor: '#9C27B0'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    type: "linear",
+                    ticks: {
+                        callback: (value) => toUSdateFormat(Number(value)),
+                    }
+                },
+                y: {
+                    ticks: {
+                        callback: (v) => `${v}%`
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        title: (ctx) => toUSdateFormat(ctx[0].parsed.x),
+                        label: (ctx) => `Attendance: ${ctx.parsed.y}%`
+                    }
+                },
+                whiteBackground: { color: "white" }
+            }
+        },
+        plugins: [whiteBackgroundPlugin()]
+    })
+
+    canvas.__chart = chart
 }
