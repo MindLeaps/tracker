@@ -10,9 +10,8 @@ class GroupReportsController < HtmlController
     @enrollments_for_group = Enrollment.where(group_id: @group.id)
     @group_lesson_summaries = group_summaries_for_group.map { |summary| lesson_summary(summary) }
     @student_enrollments_component = TableComponents::Table.new(rows: enrolled_students.sort_by { |e| e[:full_name] }, row_component: TableComponents::StudentEnrollmentReport)
-    @enrollment_timelines = []
+    @enrollment_timelines = @enrollments_for_group.map { |e| enrollment_timeline(e) }
     @reports = []
-    populate_enrollment_timelines
     populate_reports
   end
 
@@ -27,13 +26,6 @@ class GroupReportsController < HtmlController
       report_to_add[:student_summaries] = grouped_student_summaries[subject_id].sort_by { |e| e[:last_name] }
 
       @reports.push(report_to_add)
-    end
-  end
-
-  def populate_enrollment_timelines
-    ordered_enrollments = @enrollments_for_group.order(:student_id, active_since: :asc)
-    ordered_enrollments.each_with_index do |enrollment, i|
-      @enrollment_timelines.push(enrollment_timeline(ordered_enrollments, enrollment, i))
     end
   end
 
@@ -53,13 +45,13 @@ class GroupReportsController < HtmlController
     enrolled_students
   end
 
-  def enrollment_timeline(ordered_enrollments, enrollment, pos)
+  def enrollment_timeline(enrollment)
     {
-      student_id: "#{enrollment.student_id} #{pos}",
+      student_id: enrollment.student_id,
       student_name: Student.find_by(id: enrollment.student_id).proper_name,
-      active_since: enrollment.active_since,
-      inactive_since: enrollment_end(enrollment),
-      dependent_on: ordered_enrollments[pos - 1]&.student_id == enrollment.student_id ? "#{enrollment.student_id} #{pos - 1}" : ''
+      active_since: enrollment.active_since&.iso8601,
+      inactive_since: enrollment.inactive_since&.iso8601,
+      effective_end: enrollment_end(enrollment)&.iso8601
     }
   end
 
@@ -97,7 +89,7 @@ class GroupReportsController < HtmlController
   end
 
   def lesson_summary(summary)
-    { lesson_date: summary.lesson_date, average_mark: summary.average_mark, attendance: summary.attendance, subject_id: summary.subject_id }
+    { lesson_date: summary.lesson_date, average_mark: summary.average_mark, attendance: summary.attendance, subject_id: summary.subject_id, lesson_url: lesson_path(summary.lesson_id) }
   end
 
   def student_row_reports

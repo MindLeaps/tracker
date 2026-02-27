@@ -41,7 +41,7 @@
     <% if @enrollment_timelines.any? %>
       <%= render CommonComponents::Card.new(title: t(:group_enrollments).capitalize) do |card| %>
         <% card.with_card_content do %>
-          <div id="group_enrollments" class="w-full ct-chart-bar bg-white flex justify-center"></div>
+          <div id="group_enrollments" class="ct-chart ct-octave bg-white"></div>
         <% end %>
       <% end %>
     <% end %>
@@ -128,9 +128,9 @@
   const onChartsLoad = () => {
     (<%= @reports.to_json.html_safe %>).forEach(r => {
       if(r.group_summaries.length >= 30){
-        displayAveragesGraph && displayAveragesGraph(`#subject-${r.subject_id}-last_30`, '', takeLast(r.group_summaries, 30))
+        displayAveragesGraph && displayAveragesGraph(`#subject-${r.subject_id}-last_30`, takeLast(r.group_summaries, 30))
       }
-      displayAveragesGraph && displayAveragesGraph(`#subject-${r.subject_id}-group_history`, '', r.group_summaries)
+      displayAveragesGraph && displayAveragesGraph(`#subject-${r.subject_id}-group_history`, r.group_summaries)
       displayAttendanceGraph && displayAttendanceGraph(`#subject-${r.subject_id}-group_attendance`, r.group_summaries)
     })
 
