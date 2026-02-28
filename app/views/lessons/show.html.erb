@@ -18,7 +18,7 @@ end %>
     <section class="flex-1 pr-2">
       <%= render CommonComponents::Card.new(title: t(:group_history).capitalize) do |card| %>
         <% card.with_card_content do %>
-          <div class="ct-chart ct-octave bg-white full-width"></div>
+          <div id="lesson-chart" class="ct-chart ct-octave bg-white full-width"></div>
         <% end %>
       <% end %>
       <%= render CommonComponents::Card.new(title: t(:skills).capitalize) do |card| %>
@@ -50,7 +50,7 @@ end %>
 
 <%= javascript_tag do %>
   function onChartsLoad() {
-    displayLessonGraph && displayLessonGraph('.ct-chart', '<%= @lesson.id %>', <%= @group_lessons_data[:group_lessons].to_json.html_safe%>);
+    displayLessonGraph && displayLessonGraph('#lesson-chart', '<%= @lesson.id %>', <%= @group_lessons_data[:group_lessons].to_json.html_safe%>);
   }
 <% end %>
-<%= javascript_include_tag "charts", onload: 'onChartsLoad()' %>
+<%= javascript_include_tag "new_charts", onload: 'onChartsLoad()' %>

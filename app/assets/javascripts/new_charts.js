@@ -603,3 +603,106 @@ function displayTimelineGraph(containerId, data) {
         plugins: [whiteBackgroundPlugin(), todayLinePlugin()]
     })
 }
+
+// ---------- Lesson Graph ----------
+function displayLessonGraph(containerId, lessonId, data) {
+    if (!window.Chart) {
+        console.error("Chart.js not found (window.Chart undefined).")
+        return
+    }
+
+    const canvas = ensureCanvasIsPresent(containerId, { heightPx: 300 })
+    if (!canvas) return
+    destroyIfExists(canvas)
+
+    const points = (data || []).map(e => ({
+            x: e.timestamp * 1000,
+            y: e.average_mark,
+            lesson_id: e.lesson_id,
+            lesson_url: e.lesson_url
+        }))
+        .sort((a, b) => a.x - b.x)
+
+    // small padding for x
+    const xs = points.map(p => p.x)
+    const xMin = Math.min(...xs)
+    const xMax = Math.max(...xs)
+
+    const pad = (xMax - xMin) * 0.01
+    const minX = xMin - pad
+    const maxX = xMax + pad
+
+    new Chart(canvas.getContext("2d"), {
+        type: "line",
+        data: {
+            datasets: [{
+                data: points,
+                parsing: false,
+                borderColor: "#9C27B0",
+                borderWidth: 4,
+                tension: 0.15,
+                spanGaps: false,
+
+                // highlight the requested lesson
+                pointRadius: (ctx) => {
+                    const raw = ctx.raw
+                    if (!raw) return 3
+                    return raw.lesson_id === lessonId ? 6 : 3
+                },
+                pointBackgroundColor: (ctx) => {
+                    const raw = ctx.raw
+                    if (!raw) return "#9C27B0"
+                    return raw.lesson_id === lessonId ? "#4CAF50" : "#9C27B0"
+                },
+                pointBorderColor: (ctx) => {
+                    const raw = ctx.raw
+                    if (!raw) return "#9C27B0"
+                    return raw.lesson_id === lessonId ? "#4CAF50" : "#9C27B0"
+                },
+                pointHoverRadius: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    type: "linear",
+                    min: minX,
+                    max: maxX,
+                    ticks: {
+                        maxTicksLimit: 10,
+                        callback: (v) => toUSdateFormat(Number(v))
+                    }
+                },
+                y: {
+                    min: 1,
+                    max: 7,
+                    ticks: { precision: 0 }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        title: (ctx) => ` Lesson Date: ${toUSdateFormat(ctx[0].parsed.x)}`,
+                        label: (ctx) => ` Average: ${ctx.parsed.y}`
+                    }
+                },
+                whiteBackground: { color: "white" }
+            },
+            onClick: function (event, elements) {
+                if (!elements?.length) return
+                const el = elements[0]
+                const p = this.data.datasets[el.datasetIndex].data[el.index]
+                if (p?.lesson_url) window.location = (p.lesson_url + window.location.search)
+            },
+            onHover: function (event, elements) {
+                const c = event.native?.target || event.chart?.canvas
+                if (!c) return
+                c.style.cursor = elements?.length ? "pointer" : "default"
+            }
+        },
+        plugins: [whiteBackgroundPlugin()]
+    })
+}
