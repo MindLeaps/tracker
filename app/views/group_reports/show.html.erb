@@ -125,20 +125,20 @@
     document.removeEventListener('DOMContentLoaded', handlePrint)
   }
 
-  const onChartsLoad = () => {
+  window.onChartsLoad = function() {
     (<%= @reports.to_json.html_safe %>).forEach(r => {
       if(r.group_summaries.length >= 30){
-        displayAveragesGraph && displayAveragesGraph(`#subject-${r.subject_id}-last_30`, takeLast(r.group_summaries, 30))
+        displayAveragesChart && displayAveragesChart(`#subject-${r.subject_id}-last_30`, takeLast(r.group_summaries, 30))
       }
-      displayAveragesGraph && displayAveragesGraph(`#subject-${r.subject_id}-group_history`, r.group_summaries)
-      displayAttendanceGraph && displayAttendanceGraph(`#subject-${r.subject_id}-group_attendance`, r.group_summaries)
+      displayAveragesChart && displayAveragesChart(`#subject-${r.subject_id}-group_history`, r.group_summaries)
+      displayAttendanceChart && displayAttendanceChart(`#subject-${r.subject_id}-group_attendance`, r.group_summaries)
     })
 
     let enrollmentTimelines = <%= @enrollment_timelines.to_json.html_safe %>;
 
-    if(enrollmentTimelines.length > 0) { displayTimelineGraph && displayTimelineGraph('#group_enrollments', enrollmentTimelines) }
+    if(enrollmentTimelines.length > 0) { displayTimelineChart && displayTimelineChart('#group_enrollments', enrollmentTimelines) }
 
     document.addEventListener('DOMContentLoaded', handlePrint)
   }
 </script>
-<%= javascript_include_tag "new_charts", onload: 'onChartsLoad()' %>
+<%= javascript_include_tag "new_charts", onload: 'window.onChartsLoad && window.onChartsLoad()' %>

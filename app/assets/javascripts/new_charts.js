@@ -2,6 +2,13 @@
 //= require regression.js
 
 // ---------- Shared Helpers ----------
+function chartJsPresent() {
+    if (!window.Chart) {
+        console.error("Chart.js not found (window.Chart undefined).")
+        return false
+    } else return true
+}
+
 function whiteBackgroundPlugin() {
     return {
         id: "whiteBackground",
@@ -48,14 +55,25 @@ function ensureCanvasIsPresent(containerSelector, opts = {}) {
     const container = document.getElementById(id)
     if (!container) return null
 
-    // if a div was passed, create a canvas inside
-    let canvas = container.tagName.toLowerCase() === "canvas" ? container : container.querySelector("canvas")
+    if (container.tagName.toLowerCase() === "canvas") return container
 
-    if (!canvas) {
-        canvas = document.createElement("canvas")
-        canvas.style.width = "100%"
-        canvas.style.height = (opts.heightPx ? `${opts.heightPx}px` : "500px")
-        container.innerHTML = ""
+    let canvas = container.querySelector("canvas")
+    if (canvas) return canvas
+
+    canvas = document.createElement("canvas")
+    canvas.style.width = "100%"
+    canvas.style.height = (opts.heightPx ? `${opts.heightPx}px` : "500px")
+
+    // Keep Stimulus download target support
+    if ((container.dataset.controller || "").includes("charts-download")) {
+        canvas.setAttribute("data-charts-download-target", "canvas")
+    }
+
+    // insert canvas after the download button if present, otherwise append
+    const btn = container.querySelector('button[data-action*="charts-download#download"]')
+    if (btn && btn.parentNode === container) {
+        btn.insertAdjacentElement("afterend", canvas)
+    } else {
         container.appendChild(canvas)
     }
 
@@ -152,7 +170,7 @@ function buildDatasetsForGroups(groups) {
                 lesson_url: p.lesson_url,
                 date: p.date
             })),
-            pointRadius: 3,
+            pointRadius: 2,
             backgroundColor: color,
             borderColor: color
         })
@@ -178,20 +196,32 @@ function buildDatasetsForGroups(groups) {
     return datasets
 }
 
-// ---------- Group Analytics Graph ----------
-function displayAveragePerformancePerGroupByLesson(groups) {
-    const canvas = document.getElementById("groups-performance-chart")
+// ---------- Group Analytics Chart && Average performance per Group by Lesson chart ---------
+function displayAveragePerformancePerGroupByLessonChart(containerId, seriesJson, opts = {}) {
+    if(!chartJsPresent()) return
+
+    const series = Array.isArray(seriesJson) ? seriesJson : []
+
+    // Convert "series" -> "groups" that buildDatasetsForGroups expects
+    const groups = series.map((s, idx) => ({
+        id: s.id || s.name || String(idx),
+        name: s.name || `Group ${idx + 1}`,
+        data: (s.data || []).map(p => ({
+            x: p.x,
+            y: p.y,
+            lesson_url: p.lesson_url,
+            date: p.date
+        }))
+    }))
+
+    const canvas = ensureCanvasIsPresent(containerId, { heightPx: 800 })
     if (!canvas) return
-    if (!window.Chart) {
-        console.error("Chart.js not found (window.Chart undefined).")
-        return
-    }
+
+    destroyIfExists(canvas)
 
     const datasets = buildDatasetsForGroups(groups)
 
-    if (canvas.__chart) canvas.__chart.destroy()
-
-    canvas.__chart = new Chart(canvas.getContext("2d"), {
+    new Chart(canvas.getContext("2d"), {
         data: { datasets },
         options: {
             responsive: true,
@@ -208,17 +238,21 @@ function displayAveragePerformancePerGroupByLesson(groups) {
                 }
             },
             plugins: {
+                title: {
+                    display: opts.title,
+                    text: opts.title || 'Average performance per Group by Lesson',
+                    font: {
+                        size: 16
+                    }
+                },
                 legend: {
                     display: true,
                     labels:
                     {
-                        padding: 30,
-                        font: {
-                            size: 15
-                        },
+                        padding: 20,
+                        font: { size: 13 },
                         filter: (legendItem, chartData) => {
                             const dataSet = chartData.datasets[legendItem.datasetIndex]
-
                             return !dataSet.hiddenFromLegend
                         }
                     },
@@ -226,11 +260,11 @@ function displayAveragePerformancePerGroupByLesson(groups) {
                         const chart = legend.chart
                         const clickedDataset = chart.data.datasets[legendItem.datasetIndex]
 
-                        // Determine new hidden state: toggle based on the scatter dataset state
+                        // toggle using the clicked dataset's current hidden state
                         const scatterMeta = chart.getDatasetMeta(legendItem.datasetIndex)
                         const nextHidden = !scatterMeta.hidden
 
-                        // Apply to all datasets with same groupKey (scatter + regression)
+                        // apply to all datasets with same groupKey (scatter + regression)
                         chart.data.datasets.forEach((dataset, i) => {
                             if (dataset.groupKey === clickedDataset.groupKey) {
                                 chart.getDatasetMeta(i).hidden = nextHidden
@@ -285,11 +319,11 @@ function displayAveragePerformancePerGroupByLesson(groups) {
             scales: {
                 x: {
                     min: 1,
-                    title: { display: true, text: "Nr. of lessons" },
+                    title: { display: true, text: opts.xTitle || "Nr. of lessons" },
                     ticks: { precision: 0 }
                 },
                 y: {
-                    title: { display: true, text: "Performance" },
+                    title: { display: true, text: opts.yTitle || "Performance" },
                     min: 1,
                     max: 7,
                     ticks: { precision: 0 }
@@ -324,12 +358,9 @@ function displayAveragePerformancePerGroupByLesson(groups) {
     })
 }
 
-// ---------- Averages Graph ----------
-function displayAveragesGraph(containerId, data) {
-    if (!window.Chart) {
-        console.error("Chart.js not found (window.Chart undefined).")
-        return
-    }
+// ---------- Averages Chart ----------
+function displayAveragesChart(containerId, data) {
+    if(!chartJsPresent()) return
 
     const canvas = ensureCanvasIsPresent(containerId, { heightPx: 300 })
     if (!canvas) return
@@ -348,7 +379,7 @@ function displayAveragesGraph(containerId, data) {
             datasets: [{
                 data: points,
                 parsing: false,
-                borderColor: '#9C27B0',
+                borderColor: ' #9C27B0',
                 tension: 0.125,
                 pointRadius: dynamicPointRadius(points.length, { min: 3, max: 6 }),
                 pointHoverRadius: dynamicPointRadius(points.length, { min: 5, max: 10 })
@@ -408,12 +439,9 @@ function displayAveragesGraph(containerId, data) {
     })
 }
 
-// ---------- Attendance Graph ----------
-function displayAttendanceGraph(containerId, data) {
-    if (!window.Chart) {
-        console.error("Chart.js not found (window.Chart undefined).")
-        return
-    }
+// ---------- Attendance Chart ----------
+function displayAttendanceChart(containerId, data) {
+    if(!chartJsPresent()) return
 
     const canvas = ensureCanvasIsPresent(containerId, { heightPx: 300 })
     if (!canvas) return
@@ -443,7 +471,7 @@ function displayAttendanceGraph(containerId, data) {
                 parsing: false,
                 barPercentage: 0.75,
                 minBarLength: 2,
-                backgroundColor: '#9C27B0'
+                backgroundColor: ' #9C27B0'
             }]
         },
         options: {
@@ -489,12 +517,9 @@ function displayAttendanceGraph(containerId, data) {
     })
 }
 
-// ---------- Enrollment Timeline Graph ----------
-function displayTimelineGraph(containerId, data) {
-    if (!window.Chart) {
-        console.error("Chart.js not found (window.Chart undefined).")
-        return
-    }
+// ---------- Enrollment Timeline Chart ----------
+function displayTimelineChart(containerId, data) {
+    if(!chartJsPresent()) return
 
     const items = (data || []).map((e) => {
         const start = new Date(e.active_since).getTime()
@@ -555,7 +580,7 @@ function displayTimelineGraph(containerId, data) {
                 backgroundColor: (ctx) => {
                     const raw = ctx.raw
                     const isActive = raw && (raw.inactive_since == null)
-                    return isActive ? "#9C27B0" : withAlpha("#9C27B0", 0.25)
+                    return isActive ? " #9C27B0" : withAlpha(" #9C27B0", 0.25)
                 }
             }]
         },
@@ -604,12 +629,9 @@ function displayTimelineGraph(containerId, data) {
     })
 }
 
-// ---------- Lesson Graph ----------
-function displayLessonGraph(containerId, lessonId, data) {
-    if (!window.Chart) {
-        console.error("Chart.js not found (window.Chart undefined).")
-        return
-    }
+// ---------- Lesson Chart ----------
+function displayLessonChart(containerId, lessonId, data) {
+    if(!chartJsPresent()) return
 
     const canvas = ensureCanvasIsPresent(containerId, { heightPx: 300 })
     if (!canvas) return
@@ -638,7 +660,7 @@ function displayLessonGraph(containerId, lessonId, data) {
             datasets: [{
                 data: points,
                 parsing: false,
-                borderColor: "#9C27B0",
+                borderColor: " #9C27B0",
                 borderWidth: 4,
                 tension: 0.15,
                 spanGaps: false,
@@ -651,13 +673,13 @@ function displayLessonGraph(containerId, lessonId, data) {
                 },
                 pointBackgroundColor: (ctx) => {
                     const raw = ctx.raw
-                    if (!raw) return "#9C27B0"
-                    return raw.lesson_id === lessonId ? "#4CAF50" : "#9C27B0"
+                    if (!raw) return " #9C27B0"
+                    return raw.lesson_id === lessonId ? "#4CAF50" : " #9C27B0"
                 },
                 pointBorderColor: (ctx) => {
                     const raw = ctx.raw
-                    if (!raw) return "#9C27B0"
-                    return raw.lesson_id === lessonId ? "#4CAF50" : "#9C27B0"
+                    if (!raw) return " #9C27B0"
+                    return raw.lesson_id === lessonId ? "#4CAF50" : " #9C27B0"
                 },
                 pointHoverRadius: 5
             }]
@@ -701,6 +723,302 @@ function displayLessonGraph(containerId, lessonId, data) {
                 const c = event.native?.target || event.chart?.canvas
                 if (!c) return
                 c.style.cursor = elements?.length ? "pointer" : "default"
+            }
+        },
+        plugins: [whiteBackgroundPlugin()]
+    })
+}
+
+// ---------- Quantity of Data per Month Graph ----------
+function displayAssessmentsPerMonth(containerId, payload, opts = { }) {
+    if(!chartJsPresent()) return
+    const categories = payload?.categories || []
+    const series = payload?.series || []
+
+    const canvas = ensureCanvasIsPresent(containerId, { heightPx: 400 })
+
+    if (!canvas) return
+    destroyIfExists(canvas)
+
+    const datasets = series.map((s, idx) => ({
+        label: s.name || "Assessments",
+        data: (s.data || []).map(v => Number(v) || 0),
+        borderWidth: 1
+    }))
+
+    new Chart(canvas.getContext("2d"), {
+        type: "bar",
+        data: {
+            labels: categories,
+            datasets
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Quantity of Data Collected By Month',
+                    font: {
+                        size: 16
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: (ctx) => `Month: ${ctx[0].label}`,
+                        label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y}`
+                    }
+                },
+                whiteBackground: { color: "white" }
+            },
+            scales: {
+                x: {
+                    title: { display: true, text: opts.xTitle || "Month" },
+                    ticks: { autoSkip: true, maxTicksLimit: 12 }
+                },
+                y: {
+                    beginAtZero: true,
+                    ticks: { precision: 0 },
+                    title: { display: true, text: opts.yTitle || "Nr. of assessments" }
+                }
+            }
+        },
+        plugins: [whiteBackgroundPlugin()]
+    })
+}
+
+// ---------- Student Performance Chart ----------
+function displayStudentPerformanceChart(containerId, seriesJson, opts = {}) {
+    if(!chartJsPresent()) return
+
+    const series = seriesJson || []
+    const first = series[0] || {}
+    const name = first.name || "Frequency %"
+    const rawPairs = first.data || []
+
+    // generate mark, percentage pairs map
+    const map = new Map(rawPairs.map(p => [Number(p?.[0]), Number(p?.[1])]))
+
+    // always show marks 1..7
+    const labels = ["1", "2", "3", "4", "5", "6", "7"]
+    const values = labels.map(l => map.get(Number(l)) ?? 0)
+
+    const canvas = ensureCanvasIsPresent(containerId, { heightPx: 400 })
+    if (!canvas) return
+    destroyIfExists(canvas)
+
+    new Chart(canvas.getContext("2d"), {
+        type: "bar",
+        data: {
+            labels,
+            datasets: [{
+                label: name,
+                data: values,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Histogram of Student performance values',
+                    font: {
+                        size: 16
+                    }
+                },
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        title: (ctx) => `${opts.xTitle || "Performance"}: ${ctx[0].label}`,
+                        label: (ctx) => `${opts.yTitle || "Frequency %"}: ${ctx.parsed.y.toFixed(1)}%`
+                    }
+                },
+                whiteBackground: { color: "white" }
+            },
+            scales: {
+                x: {
+                    title: { display: true, text: opts.xTitle || "Performance" },
+                    ticks: { autoSkip: false }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: { display: true, text: opts.yTitle || "Frequency %" },
+                    ticks: {
+                        callback: (v) => `${v}%`
+                    }
+                }
+            }
+        },
+        plugins: [whiteBackgroundPlugin()]
+    })
+}
+
+// ---------- Student Performance Change Chart ----------
+function displayStudentPerformanceChangeChart(containerId, seriesJson, opts = {}) {
+    if(!chartJsPresent()) return
+
+    const series = seriesJson || []
+    const first = series[0] || {}
+    const name = first.name || "Frequency %"
+    const rawPairs = first.data || []
+
+    // generate mark, percentage pairs map
+    const map = new Map(rawPairs.map(p => [Number(p?.[0]), Number(p?.[1])]))
+
+    // determine bucket range and step
+    const xs = Array.from(map.keys()).sort((a, b) => a - b)
+    const minX = xs.length ? xs[0] : 0
+    const maxX = xs.length ? xs[xs.length - 1] : 0
+    const step = opts.step ?? 0.5
+
+    const labels = []
+    const values = []
+
+    // fix floating precision issues by iterating integers
+    const start = Math.round(minX / step)
+    const end = Math.round(maxX / step)
+
+    for (let i = start; i <= end; i++) {
+        const x = i * step
+        labels.push(x.toFixed(1)) // show -0.5, 0.0, 0.5 ...
+        values.push(map.get(x) ?? 0)
+    }
+
+    const canvas = ensureCanvasIsPresent(containerId, { heightPx: 384 })
+    if (!canvas) return
+    destroyIfExists(canvas)
+
+    new Chart(canvas.getContext("2d"), {
+        type: "bar",
+        data: {
+            labels,
+            datasets: [{
+                label: name,
+                data: values,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Performance change throughout the program by Student',
+                    font: {
+                        size: 16
+                    }
+                },
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        title: (ctx) => `${opts.xTitle || "Performance change"}: ${ctx[0].label}`,
+                        label: (ctx) => `${opts.yTitle || "Frequency %"}: ${Number(ctx.parsed.y).toFixed(1)}%`
+                    }
+                },
+                whiteBackground: { color: "white" }
+            },
+            scales: {
+                x: {
+                    title: { display: true, text: opts.xTitle || "Performance change" },
+                    ticks: { autoSkip: true, maxTicksLimit: 12 }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: { display: true, text: opts.yTitle || "Frequency %" },
+                    ticks: { callback: (v) => `${v}%` }
+                }
+            }
+        },
+        plugins: [whiteBackgroundPlugin()]
+    })
+}
+
+// ---------- Performance Change by Gender Chart ----------
+function displayPerformanceChangeByGenderChart(containerId, seriesJson, opts = {}) {
+    if(!chartJsPresent()) return
+
+    const series = Array.isArray(seriesJson) ? seriesJson : []
+    const step = opts.step ?? 0.5
+
+    // collect all x buckets across all series
+    const allX = new Set()
+    series.forEach(s => {
+        (s.data || []).forEach(p => {
+            const x = Number(p?.[0])
+            if (Number.isFinite(x)) allX.add(x)
+        })
+    })
+
+    // determine bucket range and steps
+    const xs = Array.from(allX).sort((a, b) => a - b)
+    const minX = opts.minBucket || (xs.length ? xs[0] : 0)
+    const maxX = opts.maxBucket || (xs.length ? xs[xs.length - 1] : 0)
+
+    const start = Math.round(minX / step)
+    const end = Math.round(maxX / step)
+    const buckets = []
+    for (let i = start; i <= end; i++) buckets.push(i * step)
+
+    const labels = buckets.map(x => Number(x).toFixed(1))
+
+    // build datasets to buckets
+    const datasets = series.map((s, idx) => {
+        const map = new Map((s.data || []).map(p => [p?.[0], p?.[1]]))
+
+        const data = buckets.map(x => map.get(x) ?? 0)
+
+        return {
+            label: s.name || `Series ${idx + 1}`,
+            data,
+            borderWidth: 1
+        }
+    })
+
+    const canvas = ensureCanvasIsPresent(containerId, { heightPx: 400 })
+    if (!canvas) return
+    destroyIfExists(canvas)
+
+   new Chart(canvas.getContext("2d"), {
+        type: "bar",
+        data: { labels, datasets },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Performance change throughout the program separated by Gender',
+                    font: {
+                        size: 16
+                    }
+                },
+                legend: { display: true },
+                tooltip: {
+                    callbacks: {
+                        title: (ctx) => `Change: ${ctx[0].label}`,
+                        label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}%`
+                    }
+                },
+                whiteBackground: { color: "white" }
+            },
+            scales: {
+                x: {
+                    title: { display: true, text: opts.xTitle || "Performance change" },
+                    ticks: { autoSkip: true, maxTicksLimit: 14 },
+                    stacked: false
+                },
+                y: {
+                    beginAtZero: true,
+                    title: { display: true, text: opts.yTitle || "Frequency %" },
+                    ticks: { callback: (v) => `${v}%` },
+                    stacked: false
+                }
             }
         },
         plugins: [whiteBackgroundPlugin()]

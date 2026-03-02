@@ -3,12 +3,13 @@ import { Controller } from "@hotwired/stimulus"
 // Connects to data-controller="charts_download"
 export default class extends Controller {
     static targets = ["canvas"]
+    static values = { title: String }
 
     download() {
         const canvas = this.canvasTarget
         const chart = canvas.__chart
 
-        // ensure latest draw (and background plugin) has run
+        // ensure latest changes
         if (chart) {
             chart.update("none")
         }
@@ -23,7 +24,7 @@ export default class extends Controller {
             const a = document.createElement("a")
 
             a.href = url
-            a.download = "group-performance-chart.png"
+            a.download = this.titleValue
             document.body.appendChild(a)
             a.click()
             a.remove()

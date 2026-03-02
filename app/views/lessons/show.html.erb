@@ -49,8 +49,8 @@ end %>
 <div id="modal" class=""></div>
 
 <%= javascript_tag do %>
-  function onChartsLoad() {
-    displayLessonGraph && displayLessonGraph('#lesson-chart', '<%= @lesson.id %>', <%= @group_lessons_data[:group_lessons].to_json.html_safe%>);
+  window.onChartsLoad = function() {
+    displayLessonChart && displayLessonChart('#lesson-chart', '<%= @lesson.id %>', <%= @group_lessons_data[:group_lessons].to_json.html_safe%>);
   }
 <% end %>
-<%= javascript_include_tag "new_charts", onload: 'onChartsLoad()' %>
+<%= javascript_include_tag "new_charts", onload: 'window.onChartsLoad && window.onChartsLoad()' %>
