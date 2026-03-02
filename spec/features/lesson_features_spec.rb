@@ -26,7 +26,7 @@ RSpec.describe 'User interacts with lessons' do
       create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
       @lesson = create :lesson, subject: @subject, group: @group
       previous_date = @lesson.date
-      new_date = 2.days.ago.to_date
+      new_date = Time.zone.now.to_date
 
       visit '/'
       click_link 'Lessons'
@@ -36,10 +36,8 @@ RSpec.describe 'User interacts with lessons' do
       expect(page).to have_field 'lesson_group_id', disabled: true
       expect(page).to have_field 'lesson_subject_id', disabled: true
 
-      fill_in 'lesson_date', with: new_date.to_s
-      find("button.pika-day[data-pika-day=\"#{new_date.day}\"]").hover
-      find("button.pika-day[data-pika-day=\"#{new_date.day}\"]").click
-      find('label', text: 'Group').click(force: true)
+      find('#lesson_date').click
+      find('td.is-today').click
       click_button 'Update Lesson'
 
       expect(page).to have_content 'Lesson updated'
