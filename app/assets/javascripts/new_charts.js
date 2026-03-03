@@ -214,7 +214,7 @@ function displayAveragePerformancePerGroupByLessonChart(containerId, seriesJson,
         }))
     }))
 
-    const canvas = ensureCanvasIsPresent(containerId, { heightPx: 800 })
+    const canvas = ensureCanvasIsPresent(containerId, { heightPx: opts.heightPx || 500 })
     if (!canvas) return
 
     destroyIfExists(canvas)
@@ -1022,5 +1022,139 @@ function displayPerformanceChangeByGenderChart(containerId, seriesJson, opts = {
             }
         },
         plugins: [whiteBackgroundPlugin()]
+    })
+}
+
+// ---------- Subject Skill Chart ----------
+function displaySubjectSkillCharts(datasets, opts = {}) {
+    if (!chartJsPresent()) return
+
+    const data = Array.isArray(datasets) ? datasets : []
+
+    data.forEach((skillDataset) => {
+        const skillName = skillDataset?.skill
+        const series = Array.isArray(skillDataset?.series) ? skillDataset.series : []
+        if (!skillName) return
+
+        const containerId = `#skill-${skillName}`
+        const canvas = ensureCanvasIsPresent(containerId, { heightPx: opts.heightPx || 500 })
+        if (!canvas) return
+        destroyIfExists(canvas)
+
+        // turn subject series into same format as group series
+        const subjectSeriesAsGroups = series.map((s, idx) => ({
+            id: s.name || String(idx),
+            name: s.name || `Series ${idx + 1}`,
+            data: (s.data || []).map(p => ({
+                x: Number(p.x),
+                y: Number(p.y),
+                lesson_url: p.lesson_url,
+                date: p.date
+            }))
+        }))
+
+        const datasetsForChart = buildDatasetsForGroups(subjectSeriesAsGroups)
+
+        new Chart(canvas.getContext("2d"), {
+            data: { datasets: datasetsForChart },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                clip: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: skillName,
+                        font: { size: 20 }
+                    },
+                    legend: {
+                        display: true,
+                        labels: {
+                            padding: 10,
+                            font: { size: 11 },
+                            boxHeight: 10,
+                            boxWidth: 10,
+                            filter: (legendItem, chartData) => {
+                                const ds = chartData.datasets[legendItem.datasetIndex]
+                                return !ds.hiddenFromLegend
+                            }
+                        },
+                        onClick: (e, legendItem, legend) => {
+                            const chart = legend.chart
+                            const clicked = chart.data.datasets[legendItem.datasetIndex]
+                            const meta = chart.getDatasetMeta(legendItem.datasetIndex)
+                            const nextHidden = !meta.hidden
+
+                            // toggle scatter + regression for same groupKey
+                            chart.data.datasets.forEach((ds, i) => {
+                                if (ds.groupKey === clicked.groupKey) {
+                                    chart.getDatasetMeta(i).hidden = nextHidden
+                                }
+                            })
+
+                            chart.update()
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: "#ffffff",
+                        titleColor: "#111827",
+                        bodyColor: "#374151",
+                        borderColor: "#D1D5DB",
+                        borderWidth: 2,
+                        cornerRadius: 3,
+                        padding: 12,
+                        callbacks: {
+                            title: (ctx) => {
+                                const ds = ctx[0]?.dataset
+                                if (ds?.type === "line") return null
+                                return ds?.label || ""
+                            },
+                            label: (ctx) => {
+                                if (ctx.dataset.type === "line") return null
+                                const raw = ctx.raw || {}
+                                const parts = [
+                                    `${opts.xTitle || "Nr. of lessons"}: ${ctx.parsed.x}`,
+                                    `${opts.yTitle || "Performance"}: ${ctx.parsed.y}`
+                                ]
+                                if (raw.date) parts.push(`${opts.dateLabel || "Lesson date"}: ${raw.date}`)
+                                return parts
+                            }
+                        }
+                    },
+                    whiteBackground: { color: "white" }
+                },
+                scales: {
+                    x: {
+                        min: 1,
+                        title: { display: true, text: opts.xTitle || "Nr. of lessons" },
+                        ticks: { precision: 0 }
+                    },
+                    y: {
+                        min: 1,
+                        max: 7,
+                        title: { display: true, text: opts.yTitle || "Performance" },
+                        ticks: { precision: 0 }
+                    }
+                },
+                onClick: function (event, elements) {
+                    if (!elements?.length) return
+                    const el = elements[0]
+                    const ds = this.data.datasets[el.datasetIndex]
+                    if (ds.type === "line") return
+
+                    const point = ds.data[el.index]
+                    if (point?.lesson_url) window.open(point.lesson_url, "_blank")
+                },
+                onHover: function (event, elements) {
+                    const c = event.native?.target || event.chart?.canvas
+                    if (!c) return
+                    if (!elements?.length) { c.style.cursor = "default"; return }
+                    const el = elements[0]
+                    const ds = this.data.datasets[el.datasetIndex]
+                    c.style.cursor = (ds.type === "scatter") ? "pointer" : "default"
+                }
+            },
+            plugins: [whiteBackgroundPlugin()]
+        })
     })
 }

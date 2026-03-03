@@ -54,7 +54,7 @@
         let data = <%= @group_series.to_json.html_safe %>;
 
         if(data && data.length > 0) {
-            displayAveragePerformancePerGroupByLessonChart && displayAveragePerformancePerGroupByLessonChart("#group-performance-chart", data)
+            displayAveragePerformancePerGroupByLessonChart && displayAveragePerformancePerGroupByLessonChart("#group-performance-chart", data, { heightPx: 700 })
         }
     }
 </script>
