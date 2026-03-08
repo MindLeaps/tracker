@@ -543,7 +543,8 @@ function displayTimelineChart(containerId, data) {
         a.start - b.start
     )
 
-    const heightPx = Math.min(1000, Math.max(260, items.length * 24 + 80))
+    const rowHeight = items.length > 20 ? 16 : 20
+    const heightPx = Math.min(1200, Math.max(200, items.length * rowHeight + 40))
     const canvas = ensureCanvasIsPresent(containerId, { heightPx })
     if (!canvas) return
 
@@ -574,9 +575,9 @@ function displayTimelineChart(containerId, data) {
                 parsing: { xAxisKey: "x", yAxisKey: "y" },
                 indexAxis: "y",
                 borderWidth: .5,
-                borderRadius: 10,
-                barPercentage: 0.5,
-                categoryPercentage: 0.6,
+                borderRadius: 6,
+                barPercentage: 0.4,
+                categoryPercentage: 0.65,
                 backgroundColor: (ctx) => {
                     const raw = ctx.raw
                     const isActive = raw && (raw.inactive_since == null)
@@ -597,7 +598,7 @@ function displayTimelineChart(containerId, data) {
                 },
                 y: {
                     type: "category",
-                    ticks: { autoSkip: false }
+                    ticks: { autoSkip: false },
                 }
             },
             plugins: {

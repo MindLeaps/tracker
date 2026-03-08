@@ -119,9 +119,14 @@
 <script>
   const takeLast = (arr, n = 1) => n === 0 ? [] : arr.slice(-n);
   const handlePrint = () => {
+    Object.values(Chart.instances).forEach(chart => {
+        chart.resize()
+    })
+
     setTimeout(() => {
       window.print()
     }, 1000)
+
     document.removeEventListener('DOMContentLoaded', handlePrint)
   }
 
