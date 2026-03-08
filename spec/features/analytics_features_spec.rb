@@ -32,15 +32,19 @@ RSpec.describe 'User interacts with Analytics' do
       click_link 'Subject analytics'
       select @organization.organization_name, from: 'organization_select'
       fill_in 'from_date', with: 1.year.ago.to_date.to_s
-
       click_link 'Filter'
-      expect(page).to have_content 'Memorization'
-      expect(page).to have_content 'Grit'
+
+      %w[skill-Memorization skill-Grit].each do |field|
+        chart = find "##{field} > canvas"
+        expect(chart).to be_visible
+      end
 
       click_link 'Group analytics'
       select @organization.organization_name, from: 'organization_select'
       click_link 'Filter'
       expect(page).to have_content('Download PNG')
+      chart = find "#group-performance-chart > canvas"
+      expect(chart).to be_visible
     end
 
     it 'displays students only when groups are selected', js: true do
