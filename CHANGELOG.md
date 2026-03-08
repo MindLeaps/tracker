@@ -1,4 +1,5 @@
 ## Unreleased
+- Replaced existing charts using the `Chart.js` library 
 - Fixed issue where group reports crashed when students had no summaries
 
 ## 0.40.0

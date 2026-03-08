@@ -43,7 +43,7 @@ RSpec.describe 'User interacts with Analytics' do
       select @organization.organization_name, from: 'organization_select'
       click_link 'Filter'
       expect(page).to have_content('Download PNG')
-      chart = find "#group-performance-chart > canvas"
+      chart = find '#group-performance-chart > canvas'
       expect(chart).to be_visible
     end
 
