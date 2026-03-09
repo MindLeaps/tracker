@@ -42,25 +42,21 @@
     </div>
   </div>
 
-  <div class="w-full h-[800px] pt-6 bg-white rounded-md border relative" data-controller="charts-download">
-    <button
-      type="button"
-      class="normal-button absolute top-2 right-2"
-      data-action="click->charts-download#download">
+  <div id="group-performance-chart" class="w-full pt-8 bg-white rounded-md border relative" data-controller="charts-download" data-charts-download-title-value="group performance chart">
+    <button type="button" class="normal-button absolute top-2 right-2" data-action="click->charts-download#download">
       Download PNG
     </button>
-    <canvas id="groups-performance-chart" data-charts-download-target="canvas"></canvas>
   </div>
 </div>
 
 <script>
-    function drawGroupPerformanceCharts() {
+    window.drawGroupPerformanceCharts = function() {
         let data = <%= @group_series.to_json.html_safe %>;
 
         if(data && data.length > 0) {
-            displayAveragePerformancePerGroupByLesson && displayAveragePerformancePerGroupByLesson(data)
+            displayAveragePerformancePerGroupByLessonChart && displayAveragePerformancePerGroupByLessonChart("#group-performance-chart", data, { heightPx: 700 })
         }
     }
 </script>
 
-<%= javascript_include_tag "new_charts", onload: 'drawGroupPerformanceCharts()' %>
+<%= javascript_include_tag "new_charts", onload: 'window.drawGroupPerformanceCharts && drawGroupPerformanceCharts()' %>

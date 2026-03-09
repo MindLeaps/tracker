@@ -54,9 +54,13 @@
 
   <div class="grid gap-2" style="grid-template-columns: repeat(2, minmax(min-content, 50%))">
     <% @subject_series.each_slice(2) do |d1, d2| %>
-      <div id="skill-<%= d1[:skill] %>" class="w-full h-96"></div>
+      <div id="skill-<%= d1[:skill] %>" class="w-full relative bg-white pt-6" data-controller="charts-download" data-charts-download-title-value="<%= d1[:skill] %>-chart">
+        <button type="button" class="normal-button absolute top-2 right-2 text-xs" data-action="click->charts-download#download"> Download PNG </button>
+      </div>
       <% if d2 %>
-        <div id="skill-<%= d2[:skill] %>" class="w-full h-96"></div>
+        <div id="skill-<%= d2[:skill] %>" class="w-full relative bg-white pt-6" data-controller="charts-download" data-charts-download-title-value="<%= d2[:skill] %>-chart">
+          <button type="button" class="normal-button absolute top-2 right-2 text-xs" data-action="click->charts-download#download"> Download PNG </button>
+        </div>
       <% end %>
     <% end %>
 
@@ -69,91 +73,11 @@
 </div>
 
 <script>
-  function startAnalytics() {
-    let datasets = <%= @subject_series.to_json.html_safe %>;
+    window.onChartsLoad = function() {
+        let subjectSeries = <%= @subject_series.to_json.html_safe %>;
 
-    datasets.forEach(function(dataset) {
-      new Highcharts.Chart({
-        chart: {
-          renderTo: 'skill-' + dataset.skill,
-          zoomType: 'x',
-          type: 'scatter'
-        },
-        legend: {
-          enabled: true,
-          maxHeight: 120
-        },
-        credits: {
-          enabled: false
-        },
-        tooltip: {
-          formatter: function () {
-            return '<span style="color:' + this.point.color + '">\u25CF</span> ' + this.series.name +
-              '<br/><span>x: <span style="font-weight: bold">' + this.point.x + '</span></span>' +
-              '<br/><span>y: <span style="font-weight: bold">' + this.point.y + '</span></span>' +
-              (this.point.date ? '<br/><span><%= t(:lesson_date) %>: ' + this.point.date + '</span>' : '');
-          }
-        },
-        exporting: {
-          filename: dataset.skill + '-chart',
-          buttons: {
-            contextButton: {
-              menuItems: [
-                'downloadPNG',
-                'downloadJPEG',
-                'downloadPDF',
-                'downloadSVG'
-              ]
-            }
-          },
-          fallbackToExportServer: false
-        },
-        title: {
-          text: dataset.skill
-        },
-        xAxis: {
-          allowDecimals: false,
-          title: {
-            text: '<%= t(:nr_of_lessons) %>'
-          },
-          min: 1
-        },
-        yAxis: {
-          title: {
-            text: '<%= t(:performance) %>'
-          },
-          allowDecimals: false,
-          endOnTick: false,
-          tickPositions: [0, 1, 2, 3, 4, 5, 6, 7],
-          max: 7
-        },
-        plotOptions: {
-          series: {
-            events: {
-              click: function (e, a1, a2) {
-                if (e.point.lesson_url) {
-                  window.open(e.point.lesson_url, '_blank');
-                }
-              }
-            },
-            cursor: 'pointer',
-            marker: {
-              radius: 2
-            }
-          }
-        },
-        series: dataset.series
-      });
-    });
-  }
-
-  function pollForHighcharts(cb) {
-    if (window.Highcharts) {
-      cb()
-    } else {
-      setTimeout(pollForHighcharts.bind(this, cb), 100);
+        displaySubjectSkillCharts && displaySubjectSkillCharts(subjectSeries, { xTitle: "<%= t(:nr_of_lessons) %>", yTitle: "<%= t(:performance) %>", dateLabel: "<%= t(:lesson_date) %>" })
     }
-  }
-
-  pollForHighcharts(startAnalytics);
 </script>
+
+<%= javascript_include_tag "new_charts", onload: 'window.onChartsLoad && window.onChartsLoad()' %>

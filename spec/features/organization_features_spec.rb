@@ -22,9 +22,9 @@ RSpec.describe 'Interaction with Organizations' do
       @existing_members << create(:admin_of, organization: @organization)
       @chapters = create_list(:chapter, 3, organization: @organization)
       @groups = create_list(:group, 3, chapter: @chapters.first)
-      create :graded_student, organization: @organization, groups: [@groups.first], grades: {
-        'Memorization' => [1], 'Grit' => [2], 'Teamwork' => [3]
-      }
+      @student = create :enrolled_student, organization: @organization, groups: [@groups.first]
+      @lesson = create :lesson, group: @groups.first
+      @grade = create_list :grade, 3, lesson: @lesson, student: @student
 
       visit '/organizations'
       find('div.table-cell', text: @organization.organization_name).click
@@ -43,7 +43,7 @@ RSpec.describe 'Interaction with Organizations' do
     it 'does display the organization\'s statistics when there is data' do
       expect(page).to have_content 'Statistics'
 
-      fill_in 'select_date', with: 1.year.ago.to_date
+      fill_in 'select_date', with: @lesson.date
       click_link 'Filter'
 
       expect(page).to have_content 'Nr. of Lessons'

@@ -49,11 +49,19 @@
   </div>
 
   <div class="grid gap-2" style="grid-template-columns: repeat(2, minmax(min-content, 50%))">
-    <div id="quantity-of-data-per-month" class="w-full h-96"></div>
-    <div id="histogram-of-student-performance" class="w-full h-96"></div>
-    <div id="performance-change-by-student" class="w-full h-96"></div>
-    <div id="performance-change-by-gender" class="w-full h-96"></div>
-    <div id="average-performance-per-group" class="w-full h-96"></div>
+    <div id="quantity-of-data-per-month" class="w-full relative bg-white pt-6" data-controller="charts-download" data-charts-download-title-value="quantity of data chart">
+      <button type="button" class="normal-button absolute top-2 right-2 text-xs" data-action="click->charts-download#download"> Download PNG </button>
+    </div>
+    <div id="histogram-of-student-performance" class="w-full relative bg-white pt-6" data-controller="charts-download" data-charts-download-title-value="histogram of student performance chart">
+      <button type="button" class="normal-button absolute top-2 right-2 text-xs" data-action="click->charts-download#download"> Download PNG </button>
+    </div>
+    <div id="performance-change-by-student" class="w-full relative bg-white pt-6" data-controller="charts-download" data-charts-download-title-value="performance change by student chart">
+      <button type="button" class="normal-button absolute top-2 right-2 text-xs" data-action="click->charts-download#download"> Download PNG </button>
+    </div>
+    <div id="performance-change-by-gender" class="w-full relative bg-white pt-6" data-controller="charts-download" data-charts-download-title-value="performance change by gender chart">
+      <button type="button" class="normal-button absolute top-2 right-2 text-xs" data-action="click->charts-download#download"> Download PNG </button>
+    </div>
+    <div id="average-performance-per-group" class="w-full relative bg-white pt-6" data-controller="charts-download" data-charts-download-title-value="average group performance chart"></div>
     <div id="datapoint-count" class="w-full h-96 bg-white ">
       <div class="text-center p-1"> <%= t(:number_of_datapoints) %></div>
       <div class="relative -translate-y-1/2 text-center text-8xl top-1/3">
@@ -64,274 +72,18 @@
 </div>
 
 <script>
-  function startAnalytics() {
-      Highcharts.chart('quantity-of-data-per-month', {
-          chart: {
-              type: 'column',
-              zoomType: 'x'
-          },
-          legend: {
-              enabled: false
-          },
-          credits: {
-              enabled: false
-          },
-          exporting: {
-            filename: 'quantity-of-data-chart',
-            buttons: {
-              contextButton: {
-                menuItems: [
-                  'downloadPNG',
-                  'downloadJPEG',
-                  'downloadPDF',
-                  'downloadSVG'
-                ]
-              }
-            },
-            fallbackToExportServer: false
-          },
-          title: {
-              text: '<%= t(:title_chart_2) %>'
-          },
-          xAxis: {
-              title: {
-                  text: '<%= t(:month) %>'
-              },
-              categories: <%= @assessments_per_month[:categories].to_json.html_safe %>
-          },
-          yAxis: {
-              allowDecimals: false,
-              title: {
-                  text: '<%= t(:nr_of_assessments) %>'
-              }
-          },
-          series: <%= @assessments_per_month[:series].to_json.html_safe  %>
-      });
+    window.onChartsLoad = function() {
+        let assessmentsPerMonth = <%= @assessments_per_month.to_json.html_safe %>;
+        let studentPerformance = <%= @student_performance.html_safe %>;
+        let studentPerformanceChange = <%= @student_performance_change.html_safe %>;
+        let genderPerformanceChange = <%= @gender_performance_change.html_safe %>;
+        let averageGroupPerformance = <%= @average_group_performance.html_safe %>;
 
-      Highcharts.chart('histogram-of-student-performance', {
-          chart: {
-              type: 'column'
-          },
-          legend: {
-              enabled: false
-          },
-          credits: {
-              enabled: false
-          },
-          tooltip: {
-              valueDecimals: 1
-          },
-          exporting: {
-            filename: 'histogram-performance-chart',
-            buttons: {
-              contextButton: {
-                menuItems: [
-                  'downloadPNG',
-                  'downloadJPEG',
-                  'downloadPDF',
-                  'downloadSVG'
-                ]
-              }
-            },
-            fallbackToExportServer: false
-          },
-          title: {
-              text: '<%= t(:title_chart_4) %>'
-          },
-          xAxis: {
-              title: {
-                  text: '<%= t(:performance) %>'
-              },
-              max: 7,
-              endOnTick: false
-          },
-          yAxis: {
-              title: {
-                  text: '<%= t(:frequency_perc) %>'
-              }
-          },
-          series: <%= @student_performance.html_safe  %>
-      });
-
-      Highcharts.chart('performance-change-by-student', {
-          chart: {
-              type: 'column'
-          },
-          legend: {
-              enabled: false
-          },
-          credits: {
-              enabled: false
-          },
-          tooltip: {
-              valueDecimals: 1
-          },
-          exporting: {
-            filename: 'performance-change-chart',
-            buttons: {
-              contextButton: {
-                menuItems: [
-                  'downloadPNG',
-                  'downloadJPEG',
-                  'downloadPDF',
-                  'downloadSVG'
-                ]
-              }
-            },
-            fallbackToExportServer: false
-          },
-          title: {
-              text: '<%= t(:title_chart_5) %>'
-          },
-          xAxis: {
-              title: {
-                  text: '<%= t(:performance_change) %>'
-              }
-          },
-          yAxis: {
-              title: {
-                  text: '<%= t(:frequency_perc) %>'
-              }
-          },
-          series: <%= @student_performance_change.html_safe %>
-      });
-
-      Highcharts.chart('performance-change-by-gender', {
-          chart: {
-              type: 'column'
-          },
-          legend: {
-              enabled: true
-          },
-          credits: {
-              enabled: false
-          },
-          tooltip: {
-              valueDecimals: 1
-          },
-          title: {
-              text: '<%= t(:title_chart_6) %>'
-          },
-          exporting: {
-            filename: 'gender-performance-change-chart',
-            buttons: {
-              contextButton: {
-                menuItems: [
-                  'downloadPNG',
-                  'downloadJPEG',
-                  'downloadPDF',
-                  'downloadSVG'
-                ]
-              }
-            },
-            fallbackToExportServer: false
-          },
-          xAxis: {
-              title: {
-                  text: '<%= t(:performance_change) %>'
-              }
-          },
-          yAxis: {
-              title: {
-                  text: '<%= t(:frequency_perc)  %>'
-              }
-          },
-          series: <%= @gender_performance_change.html_safe %>
-      });
-
-      Highcharts.chart('average-performance-per-group', {
-          chart: {
-              type: 'scatter',
-              zoomType: 'x'
-          },
-          legend: {
-              enabled: true
-          },
-          credits: {
-              enabled: false
-          },
-          tooltip: {
-            formatter: function () {
-              return '<span style="color:' + this.point.color + '">\u25CF</span> ' + this.series.name +
-                '<br/><span>x: <span style="font-weight: bold">' + this.point.x + '</span></span>' +
-                '<br/><span>y: <span style="font-weight: bold">' + this.point.y + '</span></span>' +
-                (this.point.date ? '<br/><span><%= t(:lesson_date) %>: ' + this.point.date + '</span>' : '');
-            }
-          },
-          exporting: {
-            filename: 'average-performance-chart',
-            buttons: {
-              contextButton: {
-                menuItems: [
-                  'downloadPNG',
-                  'downloadJPEG',
-                  'downloadPDF',
-                  'downloadSVG'
-                ]
-              }
-            },
-            fallbackToExportServer: false
-          },
-          title: {
-              text: '<%= t(:title_chart_8) %>'
-          },
-          xAxis: {
-              allowDecimals: false,
-              title: {
-                  text: '<%= t(:nr_of_lessons) %>'
-              },
-              min: 1
-          },
-          yAxis: {
-              title: {
-                  text: '<%= t(:performance) %>'
-              },
-              allowDecimals: false,
-              endOnTick: false,
-              tickPositions: [0, 1, 2, 3, 4, 5, 6, 7],
-              max: 7,
-          },
-          plotOptions: {
-            series: {
-              events: {
-                click: function (e, a1, a2) {
-                  if (e.point.lesson_url) {
-                    window.open(e.point.lesson_url, '_blank');
-                  }
-                }
-              },
-              cursor: 'pointer',
-              marker: {
-                radius: 2
-              }
-            }
-          },
-          series: (<%= @average_group_performance.html_safe %>).map(s => getDatasetFromSeries(s))
-      })
-  }
-
-  function getDatasetFromSeries(series) {
-      return {
-          type: 'scatter',
-          name: series.name,
-          data: series.data,
-          regression: (<%= @average_group_performance.html_safe %>).length <= 3,
-          regressionSettings: {
-            type: 'polynomial',
-            order: 4,
-            name: `${series.name} - Regression`,
-            lineWidth: 1
-          }
-      }
-  }
-
-  function pollForHighcharts (cb) {
-    if (window.Highcharts) {
-      cb()
-    } else {
-      setTimeout(pollForHighcharts.bind(this, cb), 100);
+        displayAssessmentsPerMonth && displayAssessmentsPerMonth('#quantity-of-data-per-month', assessmentsPerMonth, { xTitle: '<%= t(:month) %>', yTitle:  '<%= t(:nr_of_assessments) %>' })
+        displayStudentPerformanceChart && displayStudentPerformanceChart('#histogram-of-student-performance', studentPerformance)
+        displayStudentPerformanceChangeChart('#performance-change-by-student', studentPerformanceChange)
+        displayPerformanceChangeByGenderChart && displayPerformanceChangeByGenderChart('#performance-change-by-gender', genderPerformanceChange)
+        displayAveragePerformancePerGroupByLessonChart && displayAveragePerformancePerGroupByLessonChart("#average-performance-per-group", averageGroupPerformance, { title: 'Average performance per Group versus time in program' })
     }
-  }
-
-  pollForHighcharts(startAnalytics);
 </script>
+<%= javascript_include_tag "new_charts", onload: 'window.onChartsLoad && window.onChartsLoad()' %>

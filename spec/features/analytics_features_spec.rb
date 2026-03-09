@@ -24,25 +24,27 @@ RSpec.describe 'User interacts with Analytics' do
       expect(page).to have_link('Subject analytics')
       expect(page).to have_link('Group analytics')
 
-      # Using regex whitespace match here because capybara fails to match a wrapped line in HighCharts SVG
-      expect(page).to have_content(/Quantity(\s*)of(\s*)Data(\s*)Collected(\s*)By(\s*)Month/)
-      expect(page).to have_content(/Histogram(\s*)of(\s*)student(\s*)performance(\s*)values/)
-      expect(page).to have_content(/Performance(\s*)change(\s*)throughout(\s*)the(\s*)program(\s*)by(\s*)student/)
-      expect(page).to have_content(/Performance(\s*)change(\s*)throughout(\s*)the(\s*)program(\s*)separated(\s*)by(\s*)gender/)
-      expect(page).to have_content(/Average(\s*)performance(\s*)per(\s*)group(\s*)versus(\s*)time(\s*)in(\s*)program/)
+      %w[quantity-of-data-per-month histogram-of-student-performance performance-change-by-student performance-change-by-gender average-performance-per-group].each do |field|
+        chart = find "##{field} > canvas"
+        expect(chart).to be_visible
+      end
 
       click_link 'Subject analytics'
       select @organization.organization_name, from: 'organization_select'
       fill_in 'from_date', with: 1.year.ago.to_date.to_s
-
       click_link 'Filter'
-      expect(page).to have_content 'Memorization'
-      expect(page).to have_content 'Grit'
+
+      %w[skill-Memorization skill-Grit].each do |field|
+        chart = find "##{field} > canvas"
+        expect(chart).to be_visible
+      end
 
       click_link 'Group analytics'
       select @organization.organization_name, from: 'organization_select'
       click_link 'Filter'
       expect(page).to have_content('Download PNG')
+      chart = find '#group-performance-chart > canvas'
+      expect(chart).to be_visible
     end
 
     it 'displays students only when groups are selected', js: true do
