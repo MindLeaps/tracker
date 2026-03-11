@@ -379,7 +379,7 @@ function displayAveragesChart(containerId, data) {
             datasets: [{
                 data: points,
                 parsing: false,
-                borderColor: ' #9C27B0',
+                borderColor: '#9C27B0',
                 tension: 0.125,
                 pointRadius: dynamicPointRadius(points.length, { min: 3, max: 6 }),
                 pointHoverRadius: dynamicPointRadius(points.length, { min: 5, max: 10 })
@@ -1157,5 +1157,80 @@ function displaySubjectSkillCharts(datasets, opts = {}) {
             },
             plugins: [whiteBackgroundPlugin()]
         })
+    })
+}
+
+// ---------- Mark Averages Chart ----------
+function displayMarkAveragesChart(containerId, data, opts = {}) {
+    if (!chartJsPresent()) return
+
+    const items = Array.isArray(data) ? data : []
+
+    // build map: mark -> average
+    const averageByMark = new Map(items.map(item => [Number(item.mark), Number(item.average)]))
+
+    // always show marks 1..7
+    const labels = ["1", "2", "3", "4", "5", "6", "7"]
+    const values = labels.map(label => averageByMark.get(Number(label)) ?? 0)
+
+    const canvas = ensureCanvasIsPresent(containerId, { heightPx: opts.heightPx || 500 })
+    if (!canvas) return
+
+    destroyIfExists(canvas)
+
+    new Chart(canvas.getContext("2d"), {
+        type: "bar",
+        data: {
+            labels,
+            datasets: [{
+                label: opts.label || "Mark Averages",
+                data: values,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: !!opts.title,
+                    text: opts.title || "Mark Percentages",
+                    font: {
+                        size: 16
+                    }
+                },
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        title: (ctx) => `${opts.xTitle || "Mark"}: ${ctx[0].label}`,
+                        label: (ctx) => `${opts.yTitle || "Percentage"}: ${(Number(ctx.parsed.y) * 100).toFixed(1)}%`
+                    }
+                },
+                whiteBackground: { color: "white" }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: opts.xTitle || "Mark"
+                    },
+                    ticks: {
+                        autoSkip: false
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: opts.yTitle || "Percentage"
+                    },
+                    ticks: {
+                        callback: (value) => `${(Number(value) * 100).toFixed(1)}%`
+                    }
+                }
+            }
+        },
+        plugins: [whiteBackgroundPlugin()]
     })
 }
