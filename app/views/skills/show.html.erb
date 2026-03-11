@@ -55,8 +55,15 @@ end %>
 </div>
 
 <script>
-  function onChartsLoad() {
-    displayMarkAveragesGraph && displayMarkAveragesGraph(`#mark_percentages`, <%= @skill_mark_counts.to_json.html_safe %>)
+  window.onChartsLoad = function() {
+      let skillMarkCounts = <%= @skill_mark_counts.to_json.html_safe %>;
+
+      displayMarkAveragesChart("#mark_percentages", skillMarkCounts, {
+          title: "Mark Percentages",
+          xTitle: "Mark",
+          yTitle: "Percentage",
+          heightPx: 300
+      });
   }
 </script>
-<%= javascript_include_tag "charts", onload: 'onChartsLoad()' %>
+<%= javascript_include_tag "new_charts", onload: 'window.onChartsLoad && window.onChartsLoad()' %>
