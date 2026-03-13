@@ -29,7 +29,7 @@ end %>
    <div class="w-1/2">
        <%= render CommonComponents::Card.new(title: t(:average_performance_for_last_30_lessons).capitalize) do |card| %>
              <% card.with_card_content do %>
-               <div class="ct-chart ct-octave bg-white full-width"></div>
+               <div id="group-chart" class="ct-chart ct-octave bg-white full-width"></div>
              <% end %>
        <% end %>
     </div>
@@ -38,9 +38,11 @@ end %>
   <%= render GroupEnrolledStudentsComponent.new(students: @group.students, group: @group, students_with_invalid_grades: @students_with_invalid_grades) %>
 </turbo-frame>
 <div id="modal"></div>
-<%= javascript_tag do %>
-  function onChartsLoad() {
-    displayAveragesGraph && displayAveragesGraph('.ct-chart', '', <%= @group_summaries.to_json.html_safe %>);
+<script>
+  window.onChartsLoad = function() {
+    let summaries = <%= @group_summaries.to_json.html_safe %>;
+
+    displayAveragesChart && displayAveragesChart('#group-chart', summaries);
   }
-<% end %>
-<%= javascript_include_tag "charts", onload: 'onChartsLoad()' %>
+</script>
+<%= javascript_include_tag "new_charts", onload: 'window.onChartsLoad && window.onChartsLoad()' %>

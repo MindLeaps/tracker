@@ -18,7 +18,8 @@ class GroupsController < HtmlController
     @group_summaries = GroupLessonSummary.where(group_id: @group.id).where.not(average_mark: nil).order(lesson_date: :asc).last(30).map do |summary|
       {
         lesson_date: summary.lesson_date,
-        average_mark: summary.average_mark
+        average_mark: summary.average_mark,
+        lesson_url: lesson_path(Lesson.find_by(id: summary.lesson_id))
       }
     end
   end
