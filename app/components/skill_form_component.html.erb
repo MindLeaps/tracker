@@ -9,6 +9,7 @@
           <div class="col-span-6 lg:col-span-4">
             <%= f.label :skill_name, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
             <%= f.text_field :skill_name, autofocus: true, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            <%= render ValidationErrorComponent.new(model: @skill, key: :skill_name) %>
           </div>
           <div class="col-span-6 lg:col-span-4">
             <%= f.label :skill_description, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
@@ -17,7 +18,7 @@
           <div class="col-span-2"></div>
           <div class="col-span-6 lg:col-span-2">
             <%= f.label :organization_id, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
-            <%= f.collection_select :organization_id, @permitted_organizations, :id, :organization_name, {}, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+            <%= f.collection_select :organization_id, @permitted_organizations, :id, :organization_name, {}, disabled: @action == :update, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm disabled:bg-gray-300 disabled:border-gray-300' %>
           </div>
         </div>
       </div>
@@ -26,28 +27,32 @@
       </div>
       <div class="mt-5 md:col-span-3 md:mt-0">
         <%= turbo_frame_tag f.field_id(:grades) do %>
-        <div id="grade_descriptors" class="grid grid-cols-6 gap-4" data-controller="association">
-          <%= f.fields_for :grade_descriptors do |gf| %>
-            <% id = SecureRandom.uuid %>
-            <div class="grid grid-cols-6 col-span-6 gap-4" data-association-target="removable" id="<%= id %>">
-            <div class="col-span-1">
-              <%= gf.label :mark, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
-              <%= gf.number_field :mark, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
-            </div>
-            <div class="col-span-3">
-              <%= gf.label :grade_description, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
-              <%= gf.text_field :grade_description, rows: 5, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
-            </div>
-            <div class="col-span-2 relative">
-              <button class="dangerous-button absolute bottom-0 cursor-pointer" data-action="association#remove" data-association-remove-id-param="<%= id %>"><%= t(:delete_grade) %></button>
-            </div>
-            </div>
-          <% end %>
-        </div>
-          <%= f.submit t(:add_grade), class: 'normal-button mt-4',
-                       name: :add_grade,
-                       data: {turbo_frame: f.field_id(:grades)}
-          %>
+          <div id="grade_descriptors" class="grid grid-cols-6 gap-4" data-controller="association">
+            <%= f.fields_for :grade_descriptors, f.object.grade_descriptors.sort_by(&:mark) do |gf| %>
+              <% id = SecureRandom.uuid %>
+              <div class="grid grid-cols-6 col-span-6 gap-4" data-association-target="removable" id="<%= id %>">
+              <div class="col-span-1">
+                <%= gf.label :mark, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+                <%= gf.number_field :mark, disabled: @action == :update, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm disabled:bg-gray-300 disabled:border-gray-300' %>
+              </div>
+              <div class="col-span-3">
+                <%= gf.label :grade_description, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+                <%= gf.text_field :grade_description, rows: 5, class: 'mt-1 block w-full rounded-md border-purple-500 shadow-xs focus:border-green-600 focus:ring-green-600 sm:text-sm' %>
+              </div>
+              <div class="col-span-2 relative">
+                <% if @action != :update %>
+                  <button class="dangerous-button absolute bottom-0 cursor-pointer" data-action="association#remove" data-association-remove-id-param="<%= id %>"><%= t(:delete_grade) %></button>
+                <% end %>
+              </div>
+              </div>
+            <% end %>
+          </div>
+            <% if @action != :update %>
+              <%= f.submit t(:add_grade), class: 'normal-button mt-4',
+                         name: :add_grade,
+                         data: {turbo_frame: f.field_id(:grades)}
+              %>
+            <% end %>
         <% end %>
       </div>
     </div>

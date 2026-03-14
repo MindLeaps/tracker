@@ -27,6 +27,11 @@ class SkillsController < HtmlController
     authorize @skill
   end
 
+  def edit
+    @skill = Skill.find params.require(:id)
+    authorize @skill
+  end
+
   def create
     @skill = Skill.new skill_parameters
     authorize @skill
@@ -39,6 +44,19 @@ class SkillsController < HtmlController
     else
       failure(title: t(:skill_invalid), text: t(:fix_form_errors))
       render :new, status: :unprocessable_content
+    end
+  end
+
+  def update
+    @skill = Skill.find params.require(:id)
+    @skill.assign_attributes skill_parameters
+    authorize @skill
+    if @skill.save
+      success(title: t(:skill_updated), text: t(:skill_updated_text, skill_name: @skill.skill_name))
+      redirect_to @skill
+    else
+      failure(title: t(:skill_invalid), text: t(:fix_form_errors))
+      render :edit, status: :unprocessable_content
     end
   end
 
@@ -89,7 +107,7 @@ class SkillsController < HtmlController
   end
 
   def skill_parameters
-    params.require(:skill).permit(:skill_name, :organization_id, :skill_description, grade_descriptors_attributes: %i[mark grade_description _destroy])
+    params.require(:skill).permit(:skill_name, :organization_id, :skill_description, grade_descriptors_attributes: %i[id mark grade_description _destroy])
   end
 
   def render_deletion_error

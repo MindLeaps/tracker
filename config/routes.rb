@@ -86,7 +86,7 @@ Rails.application.routes.draw do
     resources :students, controller: :student_lessons, only: %i[show update]
   end
   resources :subjects, only: %i[index new create show edit update]
-  resources :skills, only: %i[index create show new destroy] do
+  resources :skills, only: %i[index create show new destroy edit update] do
     member { post :undelete }
   end
 
