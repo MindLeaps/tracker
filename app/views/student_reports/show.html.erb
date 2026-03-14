@@ -1,0 +1,32 @@
+<%
+  @components = [
+    { id: 'students', name: 'Student Enrollments' },
+    { id: 'enrollmentTimelines', name: 'Enrollment Timelines' },
+    { id: 'pointAverages', name: 'Points Averages' },
+    { id: 'groupHistory', name: 'Group History' },
+    { id: 'groupHistory30', name: 'Group History (Last 30 Lessons)' },
+    { id: 'groupAttendance', name: 'Attendance' },
+    { id: 'averagePerformanceStudents', name: 'Student Average Performance' }
+  ]
+%>
+
+<div class="w-full print:overflow-visible overflow-x-hidden">
+  <section class="w-full print:hidden">
+    <%= render CommonComponents::Card.new(title: 'Report Controls') do |card| %>
+      <% card.with_card_content do %>
+        <div class="w-full bg-white p-4 flex gap-12 items-center justify-center">
+            <% @components.each do |c| %>
+              <%= render CommonComponents::ToggleComponent.new(id: "#{c[:id]}Toggle", text: c[:name]) %>
+            <% end %>
+        </div>
+      <% end %>
+    <% end %>
+  </section>
+
+  <h1 class="text-3xl mb-2 font-bold tracking-tight text-center text-gray-900 sm:text-4xl print:text-2xl">Student Report - <%=@student.proper_name%></h1>
+</div>
+
+<script>
+
+</script>
+<%= javascript_include_tag "new_charts", onload: 'window.onChartsLoad && window.onChartsLoad()' %>
