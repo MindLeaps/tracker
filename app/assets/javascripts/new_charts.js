@@ -196,6 +196,50 @@ function buildDatasetsForGroups(groups) {
     return datasets
 }
 
+function buildDatasetsForStudentReportByGroups(groupedData) {
+    const source = groupedData ? groupedData : {}
+    const datasets = []
+
+    Object.entries(source).forEach(([groupId, rows], idx) => {
+        const color = colorForIndex(idx)
+        const firstRow = rows[0] || {}
+
+        const points = rows
+            .map((row) => {
+                const x = new Date(row.lesson_date).getTime()
+                const y = row.average_mark
+
+                return {
+                    x,
+                    y,
+                    date: row.lesson_date,
+                    lesson_url: row.lesson_url,
+                    group_id: row.group_id,
+                    group_name: row.group_name
+                }
+            })
+
+        if (!points.length) return
+
+        datasets.push({
+            label: firstRow.group_name || `Group ${groupId}`,
+            groupKey: groupId,
+            type: "line",
+            data: points,
+            parsing: false,
+            borderColor: color,
+            backgroundColor: color,
+            borderWidth: 3,
+            tension: 0.15,
+            spanGaps: false,
+            pointRadius: 3,
+            pointHoverRadius: 5
+        })
+    })
+
+    return datasets
+}
+
 // ---------- Group Analytics Chart && Average performance per Group by Lesson chart ---------
 function displayAveragePerformancePerGroupByLessonChart(containerId, seriesJson, opts = {}) {
     if(!chartJsPresent()) return
@@ -1229,6 +1273,104 @@ function displayMarkAveragesChart(containerId, data, opts = {}) {
                         callback: (value) => `${(Number(value) * 100).toFixed(1)}%`
                     }
                 }
+            }
+        },
+        plugins: [whiteBackgroundPlugin()]
+    })
+}
+
+// ---------- Student report chart: performance by lesson split by group ----------
+function displayStudentReportPerformanceByGroupChart(containerId, groupedData, opts = {}) {
+    if (!chartJsPresent()) return
+
+    const canvas = ensureCanvasIsPresent(containerId, { heightPx: opts.heightPx || 500 })
+    if (!canvas) return
+
+    destroyIfExists(canvas)
+
+    const datasets = buildDatasetsForStudentReportByGroups(groupedData)
+
+    new Chart(canvas.getContext("2d"), {
+        data: { datasets },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            clip: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    labels: {
+                        padding: 10,
+                        font: { size: 12 }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: "#ffffff",
+                    titleColor: "#111827",
+                    bodyColor: "#374151",
+                    borderColor: "#D1D5DB",
+                    borderWidth: 2,
+                    cornerRadius: 3,
+                    padding: 12,
+                    titleFont: {
+                        size: 14,
+                        weight: "600"
+                    },
+                    bodyFont: {
+                        size: 13
+                    },
+                    bodySpacing: 3,
+                    callbacks: {
+                        title: function(context) {
+                            return context[0].dataset.label
+                        },
+                        label: function(context) {
+                            return [
+                                `Date: ${toUSdateFormat(context.parsed.x)}`,
+                                `Average: ${context.parsed.y}`
+                            ]
+                        }
+                    }
+                },
+                whiteBackground: {
+                    color: "white"
+                }
+            },
+            scales: {
+                x: {
+                    type: "linear",
+                    title: {
+                        display: true,
+                        text: opts.xTitle || "Lesson date"
+                    },
+                    ticks: {
+                        callback: (value) => toUSdateFormat(Number(value))
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: opts.yTitle || "Performance"
+                    },
+                    min: 1,
+                    max: 7,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            },
+            onClick: function(event, elements) {
+                if (!elements?.length) return
+
+                const el = elements[0]
+                const point = this.data.datasets[el.datasetIndex].data[el.index]
+
+                if (point?.lesson_url) window.open(point.lesson_url, "_blank")
+            },
+            onHover: function(event, elements) {
+                const c = event.native?.target || event.chart?.canvas
+                if (!c) return
+                c.style.cursor = elements?.length ? "pointer" : "default"
             }
         },
         plugins: [whiteBackgroundPlugin()]

@@ -1,12 +1,6 @@
 <%
   @components = [
-    { id: 'students', name: 'Student Enrollments' },
-    { id: 'enrollmentTimelines', name: 'Enrollment Timelines' },
-    { id: 'pointAverages', name: 'Points Averages' },
-    { id: 'groupHistory', name: 'Group History' },
-    { id: 'groupHistory30', name: 'Group History (Last 30 Lessons)' },
-    { id: 'groupAttendance', name: 'Attendance' },
-    { id: 'averagePerformanceStudents', name: 'Student Average Performance' }
+
   ]
 %>
 
@@ -24,9 +18,127 @@
   </section>
 
   <h1 class="text-3xl mb-2 font-bold tracking-tight text-center text-gray-900 sm:text-4xl print:text-2xl">Student Report - <%=@student.proper_name%></h1>
+  <section class="w-full px-2">
+      <div id="studentHistory" class="w-full">
+        <%= render CommonComponents::Card.new(title: t(:student_averages).capitalize) do |card| %>
+          <% card.with_card_content do %>
+            <div id="student-history-chart" class="ct-chart ct-octave bg-white"></div>
+          <% end %>
+        <% end %>
+      </div>
+  </section>
+
+  <section class="w-full px-2">
+    <%= render CommonComponents::Card.new(title: t(:performance_change).capitalize) do |card| %>
+      <% card.with_card_content do %>
+        <% @performance_changes.each do |performance_change| %>
+          <% overall_diff = performance_change[:overall_diff].to_f %>
+          <% first_to_middle_diff = performance_change[:first_to_middle_diff].to_f %>
+          <% middle_to_last_diff = performance_change[:middle_to_last_diff].to_f %>
+
+          <% overall_positive = overall_diff >= 0 %>
+          <% overall_bg_class = overall_positive ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200" %>
+          <% overall_text_class = overall_positive ? "text-green-700" : "text-red-700" %>
+          <% overall_arrow = overall_positive ? "▲" : "▼" %>
+
+          <div class="">
+            <div class="overflow-hidden rounded-2xl border px-10 py-10 shadow-sm <%= overall_bg_class %>">
+              <div class="flex flex-col gap-10">
+
+                <div>
+                  <p class="text-md font-medium uppercase tracking-wide text-gray-700">
+                    <%= performance_change[:subject_name] %> Performance Summary
+                  </p>
+
+                  <div class="mt-4 flex items-center gap-6">
+                    <span class="text-6xl font-bold tracking-tight <%= overall_text_class %>">
+                      <%= overall_arrow %>
+                      <%= overall_diff >= 0 ? "+" : "" %><%= performance_change[:overall_diff] %>
+                    </span>
+
+                    <div>
+                      <p class="text-xl font-medium text-gray-900">
+                        Overall change across the program
+                      </p>
+                      <p class="text-sm text-gray-500">
+                        Based on <%= performance_change[:lesson_count] %> lessons
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-8 shadow-sm">
+                  <p class="text-sm font-medium text-gray-500 mb-6">Progress Path</p>
+
+                  <div class="flex items-end justify-between text-sm font-medium text-gray-500">
+                    <span>Start</span>
+                    <span>Middle</span>
+                    <span>Latest</span>
+                  </div>
+
+                  <div class="mt-4 flex items-center justify-between">
+                    <div class="flex flex-col items-center">
+                      <div class="flex h-20 w-20 items-center justify-center rounded-full bg-gray-100 text-3xl font-bold text-gray-900">
+                        <%= performance_change[:first_avg] %>
+                      </div>
+                      <p class="mt-3 text-sm text-gray-400"><%= performance_change[:first_date] %></p>
+                    </div>
+
+                    <div class="mx-4 h-1 flex-1 rounded-full bg-gray-200 relative">
+                      <div class="absolute inset-y-0 left-0 w-full rounded-full bg-gradient-to-r <%= first_to_middle_diff >= 0 ? 'from-green-300 to-green-500' : 'from-red-300 to-red-500' %>"></div>
+                    </div>
+
+                    <div class="flex flex-col items-center">
+                      <div class="flex h-20 w-20 items-center justify-center rounded-full bg-gray-100 text-3xl font-bold text-gray-900">
+                        <%= performance_change[:middle_avg] %>
+                      </div>
+                      <p class="mt-3 text-sm text-gray-400"><%= performance_change[:middle_date] %></p>
+                    </div>
+
+                    <div class="mx-4 h-1 flex-1 rounded-full bg-gray-200 relative">
+                      <div class="absolute inset-y-0 left-0 w-full rounded-full bg-gradient-to-r <%= middle_to_last_diff >= 0 ? 'from-green-300 to-green-500' : 'from-red-300 to-red-500' %>"></div>
+                    </div>
+
+                    <div class="flex flex-col items-center">
+                      <div class="flex h-20 w-20 items-center justify-center rounded-full bg-gray-100 text-3xl font-bold text-gray-900">
+                        <%= performance_change[:last_avg] %>
+                      </div>
+                      <p class="mt-3 text-sm text-gray-400"><%= performance_change[:last_date] %></p>
+                    </div>
+                  </div>
+
+                  <div class="mt-6 flex items-center justify-between text-xl font-semibold">
+                    <span class="<%= first_to_middle_diff >= 0 ? 'text-green-600' : 'text-red-600' %>">
+                      <%= first_to_middle_diff >= 0 ? '▲' : '▼' %>
+                      <%= first_to_middle_diff >= 0 ? '+' : '' %><%= performance_change[:first_to_middle_diff] %>
+                    </span>
+
+                    <span class="<%= middle_to_last_diff >= 0 ? 'text-green-600' : 'text-red-600' %>">
+                      <%= middle_to_last_diff >= 0 ? '▲' : '▼' %>
+                      <%= middle_to_last_diff >= 0 ? '+' : '' %><%= performance_change[:middle_to_last_diff] %>
+                    </span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    <% end %>
+  </section>
 </div>
 
 <script>
 
+
+  window.onChartsLoad = function () {
+    let studentSummaries = <%= @student_summaries.to_json.html_safe %>;
+
+    console.log(studentSummaries);
+
+    displayStudentReportPerformanceByGroupChart && displayStudentReportPerformanceByGroupChart("#student-history-chart", studentSummaries,
+    { title: "Student performance by lesson and group" })
+  }
 </script>
 <%= javascript_include_tag "new_charts", onload: 'window.onChartsLoad && window.onChartsLoad()' %>
