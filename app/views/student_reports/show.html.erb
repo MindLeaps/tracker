@@ -6,7 +6,7 @@
 
 <div class="w-full print:overflow-visible overflow-x-hidden">
   <section class="w-full print:hidden">
-    <%= render CommonComponents::Card.new(title: 'Report Controls') do |card| %>
+    <%= render CommonComponents::Card.new(title: t(:report_controls)) do |card| %>
       <% card.with_card_content do %>
         <div class="w-full bg-white p-4 flex gap-12 items-center justify-center">
             <% @components.each do |c| %>
@@ -20,7 +20,7 @@
   <h1 class="text-3xl mb-2 font-bold tracking-tight text-center text-gray-900 sm:text-4xl print:text-2xl">Student Report - <%=@student.proper_name%></h1>
   <section class="w-full px-2">
       <div id="studentHistory" class="w-full">
-        <%= render CommonComponents::Card.new(title: t(:student_averages).capitalize) do |card| %>
+        <%= render CommonComponents::Card.new(title: t(:student_averages)) do |card| %>
           <% card.with_card_content do %>
             <div id="student-history-chart" class="ct-chart ct-octave bg-white"></div>
           <% end %>
@@ -29,7 +29,7 @@
   </section>
 
   <section class="w-full px-2">
-    <%= render CommonComponents::Card.new(title: t(:performance_change).capitalize) do |card| %>
+    <%= render CommonComponents::Card.new(title: t(:performance_change)) do |card| %>
       <% card.with_card_content do %>
         <% @performance_changes.each do |performance_change| %>
           <% overall_diff = performance_change[:overall_diff].to_f %>
@@ -127,18 +127,78 @@
       <% end %>
     <% end %>
   </section>
+
+  <section class="w-full px-2">
+    <%= render CommonComponents::Card.new(title: t(:skill_averages)) do |card| %>
+      <% card.with_card_content do %>
+        <% @student_skill_averages.each do |subject_name, summary| %>
+          <div>
+            <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white px-8 py-8 shadow-sm">
+              <div class="flex flex-col gap-8">
+                <div>
+                  <h2 class="text-2xl font-bold tracking-tight text-gray-900">
+                    <%= subject_name %> Skill Averages
+                  </h2>
+                </div>
+
+                <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+                  <div class="rounded-xl border border-green-200 bg-green-50 p-6">
+                    <p class="text-sm font-medium uppercase tracking-wide text-green-700">
+                      Strongest Skill
+                    </p>
+                    <p class="mt-2 text-2xl font-bold text-gray-900">
+                      <%= summary[:strongest][:skill] %>
+                    </p>
+                    <p class="mt-2 text-5xl font-bold text-green-700">
+                      <%= summary[:strongest][:average] %>
+                    </p>
+                  </div>
+
+                  <div class="rounded-xl border border-red-200 bg-red-50 p-6">
+                    <p class="text-sm font-medium uppercase tracking-wide text-red-700">
+                      Lowest Rated Skill
+                    </p>
+                    <p class="mt-2 text-2xl font-bold text-gray-900">
+                      <%= summary[:weakest][:skill] %>
+                    </p>
+                    <p class="mt-2 text-5xl font-bold text-red-700">
+                      <%= summary[:weakest][:average] %>
+                    </p>
+                  </div>
+                </div>
+
+                <% if summary[:other_skills].any? %>
+                  <div>
+                    <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                      <% summary[:other_skills].each do |row| %>
+                        <div class="rounded-lg border border-gray-200 bg-gray-50 px-4 py-4 shadow-sm">
+                          <p class="text-lg font-medium leading-snug text-gray-700">
+                            <%= row[:skill] %>
+                          </p>
+                          <p class="mt-3 text-2xl font-bold tracking-tight text-gray-900">
+                            <%= row[:average] %>
+                          </p>
+                        </div>
+                      <% end %>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    <% end %>
+  </section>
 </div>
 
 <script>
 
 
   window.onChartsLoad = function () {
-    let studentSummaries = <%= @student_summaries.to_json.html_safe %>;
+    let groupedSummaries = <%= @grouped_student_summaries.to_json.html_safe %>;
 
-    console.log(studentSummaries);
-
-    displayStudentReportPerformanceByGroupChart && displayStudentReportPerformanceByGroupChart("#student-history-chart", studentSummaries,
-    { title: "Student performance by lesson and group" })
+    displayStudentReportPerformanceByGroupChart && displayStudentReportPerformanceByGroupChart("#student-history-chart", groupedSummaries, { title: "Student performance by lesson and group" })
   }
 </script>
 <%= javascript_include_tag "new_charts", onload: 'window.onChartsLoad && window.onChartsLoad()' %>

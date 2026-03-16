@@ -284,6 +284,7 @@ en:
   average: Average
   average_grade: Average Grade
   average_mark_for_skill: Average Mark for Skill
+  skill_averages: Skill Averages
   mark_percentages: Mark Percentages
   graded_of_skills: Graded / Skills
   grade_count: Grade Count
@@ -318,6 +319,7 @@ en:
   total: Total
   reports: Reports
   generate_report: Generate Report
+  report_controls: Report Controls
   analytics: Analytics
   general_analytics: General Analytics
   group_analytics: Group Analytics
