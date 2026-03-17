@@ -718,12 +718,12 @@ function displayLessonChart(containerId, lessonId, data) {
                 },
                 pointBackgroundColor: (ctx) => {
                     const raw = ctx.raw
-                    if (!raw) return " #9C27B0"
+                    if (!raw) return "#9C27B0"
                     return raw.lesson_id === lessonId ? "#4CAF50" : " #9C27B0"
                 },
                 pointBorderColor: (ctx) => {
                     const raw = ctx.raw
-                    if (!raw) return " #9C27B0"
+                    if (!raw) return "#9C27B0"
                     return raw.lesson_id === lessonId ? "#4CAF50" : " #9C27B0"
                 },
                 pointHoverRadius: 5

@@ -14,92 +14,82 @@
     <meta name="robots" content="noindex, nofollow">
     <link rel="canonical" href="https://mindleapstracker.org<%= request.path %>" />
   <% end %>
+
   <style>
-    * {
-      box-shadow: none !important;
-      text-shadow: none !important;
-    }
-
-    @media print {
-      @page {
-        margin: 0;
+      * {
+          box-shadow: none !important;
+          text-shadow: none !important;
       }
 
-      html {
-        box-sizing: border-box;
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
-      }
+      @media print {
+          @page {
+              margin: 0;
+          }
 
-      *, *:before, *:after {
-        box-sizing: inherit;
-      }
+          html {
+              box-sizing: border-box;
+          }
 
-      body {
-        print-color-adjust: exact;
-        -webkit-print-color-adjust: exact;
-      }
+          *,
+          *::before,
+          *::after {
+              box-sizing: inherit;
+          }
 
-      html, body {
-        width: 100%;
-        height: auto;
-        background: white !important;
-      }
+          html,
+          body {
+              width: 100%;
+              height: auto;
+              margin: 0;
+              padding: 0;
+              background: white !important;
+          }
 
-      body {
-        margin: 0;
-        padding: 0;
-      }
+          body {
+              print-color-adjust: exact;
+              -webkit-print-color-adjust: exact;
+          }
 
-      .flex {
-        display: block !important;
-      }
+          .pagebreak-before {
+              break-before: page;
+          }
 
-      .w-full {
-        width: 100% !important;
-      }
+          .pagebreak-after {
+              break-after: page;
+          }
 
-      .pagebreak-before {
-        clear: both;
-        break-before: page;
-      }
+          canvas {
+              width: 100% !important;
+              height: auto !important;
+          }
 
-      .pagebreak-after {
-        clear: both;
-        break-after: page;
-      }
+          .ct-chart,
+          .ct-chart-bar {
+              width: 100% !important;
+              min-height: 500px !important;
+          }
 
-      canvas {
-        width: 100% !important;
-        height: auto !important;
-      }
+          table {
+              width: 100% !important;
+              font-size: 12px;
+          }
 
-      .ct-chart,
-      .ct-chart-bar {
-        width: 100% !important;
-        min-height: 500px !important;
-      }
+          th,
+          td {
+              padding: 6px !important;
+          }
 
-      table {
-        width: 100% !important;
-        font-size: 12px;
+          .grid a > img {
+              display: none;
+          }
       }
-
-      th, td {
-        padding: 6px !important;
-      }
-
-      .grid a > img {
-        display: none;
-      }
-    }
   </style>
 </head>
 <body class="w-full h-full bg-gray-200">
-  <div class="w-full h-full flex">
-    <div class="flex flex-col h-full w-full p-2">
-      <%= yield %>
+    <div class="w-full h-full flex">
+        <div class="flex flex-col h-full w-full p-2">
+        <%= yield %>
+        </div>
     </div>
-  </div>
 </body>
 </html>
