@@ -22,33 +22,31 @@ class StudentReportsController < HtmlController
   end
 
   # rubocop:disable Metrics/MethodLength
-  # rubocop:disable Metrics/CyclomaticComplexity
-  # rubocop:disable Metrics/AbcSize
   def skill_average_summaries
     grouped = {}
 
     StudentAverage.where(student_id: @student.id).load.each do |average|
       subject_name = average[:subject_name].to_s
       grouped[subject_name] ||= []
-      grouped[subject_name] << { skill: average[:skill_name], average: average[:average_mark].to_f }
+      grouped[subject_name] << {
+        skill: average[:skill_name],
+        average: average[:average_mark].to_f
+      }
     end
 
     grouped.transform_values do |rows|
       strongest = rows.max_by { |row| row[:average] }
       weakest = rows.min_by { |row| row[:average] }
+      sorted_skills = rows.sort_by { |row| -row[:average] }
 
       {
         strongest: strongest,
         weakest: weakest,
-        other_skills: rows.reject do |row|
-          row[:skill] == strongest[:skill] || row[:skill] == weakest[:skill]
-        end
+        skills: sorted_skills
       }
     end
   end
   # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/CyclomaticComplexity
-  # rubocop:enable Metrics/AbcSize
 
   def group_summaries
     groups_by_id = Group.where(id: @summaries.filter_map(&:group_id).uniq).index_by(&:id)
