@@ -127,7 +127,7 @@ class StudentsController < HtmlController
   private
 
   def lesson_summary(summary)
-    { lesson_date: summary.lesson_date, average_mark: summary.average_mark }
+    { lesson_date: summary.lesson_date, average_mark: summary.average_mark, lesson_url: lesson_path(summary.lesson_id) }
   end
 
   def student_params
