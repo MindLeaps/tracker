@@ -125,6 +125,48 @@ RSpec.describe SkillsController, type: :controller do
       end
     end
 
+    describe '#edit' do
+      let(:skill) { create :skill }
+      before :each do
+        get :edit, params: { id: skill.id }
+      end
+
+      it { should respond_with :ok }
+      it { should render_template :edit }
+    end
+
+    describe '#update' do
+      before :each do
+        @skill = create :skill
+        @first_grade_descriptor = create :grade_descriptor, skill: @skill
+        @second_grade_descriptor = create :grade_descriptor, skill: @skill
+      end
+
+      it 'updates the skill\'s name' do
+        post :update, params: { id: @skill.id, skill: { skill_name: 'updated skill name' } }
+
+        expect(@skill.reload.skill_name).to eq 'updated skill name'
+      end
+
+      it 'updates the skill\'s description' do
+        post :update, params: { id: @skill.id, skill: { skill_description: 'updated skill description' } }
+
+        expect(@skill.reload.skill_description).to eq 'updated skill description'
+      end
+
+      it 'updates the skill\'s descriptors' do
+        post :update, params: { id: @skill.id, skill: { grade_descriptors_attributes:
+                                                              { '0' => { id: @first_grade_descriptor.id, grade_description: 'updated grade mark one' },
+                                                                '1' => { id: @second_grade_descriptor.id, grade_description: '' } } } }
+
+        @skill.reload
+        expect(@skill.grade_descriptors.map(&:grade_description)).to include 'updated grade mark one', ''
+      end
+
+
+    end
+
+
     describe '#destroy' do
       context 'Skill that has no grade and does not belong to a subject' do
         before :each do
