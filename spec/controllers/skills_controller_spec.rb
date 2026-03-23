@@ -163,7 +163,6 @@ RSpec.describe SkillsController, type: :controller do
         expect(@skill.grade_descriptors.map(&:grade_description)).to include 'updated grade mark one', ''
       end
 
-
     end
 
 

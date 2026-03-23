@@ -1,4 +1,5 @@
 ## Unreleased
+- Added ability to edit skill and grade descriptions
 - Defaulted starting date for analytics to the last lesson's month
 - Replaced existing charts using the `Chart.js` library 
 - Fixed issue where group reports crashed when students had no summaries
