@@ -162,9 +162,7 @@ RSpec.describe SkillsController, type: :controller do
         @skill.reload
         expect(@skill.grade_descriptors.map(&:grade_description)).to include 'updated grade mark one', ''
       end
-
     end
-
 
     describe '#destroy' do
       context 'Skill that has no grade and does not belong to a subject' do
