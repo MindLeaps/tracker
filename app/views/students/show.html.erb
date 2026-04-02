@@ -20,7 +20,7 @@ end %>
     <div class="w-1/2">
        <%= render CommonComponents::Card.new(title: t(:average_performance_for_last_30_lessons).capitalize) do |card| %>
          <% card.with_card_content do %>
-           <div class="ct-chart ct-octave bg-white full-width"></div>
+           <div id="student-chart" class="ct-chart ct-octave bg-white full-width"></div>
          <% end %>
        <% end %>
     </div>
@@ -166,9 +166,11 @@ end %>
   </section>
 </div>
 
-<%= javascript_tag do %>
-  function onChartsLoad() {
-    displayAveragesGraph && displayAveragesGraph('.ct-chart', '', <%= @lesson_summaries.to_json.html_safe %>);
-  }
-<% end %>
-<%= javascript_include_tag "charts", onload: 'onChartsLoad()' %>
+<script>
+    window.onChartsLoad = function() {
+        let studentSummaries = <%= @lesson_summaries.to_json.html_safe %>
+
+        displayAveragesChart && displayAveragesChart('#student-chart', studentSummaries);
+    }
+</script>
+<%= javascript_include_tag "new_charts", onload: 'window.onChartsLoad && window.onChartsLoad()' %>
