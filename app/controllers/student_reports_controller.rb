@@ -12,6 +12,7 @@ class StudentReportsController < HtmlController
     @grouped_student_summaries = group_summaries
     @performance_changes = fetch_performance_changes_by_subject(@student.id)
     @student_skill_averages = skill_average_summaries
+    @performance_per_skill = performance_per_skill_single_student
   end
 
   private
@@ -69,5 +70,54 @@ class StudentReportsController < HtmlController
       lesson_date: summary.lesson_date,
       lesson_url: lesson ? lesson_url(lesson) : nil
     }
+  end
+
+  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable Metrics/AbcSize
+  def performance_per_skill_single_student
+    conn = ActiveRecord::Base.connection.raw_connection
+    student_name = @student.proper_name
+
+    sql = Sql.performance_per_skill_in_lessons_per_student_query_with_dates([@student.id])
+    rows = conn.exec_params(sql, [nil, nil]).values
+
+    grouped = rows.each_with_object({}) do |row, acc|
+      lesson_index = row[0].to_i + 1
+      average_mark = row[1].to_f
+      lesson_id = row[2]
+      lesson_date = row[3]
+      skill_name = row[4]
+
+      acc[skill_name] ||= []
+      acc[skill_name] << {
+        x: lesson_index,
+        y: average_mark,
+        lesson_url: lesson_path(lesson_id),
+        date: lesson_date
+      }
+    end
+
+    grouped.map.with_index do |(skill_name, data), index|
+      {
+        skill: skill_name,
+        series: [
+          {
+            name: student_name,
+            data: data,
+            color: get_color(index)
+          }
+        ]
+      }
+    end
+  end
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize
+
+  def colors
+    %w[#7cb5ec #434348 #90ed7d #f7a35c #8085e9 #f15c80 #e4d354 #2b908f #f45b5b #91e8e1]
+  end
+
+  def get_color(index)
+    colors[index % colors.length]
   end
 end

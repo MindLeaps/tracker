@@ -119,7 +119,6 @@ function polynomialLineForGroup(group, order = 4) {
         return null
     }
 
-    // Ensure numeric + sorted
     const pts = (group.data || [])
         .map(p => ({ x: Number(p.x), y: Number(p.y) }))
         .filter(p => Number.isFinite(p.x) && Number.isFinite(p.y))
@@ -133,20 +132,20 @@ function polynomialLineForGroup(group, order = 4) {
     const span = maxX - minX
     if (span === 0) return null
 
-    // Map x -> t in [-1, 1]
     const toT = (x) => ((x - minX) / span) * 2 - 1
     const toX = (t) => minX + ((t + 1) / 2) * span
 
-    // Fit polynomial on t to avoid instability
     const data = pts.map(p => [toT(p.x), p.y])
     const result = window.regression.polynomial(data, { order })
 
-    // Sample a smooth curve in t-space
     const steps = 200
     const curve = []
+
     for (let i = 0; i <= steps; i++) {
         const t = -1 + (2 * i) / steps
-        const y = result.predict(t)[1]
+        const rawY = result.predict(t)[1]
+        const y = Math.max(1, Math.min(7, rawY))
+
         curve.push({ x: toX(t), y })
     }
 
@@ -234,6 +233,53 @@ function buildDatasetsForStudentReportByGroups(groupedData) {
             spanGaps: false,
             pointRadius: 3,
             pointHoverRadius: 5
+        })
+    })
+
+    return datasets
+}
+
+function buildRegressionOnlyDatasetsForStudentSkills(skillSeriesJson, opts = {}) {
+    const items = Array.isArray(skillSeriesJson) ? skillSeriesJson : []
+    const datasets = []
+
+    items.forEach((item, idx) => {
+        const skillName = item?.skill || `Skill ${idx + 1}`
+        const firstSeries = Array.isArray(item?.series) ? item.series[0] : null
+        const color = firstSeries?.color || colorForIndex(idx)
+
+        const points = (firstSeries?.data || [])
+            .map((p) => ({
+                x: p.x,
+                y: p.y,
+                lesson_url: p.lesson_url,
+                date: p.date
+            }))
+            .sort((a, b) => a.x - b.x)
+
+        if (points.length < 2) return
+
+        const group = {
+            id: skillName,
+            name: skillName,
+            data: points
+        }
+
+        const curve = polynomialLineForGroup(group, opts.regressionOrder ?? 4)
+        if (!curve) return
+
+        datasets.push({
+            label: skillName,
+            type: "line",
+            data: curve,
+            parsing: false,
+            borderColor: color,
+            backgroundColor: color,
+            borderDash: [5, 5],
+            borderWidth: 3,
+            tension: 0,
+            pointRadius: 0,
+            pointHoverRadius: 0
         })
     })
 
@@ -1371,6 +1417,79 @@ function displayStudentReportPerformanceByGroupChart(containerId, groupedData, o
                 const c = event.native?.target || event.chart?.canvas
                 if (!c) return
                 c.style.cursor = elements?.length ? "pointer" : "default"
+            }
+        },
+        plugins: [whiteBackgroundPlugin()]
+    })
+}
+
+// ---------- Student report chart: performance by lesson split by skill ----------
+function displayStudentSkillRegressionChart(containerId, skillSeriesJson, opts = {}) {
+    if (!chartJsPresent()) return
+
+    const canvas = ensureCanvasIsPresent(containerId, { heightPx: opts.heightPx || 500 })
+    if (!canvas) return
+    destroyIfExists(canvas)
+
+    const datasets = buildRegressionOnlyDatasetsForStudentSkills(skillSeriesJson, opts)
+
+    new Chart(canvas.getContext("2d"), {
+        data: { datasets },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            clip: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: opts.title || "Student progress by skill",
+                    font: { size: 20 }
+                },
+                legend: {
+                    display: true,
+                    labels: {
+                        padding: 10,
+                        font: { size: 11 },
+                        boxHeight: 10,
+                        boxWidth: 10
+                    }
+                },
+                tooltip: {
+                    backgroundColor: "#ffffff",
+                    titleColor: "#111827",
+                    bodyColor: "#374151",
+                    borderColor: "#D1D5DB",
+                    borderWidth: 2,
+                    cornerRadius: 3,
+                    padding: 12,
+                    callbacks: {
+                        title: (ctx) => ctx[0]?.dataset?.label || "",
+                        label: (ctx) => [
+                            `${opts.xTitle || "Nr. of lessons"}: ${Math.round(ctx.parsed.x)}`,
+                            `${opts.yTitle || "Performance"}: ${ctx.parsed.y.toFixed(2)}`
+                        ]
+                    }
+                },
+                whiteBackground: { color: "white" }
+            },
+            scales: {
+                x: {
+                    type: "linear",
+                    min: 1,
+                    title: { display: true, text: opts.xTitle || "Nr. of lessons" },
+                    ticks: { precision: 0 }
+                },
+                y: {
+                    min: 1,
+                    max: 7,
+                    title: { display: true, text: opts.yTitle || "Performance" },
+                    ticks: { precision: 0 }
+                }
+            },
+            onHover: function (event) {
+                const c = event.native?.target || event.chart?.canvas
+                if (!c) return
+                c.style.cursor = "default"
             }
         },
         plugins: [whiteBackgroundPlugin()]

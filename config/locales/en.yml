@@ -218,6 +218,7 @@ en:
   invalid_user: User does not exist in MindLeaps
   student_average_marks: Student Average Marks
   student_averages: Student Averages
+  student_skill_progress: Student Skill Progress
   student_grades: Student Grades
   student_graded: Student graded.
   student_graded_text: Student %{student} graded.
