@@ -188,7 +188,7 @@
   window.onChartsLoad = function () {
     let groupedSummaries = <%= @grouped_student_summaries.to_json.html_safe %>;
 
-    displayStudentReportPerformanceByGroupChart && displayStudentReportPerformanceByGroupChart("#student-history-chart", groupedSummaries, { title: "Student performance by lesson and group", heightPx: 100 })
+    displayStudentReportPerformanceByGroupChart && displayStudentReportPerformanceByGroupChart("#student-history-chart", groupedSummaries, { title: "Student performance by lesson and group" })
   }
 </script>
 <%= javascript_include_tag "new_charts", onload: 'window.onChartsLoad && window.onChartsLoad()' %>
