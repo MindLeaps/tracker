@@ -217,6 +217,8 @@ en:
   invalid_token: Invalid Google id_token
   invalid_user: User does not exist in MindLeaps
   student_average_marks: Student Average Marks
+  student_averages: Student Averages
+  student_skill_progress: Student Skill Progress
   student_grades: Student Grades
   student_graded: Student graded.
   student_graded_text: Student %{student} graded.
@@ -283,6 +285,7 @@ en:
   average: Average
   average_grade: Average Grade
   average_mark_for_skill: Average Mark for Skill
+  skill_averages: Skill Averages
   mark_percentages: Mark Percentages
   graded_of_skills: Graded / Skills
   grade_count: Grade Count
@@ -317,6 +320,7 @@ en:
   total: Total
   reports: Reports
   generate_report: Generate Report
+  report_controls: Report Controls
   analytics: Analytics
   general_analytics: General Analytics
   group_analytics: Group Analytics

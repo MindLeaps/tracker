@@ -4,6 +4,7 @@
   {title: CommonComponents::TagLabel.new(label: @student.proper_name, img_src: 'student.svg'), href: '' },
 ], buttons: [
   (CommonComponents::ButtonComponent.new(label: t(:edit_student), href: edit_student_path(@student)) if policy(@student).edit?),
+  (CommonComponents::ButtonComponent.new(label: t(:generate_report), href: reports_student_path(@student), options: { target: '_blank' }) if policy(@student).show?),
   (CommonComponents::FormButtonComponent.new(label: t(:restore_student), path: undelete_student_path(@student), method: :post) if policy(@student).destroy? && @student.deleted_at),
   (CommonComponents::DangerousFormButtonComponent.new(label: t(:delete_student), path: student_path(@student), method: :delete) if policy(@student).destroy? && !@student.deleted_at)
 ].compact) do |h|
