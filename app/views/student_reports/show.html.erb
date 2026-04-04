@@ -1,6 +1,7 @@
 <%
   @components = [
     { id: 'studentAverages', name: 'Student Averages' },
+    { id: 'studentSkillProgress', name: 'Student Skill Progress' },
     { id: 'performanceChanges', name: 'Performance Changes' },
     { id: 'skillAverages', name: 'Skill Averages' },
   ]
@@ -29,7 +30,7 @@
     <% end %>
   </section>
 
-  <section id="studentAverages" class="w-full px-2 pagebreak-after">
+  <section id="studentSkillProgress" class="w-full px-2 pagebreak-after">
     <%= render CommonComponents::Card.new(title: t(:student_skill_progress)) do |card| %>
       <% card.with_card_content do %>
         <div id="student-skill-progress-chart" class="ct-chart ct-octave bg-white"></div>
