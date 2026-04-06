@@ -147,6 +147,7 @@ en:
   unable_to_update_student: Unable to update student
   all: All
   select_groups_to_load_students: Select groups to load students
+  select_student: Select Student
   cannot_change_organization_existing_student: Cannot change the organization of an existing student
   number_of_students: Number of Students
   number_of_groups: Number of Groups
@@ -320,6 +321,8 @@ en:
   total: Total
   reports: Reports
   generate_report: Generate Report
+  generate_group_report: Generate Group Report
+  generate_student_report: Generate Student Report
   report_controls: Report Controls
   analytics: Analytics
   general_analytics: General Analytics
