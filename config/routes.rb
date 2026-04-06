@@ -81,6 +81,7 @@ Rails.application.routes.draw do
 
   resource :reports, only: %i[show] do
     resources :groups, controller: :group_reports, only: %i[show]
+    resources :students, controller: :student_reports, only: %i[show]
   end
   resources :lessons, only: %i[index new create show edit update] do
     resources :students, controller: :student_lessons, only: %i[show update]

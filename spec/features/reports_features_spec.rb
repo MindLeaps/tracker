@@ -13,8 +13,8 @@ RSpec.describe 'User interacts with Reports' do
       @chapter = create :chapter, chapter_name: 'Report Chapter', organization: @organization
       @group = create :group, chapter: @chapter, group_name: 'Report Group'
       @empty_group = create :group, chapter: @chapter, group_name: 'Empty Report Group'
-      @first_student = create :graded_student, organization: @group, groups: [@group], subject: @first_subject, grades: { 'First Skill' => [1, 2, 3] }
-      @second_student = create :graded_student, organization: @group, groups: [@group], subject: @second_subject, grades: { 'Second Skill' => [1, 2, 3] }
+      @first_student = create :graded_student, organization: @organization, groups: [@group], subject: @first_subject, grades: { 'First Skill' => [1, 2, 3, 4, 5, 6, 7, 3, 5, 6, 1, 7] }
+      @second_student = create :graded_student, organization: @organization, groups: [@group], subject: @second_subject, grades: { 'Second Skill' => [1, 2, 3] }
     end
 
     it 'displays group and student averages', js: true, skip: 'Fails because we cannot close an open print preview window' do
@@ -40,6 +40,16 @@ RSpec.describe 'User interacts with Reports' do
       expect(page).to have_content("Group Report - #{@empty_group.group_name}")
       expect(page).to have_content('There are no students in this group')
       expect(page).to have_content('There is no data for this group yet')
+    end
+
+    it 'displays a generated student report', js: true do
+      visit "reports/students/#{@first_student.id}"
+      expect(page).to have_content("Student Report - #{@first_student.proper_name}")
+
+      %w[studentAverages studentSkillProgress performanceChanges skillAverages].each do |s|
+        section = find("##{s}")
+        expect(section).to be_visible
+      end
     end
   end
 end

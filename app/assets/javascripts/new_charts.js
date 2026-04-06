@@ -119,7 +119,6 @@ function polynomialLineForGroup(group, order = 4) {
         return null
     }
 
-    // Ensure numeric + sorted
     const pts = (group.data || [])
         .map(p => ({ x: Number(p.x), y: Number(p.y) }))
         .filter(p => Number.isFinite(p.x) && Number.isFinite(p.y))
@@ -133,20 +132,20 @@ function polynomialLineForGroup(group, order = 4) {
     const span = maxX - minX
     if (span === 0) return null
 
-    // Map x -> t in [-1, 1]
     const toT = (x) => ((x - minX) / span) * 2 - 1
     const toX = (t) => minX + ((t + 1) / 2) * span
 
-    // Fit polynomial on t to avoid instability
     const data = pts.map(p => [toT(p.x), p.y])
     const result = window.regression.polynomial(data, { order })
 
-    // Sample a smooth curve in t-space
     const steps = 200
     const curve = []
+
     for (let i = 0; i <= steps; i++) {
         const t = -1 + (2 * i) / steps
-        const y = result.predict(t)[1]
+        const rawY = result.predict(t)[1]
+        const y = Math.max(1, Math.min(7, rawY))
+
         curve.push({ x: toX(t), y })
     }
 
@@ -191,6 +190,97 @@ function buildDatasetsForGroups(groups) {
                 hiddenFromLegend: true
             })
         }
+    })
+
+    return datasets
+}
+
+function buildDatasetsForStudentReportByGroups(groupedData) {
+    const source = groupedData ? groupedData : {}
+    const datasets = []
+
+    Object.entries(source).forEach(([groupId, rows], idx) => {
+        const color = colorForIndex(idx)
+        const firstRow = rows[0] || {}
+
+        const points = rows
+            .map((row) => {
+                const x = new Date(row.lesson_date).getTime()
+                const y = row.average_mark
+
+                return {
+                    x,
+                    y,
+                    date: row.lesson_date,
+                    lesson_url: row.lesson_url,
+                    group_id: row.group_id,
+                    group_name: row.group_name
+                }
+            })
+
+        if (!points.length) return
+
+        datasets.push({
+            label: firstRow.group_name || `Group ${groupId}`,
+            groupKey: groupId,
+            type: "line",
+            data: points,
+            parsing: false,
+            borderColor: color,
+            backgroundColor: color,
+            borderWidth: 3,
+            tension: 0.15,
+            spanGaps: false,
+            pointRadius: 3,
+            pointHoverRadius: 5
+        })
+    })
+
+    return datasets
+}
+
+function buildRegressionOnlyDatasetsForStudentSkills(skillSeriesJson, opts = {}) {
+    const items = Array.isArray(skillSeriesJson) ? skillSeriesJson : []
+    const datasets = []
+
+    items.forEach((item, idx) => {
+        const skillName = item?.skill || `Skill ${idx + 1}`
+        const firstSeries = Array.isArray(item?.series) ? item.series[0] : null
+        const color = firstSeries?.color || colorForIndex(idx)
+
+        const points = (firstSeries?.data || [])
+            .map((p) => ({
+                x: p.x,
+                y: p.y,
+                lesson_url: p.lesson_url,
+                date: p.date
+            }))
+            .sort((a, b) => a.x - b.x)
+
+        if (points.length < 2) return
+
+        const group = {
+            id: skillName,
+            name: skillName,
+            data: points
+        }
+
+        const curve = polynomialLineForGroup(group, opts.regressionOrder ?? 4)
+        if (!curve) return
+
+        datasets.push({
+            label: skillName,
+            type: "line",
+            data: curve,
+            parsing: false,
+            borderColor: color,
+            backgroundColor: color,
+            borderDash: [5, 5],
+            borderWidth: 3,
+            tension: 0,
+            pointRadius: 0,
+            pointHoverRadius: 0
+        })
     })
 
     return datasets
@@ -674,12 +764,12 @@ function displayLessonChart(containerId, lessonId, data) {
                 },
                 pointBackgroundColor: (ctx) => {
                     const raw = ctx.raw
-                    if (!raw) return " #9C27B0"
+                    if (!raw) return "#9C27B0"
                     return raw.lesson_id === lessonId ? "#4CAF50" : " #9C27B0"
                 },
                 pointBorderColor: (ctx) => {
                     const raw = ctx.raw
-                    if (!raw) return " #9C27B0"
+                    if (!raw) return "#9C27B0"
                     return raw.lesson_id === lessonId ? "#4CAF50" : " #9C27B0"
                 },
                 pointHoverRadius: 5
@@ -1229,6 +1319,177 @@ function displayMarkAveragesChart(containerId, data, opts = {}) {
                         callback: (value) => `${(Number(value) * 100).toFixed(1)}%`
                     }
                 }
+            }
+        },
+        plugins: [whiteBackgroundPlugin()]
+    })
+}
+
+// ---------- Student report chart: performance by lesson split by group ----------
+function displayStudentReportPerformanceByGroupChart(containerId, groupedData, opts = {}) {
+    if (!chartJsPresent()) return
+
+    const canvas = ensureCanvasIsPresent(containerId, { heightPx: opts.heightPx || 500 })
+    if (!canvas) return
+
+    destroyIfExists(canvas)
+
+    const datasets = buildDatasetsForStudentReportByGroups(groupedData)
+
+    new Chart(canvas.getContext("2d"), {
+        data: { datasets },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            clip: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    labels: {
+                        padding: 10,
+                        font: { size: 12 }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: "#ffffff",
+                    titleColor: "#111827",
+                    bodyColor: "#374151",
+                    borderColor: "#D1D5DB",
+                    borderWidth: 2,
+                    cornerRadius: 3,
+                    padding: 12,
+                    titleFont: {
+                        size: 14,
+                        weight: "600"
+                    },
+                    bodyFont: {
+                        size: 13
+                    },
+                    bodySpacing: 3,
+                    callbacks: {
+                        title: function(context) {
+                            return context[0].dataset.label
+                        },
+                        label: function(context) {
+                            return [
+                                `Date: ${toUSdateFormat(context.parsed.x)}`,
+                                `Average: ${context.parsed.y}`
+                            ]
+                        }
+                    }
+                },
+                whiteBackground: {
+                    color: "white"
+                }
+            },
+            scales: {
+                x: {
+                    type: "linear",
+                    title: {
+                        display: true,
+                        text: opts.xTitle || "Lesson date"
+                    },
+                    ticks: {
+                        callback: (value) => toUSdateFormat(Number(value))
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: opts.yTitle || "Performance"
+                    },
+                    min: 1,
+                    max: 7,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            },
+            onClick: function(event, elements) {
+                if (!elements?.length) return
+
+                const el = elements[0]
+                const point = this.data.datasets[el.datasetIndex].data[el.index]
+
+                if (point?.lesson_url) window.open(point.lesson_url, "_blank")
+            },
+            onHover: function(event, elements) {
+                const c = event.native?.target || event.chart?.canvas
+                if (!c) return
+                c.style.cursor = elements?.length ? "pointer" : "default"
+            }
+        },
+        plugins: [whiteBackgroundPlugin()]
+    })
+}
+
+// ---------- Student report chart: performance by lesson split by skill ----------
+function displayStudentSkillRegressionChart(containerId, skillSeriesJson, opts = {}) {
+    if (!chartJsPresent()) return
+
+    const canvas = ensureCanvasIsPresent(containerId, { heightPx: opts.heightPx || 500 })
+    if (!canvas) return
+    destroyIfExists(canvas)
+
+    const datasets = buildRegressionOnlyDatasetsForStudentSkills(skillSeriesJson, opts)
+
+    new Chart(canvas.getContext("2d"), {
+        data: { datasets },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            clip: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: opts.title || "Student progress by skill",
+                    font: { size: 20 }
+                },
+                legend: {
+                    display: true,
+                    labels: {
+                        padding: 10,
+                        font: { size: 11 },
+                        boxHeight: 10,
+                        boxWidth: 10
+                    }
+                },
+                tooltip: {
+                    backgroundColor: "#ffffff",
+                    titleColor: "#111827",
+                    bodyColor: "#374151",
+                    borderColor: "#D1D5DB",
+                    borderWidth: 2,
+                    cornerRadius: 3,
+                    padding: 12,
+                    callbacks: {
+                        title: (ctx) => ctx[0]?.dataset?.label || "",
+                        label: (ctx) => [
+                            `${opts.xTitle || "Nr. of lessons"}: ${Math.round(ctx.parsed.x)}`,
+                            `${opts.yTitle || "Performance"}: ${ctx.parsed.y.toFixed(2)}`
+                        ]
+                    }
+                },
+                whiteBackground: { color: "white" }
+            },
+            scales: {
+                x: {
+                    type: "linear",
+                    min: 1,
+                    title: { display: true, text: opts.xTitle || "Nr. of lessons" },
+                    ticks: { precision: 0 }
+                },
+                y: {
+                    min: 1,
+                    max: 7,
+                    title: { display: true, text: opts.yTitle || "Performance" },
+                    ticks: { precision: 0 }
+                }
+            },
+            onHover: function (event) {
+                const c = event.native?.target || event.chart?.canvas
+                if (!c) return
+                c.style.cursor = "default"
             }
         },
         plugins: [whiteBackgroundPlugin()]
