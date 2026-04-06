@@ -147,6 +147,7 @@ en:
   unable_to_update_student: Unable to update student
   all: All
   select_groups_to_load_students: Select groups to load students
+  select_student: Select Student
   cannot_change_organization_existing_student: Cannot change the organization of an existing student
   number_of_students: Number of Students
   number_of_groups: Number of Groups
@@ -217,6 +218,8 @@ en:
   invalid_token: Invalid Google id_token
   invalid_user: User does not exist in MindLeaps
   student_average_marks: Student Average Marks
+  student_averages: Student Averages
+  student_skill_progress: Student Skill Progress
   student_grades: Student Grades
   student_graded: Student graded.
   student_graded_text: Student %{student} graded.
@@ -283,6 +286,7 @@ en:
   average: Average
   average_grade: Average Grade
   average_mark_for_skill: Average Mark for Skill
+  skill_averages: Skill Averages
   mark_percentages: Mark Percentages
   graded_of_skills: Graded / Skills
   grade_count: Grade Count
@@ -317,6 +321,9 @@ en:
   total: Total
   reports: Reports
   generate_report: Generate Report
+  generate_group_report: Generate Group Report
+  generate_student_report: Generate Student Report
+  report_controls: Report Controls
   analytics: Analytics
   general_analytics: General Analytics
   group_analytics: Group Analytics

@@ -9,10 +9,12 @@ function createOption(label, value) {
 
     return opt;
 }
+
 export default class extends Controller {
-    static targets = ['select', 'anchor']
+    static targets = ['select', 'anchor', 'studentAnchor']
     static values = {
-        path: String
+        path: String,
+        studentPath: String
     }
 
     connect() {
@@ -26,13 +28,35 @@ export default class extends Controller {
         return value
     }
 
-    updateFilter() {
+    updateFilter(event) {
         this.updateDropdown(this.selectTargets[0], JSON.parse(this.selectTargets[0].dataset.resources))
-        const replaceValue = this.toId(this.selectTargets[this.selectTargets.length - 1].value)
-        this.anchorTarget.href = this.pathValue.replace("placeholder", replaceValue)
 
-        if(this.selectTargets[1].value.length === 0 || this.selectTargets[2].value.length === 0) this.disableAnchor()
-        else this.enableAnchor()
+        const changedName = event?.target?.dataset?.name
+        if (changedName === 'organization_id' || changedName === 'chapter_id' || changedName === 'group_id') {
+            this.refreshStudents()
+        }
+
+        this.updateAnchors()
+    }
+
+    updateAnchor() {
+        this.updateAnchors()
+    }
+
+    updateAnchors() {
+        const groupSelect = this.selectTargets.find(t => t.dataset.name === 'group_id')
+        const studentSelect = this.selectTargets.find(t => t.dataset.name === 'student_id')
+
+        const groupId = this.toId(groupSelect?.value)
+        const studentId = this.toId(studentSelect?.value)
+
+        this.anchorTarget.href = groupId ? this.pathValue.replace("placeholder", groupId) : "#"
+        groupId ? this.enableAnchor(this.anchorTarget) : this.disableAnchor(this.anchorTarget)
+
+        if (this.hasStudentAnchorTarget) {
+            this.studentAnchorTarget.href = studentId ? this.studentPathValue.replace("placeholder", studentId) : "#"
+            studentId ? this.enableAnchor(this.studentAnchorTarget) : this.disableAnchor(this.studentAnchorTarget)
+        }
     }
 
     updateDropdown(dropdown, values, parentIds) {
@@ -59,20 +83,51 @@ export default class extends Controller {
         if (dependents) {
             dependents.forEach(dependentSelectName => {
                 const targetSelect = this.selectTargets.find(t => t.dataset.name === dependentSelectName);
-                this.updateDropdown(targetSelect, JSON.parse(targetSelect.dataset.resources), valueExists ? [currentValue] : filteredIds)
+                if (targetSelect) {
+                    this.updateDropdown(
+                        targetSelect,
+                        JSON.parse(targetSelect.dataset.resources),
+                        valueExists ? [currentValue] : filteredIds
+                    )
+                }
             })
         }
     }
 
-    disableAnchor() {
-        this.anchorTarget.style.pointerEvents="none"
-        this.anchorTarget.style.cursor='default'
-        this.anchorTarget.style.opacity = '0.5'
+    refreshStudents() {
+        const frame = document.getElementById('student_select_frame')
+        if (!frame) return
+
+        const groupSelect = this.selectTargets.find(t => t.dataset.name === 'group_id')
+        const groupId = this.toId(groupSelect?.value)
+
+        if (!groupId) {
+            frame.src = frame.dataset.srcBase
+            frame.reload()
+            this.updateAnchors()
+            return
+        }
+
+        const params = new URLSearchParams()
+        params.append('group_ids[]', groupId)
+
+        const studentSelect = this.selectTargets.find(t => t.dataset.name === 'student_id')
+        const currentStudentId = this.toId(studentSelect?.value)
+        if (currentStudentId) params.set('student_id', currentStudentId)
+
+        frame.src = `${frame.dataset.srcBase}?${params.toString()}`
+        frame.reload()
     }
 
-    enableAnchor() {
-        this.anchorTarget.style.pointerEvents=''
-        this.anchorTarget.style.cursor='pointer'
-        this.anchorTarget.style.opacity = '1'
+    disableAnchor(anchor) {
+        anchor.style.pointerEvents = "none"
+        anchor.style.cursor = "default"
+        anchor.style.opacity = "0.5"
+    }
+
+    enableAnchor(anchor) {
+        anchor.style.pointerEvents = ""
+        anchor.style.cursor = "pointer"
+        anchor.style.opacity = "1"
     }
 }
