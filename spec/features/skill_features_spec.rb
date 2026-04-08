@@ -111,5 +111,34 @@ RSpec.describe 'User interacts with skills', js: true do
         expect(skill.reload.deleted_at).to be_nil
       end
     end
+
+    describe 'Skill Editing' do
+      before :each do
+        @skill = create :skill, skill_name: 'To be Edited'
+        @grade_descriptor = create :grade_descriptor, skill: @skill
+        visit '/skills'
+      end
+
+      it 'edits an existing skill' do
+        find('div.table-cell', text: 'To be Edited', match: :first).click
+
+        click_link 'Edit Skill'
+
+        expect(page).to have_content "Edit Skill - #{@skill.skill_name}"
+
+        fill_in 'skill_skill_name', with: 'Updated Skill'
+        fill_in 'skill_skill_description', with: 'Updated description'
+        fill_in 'skill_grade_descriptors_attributes_0_grade_description', with: 'Updated grade description'
+
+        click_button 'Update Skill'
+        expect(page).to have_content 'Skill "Updated Skill" updated'
+
+        @skill.reload
+        expect(@skill.skill_name).to eq 'Updated Skill'
+        expect(@skill.skill_description).to eq 'Updated description'
+        expect(@skill.grade_descriptors.count).to eq 1
+        expect(@skill.grade_descriptors.first.grade_description).to eq 'Updated grade description'
+      end
+    end
   end
 end
