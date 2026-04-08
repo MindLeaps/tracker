@@ -304,7 +304,7 @@ GEM
       actionpack (>= 4.2)
       omniauth (~> 2.0)
     orm_adapter (0.5.0)
-    pagy (43.4.4)
+    pagy (43.5.0)
       json
       uri
       yaml
