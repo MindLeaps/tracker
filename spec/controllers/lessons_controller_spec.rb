@@ -193,7 +193,7 @@ RSpec.describe LessonsController, type: :controller do
       it 'hard-deletes the lesson and its grades' do
         delete :destroy, params: { id: @lesson.id }
 
-        expect(response).to redirect_to lessons_path
+        expect(response).to redirect_to group_path(@lesson.group)
         expect(flash[:success_notice]).to be_present
         expect(Lesson.find_by(id: @lesson.id)).to be_nil
         expect(Grade.where(id: @grades.map(&:id))).to be_empty

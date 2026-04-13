@@ -63,11 +63,12 @@ class LessonsController < HtmlController
   def destroy
     @lesson = Lesson.includes(:group, :subject).find params.require :id
     authorize @lesson
+    redirect_path = group_path(@lesson.group)
 
     @lesson.hard_delete!
 
     success(title: t(:lesson_deleted), text: t(:lesson_deleted_text, date: @lesson.date, group: @lesson.group.group_name, subject: @lesson.subject.subject_name))
-    redirect_to lessons_path
+    redirect_to redirect_path
   end
 
   private

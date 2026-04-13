@@ -99,7 +99,7 @@ RSpec.describe 'User interacts with lessons' do
       end
 
       expect(page).to have_content 'Lesson Deleted'
-      expect(page).to have_current_path('/lessons')
+      expect(page).to have_current_path("/groups/#{group.id}")
       expect(Lesson.find_by(id: lesson.id)).to be_nil
       expect(Grade.where(id: grades.map(&:id))).to be_empty
     end
