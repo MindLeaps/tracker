@@ -29,6 +29,11 @@ class LessonsController < HtmlController
     authorize @lesson
   end
 
+  def confirm_destroy
+    @lesson = Lesson.includes(:group, :subject).find params.require :id
+    authorize @lesson
+  end
+
   def create
     @lesson = Lesson.new params.require(:lesson).permit :group_id, :date, :subject_id
     authorize @lesson
@@ -53,6 +58,16 @@ class LessonsController < HtmlController
       failure(title: t(:lesson_invalid), text: t(:fix_form_errors))
       render :edit, status: :unprocessable_content
     end
+  end
+
+  def destroy
+    @lesson = Lesson.includes(:group, :subject).find params.require :id
+    authorize @lesson
+
+    @lesson.hard_delete!
+
+    success(title: t(:lesson_deleted), text: t(:lesson_deleted_text, date: @lesson.date, group: @lesson.group.group_name, subject: @lesson.subject.subject_name))
+    redirect_to lessons_path
   end
 
   private

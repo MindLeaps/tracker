@@ -83,7 +83,8 @@ Rails.application.routes.draw do
     resources :groups, controller: :group_reports, only: %i[show]
     resources :students, controller: :student_reports, only: %i[show]
   end
-  resources :lessons, only: %i[index new create show edit update] do
+  resources :lessons, only: %i[index new create show edit update destroy] do
+    member { get :confirm_destroy }
     resources :students, controller: :student_lessons, only: %i[show update]
   end
   resources :subjects, only: %i[index new create show edit update]
