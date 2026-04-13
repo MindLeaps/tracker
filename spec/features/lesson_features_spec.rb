@@ -79,6 +79,31 @@ RSpec.describe 'User interacts with lessons' do
       expect(page).not_to have_content 'Deletovic'
     end
 
+    it 'deletes a lesson', js: true do
+      group = create :group, group_name: 'Delete Lesson Group'
+      subject = create :subject, subject_name: 'Delete Lesson Subject'
+      lesson = create :lesson, subject: subject, group: group
+      grades = create_list :grade, 2, lesson: lesson
+
+      visit "/lessons/#{lesson.id}"
+      click_link 'Delete Lesson'
+
+      expect(page).to have_content 'THIS PERMANENTLY DELETES THE LESSON AND EVERY GRADE RECORDED FOR IT.'
+      expect(page).to have_content 'This action cannot be undone.'
+      expect(page).to have_content 'Delete Lesson Group'
+      expect(page).to have_content 'Delete Lesson Subject'
+      expect(page).to have_content '2'
+
+      within '#modal' do
+        click_button 'Delete Lesson'
+      end
+
+      expect(page).to have_content 'Lesson Deleted'
+      expect(page).to have_current_path('/lessons')
+      expect(Lesson.find_by(id: lesson.id)).to be_nil
+      expect(Grade.where(id: grades.map(&:id))).to be_empty
+    end
+
     describe 'grading' do
       let(:group) { create :group, group_name: 'Lesson Feature Test Group' }
       let(:subject) { create :subject, subject_name: 'Feature Testing III' }

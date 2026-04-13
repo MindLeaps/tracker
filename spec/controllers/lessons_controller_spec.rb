@@ -142,6 +142,16 @@ RSpec.describe LessonsController, type: :controller do
       end
     end
 
+    describe '#confirm_destroy' do
+      before :each do
+        @lesson = create :lesson
+        get :confirm_destroy, params: { id: @lesson.id }, format: :turbo_stream
+      end
+
+      it { should respond_with 200 }
+      it { should render_template :confirm_destroy }
+    end
+
     describe '#update' do
       before :each do
         @lesson = create :lesson
@@ -171,6 +181,22 @@ RSpec.describe LessonsController, type: :controller do
         it 'does not update the lesson' do
           expect(@lesson.reload.date).not_to eq 1.day.from_now.to_date
         end
+      end
+    end
+
+    describe '#destroy' do
+      before :each do
+        @lesson = create :lesson
+        @grades = create_list :grade, 2, lesson: @lesson
+      end
+
+      it 'hard-deletes the lesson and its grades' do
+        delete :destroy, params: { id: @lesson.id }
+
+        expect(response).to redirect_to lessons_path
+        expect(flash[:success_notice]).to be_present
+        expect(Lesson.find_by(id: @lesson.id)).to be_nil
+        expect(Grade.where(id: @grades.map(&:id))).to be_empty
       end
     end
   end

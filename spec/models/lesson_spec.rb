@@ -85,4 +85,30 @@ RSpec.describe Lesson, type: :model do
       end
     end
   end
+
+  describe 'methods' do
+    describe '#hard_delete!' do
+      it 'permanently deletes the lesson and all related grades' do
+        organization = create :organization
+        chapter = create :chapter, organization: organization
+        group = create :group, chapter: chapter
+        subject = create :subject_with_skills, organization: organization
+        lesson = create :lesson, group: group, subject: subject, date: 3.days.ago.to_date
+        student_one = create :enrolled_student, organization: organization, groups: [group]
+        student_two = create :enrolled_student, organization: organization, groups: [group]
+        skill = subject.skills.first
+        grade_descriptor_one = create :grade_descriptor, skill: skill, mark: 1
+        grade_descriptor_two = create :grade_descriptor, skill: skill, mark: 2
+        grades = [
+          create(:grade, lesson: lesson, student: student_one, grade_descriptor: grade_descriptor_one),
+          create(:grade, lesson: lesson, student: student_two, grade_descriptor: grade_descriptor_two)
+        ]
+
+        lesson.hard_delete!
+
+        expect(Lesson.find_by(id: lesson.id)).to be_nil
+        expect(Grade.where(id: grades.map(&:id))).to be_empty
+      end
+    end
+  end
 end
