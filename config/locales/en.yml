@@ -210,6 +210,11 @@ en:
   lesson_added: Lesson Added
   lesson_added_text: Lesson on %{date} with group %{group} in subject %{subject} added.
   lesson_invalid: Lesson Invalid
+  delete_lesson: Delete Lesson
+  delete_lesson_warning: This permanently deletes the lesson and every grade recorded for it.
+  delete_lesson_warning_detail: This action cannot be undone. The lesson record, student grades, and any related reporting data tied to this lesson will be removed forever.
+  lesson_deleted: Lesson Deleted
+  lesson_deleted_text: Lesson on %{date} with group %{group} in subject %{subject} deleted.
   skill_added: Skill Added
   skill_added_text: Skill "%{skill}" added.
   skill_invalid: Skill Invalid
