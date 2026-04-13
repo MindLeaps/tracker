@@ -302,6 +302,7 @@ en:
   skill: Skill
   skills: Skills
   new_skill: New Skill
+  edit_skill: Edit Skill
   skill_name: Skill Name
   add_skill: Add Skill
   skill_information: Skill Information
@@ -314,6 +315,8 @@ en:
   skill_deleted_text: Skill "%{skill_name}" deleted.
   skill_restored: Skill Restored
   skill_restored_text: Skill "%{skill_name}" restored.
+  skill_updated: Skill Updated
+  skill_updated_text: Skill "%{skill_name}" updated
   unable_to_delete_skill: Unable to delete skill
   unable_to_remove_skill_from_subject: Unable to remove skill "%{skill_name}" from subject
   unable_to_update_subject: Unable to update subject

@@ -15,6 +15,12 @@ RSpec.describe Api::GradeDescriptorsController, type: :controller do
     end
 
     it { should respond_with 200 }
+
+    it 'should return grade descriptors ordered by their marks' do
+      marks = response.parsed_body[:grade_descriptors].pluck(:mark)
+
+      expect(marks).to eq(marks.sort)
+    end
   end
 
   describe '#show' do

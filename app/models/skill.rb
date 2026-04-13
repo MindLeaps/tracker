@@ -28,7 +28,7 @@ class Skill < ApplicationRecord
   validate :grade_descriptors_must_have_unique_marks
 
   belongs_to :organization
-  has_many :grade_descriptors, dependent: :destroy, inverse_of: :skill
+  has_many :grade_descriptors, -> { order(:mark) }, dependent: :destroy, inverse_of: :skill
   has_many :assignments, dependent: :destroy
   has_many :subjects, through: :assignments, dependent: :restrict_with_error, inverse_of: :skills
 

@@ -5,7 +5,7 @@ module Api
     has_scope :exclude_deleted, type: :boolean
 
     def index
-      @grade_descriptors = apply_scopes(GradeDescriptor).all
+      @grade_descriptors = apply_scopes(GradeDescriptor.order(:mark)).all
       respond_with @grade_descriptors, include: included_params, meta: { timestamp: Time.zone.now }
     end
 

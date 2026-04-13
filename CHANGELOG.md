@@ -1,4 +1,5 @@
-## Unreleased
+## 0.41.0
+- Added ability to edit skill and grade descriptions
 - Added ability to generate student-level reports
 - Defaulted starting date for analytics to the last lesson's month
 - Replaced existing charts using the `Chart.js` library 
