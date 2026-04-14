@@ -587,6 +587,73 @@ CREATE TABLE public.lessons (
 
 
 --
+-- Name: student_lesson_summaries; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.student_lesson_summaries AS
+SELECT
+    NULL::integer AS student_id,
+    NULL::integer AS group_id,
+    NULL::character varying AS first_name,
+    NULL::character varying AS last_name,
+    NULL::timestamp without time zone AS deleted_at,
+    NULL::uuid AS lesson_id,
+    NULL::date AS lesson_date,
+    NULL::integer AS subject_id,
+    NULL::numeric AS average_mark,
+    NULL::bigint AS grade_count,
+    NULL::bigint AS skill_count;
+
+
+--
+-- Name: subjects; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.subjects (
+    id integer NOT NULL,
+    subject_name character varying NOT NULL,
+    organization_id integer NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    deleted_at timestamp without time zone
+);
+
+
+--
+-- Name: lesson_table_rows; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.lesson_table_rows AS
+ WITH lesson_summary_stats AS (
+         SELECT slu.lesson_id,
+            count(*) AS group_student_count,
+            count(*) FILTER (WHERE (slu.grade_count > 0)) AS graded_student_count,
+            round(avg(slu.average_mark), 2) AS average_mark
+           FROM public.student_lesson_summaries slu
+          WHERE (slu.deleted_at IS NULL)
+          GROUP BY slu.lesson_id
+        )
+ SELECT l.group_id,
+    l.date,
+    l.created_at,
+    l.updated_at,
+    l.subject_id,
+    l.deleted_at,
+    l.id,
+    gr.group_name,
+    c.chapter_name,
+    s.subject_name,
+    lss.group_student_count,
+    lss.graded_student_count,
+    lss.average_mark
+   FROM ((((public.lessons l
+     JOIN lesson_summary_stats lss ON ((l.id = lss.lesson_id)))
+     JOIN public.groups gr ON ((l.group_id = gr.id)))
+     JOIN public.chapters c ON ((gr.chapter_id = c.id)))
+     JOIN public.subjects s ON ((l.subject_id = s.id)));
+
+
+--
 -- Name: roles; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -901,25 +968,6 @@ SELECT
 
 
 --
--- Name: student_lesson_summaries; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW public.student_lesson_summaries AS
-SELECT
-    NULL::integer AS student_id,
-    NULL::integer AS group_id,
-    NULL::character varying AS first_name,
-    NULL::character varying AS last_name,
-    NULL::timestamp without time zone AS deleted_at,
-    NULL::uuid AS lesson_id,
-    NULL::date AS lesson_date,
-    NULL::integer AS subject_id,
-    NULL::numeric AS average_mark,
-    NULL::bigint AS grade_count,
-    NULL::bigint AS skill_count;
-
-
---
 -- Name: students; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1071,20 +1119,6 @@ SELECT
     NULL::timestamp without time zone AS created_at,
     NULL::timestamp without time zone AS updated_at,
     NULL::timestamp without time zone AS deleted_at;
-
-
---
--- Name: subjects; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.subjects (
-    id integer NOT NULL,
-    subject_name character varying NOT NULL,
-    organization_id integer NOT NULL,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL,
-    deleted_at timestamp without time zone
-);
 
 
 --
@@ -1450,6 +1484,13 @@ CREATE INDEX index_chapters_on_organization_id ON public.chapters USING btree (o
 
 
 --
+-- Name: index_enrollments_on_group_dates_and_student; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_enrollments_on_group_dates_and_student ON public.enrollments USING btree (group_id, active_since, inactive_since, student_id);
+
+
+--
 -- Name: index_enrollments_on_group_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1746,62 +1787,6 @@ CREATE OR REPLACE VIEW public.student_lesson_summaries AS
           WHERE ((en.active_since <= l.date) AND ((en.inactive_since IS NULL) OR (en.inactive_since >= l.date)))
           GROUP BY s.id, l.id) united
      JOIN public.subject_summaries su ON ((united.subject_id = su.id)));
-
-
---
--- Name: lesson_table_rows _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.lesson_table_rows AS
- SELECT l.group_id,
-    l.date,
-    l.created_at,
-    l.updated_at,
-    l.subject_id,
-    l.deleted_at,
-    l.id,
-    gr.group_name,
-    c.chapter_name,
-    s.subject_name,
-    count(DISTINCT ROW(l.id, slu.student_id)) AS group_student_count,
-    count(
-        CASE
-            WHEN (slu.grade_count > 0) THEN 1
-            ELSE NULL::integer
-        END) AS graded_student_count,
-    round(avg(slu.average_mark), 2) AS average_mark
-   FROM ((((public.lessons l
-     JOIN public.groups gr ON ((l.group_id = gr.id)))
-     JOIN public.chapters c ON ((gr.chapter_id = c.id)))
-     JOIN public.subjects s ON ((l.subject_id = s.id)))
-     JOIN public.student_lesson_summaries slu ON (((l.id = slu.lesson_id) AND (slu.deleted_at IS NULL))))
-  GROUP BY l.id, s.subject_name, gr.group_name, c.chapter_name;
-
-
---
--- Name: group_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.group_lesson_summaries AS
- SELECT slu.lesson_id,
-    slu.lesson_date,
-    gr.id AS group_id,
-    gr.chapter_id,
-    slu.subject_id,
-    concat(gr.group_name, ' - ', c.chapter_name) AS group_chapter_name,
-    (round(avg(slu.average_mark), 2))::double precision AS average_mark,
-    (sum(slu.grade_count))::bigint AS grade_count,
-    (round((((sum(
-        CASE
-            WHEN (slu.grade_count = 0) THEN 0
-            ELSE 1
-        END))::numeric / (count(slu.*))::numeric) * (100)::numeric), 2))::double precision AS attendance
-   FROM ((public.student_lesson_summaries slu
-     JOIN public.groups gr ON ((slu.group_id = gr.id)))
-     JOIN public.chapters c ON ((gr.chapter_id = c.id)))
-  WHERE (slu.deleted_at IS NULL)
-  GROUP BY slu.lesson_id, gr.id, c.id, slu.subject_id, slu.lesson_date
-  ORDER BY slu.lesson_date;
 
 
 --
@@ -2165,6 +2150,7 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260414100000'),
 ('20251030155718'),
 ('20251018160342'),
 ('20251009215138'),
