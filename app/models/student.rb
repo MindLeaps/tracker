@@ -122,14 +122,6 @@ class Student < ApplicationRecord
       .first
   end
 
-  def graded_lesson_after_enrollment_in_group(group)
-    latest_enrollment = latest_enrollment_for_group(group)
-    return if latest_enrollment.inactive_since.nil?
-
-    grades_in_lessons = grades.where(lesson_id: group.lessons).pluck(:lesson_id)
-    Lesson.where(id: grades_in_lessons, date: latest_enrollment...inactive_since.to_date).order(:date).first
-  end
-
   def enrolled_group_ids
     enrollments.pluck(:group_id)
   end
