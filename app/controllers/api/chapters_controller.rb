@@ -5,7 +5,7 @@ module Api
     has_scope :exclude_deleted, type: :boolean
 
     def index
-      @chapters = apply_scopes(@api_version == 2 ? policy_scope(Chapter) : Chapter).all
+      @chapters = apply_scopes(versioned_scope(Chapter, policy_versions: [2])).all
       respond_with @chapters, include: included_params, meta: { timestamp: Time.zone.now }
     end
 

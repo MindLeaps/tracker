@@ -7,6 +7,14 @@ module Api
 
     protected
 
+    def api_version?(*versions)
+      versions.flatten.include?(@api_version)
+    end
+
+    def versioned_scope(scope, policy_versions:)
+      api_version?(*policy_versions) ? policy_scope(scope) : scope
+    end
+
     def included_params
       return [] if params[:include].nil?
 
