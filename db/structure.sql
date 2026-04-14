@@ -1752,6 +1752,30 @@ CREATE OR REPLACE VIEW public.student_averages AS
      JOIN public.lessons l ON (((l.id = g.lesson_id) AND (l.subject_id = su.id))))
   GROUP BY s.id, su.id, sk.skill_name;
 
+--
+-- Name: group_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.group_lesson_summaries AS
+ SELECT slu.lesson_id,
+    slu.lesson_date,
+    gr.id AS group_id,
+    gr.chapter_id,
+    slu.subject_id,
+    concat(gr.group_name, ' - ', c.chapter_name) AS group_chapter_name,
+    (round(avg(slu.average_mark), 2))::double precision AS average_mark,
+    (sum(slu.grade_count))::bigint AS grade_count,
+    (round((((sum(
+        CASE
+            WHEN (slu.grade_count = 0) THEN 0
+            ELSE 1
+        END))::numeric / (count(slu.*))::numeric) * (100)::numeric), 2))::double precision AS attendance
+   FROM ((public.student_lesson_summaries slu
+     JOIN public.groups gr ON ((slu.group_id = gr.id)))
+     JOIN public.chapters c ON ((gr.chapter_id = c.id)))
+  WHERE (slu.deleted_at IS NULL)
+  GROUP BY slu.lesson_id, gr.id, c.id, slu.subject_id, slu.lesson_date
+  ORDER BY slu.lesson_date;
 
 --
 -- Name: student_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
@@ -1913,7 +1937,6 @@ CREATE OR REPLACE VIEW public.chapter_summaries AS
      LEFT JOIN public.students s ON ((s.id = en.student_id)))
      LEFT JOIN public.organizations o ON ((c.organization_id = o.id)))
   GROUP BY c.id, o.id;
-
 
 --
 -- Name: organization_summaries _RETURN; Type: RULE; Schema: public; Owner: -
