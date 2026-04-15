@@ -5,7 +5,7 @@ module Api
     has_scope :by_subject, as: :subject_id
 
     def index
-      @lessons = apply_scopes(@api_version == 2 ? policy_scope(Lesson) : Lesson).all
+      @lessons = apply_scopes(versioned_scope(Lesson, policy_versions: [2])).all
 
       authorize Lesson
       respond_with @lessons, include: included_params, meta: { timestamp: Time.zone.now }
