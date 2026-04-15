@@ -17,6 +17,7 @@ Rails.application.routes.draw do
     resources :groups, only: %i[index show]
     resources :students, only: %i[index show]
     resources :lessons, only: %i[index show create]
+    resources :deleted_lessons, only: %i[index]
     resources :grades, only: %i[show create index update destroy]
     resources :subjects, only: %i[index show]
     resources :skills, only: %i[index show]
