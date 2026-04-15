@@ -1,3 +1,6 @@
+## Unreleased
+- Cleanup and improved performance when viewing lessons
+
 ## 0.41.0
 - Added ability to edit skill and grade descriptions
 - Added ability to generate student-level reports

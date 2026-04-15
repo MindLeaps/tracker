@@ -15,7 +15,7 @@
 #  subject_id   :integer
 #
 class StudentLessonSummary < ApplicationRecord
-  singleton_class.send(:alias_method, :table_order_lesson_students, :table_order)
+  alias_table_order_scope :table_order_lesson_students
 
   def readonly?
     true

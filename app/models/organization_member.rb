@@ -21,7 +21,7 @@
 #
 class OrganizationMember < ApplicationRecord
   self.primary_key = :id
-  singleton_class.send(:alias_method, :table_order_members, :table_order)
+  alias_table_order_scope :table_order_members
   def readonly?
     true
   end

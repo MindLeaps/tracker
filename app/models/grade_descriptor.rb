@@ -19,7 +19,7 @@
 #  grade_descriptors_skill_id_fk  (skill_id => skills.id)
 #
 class GradeDescriptor < ApplicationRecord
-  singleton_class.send(:alias_method, :table_order_grades, :table_order)
+  alias_table_order_scope :table_order_grades
   belongs_to :skill
 
   scope :by_skill, ->(skill_id) { where skill_id: }

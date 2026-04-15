@@ -16,4 +16,10 @@ class ApplicationRecord < ActiveRecord::Base
   def log_errors
     Rails.logger.warn "#{self.class.name} #{id || '(new)'} is invalid: #{errors.full_messages.inspect}"
   end
+
+  def self.alias_table_order_scope(*scope_names)
+    scope_names.each do |scope_name|
+      singleton_class.alias_method(scope_name, :table_order)
+    end
+  end
 end
