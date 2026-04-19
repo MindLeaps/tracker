@@ -1,0 +1,39 @@
+<%= turbo_stream.replace 'modal' do %>
+  <div id="modal" class="relative z-10" aria-labelledby="delete-lesson-modal-title" role="dialog" aria-modal="true" data-controller="modal">
+    <div class="fixed inset-0 bg-gray-500/50 transition-opacity backdrop-out transform-gpu" data-modal-target="backdrop"></div>
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto" data-action="click->modal#close">
+      <div class="flex min-h-full items-end justify-center p-4 sm:items-center sm:p-0">
+        <div class="modal-out transition-all transform-gpu" data-modal-target="modal" data-action="click->modal#stopPropagation">
+          <%= render CommonComponents::Card.new(title: t(:delete_lesson)) do |card| %>
+            <% card.with_card_content do %>
+              <%= form_tag lesson_path(@lesson), method: :delete, class: 'bg-white w-full max-w-2xl' do %>
+                <div class="p-6 space-y-6">
+                  <div class="rounded-lg border-2 border-red-700 bg-red-50 p-5">
+                    <div id="delete-lesson-modal-title" class="text-lg font-bold uppercase tracking-wide text-red-800">
+                      <%= t(:delete_lesson_warning) %>
+                    </div>
+                    <p class="mt-3 text-sm leading-6 text-red-900">
+                      <%= t(:delete_lesson_warning_detail) %>
+                    </p>
+                  </div>
+
+                  <div class="p-0 flex gap-4">
+                    <%= submit_tag t(:delete_lesson), class: 'button dangerous-button' %>
+                    <div class="dangerous-button" data-action="click->modal#close"><%= t(:cancel) %></div>
+                  </div>
+                </div>
+              <% end %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+<%= turbo_stream.update('flashes', partial: 'shared/flashes') %>
+
+<style>
+    div[aria-live="assertive"] {
+        z-index: 99;
+    }
+</style>

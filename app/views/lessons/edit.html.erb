@@ -11,4 +11,4 @@
   end
 end %>
 
-<%= render LessonFormComponent.new(current_user: current_user, lesson: @lesson, action: :update) %>
+<%= render LessonFormComponent.new(current_user: current_user, lesson: @lesson, action: :update, cancel_path: lesson_path(@lesson)) %>

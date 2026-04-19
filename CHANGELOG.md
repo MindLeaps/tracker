@@ -1,4 +1,5 @@
 ## Unreleased
+- Added `deleted_lesson.rb` model and ability to hard delete lessons
 - Cleanup and improved performance when viewing lessons
 
 ## 0.41.0
