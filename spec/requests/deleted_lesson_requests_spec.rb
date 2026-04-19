@@ -8,9 +8,8 @@ RSpec.describe 'DeletedLesson API', type: :request do
   describe 'GET /deleted_lessons' do
     before :each do
       @group = create :group
-      @subject = create :subject, organization: @group.chapter.organization
-      @deleted_lesson_one = create :deleted_lesson, group: @group, subject: @subject, deleted_at: 2.days.ago, created_at: 2.days.ago, updated_at: 2.days.ago
-      @deleted_lesson_two = create :deleted_lesson, group: @group, subject: @subject, deleted_at: 1.day.ago, created_at: 1.day.ago, updated_at: 1.day.ago
+      @deleted_lesson_one = create :deleted_lesson, group: @group, created_at: 2.days.ago, updated_at: 2.days.ago
+      @deleted_lesson_two = create :deleted_lesson, group: @group, created_at: 1.day.ago, updated_at: 1.day.ago
     end
 
     it 'responds with a list of deleted lessons' do
@@ -18,6 +17,7 @@ RSpec.describe 'DeletedLesson API', type: :request do
 
       expect(response).to be_successful
       expect(deleted_lessons.length).to eq 2
+      expect(deleted_lessons.pluck('id')).to include @deleted_lesson_one.lesson_id, @deleted_lesson_two.lesson_id
       expect(deleted_lessons.pluck('lesson_id')).to include @deleted_lesson_one.lesson_id, @deleted_lesson_two.lesson_id
     end
 

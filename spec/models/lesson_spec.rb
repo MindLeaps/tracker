@@ -108,10 +108,10 @@ RSpec.describe Lesson, type: :model do
 
         expect(Lesson.find_by(id: lesson.id)).to be_nil
         expect(Grade.where(id: grades.map(&:id))).to be_empty
-        expect(DeletedLesson.find_by(lesson_id: lesson.id)).to have_attributes(
+        expect(DeletedLesson.find_by(id: lesson.id)).to have_attributes(
+          id: lesson.id,
           lesson_id: lesson.id,
-          group_id: group.id,
-          subject_id: subject.id
+          group_id: group.id
         )
       end
     end

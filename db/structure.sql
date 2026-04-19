@@ -383,33 +383,11 @@ ALTER SEQUENCE public.chapters_id_seq OWNED BY public.chapters.id;
 --
 
 CREATE TABLE public.deleted_lessons (
-    id bigint NOT NULL,
-    lesson_id uuid NOT NULL,
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
     group_id bigint NOT NULL,
-    subject_id bigint NOT NULL,
-    deleted_at timestamp(6) without time zone NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
-
-
---
--- Name: deleted_lessons_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE public.deleted_lessons_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: deleted_lessons_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE public.deleted_lessons_id_seq OWNED BY public.deleted_lessons.id;
 
 
 --
@@ -1226,13 +1204,6 @@ ALTER TABLE ONLY public.authentication_tokens ALTER COLUMN id SET DEFAULT nextva
 --
 
 ALTER TABLE ONLY public.chapters ALTER COLUMN id SET DEFAULT nextval('public.chapters_id_seq'::regclass);
-
-
---
--- Name: deleted_lessons id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.deleted_lessons ALTER COLUMN id SET DEFAULT nextval('public.deleted_lessons_id_seq'::regclass);
 
 
 --
@@ -2101,14 +2072,6 @@ ALTER TABLE ONLY public.students
 
 
 --
--- Name: deleted_lessons fk_rails_6a02895851; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.deleted_lessons
-    ADD CONSTRAINT fk_rails_6a02895851 FOREIGN KEY (subject_id) REFERENCES public.subjects(id);
-
-
---
 -- Name: student_tags fk_rails_a7fbbb3454; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2130,14 +2093,6 @@ ALTER TABLE ONLY public.grades
 
 ALTER TABLE ONLY public.authentication_tokens
     ADD CONSTRAINT fk_rails_ad331ebb27 FOREIGN KEY (user_id) REFERENCES public.users(id);
-
-
---
--- Name: deleted_lessons fk_rails_aee13504a9; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.deleted_lessons
-    ADD CONSTRAINT fk_rails_aee13504a9 FOREIGN KEY (group_id) REFERENCES public.groups(id);
 
 
 --

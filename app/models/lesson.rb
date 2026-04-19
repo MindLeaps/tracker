@@ -38,7 +38,7 @@ class Lesson < ApplicationRecord
 
   def hard_delete!
     transaction do
-      DeletedLesson.create!(lesson_id: id, group:, subject:, deleted_at: Time.zone.now)
+      DeletedLesson.create!(id:, group:)
       Grade.where(lesson_id: id).delete_all
       destroy!
     end
