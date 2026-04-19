@@ -51,9 +51,12 @@ class LessonFormComponent < ViewComponent::Base
         <div class="md:grid md:grid-cols-4 md:gap-6">
           <div class="md:col-span-1"></div>
           <div class="mt-5 md:col-span-3 md:mt-0">
-            <div class="grid grid-cols-6 gap-4">
+            <div class="grid grid-cols-6 gap-4 items-center">
               <div class="col-span-6 lg:col-span-4">
                 <%= f.submit class: 'px-4 py-2 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 cursor-pointer' %>
+                <% if @cancel_path.present? %>
+                  <%= link_to t(:cancel), @cancel_path, class: 'dangerous-button' %>
+                <% end %>
               </div>
             </div>
           </div>
@@ -62,9 +65,10 @@ class LessonFormComponent < ViewComponent::Base
     <% end %>
 
   ERB
-  def initialize(lesson:, action:, current_user:)
+  def initialize(lesson:, action:, current_user:, cancel_path: nil)
     @lesson = lesson
     @action = action
+    @cancel_path = cancel_path
     permitted_groups = GroupPolicy::Scope.new(current_user, Group.includes(chapter: :organization)).resolve
     @chapter_groups = structure_groups(permitted_groups).sort_by(&:chapter_display)
     @org_subjects = OrganizationPolicy::Scope.new(current_user, Organization.includes(:subjects)).resolve

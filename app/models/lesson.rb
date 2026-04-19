@@ -35,4 +35,12 @@ class Lesson < ApplicationRecord
     scope: %i[group subject],
     message: ->(object, _data) { I18n.t :duplicate_lesson, group: object.group.group_name, subject: object.subject.subject_name }
   }
+
+  def hard_delete!
+    transaction do
+      DeletedLesson.create!(id:, group:)
+      Grade.where(lesson_id: id).delete_all
+      destroy!
+    end
+  end
 end

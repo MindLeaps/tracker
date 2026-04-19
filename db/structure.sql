@@ -379,6 +379,18 @@ ALTER SEQUENCE public.chapters_id_seq OWNED BY public.chapters.id;
 
 
 --
+-- Name: deleted_lessons; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.deleted_lessons (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    group_id bigint NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
 -- Name: enrollments; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1297,6 +1309,14 @@ ALTER TABLE ONLY public.chapters
 
 
 --
+-- Name: deleted_lessons deleted_lessons_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.deleted_lessons
+    ADD CONSTRAINT deleted_lessons_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: enrollments enrollments_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1481,6 +1501,27 @@ CREATE INDEX index_authentication_tokens_on_user_id ON public.authentication_tok
 --
 
 CREATE INDEX index_chapters_on_organization_id ON public.chapters USING btree (organization_id);
+
+
+--
+-- Name: index_deleted_lessons_on_group_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_deleted_lessons_on_group_id ON public.deleted_lessons USING btree (group_id);
+
+
+--
+-- Name: index_deleted_lessons_on_lesson_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_deleted_lessons_on_lesson_id ON public.deleted_lessons USING btree (lesson_id);
+
+
+--
+-- Name: index_deleted_lessons_on_subject_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_deleted_lessons_on_subject_id ON public.deleted_lessons USING btree (subject_id);
 
 
 --
@@ -2173,6 +2214,8 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260415100001'),
+('20260415100000'),
 ('20260414100000'),
 ('20251030155718'),
 ('20251018160342'),

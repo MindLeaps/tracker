@@ -3,7 +3,8 @@
 <%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
   {title: CommonComponents::TagLabel.new(label: "#{ @lesson.subject.subject_name } @ #{ @lesson.date }", img_src: 'clipboard.svg'), href: '' },
 ], buttons: [
-  (CommonComponents::ButtonComponent.new(label: t(:edit_lesson), href: edit_lesson_path(@lesson)) if policy(@lesson).edit?)
+  (CommonComponents::ButtonComponent.new(label: t(:edit_lesson), href: edit_lesson_path(@lesson)) if policy(@lesson).edit?),
+  (CommonComponents::ButtonComponent.new(label: t(:delete_lesson), href: confirm_destroy_lesson_path(@lesson, format: :turbo_stream), options: { data: { turbo_stream: true }, class: 'dangerous-button' }) if policy(@lesson).destroy?)
 ].compact)  do |h|
   h.with_left do
     render CommonComponents::Breadcrumbs.new(crumbs: [

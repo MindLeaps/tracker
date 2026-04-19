@@ -4,6 +4,7 @@ class CommonComponents::ButtonComponent < ViewComponent::Base
   def initialize(label:, href: nil, options: {})
     @label = label
     @href = href
-    @options = options.merge({ type: 'button', class: 'normal-button' })
+    classes = options[:class].presence || 'normal-button'
+    @options = options.merge(type: 'button', class: classes)
   end
 end

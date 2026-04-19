@@ -11,6 +11,10 @@ class LessonPolicy < ApplicationPolicy
     user.global_administrator? || user.is_admin_of?(lesson_organization) || user.is_teacher_of?(lesson_organization)
   end
 
+  def confirm_destroy?
+    destroy?
+  end
+
   class Scope < ApplicationPolicy::Scope
     def resolve
       return scope.all if user.global_role?
