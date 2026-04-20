@@ -180,10 +180,10 @@ RSpec.describe 'Lesson API', type: :request do
         end
       end
 
-      context 'lesson already exists' do
+      context 'lesson already exists with the same ID' do
         before :each do
           @existing_lesson = create :lesson, id: '5e9d2b0e-1dc6-4c04-b70c-9d67c20b083e', group_id: @group.id, subject_id: @subject.id, date: Time.zone.today.to_fs
-          post_v2_with_token lessons_path, as: :json, params: { group_id: @group.id, subject_id: @subject.id, date: Time.zone.today.to_fs }
+          post_v2_with_token lessons_path, as: :json, params: { id: @existing_lesson.id, group_id: @group.id, subject_id: @subject.id, date: Time.zone.today.to_fs }
         end
 
         it 'responds with existing lesson' do
@@ -191,6 +191,38 @@ RSpec.describe 'Lesson API', type: :request do
           expect(lesson['subject_id']).to eq @subject.id
           expect(lesson['group_id']).to eq @group.id
           expect(Time.zone.parse(lesson['date'])).to eq Time.zone.today
+        end
+
+        it 'responds with ok' do
+          expect(response).to have_http_status :ok
+        end
+      end
+
+      context 'lesson already exists with a different ID' do
+        before :each do
+          @existing_lesson = create :lesson, id: '5e9d2b0e-1dc6-4c04-b70c-9d67c20b083e', group_id: @group.id, subject_id: @subject.id, date: Time.zone.today.to_fs
+          post_v2_with_token lessons_path, as: :json, params: { id: 'bbbe6756-1737-4660-b7e5-e95ae0600124', group_id: @group.id, subject_id: @subject.id, date: Time.zone.today.to_fs }
+        end
+
+        it 'responds with the duplicate lesson' do
+          expect(lesson['id']).to eq @existing_lesson.id
+          expect(lesson['subject_id']).to eq @subject.id
+          expect(lesson['group_id']).to eq @group.id
+          expect(Time.zone.parse(lesson['date'])).to eq Time.zone.today
+        end
+
+        it 'responds with conflict' do
+          expect(response).to have_http_status :conflict
+        end
+      end
+
+      context 'lesson cannot be created for a non-duplicate reason' do
+        before :each do
+          post_v2_with_token lessons_path, as: :json, params: { id: 'bbbe6756-1737-4660-b7e5-e95ae0600124', group_id: @group.id, date: Time.zone.today.to_fs }
+        end
+
+        it 'responds with unprocessable content' do
+          expect(response).to have_http_status :unprocessable_content
         end
       end
     end
