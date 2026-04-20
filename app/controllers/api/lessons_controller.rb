@@ -33,16 +33,20 @@ module Api
     end
 
     def save_lesson(lesson)
-      respond_with_existing_lesson unless lesson.save
+      respond_with_existing_or_conflicting_lesson(lesson) unless lesson.save
     rescue ActiveRecord::RecordNotUnique
-      respond_with_existing_lesson
+      respond_with_existing_or_conflicting_lesson lesson
     end
 
-    def respond_with_existing_lesson
-      lesson = Lesson.find_by lesson_params
-      return unless lesson
+    def respond_with_existing_or_conflicting_lesson(lesson)
+      existing_lesson = Lesson.find_by id: lesson.id
+      return respond_with(existing_lesson, status: :ok, meta: { timestamp: Time.zone.now }) if existing_lesson
 
-      respond_with(lesson, status: :ok, meta: { timestamp: Time.zone.now })
+      duplicate_params = lesson_params.slice(:group_id, :date, :subject_id)
+      return unless duplicate_params.values.all?(&:present?)
+
+      conflicting_lesson = Lesson.find_by duplicate_params
+      respond_with(conflicting_lesson, status: :conflict, meta: { timestamp: Time.zone.now }) if conflicting_lesson
     end
   end
 end
