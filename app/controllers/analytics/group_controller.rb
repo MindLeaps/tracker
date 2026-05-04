@@ -8,11 +8,11 @@ module Analytics
     # rubocop:disable Metrics/MethodLength
     def performance_per_group_by_lesson
       selected_groups = if @selected_group_ids.present?
-                          Group.where(id: @selected_group_ids, deleted_at: nil)
+                          policy_scope(Group).where(id: @selected_group_ids, deleted_at: nil)
                         elsif selected_param_present_but_not_all?(@selected_chapter_id)
-                          Group.where(chapter_id: @selected_chapter_id, deleted_at: nil)
+                          policy_scope(Group).where(chapter_id: @selected_chapter_id, deleted_at: nil)
                         else
-                          Group.joins(:chapter).where(chapters: { organization_id: @selected_organization_id }).where(deleted_at: nil)
+                          policy_scope(Group).joins(:chapter).where(chapters: { organization_id: @selected_organization_id }).where(deleted_at: nil)
                         end
       groups = Array(selected_groups)
       conn = ActiveRecord::Base.connection.raw_connection

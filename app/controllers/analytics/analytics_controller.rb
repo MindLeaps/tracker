@@ -10,7 +10,7 @@ module Analytics
       @available_subjects = policy_scope Subject.where(deleted_at: nil)
       @available_students = []
 
-      @selected_organization_id = params[:organization_id] || @available_organizations.first.id
+      @selected_organization_id = params[:organization_id].presence || @available_organizations.first&.id
       @selected_chapter_id = params[:chapter_id]
       @subject = params[:subject_id] || @available_subjects.first&.id
       @selected_group_ids = params[:group_ids]
@@ -21,7 +21,9 @@ module Analytics
     end
 
     def default_from_date
-      organization = Organization.find(@selected_organization_id)
+      organization = policy_scope(Organization).find_by(id: @selected_organization_id)
+      return Date.new(Date.current.year, 1, 1) unless organization
+
       last_lesson_date = Lesson.joins(:grades)
                                .where(grades: { student_id: organization.students.select(:id) })
                                .order(date: :desc)
@@ -31,10 +33,12 @@ module Analytics
     end
 
     def find_resource_by_id_param(id, resource_class)
-      return resource_class.where(id:) unless all_selected?(id)
-      return policy_scope(yield resource_class) if block_given?
+      scoped_resources = policy_scope(resource_class)
+      scoped_resources = yield scoped_resources if block_given?
 
-      policy_scope resource_class
+      return scoped_resources if all_selected?(id)
+
+      scoped_resources.where(id:)
     end
 
     def all_selected?(id_selected)
