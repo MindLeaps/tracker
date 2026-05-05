@@ -15,24 +15,24 @@ module Analytics
     private
 
     def performance_per_skill_single_student
-      conn = ActiveRecord::Base.connection.raw_connection
-      students = {}
+      selected_student = find_resource_by_id_param(@selected_student_id, Student).first
+      return [] unless selected_student
 
-      sql = Sql.performance_per_skill_in_lessons_per_student_query_with_dates([@selected_student_id.to_i])
+      conn = ActiveRecord::Base.connection.raw_connection
+
+      sql = Sql.performance_per_skill_in_lessons_per_student_query_with_dates([selected_student.id])
       query_result = conn.exec_params(sql, [@from, @to]).values
       result = query_result.reduce({}) do |acc, e|
-        student_id = e[-1]
-        student_name = students[student_id] ||= Student.find(student_id).proper_name
         skill_name = e[-2]
         acc.tap do |a|
           if a.key?(skill_name)
-            if a[skill_name].key?(student_name)
-              a[skill_name][student_name].push(x: e[0] + 1, y: e[1], lesson_url: lesson_path(e[2]), date: e[3])
+            if a[skill_name].key?(selected_student.proper_name)
+              a[skill_name][selected_student.proper_name].push(x: e[0] + 1, y: e[1], lesson_url: lesson_path(e[2]), date: e[3])
             else
-              a[skill_name][student_name] = [{ x: e[0] + 1, y: e[1], lesson_url: lesson_path(e[2]), date: e[3] }]
+              a[skill_name][selected_student.proper_name] = [{ x: e[0] + 1, y: e[1], lesson_url: lesson_path(e[2]), date: e[3] }]
             end
           else
-            a[skill_name] = { student_name => [{ x: e[0] + 1, y: e[1], lesson_url: lesson_path(e[2]), date: e[3] }] }
+            a[skill_name] = { selected_student.proper_name => [{ x: e[0] + 1, y: e[1], lesson_url: lesson_path(e[2]), date: e[3] }] }
           end
         end
       end

@@ -85,12 +85,13 @@ class Enrollment < ApplicationRecord
     original_enrollment = Enrollment.find_by(id: id)
     if original_enrollment.present?
       lessons = Lesson.where(group_id: original_enrollment.group_id)
-      all_grades = Grade.where(student_id: original_enrollment.student_id, lesson_id: lessons, deleted_at: nil)
+      grades = Grade.where(student_id: original_enrollment.student_id, lesson_id: lessons, deleted_at: nil)
 
       if active_since != original_enrollment.active_since || inactive_since != original_enrollment.inactive_since
-        current_grades = Grade.where(student_id: student_id, lesson_id: lessons, deleted_at: nil, created_at: active_since..inactive_since)
+        new_lesson_list = Lesson.where(group_id: original_enrollment.group_id, date: active_since..inactive_since)
+        new_grade_list = Grade.where(student_id: student_id, lesson_id: new_lesson_list, deleted_at: nil)
 
-        errors.add(:student, I18n.t(:cannot_change_enrollment_dates_because_grades)) if current_grades.count != all_grades.count
+        errors.add(:student, I18n.t(:cannot_change_enrollment_dates_because_grades)) if new_grade_list.count != grades.count
       end
     end
   end
