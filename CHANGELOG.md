@@ -3,6 +3,7 @@
 - Handled duplicate lesson uploads by returning a `409` Conflict
 - Added `deleted_lesson.rb` model and ability to hard delete lessons
 - Cleanup and improved performance when viewing lessons
+- Fixed the missing download button for Group Performance Graph
 
 ## 0.41.0
 - Added ability to edit skill and grade descriptions
