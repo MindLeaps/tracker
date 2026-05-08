@@ -15,6 +15,7 @@ module Analytics
       @subject = params[:subject_id] || @available_subjects.first&.id
       @selected_group_ids = params[:group_ids]
       @selected_student_id = params[:student_id]
+      @selected_student_ids = selected_student_ids
 
       @from = params[:from_date] || default_from_date
       @to = params[:to_date] || Date.current
@@ -55,6 +56,11 @@ module Analytics
 
     def selected_param_present_but_not_all?(selected_param)
       selected_param.present? && (selected_param != t(:all))
+    end
+
+    def selected_student_ids
+      ids = Array(params[:student_ids].presence || Array(params[:student_id]))
+      ids.reject { |id| all_selected?(id) }
     end
   end
 end

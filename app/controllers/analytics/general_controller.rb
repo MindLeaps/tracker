@@ -4,7 +4,7 @@ module Analytics
       selected_organizations = find_resource_by_id_param @selected_organization_id, Organization
       selected_chapters = find_resource_by_id_param(@selected_chapter_id, Chapter) { |c| c.where(organization: selected_organizations) }
       selected_groups = find_resource_by_id_param(@selected_group_ids, Group) { |g| g.where(chapter: selected_chapters) }
-      @selected_students = find_resource_by_id_param(@selected_student_id, Student) { |s| s.joins(:enrollments).where(enrollments: { group_id: selected_groups }, deleted_at: nil) }
+      @selected_students = find_resource_by_id_param(@selected_student_ids, Student) { |s| s.joins(:enrollments).where(enrollments: { group_id: selected_groups }, deleted_at: nil) }
 
       @assessments_per_month = assessments_per_month
       @student_performance = histogram_of_student_performance.to_json
@@ -81,13 +81,14 @@ module Analytics
         inner join grades g on l.id = g.lesson_id
         where l.id IN (#{lesson_ids_formatted})
           and g.deleted_at IS NULL
+          and ($3::bigint[] IS NULL OR g.student_id = ANY($3::bigint[]))
           and ($1::date IS NULL OR l.date >= $1::date)
           and ($2::date IS NULL OR l.date <= $2::date)
         group by month
         order by month;
       SQL
 
-      res = conn.exec_params(sql, [@from, @to]).values
+      res = conn.exec_params(sql, [@from, @to, selected_student_filter_param]).values
       {
         categories: res.pluck(0),
         series: [{ name: t(:nr_of_assessments), data: res.pluck(1) }]
@@ -101,7 +102,7 @@ module Analytics
       sql = Sql.average_mark_for_group_lessons
 
       groups.map do |group|
-        result = conn.exec_params(sql, [group.id, @from, @to]).values
+        result = conn.exec_params(sql, [group.id, @from, @to, selected_student_filter_param]).values
         {
           name: "#{t(:group)} #{group.group_chapter_name}",
           data: format_point_data(result)
@@ -129,6 +130,12 @@ module Analytics
       else
         policy_scope(Group).joins(:chapter).where(chapters: { organization_id: @selected_organization_id }).where(deleted_at: nil)
       end
+    end
+
+    def selected_student_filter_param
+      return [] if @selected_student_ids.blank?
+
+      "{#{@selected_students.ids.join(',')}}"
     end
   end
 end
