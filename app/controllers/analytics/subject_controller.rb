@@ -5,8 +5,8 @@ module Analytics
     # rubocop:disable Metrics/CyclomaticComplexity
     # rubocop:disable Metrics/AbcSize
     def index
-      @subject_series = if @selected_student_id.present? && @selected_student_id != t(:all)
-                          performance_per_skill_single_student
+      @subject_series = if @selected_student_ids.present?
+                          performance_per_skill_selected_students
                         else
                           performance_per_skill
                         end
@@ -14,25 +14,28 @@ module Analytics
 
     private
 
-    def performance_per_skill_single_student
-      selected_student = find_resource_by_id_param(@selected_student_id, Student).first
-      return [] unless selected_student
+    def performance_per_skill_selected_students
+      selected_students = find_resource_by_id_param(@selected_student_ids, Student).index_by(&:id)
+      return [] if selected_students.empty?
 
       conn = ActiveRecord::Base.connection.raw_connection
 
-      sql = Sql.performance_per_skill_in_lessons_per_student_query_with_dates([selected_student.id])
+      sql = Sql.performance_per_skill_in_lessons_per_student_query_with_dates(selected_students.keys)
       query_result = conn.exec_params(sql, [@from, @to]).values
       result = query_result.reduce({}) do |acc, e|
         skill_name = e[-2]
+        student = selected_students[e[-1].to_i]
+        next acc unless student
+
         acc.tap do |a|
           if a.key?(skill_name)
-            if a[skill_name].key?(selected_student.proper_name)
-              a[skill_name][selected_student.proper_name].push(x: e[0] + 1, y: e[1], lesson_url: lesson_path(e[2]), date: e[3])
+            if a[skill_name].key?(student.proper_name)
+              a[skill_name][student.proper_name].push(x: e[0] + 1, y: e[1], lesson_url: lesson_path(e[2]), date: e[3])
             else
-              a[skill_name][selected_student.proper_name] = [{ x: e[0] + 1, y: e[1], lesson_url: lesson_path(e[2]), date: e[3] }]
+              a[skill_name][student.proper_name] = [{ x: e[0] + 1, y: e[1], lesson_url: lesson_path(e[2]), date: e[3] }]
             end
           else
-            a[skill_name] = { selected_student.proper_name => [{ x: e[0] + 1, y: e[1], lesson_url: lesson_path(e[2]), date: e[3] }] }
+            a[skill_name] = { student.proper_name => [{ x: e[0] + 1, y: e[1], lesson_url: lesson_path(e[2]), date: e[3] }] }
           end
         end
       end
