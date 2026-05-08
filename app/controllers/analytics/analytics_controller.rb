@@ -59,8 +59,14 @@ module Analytics
     end
 
     def selected_student_ids
-      ids = Array(params[:student_ids].presence || Array(params[:student_id]))
+      ids = normalized_ids(params[:student_ids].presence || params[:student_id])
       ids.reject { |id| all_selected?(id) }
+    end
+
+    def normalized_ids(value)
+      return [] if value.blank?
+
+      value.is_a?(Array) ? value : [value]
     end
   end
 end
