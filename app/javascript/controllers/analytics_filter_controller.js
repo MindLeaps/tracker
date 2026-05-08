@@ -125,7 +125,7 @@ export default class extends Controller {
       // specific org selected, chapter = All => use the allowed chapters computed by updateDropdown
       allowedChapterIds = (this.allowedIdsByName["chapter_id"] || []).map(String)
     } else {
-      // org = All and chapter = All => no filtering, show all groups
+      // org = All, and chapter = All => no filtering, show all groups
       allowedChapterIds = []
     }
 
@@ -133,6 +133,10 @@ export default class extends Controller {
       const el = wrapper.querySelector('[data-controller~="multiselect"]')
 
       if (!el) {
+        return
+      }
+
+      if (el.dataset.multiselectSelectNameValue !== "group_ids[]") {
         return
       }
 
@@ -162,11 +166,10 @@ export default class extends Controller {
 
     const params = new URLSearchParams()
     groupIds.forEach(id => params.append('group_ids[]', id))
+    params.set('multiple', 'true')
 
     // keep current student selection if possible
-    const studentSelect = this.selectTargets.find(t => t.dataset.name === 'student_id')
-    const currentStudentId = studentSelect?.value
-    if (currentStudentId) params.set('student_id', currentStudentId)
+    this.readSelectedStudents().forEach(id => params.append('student_ids[]', id))
 
     frame.src = `${frame.dataset.srcBase}?${params.toString()}`
     frame.reload()
@@ -181,11 +184,17 @@ export default class extends Controller {
 
     const params = new URLSearchParams()
     groupIds.forEach(id => params.append('group_ids[]', id))
+    params.set('multiple', 'true')
 
-    // preserve student_id from url
+    // preserve student_ids from url
     const urlParams = new URLSearchParams(window.location.search)
-    const studentId = urlParams.get('student_id')
-    if (studentId) params.set('student_id', studentId)
+    const studentIds = urlParams.getAll('student_ids[]')
+    if (studentIds.length > 0) {
+      studentIds.forEach(id => params.append('student_ids[]', id))
+    } else {
+      const studentId = urlParams.get('student_id')
+      if (studentId) params.append('student_ids[]', studentId)
+    }
 
     frame.src = `${frame.dataset.srcBase}?${params.toString()}`
     frame.reload()
@@ -200,6 +209,18 @@ export default class extends Controller {
         .filter(v => v !== '')
   }
 
+  readSelectedStudents() {
+    const wrapper = this.multiselectTargets.find(mt => mt.querySelector('input[type="hidden"][name="student_ids[]"]'))
+    if (wrapper) {
+      return [...wrapper.querySelectorAll('input[type="hidden"][name="student_ids[]"]')]
+          .map(i => i.value)
+          .filter(v => v !== '')
+    }
+
+    const studentSelect = this.selectTargets.find(t => t.dataset.name === 'student_id')
+    return studentSelect?.value ? [studentSelect.value] : []
+  }
+
   // called when group multiselect changes
   handleGroupChange(event) {
     if (event.detail?.name !== 'group_ids[]') return
@@ -212,11 +233,10 @@ export default class extends Controller {
     (event.detail.selected || [])
         .filter(v => v !== '')
         .forEach(id => params.append('group_ids[]', id))
+    params.set('multiple', 'true')
 
     // keep current student selection if possible
-    const studentSelect = this.selectTargets.find(t => t.dataset.name === 'student_id')
-    const currentStudentId = studentSelect?.value
-    if (currentStudentId) params.set('student_id', currentStudentId)
+    this.readSelectedStudents().forEach(id => params.append('student_ids[]', id))
 
     frame.src = `${frame.dataset.srcBase}?${params.toString()}`
     frame.reload()
