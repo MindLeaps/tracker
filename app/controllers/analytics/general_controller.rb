@@ -133,7 +133,7 @@ module Analytics
     end
 
     def selected_student_filter_param
-      return [] if @selected_student_ids.blank?
+      return nil if @selected_student_ids.blank?
 
       "{#{@selected_students.ids.join(',')}}"
     end

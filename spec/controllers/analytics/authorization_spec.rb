@@ -23,6 +23,24 @@ end
 RSpec.describe Analytics::GeneralController, type: :controller do
   include_context 'analytics controller setup'
 
+  it 'loads analytics without a student filter when lesson data exists' do
+    subject = create :subject, organization: @allowed_org
+    skill = create :skill_with_descriptors, subject:, organization: @allowed_org
+    student = create :enrolled_student, organization: @allowed_org, groups: [@allowed_group]
+    lesson = create :lesson, group: @allowed_group, subject:, date: 1.week.ago.to_date
+    create :grade, student:, lesson:, grade_descriptor: skill.grade_descriptors.find_by(mark: 5)
+
+    get :index, params: {
+      organization_id: @allowed_org.id,
+      from_date: 2.years.ago.to_date.to_s,
+      to_date: Date.current.to_s
+    }
+
+    expect(response).to be_successful
+    expect(assigns(:selected_student_ids)).to be_empty
+    expect(JSON.parse(assigns(:average_group_performance))).not_to be_empty
+  end
+
   it 'does not use explicitly requested records outside scope' do
     get :index, params: {
       organization_id: @foreign_org.id,
