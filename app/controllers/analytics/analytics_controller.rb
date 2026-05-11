@@ -43,7 +43,7 @@ module Analytics
     end
 
     def all_selected?(id_selected)
-      id_selected.nil? || id_selected == '' || id_selected == t(:all)
+      id_selected.nil? || id_selected == '' || id_selected == [] || id_selected == t(:all)
     end
 
     def colors

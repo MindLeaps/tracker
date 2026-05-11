@@ -15,7 +15,7 @@ module Analytics
     private
 
     def performance_per_skill_selected_students
-      selected_students = find_resource_by_id_param(@selected_student_ids, Student).index_by(&:id)
+      selected_students = selected_students_for_skill_performance.index_by(&:id)
       return [] if selected_students.empty?
 
       conn = ActiveRecord::Base.connection.raw_connection
@@ -40,6 +40,18 @@ module Analytics
         end
       end
       render_performance_per_skill(result)
+    end
+
+    def selected_students_for_skill_performance
+      find_resource_by_id_param(@selected_student_ids, Student) do |scope|
+        next scope if selected_group_filter_ids.empty?
+
+        scope.joins(:enrollments).where(enrollments: { group_id: selected_group_filter_ids }).distinct
+      end
+    end
+
+    def selected_group_filter_ids
+      normalized_ids(@selected_group_ids).reject { |id| all_selected?(id) }
     end
 
     def performance_per_skill

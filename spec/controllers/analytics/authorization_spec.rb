@@ -85,4 +85,23 @@ RSpec.describe Analytics::SubjectController, type: :controller do
 
     expect(assigns(:subject_series)).to be_empty
   end
+
+  it 'does not build student skill series for a student outside the selected groups' do
+    allowed_other_group = create :group, chapter: @allowed_chapter
+    allowed_student = create :enrolled_student, organization: @allowed_org, groups: [allowed_other_group]
+    subject = create :subject, organization: @allowed_org
+    skill = create :skill_with_descriptors, subject:, organization: @allowed_org, skill_name: 'Discipline'
+    lesson = create :lesson, group: allowed_other_group, subject:, date: 1.month.ago.to_date
+    create :grade, student: allowed_student, lesson:, grade_descriptor: skill.grade_descriptors.find_by(mark: 5)
+
+    get :index, params: {
+      organization_id: @allowed_org.id,
+      group_ids: [@allowed_group.id],
+      student_ids: [allowed_student.id],
+      from_date: 2.years.ago.to_date.to_s,
+      to_date: Date.current.to_s
+    }
+
+    expect(assigns(:subject_series)).to be_empty
+  end
 end

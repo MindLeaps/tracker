@@ -27,7 +27,7 @@ module Analytics
 
     def selected_available_student_ids
       selected_ids = normalized_ids(params[:student_ids].presence || params[:student_id])
-      selected_ids.select { |id| @students.exists?(id:) }
+      @students.where(id: selected_ids).pluck(:id).map(&:to_s)
     end
 
     def multiple?
