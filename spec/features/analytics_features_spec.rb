@@ -62,7 +62,7 @@ RSpec.describe 'User interacts with Analytics' do
       find('div[data-multiselect-target="option"]', text: @group.group_name).click
 
       within('#student_select_frame') do
-        expect(page).to have_selector('[data-controller~="multiselect"] [data-multiselect-target="option"]', count: @group.students.count, visible: :all)
+        expect(page).to have_selector('#student_id option', count: @group.students.count + 1)
       end
     end
   end

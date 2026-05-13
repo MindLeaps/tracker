@@ -37,7 +37,7 @@ RSpec.describe Analytics::GeneralController, type: :controller do
     }
 
     expect(response).to be_successful
-    expect(assigns(:selected_student_ids)).to be_empty
+    expect(assigns(:selected_student_id)).to be_nil
     expect(JSON.parse(assigns(:average_group_performance))).not_to be_empty
   end
 

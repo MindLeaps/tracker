@@ -166,10 +166,10 @@ export default class extends Controller {
 
     const params = new URLSearchParams()
     groupIds.forEach(id => params.append('group_ids[]', id))
-    params.set('multiple', 'true')
+    this.appendStudentSelectMode(params, frame)
 
     // keep current student selection if possible
-    this.readSelectedStudents().forEach(id => params.append('student_ids[]', id))
+    this.appendSelectedStudents(params, frame)
 
     frame.src = `${frame.dataset.srcBase}?${params.toString()}`
     frame.reload()
@@ -184,20 +184,44 @@ export default class extends Controller {
 
     const params = new URLSearchParams()
     groupIds.forEach(id => params.append('group_ids[]', id))
-    params.set('multiple', 'true')
+    this.appendStudentSelectMode(params, frame)
 
-    // preserve student_ids from url
+    // preserve selected students from url
     const urlParams = new URLSearchParams(window.location.search)
-    const studentIds = urlParams.getAll('student_ids[]')
-    if (studentIds.length > 0) {
-      studentIds.forEach(id => params.append('student_ids[]', id))
+    if (this.multipleStudentSelectionEnabled(frame)) {
+      const studentIds = urlParams.getAll('student_ids[]')
+      if (studentIds.length > 0) {
+        studentIds.forEach(id => params.append('student_ids[]', id))
+      } else {
+        const studentId = urlParams.get('student_id')
+        if (studentId) params.append('student_ids[]', studentId)
+      }
     } else {
       const studentId = urlParams.get('student_id')
-      if (studentId) params.append('student_ids[]', studentId)
+      if (studentId) params.set('student_id', studentId)
     }
 
     frame.src = `${frame.dataset.srcBase}?${params.toString()}`
     frame.reload()
+  }
+
+  multipleStudentSelectionEnabled(frame) {
+    return frame?.dataset?.multipleStudents === 'true'
+  }
+
+  appendStudentSelectMode(params, frame) {
+    if (this.multipleStudentSelectionEnabled(frame)) {
+      params.set('multiple', 'true')
+    }
+  }
+
+  appendSelectedStudents(params, frame) {
+    const studentIds = this.readSelectedStudents()
+    if (this.multipleStudentSelectionEnabled(frame)) {
+      studentIds.forEach(id => params.append('student_ids[]', id))
+    } else if (studentIds[0]) {
+      params.set('student_id', studentIds[0])
+    }
   }
 
   readSelectedGroups() {
@@ -233,10 +257,10 @@ export default class extends Controller {
     (event.detail.selected || [])
         .filter(v => v !== '')
         .forEach(id => params.append('group_ids[]', id))
-    params.set('multiple', 'true')
+    this.appendStudentSelectMode(params, frame)
 
     // keep current student selection if possible
-    this.readSelectedStudents().forEach(id => params.append('student_ids[]', id))
+    this.appendSelectedStudents(params, frame)
 
     frame.src = `${frame.dataset.srcBase}?${params.toString()}`
     frame.reload()
