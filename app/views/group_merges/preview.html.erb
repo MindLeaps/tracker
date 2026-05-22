@@ -1,0 +1,122 @@
+<% content_for :title, 'Merge groups preview' %>
+
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  { title: 'Merge groups preview', href: '' }
+]) %>
+
+<div class="max-w-5xl p-4 space-y-6">
+  <%= render CommonComponents::Card.new(title: 'Merge direction') do |card| %>
+    <% card.with_card_content do %>
+      <div class="bg-white p-6 space-y-4">
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div class="rounded-md border border-green-200 bg-green-50 p-4">
+            <div class="text-sm font-medium text-green-900">Destination group</div>
+            <div class="mt-1 text-lg font-semibold text-green-950"><%= @destination_group.chapter_group_name_with_full_mlid %></div>
+            <div class="mt-2 text-sm text-green-800">This group remains active.</div>
+          </div>
+
+          <div class="rounded-md border border-red-200 bg-red-50 p-4">
+            <div class="text-sm font-medium text-red-900">Source group</div>
+            <div class="mt-1 text-lg font-semibold text-red-950"><%= @source_group.chapter_group_name_with_full_mlid %></div>
+            <div class="mt-2 text-sm text-red-800">This group will be deleted when merge execution is added.</div>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          <%= button_to 'Flip direction',
+                        preview_group_merge_path,
+                        method: :post,
+                        params: {
+                          group_merge: {
+                            source_group_id: @destination_group.id,
+                            destination_group_id: @source_group.id
+                          }
+                        },
+                        class: 'normal-button' %>
+          <%= link_to 'Change groups', new_group_merge_path(destination_group_id: @destination_group.id), class: 'dangerous-button' %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+
+  <% if @preview.blockers.any? %>
+    <%= render AlertComponent.new(title: 'Merge cannot continue', text: @preview.blockers.join(' ')) %>
+  <% else %>
+    <%= render CommonComponents::Card.new(title: 'Preview summary') do |card| %>
+      <% card.with_card_content do %>
+        <div class="bg-white p-6">
+          <dl class="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div>
+              <dt class="text-sm text-gray-500">Source lessons</dt>
+              <dd class="text-2xl font-semibold text-gray-900"><%= @preview.source_lessons_count %></dd>
+            </div>
+            <div>
+              <dt class="text-sm text-gray-500">Lessons to move</dt>
+              <dd class="text-2xl font-semibold text-gray-900"><%= @preview.lessons_to_move.size %></dd>
+            </div>
+            <div>
+              <dt class="text-sm text-gray-500">Lessons to merge</dt>
+              <dd class="text-2xl font-semibold text-gray-900"><%= @preview.lessons_to_merge.size %></dd>
+            </div>
+          </dl>
+        </div>
+      <% end %>
+    <% end %>
+
+    <% grade_summary = @preview.grade_summary %>
+    <%= render CommonComponents::Card.new(title: 'Grade impact') do |card| %>
+      <% card.with_card_content do %>
+        <div class="bg-white p-6">
+          <dl class="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div>
+              <dt class="text-sm text-gray-500">Grades to move</dt>
+              <dd class="text-2xl font-semibold text-gray-900"><%= grade_summary[:grades_to_move] %></dd>
+            </div>
+            <div>
+              <dt class="text-sm text-gray-500">Source higher mark wins</dt>
+              <dd class="text-2xl font-semibold text-gray-900"><%= grade_summary[:source_higher] %></dd>
+            </div>
+            <div>
+              <dt class="text-sm text-gray-500">Destination kept</dt>
+              <dd class="text-2xl font-semibold text-gray-900"><%= grade_summary[:destination_kept] %></dd>
+            </div>
+          </dl>
+        </div>
+      <% end %>
+    <% end %>
+
+    <% enrollment_summary = @preview.enrollment_summary %>
+    <%= render CommonComponents::Card.new(title: 'Enrollment impact') do |card| %>
+      <% card.with_card_content do %>
+        <div class="bg-white p-6">
+          <dl class="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div>
+              <dt class="text-sm text-gray-500">Source enrollments</dt>
+              <dd class="text-2xl font-semibold text-gray-900"><%= enrollment_summary[:source_enrollments] %></dd>
+            </div>
+            <div>
+              <dt class="text-sm text-gray-500">Students affected</dt>
+              <dd class="text-2xl font-semibold text-gray-900"><%= enrollment_summary[:students_affected] %></dd>
+            </div>
+            <div>
+              <dt class="text-sm text-gray-500">Students with merged ranges</dt>
+              <dd class="text-2xl font-semibold text-gray-900"><%= enrollment_summary[:students_with_merged_ranges] %></dd>
+            </div>
+            <div>
+              <dt class="text-sm text-gray-500">Students with preserved gaps</dt>
+              <dd class="text-2xl font-semibold text-gray-900"><%= enrollment_summary[:students_with_preserved_gaps] %></dd>
+            </div>
+            <div>
+              <dt class="text-sm text-gray-500">Ranges before normalization</dt>
+              <dd class="text-2xl font-semibold text-gray-900"><%= enrollment_summary[:ranges_before] %></dd>
+            </div>
+            <div>
+              <dt class="text-sm text-gray-500">Ranges after normalization</dt>
+              <dd class="text-2xl font-semibold text-gray-900"><%= enrollment_summary[:ranges_after] %></dd>
+            </div>
+          </dl>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>

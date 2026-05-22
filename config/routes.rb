@@ -69,6 +69,9 @@ Rails.application.routes.draw do
       member { post :cancel_edit }
     end
   end
+  resource :group_merge, only: %i[new] do
+    post :preview
+  end
 
   resources :students, only: %i[index new create show edit update destroy] do
     member { post :undelete }

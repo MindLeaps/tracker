@@ -23,6 +23,12 @@ class GroupPolicy < ApplicationPolicy
     enroll_students?
   end
 
+  def merge?
+    return user.administrator? if record.is_a?(Class)
+
+    user.administrator?(record.chapter.organization)
+  end
+
   class Scope
     attr_reader :user, :scope
 
