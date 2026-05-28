@@ -1,4 +1,5 @@
 ## Unreleased
+- Added ability for multiple student selection in subject analytics
 - Fixed scoping issue in analytics
 - Handled duplicate lesson uploads by returning a `409` Conflict
 - Added `deleted_lesson.rb` model and ability to hard delete lessons
