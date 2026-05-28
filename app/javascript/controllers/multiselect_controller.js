@@ -107,7 +107,8 @@ export default class extends Controller {
         this.optionTargets.forEach(opt => {
             const id = opt.dataset.value
             const dependId = opt.dataset.dependId ? String(opt.dataset.dependId) : ""
-            const visible = !filterActive || (dependId && parents.includes(dependId))
+            const dependentIds = JSON.parse(opt.dataset.dependentIds || "[]").map(String)
+            const visible = !filterActive || (dependId && parents.includes(dependId)) || dependentIds.some(id => parents.includes(id))
 
             opt.classList.toggle("hidden", !visible)
 

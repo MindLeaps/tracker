@@ -36,6 +36,7 @@ class Sql
         AND g.deleted_at IS NULL
         AND ($2::date IS NULL OR l.date >= $2::date)
         AND ($3::date IS NULL OR l.date <= $3::date)
+        AND ($4::bigint[] IS NULL OR g.student_id = ANY($4::bigint[]))
       GROUP BY l.id, l.date
       ORDER BY l.date;
     SQL

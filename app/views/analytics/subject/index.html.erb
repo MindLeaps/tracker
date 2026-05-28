@@ -31,8 +31,8 @@
     </div>
     <div class="pl-2">
       <%= label_tag :student_label, "Student", class: "block text-sm font-medium text-gray-700" %>
-      <%= turbo_frame_tag "student_select_frame", data: { src_base: analytics_student_select_path } do %>
-        <%= render 'analytics/students/student_select', students: [], selected_student_id: nil, disabled: true %>
+      <%= turbo_frame_tag "student_select_frame", data: { src_base: analytics_student_select_path, multiple_students: true } do %>
+        <%= render 'analytics/students/student_select', students: [], selected_student_id: nil, selected_student_ids: [], disabled: true, multiple: true %>
       <% end %>
     </div>
     <div class="pl-2">
