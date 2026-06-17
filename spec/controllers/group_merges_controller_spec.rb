@@ -14,7 +14,7 @@ RSpec.describe GroupMergesController, type: :controller do
     it 'shows active groups for admins' do
       deleted_group = create :group, chapter:, deleted_at: Time.zone.now
 
-      get :new, params: { destination_group_id: destination_group.id }
+      get :new, format: :turbo_stream, params: { destination_group_id: destination_group.id }
 
       expect(response).to be_successful
       expect(assigns(:destination_group)).to eq destination_group
@@ -30,7 +30,7 @@ RSpec.describe GroupMergesController, type: :controller do
     end
 
     it 'builds a directional preview' do
-      post :preview, params: { group_merge: { source_group_id: source_group.id, destination_group_id: destination_group.id } }
+      post :preview, format: :turbo_stream, params: { group_merge: { source_group_id: source_group.id, destination_group_id: destination_group.id } }
 
       expect(response).to be_successful
       expect(assigns(:source_group)).to eq source_group
@@ -41,7 +41,7 @@ RSpec.describe GroupMergesController, type: :controller do
     it 'does not allow deleted groups' do
       source_group.update!(deleted_at: Time.zone.now)
 
-      post :preview, params: { group_merge: { source_group_id: source_group.id, destination_group_id: destination_group.id } }
+      post :preview, format: :turbo_stream, params: { group_merge: { source_group_id: source_group.id, destination_group_id: destination_group.id } }
 
       expect(response).to have_http_status :unprocessable_content
       expect(response).to render_template :new
@@ -64,7 +64,7 @@ RSpec.describe GroupMergesController, type: :controller do
     end
 
     it 'rejects invalid merge directions' do
-      post :create, params: { group_merge: { source_group_id: destination_group.id, destination_group_id: destination_group.id } }
+      post :create, format: :turbo_stream, params: { group_merge: { source_group_id: destination_group.id, destination_group_id: destination_group.id } }
 
       expect(response).to have_http_status :unprocessable_content
       expect(response).to render_template :new

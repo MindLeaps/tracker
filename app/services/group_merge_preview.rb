@@ -109,28 +109,6 @@ class GroupMergePreview
   end
 
   def normalize_ranges(enrollments)
-    sorted = enrollments.sort_by(&:active_since)
-    sorted.each_with_object([]) do |enrollment, ranges|
-      current = { active_since: enrollment.active_since, inactive_since: enrollment.inactive_since }
-      previous = ranges.last
-
-      if previous && overlapping_or_continuous?(previous, current)
-        previous[:inactive_since] = latest_end(previous[:inactive_since], current[:inactive_since])
-      else
-        ranges << current
-      end
-    end
-  end
-
-  def overlapping_or_continuous?(previous, current)
-    return true if previous[:inactive_since].nil?
-
-    current[:active_since] <= previous[:inactive_since] + 1.day
-  end
-
-  def latest_end(first_end, second_end)
-    return nil if first_end.nil? || second_end.nil?
-
-    [first_end, second_end].max
+    GroupMergeEnrollmentNormalizer.new(enrollments:, destination_group:).normalize
   end
 end

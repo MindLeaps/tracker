@@ -83,5 +83,17 @@ RSpec.describe GroupMergePreview do
         students_with_preserved_gaps: 1
       )
     end
+
+    it 'does not keep a merged range open-ended unless the destination enrollment is open-ended' do
+      student = create(:student, organization:)
+      create(:enrollment, student:, group: source_group, active_since: Date.new(2026, 1, 1), inactive_since: nil)
+      create(:enrollment, student:, group: destination_group, active_since: Date.new(2026, 2, 1), inactive_since: Date.new(2026, 2, 28))
+
+      expect(preview.enrollment_summary).to include(
+        ranges_before: 2,
+        ranges_after: 1,
+        students_with_merged_ranges: 1
+      )
+    end
   end
 end
