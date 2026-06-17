@@ -23,6 +23,18 @@
         </div>
 
         <div class="flex flex-wrap gap-2">
+          <% if @preview.mergeable? %>
+            <%= button_to 'Merge groups',
+                          group_merge_path,
+                          method: :post,
+                          params: {
+                            group_merge: {
+                              source_group_id: @source_group.id,
+                              destination_group_id: @destination_group.id
+                            }
+                          },
+                          class: 'dangerous-button' %>
+          <% end %>
           <%= button_to 'Flip direction',
                         preview_group_merge_path,
                         method: :post,
@@ -44,7 +56,19 @@
   <% else %>
     <%= render CommonComponents::Card.new(title: 'Preview summary') do |card| %>
       <% card.with_card_content do %>
-        <div class="bg-white p-6">
+        <div class="bg-white p-6 space-y-6">
+          <div class="rounded-md border border-red-300 bg-red-50 p-5">
+            <div class="text-base font-bold text-red-900">Confirm irreversible merge</div>
+            <ul class="mt-3 list-disc space-y-2 pl-5 text-sm leading-6 text-red-900">
+              <li>The source group will be deleted after the merge.</li>
+              <li>Source lessons without destination collisions will move to the destination group.</li>
+              <li>Source lessons with destination collisions will be merged, then hard-deleted.</li>
+              <li>When grades collide for the same student, lesson date, subject, and skill, the higher mark wins.</li>
+              <li>Enrollments will be merged into the destination group and normalized.</li>
+              <li>Analytics and reports will change retroactively and there is no undo.</li>
+            </ul>
+          </div>
+
           <dl class="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div>
               <dt class="text-sm text-gray-500">Source lessons</dt>

@@ -20,7 +20,28 @@ class GroupMergesController < HtmlController
     render :new, status: :unprocessable_content
   end
 
+  def create
+    @source_group = active_groups.find(group_merge_params.require(:source_group_id))
+    @destination_group = active_groups.find(group_merge_params.require(:destination_group_id))
+    authorize @destination_group, :merge?
+
+    merge = GroupMerge.new(source_group: @source_group, destination_group: @destination_group)
+    merge.merge!
+
+    success(title: 'Groups merged', text: "#{@source_group.group_name} was merged into #{@destination_group.group_name}. Analytics and reports now reflect the merged group.")
+    redirect_to group_path(@destination_group)
+  rescue ActionController::ParameterMissing, ActiveRecord::RecordNotFound, ActiveRecord::RecordInvalid
+    authorize Group, :merge? unless pundit_policy_authorized?
+    set_group_options
+    failure_now(title: 'Invalid group merge', text: 'Choose two active groups in the same chapter.')
+    render :new, status: :unprocessable_content
+  end
+
   private
+
+  def pundit_policy_authorized?
+    @_pundit_policy_authorized
+  end
 
   def group_merge_params
     params.require(:group_merge).permit(:source_group_id, :destination_group_id)

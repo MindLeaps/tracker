@@ -69,7 +69,7 @@ Rails.application.routes.draw do
       member { post :cancel_edit }
     end
   end
-  resource :group_merge, only: %i[new] do
+  resource :group_merge, only: %i[new create] do
     post :preview
   end
 

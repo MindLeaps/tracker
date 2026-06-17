@@ -48,6 +48,29 @@ RSpec.describe GroupMergesController, type: :controller do
     end
   end
 
+  describe '#create' do
+    before do
+      sign_in create(:admin_of, organization:)
+    end
+
+    it 'executes the merge and redirects to the destination group' do
+      lesson = create(:lesson, group: source_group)
+
+      post :create, params: { group_merge: { source_group_id: source_group.id, destination_group_id: destination_group.id } }
+
+      expect(response).to redirect_to group_path(destination_group)
+      expect(lesson.reload.group).to eq destination_group
+      expect(source_group.reload.deleted_at).to be_present
+    end
+
+    it 'rejects invalid merge directions' do
+      post :create, params: { group_merge: { source_group_id: destination_group.id, destination_group_id: destination_group.id } }
+
+      expect(response).to have_http_status :unprocessable_content
+      expect(response).to render_template :new
+    end
+  end
+
   describe 'authorization' do
     it 'does not allow teachers to preview a merge' do
       sign_in create(:teacher_in, organization:)

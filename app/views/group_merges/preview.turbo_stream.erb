@@ -1,0 +1,95 @@
+<%= turbo_stream.replace 'modal' do %>
+  <div id="modal" class="relative z-10" aria-labelledby="merge-groups-preview-modal-title" role="dialog" aria-modal="true" data-controller="modal">
+    <div class="fixed inset-0 bg-gray-500/50 transition-opacity backdrop-out transform-gpu" data-modal-target="backdrop"></div>
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto" data-action="click->modal#close">
+      <div class="flex min-h-full items-end justify-center p-4 sm:items-center sm:p-0">
+        <div class="modal-out transition-all transform-gpu" data-modal-target="modal" data-action="click->modal#stopPropagation">
+          <%= render CommonComponents::Card.new(title: 'Merge groups preview') do |card| %>
+            <% card.with_card_content do %>
+              <div class="bg-white w-full max-w-5xl p-6 space-y-6">
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <div class="rounded-md border border-green-200 bg-green-50 p-4">
+                    <div class="text-sm font-medium text-green-900">Destination group</div>
+                    <div class="mt-1 text-lg font-semibold text-green-950"><%= @destination_group.chapter_group_name_with_full_mlid %></div>
+                    <div class="mt-2 text-sm text-green-800">This group remains active.</div>
+                  </div>
+
+                  <div class="rounded-md border border-red-200 bg-red-50 p-4">
+                    <div class="text-sm font-medium text-red-900">Source group</div>
+                    <div class="mt-1 text-lg font-semibold text-red-950"><%= @source_group.chapter_group_name_with_full_mlid %></div>
+                    <div class="mt-2 text-sm text-red-800">This group will be deleted.</div>
+                  </div>
+                </div>
+
+                <% if @preview.blockers.any? %>
+                  <div class="rounded-md border border-red-200 bg-red-50 p-4">
+                    <div id="merge-groups-preview-modal-title" class="text-sm font-semibold text-red-900">Merge cannot continue</div>
+                    <p class="mt-2 text-sm leading-6 text-red-800"><%= @preview.blockers.join(' ') %></p>
+                  </div>
+                <% else %>
+                  <% grade_summary = @preview.grade_summary %>
+                  <% enrollment_summary = @preview.enrollment_summary %>
+
+                  <div class="rounded-md border border-red-300 bg-red-50 p-5">
+                    <div id="merge-groups-preview-modal-title" class="text-base font-bold text-red-900">Confirm irreversible merge</div>
+                    <ul class="mt-3 list-disc space-y-2 pl-5 text-sm leading-6 text-red-900">
+                      <li>The source group will be deleted after the merge.</li>
+                      <li><%= @preview.lessons_to_move.size %> source lessons will move to the destination group.</li>
+                      <li><%= @preview.lessons_to_merge.size %> source lessons collide with destination lessons and will be merged, then hard-deleted.</li>
+                      <li><%= grade_summary[:grades_to_move] %> grades will move to destination lessons.</li>
+                      <li><%= grade_summary[:source_higher] %> grade collisions will be updated because the source mark is higher.</li>
+                      <li><%= grade_summary[:destination_kept] %> grade collisions will keep the destination mark.</li>
+                      <li><%= enrollment_summary[:source_enrollments] %> source enrollments will be merged into destination enrollments.</li>
+                      <li>Enrollment overlaps and one-day gaps will be normalized; larger gaps will remain separate.</li>
+                      <li>Analytics and reports will change retroactively and there is no undo.</li>
+                    </ul>
+                  </div>
+
+                  <dl class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                    <div>
+                      <dt class="text-sm text-gray-500">Source lessons</dt>
+                      <dd class="text-2xl font-semibold text-gray-900"><%= @preview.source_lessons_count %></dd>
+                    </div>
+                    <div>
+                      <dt class="text-sm text-gray-500">Ranges before normalization</dt>
+                      <dd class="text-2xl font-semibold text-gray-900"><%= enrollment_summary[:ranges_before] %></dd>
+                    </div>
+                    <div>
+                      <dt class="text-sm text-gray-500">Ranges after normalization</dt>
+                      <dd class="text-2xl font-semibold text-gray-900"><%= enrollment_summary[:ranges_after] %></dd>
+                    </div>
+                  </dl>
+
+                  <div class="flex flex-wrap gap-3">
+                    <%= button_to 'Merge groups',
+                                  group_merge_path,
+                                  method: :post,
+                                  params: {
+                                    group_merge: {
+                                      source_group_id: @source_group.id,
+                                      destination_group_id: @destination_group.id
+                                    }
+                                  },
+                                  class: 'button dangerous-button' %>
+                    <%= button_to 'Flip direction',
+                                  preview_group_merge_path,
+                                  method: :post,
+                                  params: {
+                                    group_merge: {
+                                      source_group_id: @destination_group.id,
+                                      destination_group_id: @source_group.id
+                                    }
+                                  },
+                                  class: 'button normal-button' %>
+                    <div class="dangerous-button" data-action="click->modal#close"><%= t(:cancel) %></div>
+                  </div>
+                <% end %>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+<%= turbo_stream.update('flashes', partial: 'shared/flashes') %>
