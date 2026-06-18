@@ -1,3 +1,8 @@
 <%= turbo_frame_tag "student_select_frame" do %>
-  <%= render 'analytics/students/student_select', students: @students, selected_student_id: @selected_student_id, disabled: @disabled %>
+  <%= render 'analytics/students/student_select',
+             students: @students,
+             selected_student_id: @selected_student_id,
+             selected_student_ids: @selected_student_ids,
+             disabled: @disabled,
+             multiple: @multiple %>
 <% end %>

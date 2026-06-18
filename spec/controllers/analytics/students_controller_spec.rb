@@ -38,5 +38,15 @@ RSpec.describe Analytics::StudentsController, type: :controller do
       expect(student_summaries.map(&:id)).to contain_exactly(@students[0].id, @students[1].id, @students[2].id)
       expect(assigns(:disabled)).to be_falsey
     end
+
+    it 'keeps selected student ids that are available for the selected groups' do
+      foreign_student = create(:enrolled_student)
+
+      response = get :index, params: { group_ids: [@group.id], student_ids: [@students[0].id, @students[1].id, foreign_student.id], multiple: true }
+      expect(response).to be_successful
+
+      expect(assigns(:selected_student_ids)).to contain_exactly(@students[0].id.to_s, @students[1].id.to_s)
+      expect(assigns(:multiple)).to be true
+    end
   end
 end

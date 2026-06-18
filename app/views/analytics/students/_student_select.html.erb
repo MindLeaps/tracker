@@ -1,11 +1,24 @@
 <% placeholder = disabled ? t(:select_groups_to_load_students) : t(:select_student) %>
+<% multiple = local_assigns.fetch(:multiple, false) %>
+<% selected_student_ids = Array(local_assigns[:selected_student_ids] || selected_student_id).compact %>
 
-<%= select_tag :student_id,
-               options_for_select([[placeholder, ""]] + students.map { |s| [s.proper_name, s.id] }, selected_student_id),
-               disabled: disabled,
-               class: "disabled:bg-gray-300 mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md",
-               "data-analytics-filter-target" => "select",
-               "data-reports-filter-target" => "select",
-               "data-name" => "student_id",
-               "data-action" => "change->analytics-filter#updateAnchor change->reports-filter#updateAnchors"
-%>
+<% if multiple && !disabled %>
+  <div data-analytics-filter-target="multiselect" data-action="multiselect:ready->analytics-filter#updateAnchor multiselect:change->analytics-filter#updateAnchor">
+    <%= render CommonComponents::MultiselectComponent.new(
+      label: t(:all),
+      target: "student_ids[]",
+      options: students.map { |s| { id: s.id, label: s.proper_name, dependent_ids: s.enrolled_group_ids } },
+      selected_values: selected_student_ids
+    ) %>
+  </div>
+<% else %>
+  <%= select_tag :student_id,
+                 options_for_select([[placeholder, ""]] + students.map { |s| [s.proper_name, s.id] }, selected_student_id),
+                 disabled: disabled,
+                 class: "disabled:bg-gray-300 mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md",
+                 "data-analytics-filter-target" => "select",
+                 "data-reports-filter-target" => "select",
+                 "data-name" => "student_id",
+                 "data-action" => "change->analytics-filter#updateAnchor change->reports-filter#updateAnchors"
+  %>
+<% end %>

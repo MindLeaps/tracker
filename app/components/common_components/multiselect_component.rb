@@ -18,6 +18,7 @@ class CommonComponents::MultiselectComponent < ViewComponent::Base
           <div class="hover:bg-gray-100 cursor-pointer flex justify-between p-2 rounded-md flex justify-between items-center text-md sm:text-sm font-medium"
                data-value="<%= option[:id] %>"
                data-depend-id="<%= option[:depend_id] %>"
+               data-dependent-ids="<%= Array(option[:dependent_ids]).to_json %>"
                data-action="click->multiselect#toggleOption"
                data-multiselect-target="option">
             <span><%= option[:label] %></span>

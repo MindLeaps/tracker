@@ -22,7 +22,8 @@ module Analytics
         params = [
           group.id,
           @from,
-          @to
+          @to,
+          nil
         ]
         result = conn.exec_params(sql, params).values
 

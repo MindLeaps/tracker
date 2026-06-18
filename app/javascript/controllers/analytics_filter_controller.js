@@ -125,7 +125,7 @@ export default class extends Controller {
       // specific org selected, chapter = All => use the allowed chapters computed by updateDropdown
       allowedChapterIds = (this.allowedIdsByName["chapter_id"] || []).map(String)
     } else {
-      // org = All and chapter = All => no filtering, show all groups
+      // org = All, and chapter = All => no filtering, show all groups
       allowedChapterIds = []
     }
 
@@ -133,6 +133,10 @@ export default class extends Controller {
       const el = wrapper.querySelector('[data-controller~="multiselect"]')
 
       if (!el) {
+        return
+      }
+
+      if (el.dataset.multiselectSelectNameValue !== "group_ids[]") {
         return
       }
 
@@ -162,11 +166,10 @@ export default class extends Controller {
 
     const params = new URLSearchParams()
     groupIds.forEach(id => params.append('group_ids[]', id))
+    this.appendStudentSelectMode(params, frame)
 
     // keep current student selection if possible
-    const studentSelect = this.selectTargets.find(t => t.dataset.name === 'student_id')
-    const currentStudentId = studentSelect?.value
-    if (currentStudentId) params.set('student_id', currentStudentId)
+    this.appendSelectedStudents(params, frame)
 
     frame.src = `${frame.dataset.srcBase}?${params.toString()}`
     frame.reload()
@@ -181,14 +184,44 @@ export default class extends Controller {
 
     const params = new URLSearchParams()
     groupIds.forEach(id => params.append('group_ids[]', id))
+    this.appendStudentSelectMode(params, frame)
 
-    // preserve student_id from url
+    // preserve selected students from url
     const urlParams = new URLSearchParams(window.location.search)
-    const studentId = urlParams.get('student_id')
-    if (studentId) params.set('student_id', studentId)
+    if (this.multipleStudentSelectionEnabled(frame)) {
+      const studentIds = urlParams.getAll('student_ids[]')
+      if (studentIds.length > 0) {
+        studentIds.forEach(id => params.append('student_ids[]', id))
+      } else {
+        const studentId = urlParams.get('student_id')
+        if (studentId) params.append('student_ids[]', studentId)
+      }
+    } else {
+      const studentId = urlParams.get('student_id')
+      if (studentId) params.set('student_id', studentId)
+    }
 
     frame.src = `${frame.dataset.srcBase}?${params.toString()}`
     frame.reload()
+  }
+
+  multipleStudentSelectionEnabled(frame) {
+    return frame?.dataset?.multipleStudents === 'true'
+  }
+
+  appendStudentSelectMode(params, frame) {
+    if (this.multipleStudentSelectionEnabled(frame)) {
+      params.set('multiple', 'true')
+    }
+  }
+
+  appendSelectedStudents(params, frame) {
+    const studentIds = this.readSelectedStudents()
+    if (this.multipleStudentSelectionEnabled(frame)) {
+      studentIds.forEach(id => params.append('student_ids[]', id))
+    } else if (studentIds[0]) {
+      params.set('student_id', studentIds[0])
+    }
   }
 
   readSelectedGroups() {
@@ -198,6 +231,18 @@ export default class extends Controller {
     return [...wrapper.querySelectorAll('input[type="hidden"][name="group_ids[]"]')]
         .map(i => i.value)
         .filter(v => v !== '')
+  }
+
+  readSelectedStudents() {
+    const wrapper = this.multiselectTargets.find(mt => mt.querySelector('input[type="hidden"][name="student_ids[]"]'))
+    if (wrapper) {
+      return [...wrapper.querySelectorAll('input[type="hidden"][name="student_ids[]"]')]
+          .map(i => i.value)
+          .filter(v => v !== '')
+    }
+
+    const studentSelect = this.selectTargets.find(t => t.dataset.name === 'student_id')
+    return studentSelect?.value ? [studentSelect.value] : []
   }
 
   // called when group multiselect changes
@@ -212,11 +257,10 @@ export default class extends Controller {
     (event.detail.selected || [])
         .filter(v => v !== '')
         .forEach(id => params.append('group_ids[]', id))
+    this.appendStudentSelectMode(params, frame)
 
     // keep current student selection if possible
-    const studentSelect = this.selectTargets.find(t => t.dataset.name === 'student_id')
-    const currentStudentId = studentSelect?.value
-    if (currentStudentId) params.set('student_id', currentStudentId)
+    this.appendSelectedStudents(params, frame)
 
     frame.src = `${frame.dataset.srcBase}?${params.toString()}`
     frame.reload()
