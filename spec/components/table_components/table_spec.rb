@@ -8,8 +8,9 @@ class StubTableRow < ViewComponent::Base
     [{ column_name: 'Name' }]
   end
 
-  def initialize(item:, item_counter:, pagy:)
+  def initialize(item:, **_)
     @item = item
+    super()
   end
 
   erb_template '<div class="stub-row"><%= @item %></div>'
