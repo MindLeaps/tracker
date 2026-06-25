@@ -357,6 +357,10 @@ en:
   health_insurance: Health Insurance
   health_issues: Health Issues
   hiv_tested: HIV Tested
+  no_students_found: "No Students found"
+  no_groups_found: "No Groups found"
+  no_chapters_found: "No Chapters found"
+  no_organizations_found: "No Organizations found"
 
   confirm: Confirm
   import: Import
@@ -450,7 +454,6 @@ en:
         mlid:
           one: MLID
           other: MLID
-
 
   errors:
     messages:
