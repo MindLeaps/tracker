@@ -175,6 +175,7 @@ GEM
       net-http (~> 0.5)
     fastimage (2.2.4)
     ffi (1.17.4)
+    ffi (1.17.4-x64-mingw-ucrt)
     fog-aws (3.33.2)
       base64 (>= 0.2, < 0.4)
       fog-core (~> 2.6)
@@ -196,6 +197,9 @@ GEM
     globalid (1.3.0)
       activesupport (>= 6.1)
     google-protobuf (4.33.4)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.33.4-x64-mingw-ucrt)
       bigdecimal
       rake (>= 13)
     has_scope (0.9.0)
@@ -279,6 +283,8 @@ GEM
     nokogiri (1.19.4)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
+    nokogiri (1.19.4-x64-mingw-ucrt)
+      racc (~> 1.4)
     oauth2 (2.0.18)
       faraday (>= 0.17.3, < 4.0)
       jwt (>= 1.0, < 4.0)
@@ -313,6 +319,7 @@ GEM
       ast (~> 2.4.1)
       racc
     pg (1.6.3)
+    pg (1.6.3-x64-mingw-ucrt)
     pg_query (6.2.2)
       google-protobuf (>= 3.25.3)
     pg_search (2.3.7)
@@ -499,6 +506,7 @@ GEM
       railties (>= 7.0.0)
       tailwindcss-ruby (~> 4.0)
     tailwindcss-ruby (4.3.1)
+    tailwindcss-ruby (4.3.1-x64-mingw-ucrt)
     thor (1.5.0)
     tiddle (1.8.1)
       activerecord (>= 6.1.0)
@@ -510,6 +518,8 @@ GEM
       railties (>= 7.1.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
+    tzinfo-data (1.2026.2)
+      tzinfo (>= 1.0.0)
     unicode-display_width (3.2.0)
       unicode-emoji (~> 4.1)
     unicode-emoji (4.2.0)
@@ -540,6 +550,7 @@ GEM
 
 PLATFORMS
   ruby
+  x64-mingw-ucrt
 
 DEPENDENCIES
   SyslogLogger
@@ -603,6 +614,7 @@ DEPENDENCIES
   tailwindcss-rails
   tiddle
   turbo-rails
+  tzinfo-data
   view_component
   webmock
 
