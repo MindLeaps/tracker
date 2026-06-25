@@ -46,6 +46,7 @@ end
 
 group :development, :test do
   gem 'bullet', '!= 6.0.0' # 6.0.0 seems to break with Turbolinks
+  gem 'dotenv-rails'
   gem 'rails-controller-testing'
   gem 'rubocop', require: false
   gem 'rubocop-performance'
@@ -66,10 +67,6 @@ group :development, :test do
   gem 'shoulda-matchers'
   gem 'smarter_csv'
   gem 'webmock'
-end
-
-group :development, :test do
-  gem 'dotenv-rails'
 end
 
 group :development do
