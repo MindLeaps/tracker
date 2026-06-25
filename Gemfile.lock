@@ -176,6 +176,7 @@ GEM
     fastimage (2.2.4)
     ffi (1.17.4)
     ffi (1.17.4-x64-mingw-ucrt)
+    ffi (1.17.4-x86_64-linux-gnu)
     fog-aws (3.33.2)
       base64 (>= 0.2, < 0.4)
       fog-core (~> 2.6)
@@ -200,6 +201,9 @@ GEM
       bigdecimal
       rake (>= 13)
     google-protobuf (4.33.4-x64-mingw-ucrt)
+      bigdecimal
+      rake (>= 13)
+    google-protobuf (4.33.4-x86_64-linux-gnu)
       bigdecimal
       rake (>= 13)
     has_scope (0.9.0)
@@ -285,6 +289,8 @@ GEM
       racc (~> 1.4)
     nokogiri (1.19.3-x64-mingw-ucrt)
       racc (~> 1.4)
+    nokogiri (1.19.3-x86_64-linux-gnu)
+      racc (~> 1.4)
     oauth2 (2.0.18)
       faraday (>= 0.17.3, < 4.0)
       jwt (>= 1.0, < 4.0)
@@ -320,6 +326,7 @@ GEM
       racc
     pg (1.6.3)
     pg (1.6.3-x64-mingw-ucrt)
+    pg (1.6.3-x86_64-linux)
     pg_query (6.2.2)
       google-protobuf (>= 3.25.3)
     pg_search (2.3.7)
@@ -506,6 +513,7 @@ GEM
       tailwindcss-ruby (~> 4.0)
     tailwindcss-ruby (4.1.16)
     tailwindcss-ruby (4.1.16-x64-mingw-ucrt)
+    tailwindcss-ruby (4.1.16-x86_64-linux-gnu)
     thor (1.5.0)
     tiddle (1.8.1)
       activerecord (>= 6.1.0)
@@ -550,6 +558,7 @@ GEM
 PLATFORMS
   ruby
   x64-mingw-ucrt
+  x86_64-linux
 
 DEPENDENCIES
   SyslogLogger
