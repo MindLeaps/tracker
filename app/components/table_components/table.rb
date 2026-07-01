@@ -16,8 +16,12 @@ class TableComponents::Table < ViewComponent::Base
           <%= render TableComponents::Column.with_collection(@row_component::columns(**@column_arguments), order_scope_name: @order_scope_name) %>
           <% if @options[:turbo_id] %> <div id="turbo-separator" class='h-px' style="grid-column: 1/-1;"></div> <% end %>
           <%= render @row_component.with_collection(@rows, pagy: @pagy, **@row_arguments) %>
+          <% if @rows.empty? && @options[:empty_message] %>
+            <div class="py-8 text-center text-gray-500" style="grid-column: 1/-1;"><%= @options[:empty_message] %></div>
+          <% end %>
         </div>
       </div>
+
   ERB
 
   # rubocop:disable Metrics/ParameterLists

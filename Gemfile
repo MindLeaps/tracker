@@ -36,6 +36,7 @@ gem 'stimulus-rails'
 gem 'tailwindcss-rails'
 gem 'tiddle'
 gem 'turbo-rails'
+gem 'tzinfo-data'
 gem 'view_component'
 
 group :production do
@@ -45,6 +46,7 @@ end
 
 group :development, :test do
   gem 'bullet', '!= 6.0.0' # 6.0.0 seems to break with Turbolinks
+  gem 'dotenv-rails'
   gem 'rails-controller-testing'
   gem 'rubocop', require: false
   gem 'rubocop-performance'
@@ -71,7 +73,6 @@ group :development do
   gem 'annotate'
   gem 'better_errors'
   gem 'binding_of_caller'
-  gem 'dotenv-rails'
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'pry'
