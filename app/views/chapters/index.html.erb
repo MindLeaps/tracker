@@ -8,7 +8,7 @@
 
 <div id="new_chapter"></div>
 
-<%= render TableComponents::Table.new(pagy: @pagy, rows: @chapters, row_component: TableComponents::ChapterRow,options: { empty_message: t(:no_chapters_found) }) do |t|
+<%= render TableComponents::Table.new(pagy: @pagy, rows: @chapters, row_component: TableComponents::ChapterRow, options: { empty_message: t(:no_chapters_found) }) do |t|
   t.with_left do %>
     <div class="flex items-center justify-between">
       <div class="flex-1">

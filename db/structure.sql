@@ -25,6 +25,20 @@ COMMENT ON EXTENSION btree_gist IS 'support for indexing common datatypes in GiS
 
 
 --
+-- Name: pg_stat_statements; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS pg_stat_statements WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION pg_stat_statements; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION pg_stat_statements IS 'track execution statistics of all SQL statements executed';
+
+
+--
 -- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -235,8 +249,8 @@ SET default_table_access_method = heap;
 CREATE TABLE public.ar_internal_metadata (
     key character varying NOT NULL,
     value character varying,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
 );
 
 
@@ -259,7 +273,6 @@ CREATE TABLE public.assignments (
 --
 
 CREATE SEQUENCE public.assignments_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -296,7 +309,6 @@ CREATE TABLE public.authentication_tokens (
 --
 
 CREATE SEQUENCE public.authentication_tokens_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -352,7 +364,6 @@ CREATE TABLE public.chapters (
 --
 
 CREATE SEQUENCE public.chapters_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -384,7 +395,7 @@ CREATE TABLE public.deleted_lessons (
 --
 
 CREATE TABLE public.enrollments (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     student_id bigint NOT NULL,
     group_id bigint NOT NULL,
     active_since date NOT NULL,
@@ -414,7 +425,6 @@ CREATE TABLE public.grade_descriptors (
 --
 
 CREATE SEQUENCE public.grade_descriptors_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -451,7 +461,6 @@ CREATE TABLE public.grades (
 --
 
 CREATE SEQUENCE public.grades_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -525,7 +534,6 @@ CREATE TABLE public.groups (
 --
 
 CREATE SEQUENCE public.groups_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -552,6 +560,27 @@ SELECT
     NULL::numeric AS average_mark,
     NULL::bigint AS grade_count,
     NULL::integer AS subject_id;
+
+
+--
+-- Name: lesson_table_rows; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.lesson_table_rows AS
+SELECT
+    NULL::integer AS group_id,
+    NULL::date AS date,
+    NULL::timestamp without time zone AS created_at,
+    NULL::timestamp without time zone AS updated_at,
+    NULL::integer AS subject_id,
+    NULL::timestamp without time zone AS deleted_at,
+    NULL::uuid AS id,
+    NULL::character varying AS group_name,
+    NULL::character varying AS chapter_name,
+    NULL::character varying AS subject_name,
+    NULL::bigint AS group_student_count,
+    NULL::bigint AS graded_student_count,
+    NULL::numeric AS average_mark;
 
 
 --
@@ -645,8 +674,8 @@ CREATE TABLE public.roles (
     name character varying,
     resource_type character varying,
     resource_id integer,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
 );
 
 
@@ -775,7 +804,6 @@ CREATE TABLE public.organizations (
 --
 
 CREATE SEQUENCE public.organizations_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -812,7 +840,6 @@ SELECT
 --
 
 CREATE SEQUENCE public.roles_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -856,7 +883,6 @@ CREATE TABLE public.skills (
 --
 
 CREATE SEQUENCE public.skills_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -920,7 +946,6 @@ CREATE TABLE public.student_images (
 --
 
 CREATE SEQUENCE public.student_images_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1079,7 +1104,6 @@ CREATE TABLE public.student_tags (
 --
 
 CREATE SEQUENCE public.students_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1114,7 +1138,6 @@ SELECT
 --
 
 CREATE SEQUENCE public.subjects_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1134,7 +1157,7 @@ ALTER SEQUENCE public.subjects_id_seq OWNED BY public.subjects.id;
 --
 
 CREATE TABLE public.tags (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     tag_name character varying NOT NULL,
     organization_id bigint NOT NULL,
     shared boolean NOT NULL,
@@ -1148,7 +1171,6 @@ CREATE TABLE public.tags (
 --
 
 CREATE SEQUENCE public.users_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -1489,6 +1511,20 @@ CREATE INDEX index_deleted_lessons_on_group_id ON public.deleted_lessons USING b
 
 
 --
+-- Name: index_deleted_lessons_on_lesson_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_deleted_lessons_on_lesson_id ON public.deleted_lessons USING btree (lesson_id);
+
+
+--
+-- Name: index_deleted_lessons_on_subject_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_deleted_lessons_on_subject_id ON public.deleted_lessons USING btree (subject_id);
+
+
+--
 -- Name: index_enrollments_on_group_dates_and_student; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1566,13 +1602,6 @@ CREATE UNIQUE INDEX index_lessons_on_group_id_and_subject_id_and_date ON public.
 
 
 --
--- Name: index_lessons_on_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_lessons_on_id ON public.lessons USING btree (id);
-
-
---
 -- Name: index_lessons_on_subject_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1591,13 +1620,6 @@ CREATE INDEX index_roles_on_name ON public.roles USING btree (name);
 --
 
 CREATE INDEX index_roles_on_name_and_resource_type_and_resource_id ON public.roles USING btree (name, resource_type, resource_id);
-
-
---
--- Name: index_roles_on_resource_type_and_resource_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_roles_on_resource_type_and_resource_id ON public.roles USING btree (resource_type, resource_id);
 
 
 --
@@ -1678,113 +1700,10 @@ CREATE UNIQUE INDEX index_users_on_email ON public.users USING btree (email);
 
 
 --
--- Name: index_users_roles_on_role_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_users_roles_on_role_id ON public.users_roles USING btree (role_id);
-
-
---
--- Name: index_users_roles_on_user_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_users_roles_on_user_id ON public.users_roles USING btree (user_id);
-
-
---
 -- Name: index_users_roles_on_user_id_and_role_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_users_roles_on_user_id_and_role_id ON public.users_roles USING btree (user_id, role_id);
-
-
---
--- Name: chapter_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.chapter_summaries AS
- SELECT c.id,
-    c.chapter_name,
-    c.mlid AS chapter_mlid,
-    o.mlid AS organization_mlid,
-    concat(o.mlid, '-', c.mlid) AS full_mlid,
-    c.organization_id,
-    o.organization_name,
-    c.deleted_at,
-    (count(DISTINCT
-        CASE
-            WHEN (g.deleted_at IS NULL) THEN g.id
-            ELSE NULL::integer
-        END))::integer AS group_count,
-    (count(DISTINCT
-        CASE
-            WHEN ((en.active_since <= CURRENT_DATE) AND ((en.inactive_since IS NULL) OR (en.inactive_since >= CURRENT_DATE)) AND (s.deleted_at IS NULL)) THEN s.id
-            ELSE NULL::integer
-        END))::integer AS student_count,
-    c.created_at,
-    c.updated_at
-   FROM ((((public.chapters c
-     LEFT JOIN public.groups g ON ((g.chapter_id = c.id)))
-     LEFT JOIN public.enrollments en ON ((en.group_id = g.id)))
-     LEFT JOIN public.students s ON ((s.id = en.student_id)))
-     LEFT JOIN public.organizations o ON ((c.organization_id = o.id)))
-  GROUP BY c.id, o.id;
-
-
---
--- Name: group_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.group_lesson_summaries AS
- SELECT slu.lesson_id,
-    slu.lesson_date,
-    gr.id AS group_id,
-    gr.chapter_id,
-    slu.subject_id,
-    concat(gr.group_name, ' - ', c.chapter_name) AS group_chapter_name,
-    (round(avg(slu.average_mark), 2))::double precision AS average_mark,
-    (sum(slu.grade_count))::bigint AS grade_count,
-    (round((((sum(
-        CASE
-            WHEN (slu.grade_count = 0) THEN 0
-            ELSE 1
-        END))::numeric / (count(slu.*))::numeric) * (100)::numeric), 2))::double precision AS attendance
-   FROM ((public.student_lesson_summaries slu
-     JOIN public.groups gr ON ((slu.group_id = gr.id)))
-     JOIN public.chapters c ON ((gr.chapter_id = c.id)))
-  WHERE (slu.deleted_at IS NULL)
-  GROUP BY slu.lesson_id, gr.id, c.id, slu.subject_id, slu.lesson_date
-  ORDER BY slu.lesson_date;
-
-
---
--- Name: group_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.group_summaries AS
- SELECT g.id,
-    g.group_name,
-    g.deleted_at,
-    g.created_at,
-    g.chapter_id,
-    c.chapter_name,
-    o.id AS organization_id,
-    o.mlid AS organization_mlid,
-    c.mlid AS chapter_mlid,
-    g.mlid,
-    concat(o.mlid, '-', c.mlid, '-', g.mlid) AS full_mlid,
-    o.organization_name,
-    sum(
-        CASE
-            WHEN ((en.active_since <= CURRENT_DATE) AND ((en.inactive_since IS NULL) OR (en.inactive_since >= CURRENT_DATE)) AND (s.deleted_at IS NULL)) THEN 1
-            ELSE 0
-        END) AS student_count
-   FROM ((((public.groups g
-     LEFT JOIN public.enrollments en ON ((g.id = en.group_id)))
-     LEFT JOIN public.students s ON ((s.id = en.student_id)))
-     LEFT JOIN public.chapters c ON ((g.chapter_id = c.id)))
-     LEFT JOIN public.organizations o ON ((c.organization_id = o.id)))
-  GROUP BY g.id, c.id, o.id;
 
 
 --
@@ -1804,40 +1723,6 @@ CREATE OR REPLACE VIEW public.lesson_skill_summaries AS
      JOIN public.skills sk ON ((a.skill_id = sk.id)))
      LEFT JOIN public.grades g ON (((g.lesson_id = l.id) AND (g.skill_id = sk.id) AND (g.deleted_at IS NULL))))
   GROUP BY l.id, sk.id, su.id;
-
-
---
--- Name: organization_summaries _RETURN; Type: RULE; Schema: public; Owner: -
---
-
-CREATE OR REPLACE VIEW public.organization_summaries AS
- SELECT o.id,
-    o.organization_name,
-    o.mlid AS organization_mlid,
-    (count(DISTINCT
-        CASE
-            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN c.id
-            ELSE NULL::integer
-        END))::integer AS chapter_count,
-    (count(DISTINCT
-        CASE
-            WHEN ((g.id IS NOT NULL) AND (g.deleted_at IS NULL)) THEN g.id
-            ELSE NULL::integer
-        END))::integer AS group_count,
-    (count(DISTINCT
-        CASE
-            WHEN ((s.id IS NOT NULL) AND (s.deleted_at IS NULL)) THEN s.id
-            ELSE NULL::integer
-        END))::integer AS student_count,
-    o.country,
-    o.updated_at,
-    o.created_at,
-    o.deleted_at
-   FROM (((public.organizations o
-     LEFT JOIN public.chapters c ON ((c.organization_id = o.id)))
-     LEFT JOIN public.groups g ON ((g.chapter_id = c.id)))
-     LEFT JOIN public.students s ON ((s.organization_id = o.id)))
-  GROUP BY o.id;
 
 
 --
@@ -1865,22 +1750,26 @@ CREATE OR REPLACE VIEW public.performance_per_group_per_skill_per_lessons AS
 
 
 --
--- Name: student_analytics_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+-- Name: subject_summaries _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
-CREATE OR REPLACE VIEW public.student_analytics_summaries AS
- SELECT s.id,
-    s.organization_id,
-    s.first_name,
-    s.last_name,
-    s.old_group_id,
-    COALESCE(array_agg(en.group_id) FILTER (WHERE (en.group_id IS NOT NULL)), '{}'::bigint[]) AS enrolled_group_ids
-   FROM ((public.students s
-     JOIN public.organizations o ON ((s.organization_id = o.id)))
-     JOIN public.enrollments en ON ((s.id = en.student_id)))
-  WHERE (s.deleted_at IS NULL)
-  GROUP BY s.id, s.first_name, s.last_name
-  ORDER BY s.last_name, s.first_name;
+CREATE OR REPLACE VIEW public.subject_summaries AS
+ SELECT su.id,
+    su.subject_name,
+    su.organization_id,
+    sum(
+        CASE
+            WHEN (a.deleted_at IS NOT NULL) THEN 0
+            ELSE 1
+        END) AS skill_count,
+    su.created_at,
+    su.updated_at,
+    su.deleted_at
+   FROM ((public.subjects su
+     LEFT JOIN public.assignments a ON ((su.id = a.subject_id)))
+     LEFT JOIN public.skills sk ON ((sk.id = a.skill_id)))
+  WHERE (sk.deleted_at IS NULL)
+  GROUP BY su.id;
 
 
 --
@@ -1904,32 +1793,30 @@ CREATE OR REPLACE VIEW public.student_averages AS
      JOIN public.lessons l ON (((l.id = g.lesson_id) AND (l.subject_id = su.id))))
   GROUP BY s.id, su.id, sk.skill_name;
 
-
 --
--- Name: student_lesson_details _RETURN; Type: RULE; Schema: public; Owner: -
+-- Name: group_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
-CREATE OR REPLACE VIEW public.student_lesson_details AS
- SELECT s.id AS student_id,
-    s.first_name,
-    s.last_name,
-    s.deleted_at AS student_deleted_at,
-    l.id AS lesson_id,
-    l.date,
-    l.deleted_at AS lesson_deleted_at,
-    l.subject_id,
-    round(avg(g.mark), 2) AS average_mark,
-    count(g.mark) AS grade_count,
-    COALESCE(jsonb_object_agg(g.skill_id, jsonb_build_object('mark', g.mark, 'grade_descriptor_id', g.grade_descriptor_id, 'skill_name', sk.skill_name)) FILTER (WHERE (sk.skill_name IS NOT NULL)), '{}'::jsonb) AS skill_marks
-   FROM ((((public.students s
-     JOIN public.enrollments en ON ((s.id = en.student_id)))
-     JOIN public.lessons l ON ((en.group_id = l.group_id)))
-     LEFT JOIN public.grades g ON (((g.student_id = s.id) AND (g.lesson_id = l.id) AND (g.deleted_at IS NULL))))
-     LEFT JOIN public.skills sk ON ((sk.id = g.skill_id)))
-  WHERE ((en.active_since <= l.date) AND ((en.inactive_since IS NULL) OR (en.inactive_since >= l.date)))
-  GROUP BY s.id, l.id
-  ORDER BY l.subject_id;
-
+CREATE OR REPLACE VIEW public.group_lesson_summaries AS
+ SELECT slu.lesson_id,
+    slu.lesson_date,
+    gr.id AS group_id,
+    gr.chapter_id,
+    slu.subject_id,
+    concat(gr.group_name, ' - ', c.chapter_name) AS group_chapter_name,
+    (round(avg(slu.average_mark), 2))::double precision AS average_mark,
+    (sum(slu.grade_count))::bigint AS grade_count,
+    (round((((sum(
+        CASE
+            WHEN (slu.grade_count = 0) THEN 0
+            ELSE 1
+        END))::numeric / (count(slu.*))::numeric) * (100)::numeric), 2))::double precision AS attendance
+   FROM ((public.student_lesson_summaries slu
+     JOIN public.groups gr ON ((slu.group_id = gr.id)))
+     JOIN public.chapters c ON ((gr.chapter_id = c.id)))
+  WHERE (slu.deleted_at IS NULL)
+  GROUP BY slu.lesson_id, gr.id, c.id, slu.subject_id, slu.lesson_date
+  ORDER BY slu.lesson_date;
 
 --
 -- Name: student_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
@@ -1986,26 +1873,146 @@ CREATE OR REPLACE VIEW public.student_tag_table_rows AS
 
 
 --
--- Name: subject_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+-- Name: group_summaries _RETURN; Type: RULE; Schema: public; Owner: -
 --
 
-CREATE OR REPLACE VIEW public.subject_summaries AS
- SELECT su.id,
-    su.subject_name,
-    su.organization_id,
+CREATE OR REPLACE VIEW public.group_summaries AS
+ SELECT g.id,
+    g.group_name,
+    g.deleted_at,
+    g.created_at,
+    g.chapter_id,
+    c.chapter_name,
+    o.id AS organization_id,
+    o.mlid AS organization_mlid,
+    c.mlid AS chapter_mlid,
+    g.mlid,
+    concat(o.mlid, '-', c.mlid, '-', g.mlid) AS full_mlid,
+    o.organization_name,
     sum(
         CASE
-            WHEN (a.deleted_at IS NOT NULL) THEN 0
-            ELSE 1
-        END) AS skill_count,
-    su.created_at,
-    su.updated_at,
-    su.deleted_at
-   FROM ((public.subjects su
-     LEFT JOIN public.assignments a ON ((su.id = a.subject_id)))
-     LEFT JOIN public.skills sk ON ((sk.id = a.skill_id)))
-  WHERE (sk.deleted_at IS NULL)
-  GROUP BY su.id;
+            WHEN ((en.active_since <= CURRENT_DATE) AND ((en.inactive_since IS NULL) OR (en.inactive_since >= CURRENT_DATE)) AND (s.deleted_at IS NULL)) THEN 1
+            ELSE 0
+        END) AS student_count
+   FROM ((((public.groups g
+     LEFT JOIN public.enrollments en ON ((g.id = en.group_id)))
+     LEFT JOIN public.students s ON ((s.id = en.student_id)))
+     LEFT JOIN public.chapters c ON ((g.chapter_id = c.id)))
+     LEFT JOIN public.organizations o ON ((c.organization_id = o.id)))
+  GROUP BY g.id, c.id, o.id;
+
+
+--
+-- Name: student_lesson_details _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.student_lesson_details AS
+ SELECT s.id AS student_id,
+    s.first_name,
+    s.last_name,
+    s.deleted_at AS student_deleted_at,
+    l.id AS lesson_id,
+    l.date,
+    l.deleted_at AS lesson_deleted_at,
+    l.subject_id,
+    round(avg(g.mark), 2) AS average_mark,
+    count(g.mark) AS grade_count,
+    COALESCE(jsonb_object_agg(g.skill_id, jsonb_build_object('mark', g.mark, 'grade_descriptor_id', g.grade_descriptor_id, 'skill_name', sk.skill_name)) FILTER (WHERE (sk.skill_name IS NOT NULL)), '{}'::jsonb) AS skill_marks
+   FROM ((((public.students s
+     JOIN public.enrollments en ON ((s.id = en.student_id)))
+     JOIN public.lessons l ON ((en.group_id = l.group_id)))
+     LEFT JOIN public.grades g ON (((g.student_id = s.id) AND (g.lesson_id = l.id) AND (g.deleted_at IS NULL))))
+     LEFT JOIN public.skills sk ON ((sk.id = g.skill_id)))
+  WHERE ((en.active_since <= l.date) AND ((en.inactive_since IS NULL) OR (en.inactive_since >= l.date)))
+  GROUP BY s.id, l.id
+  ORDER BY l.subject_id;
+
+
+--
+-- Name: student_analytics_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.student_analytics_summaries AS
+ SELECT s.id,
+    s.organization_id,
+    s.first_name,
+    s.last_name,
+    s.old_group_id,
+    COALESCE(array_agg(en.group_id) FILTER (WHERE (en.group_id IS NOT NULL)), '{}'::bigint[]) AS enrolled_group_ids
+   FROM ((public.students s
+     JOIN public.organizations o ON ((s.organization_id = o.id)))
+     JOIN public.enrollments en ON ((s.id = en.student_id)))
+  WHERE (s.deleted_at IS NULL)
+  GROUP BY s.id, s.first_name, s.last_name
+  ORDER BY s.last_name, s.first_name;
+
+
+--
+-- Name: chapter_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.chapter_summaries AS
+ SELECT c.id,
+    c.chapter_name,
+    c.mlid AS chapter_mlid,
+    o.mlid AS organization_mlid,
+    concat(o.mlid, '-', c.mlid) AS full_mlid,
+    c.organization_id,
+    o.organization_name,
+    c.deleted_at,
+    (count(DISTINCT
+        CASE
+            WHEN (g.deleted_at IS NULL) THEN g.id
+            ELSE NULL::integer
+        END))::integer AS group_count,
+    (count(DISTINCT
+        CASE
+            WHEN ((en.active_since <= CURRENT_DATE) AND ((en.inactive_since IS NULL) OR (en.inactive_since >= CURRENT_DATE)) AND (s.deleted_at IS NULL)) THEN s.id
+            ELSE NULL::integer
+        END))::integer AS student_count,
+    c.created_at,
+    c.updated_at
+   FROM ((((public.chapters c
+     LEFT JOIN public.groups g ON ((g.chapter_id = c.id)))
+     LEFT JOIN public.enrollments en ON ((en.group_id = g.id)))
+     LEFT JOIN public.students s ON ((s.id = en.student_id)))
+     LEFT JOIN public.organizations o ON ((c.organization_id = o.id)))
+  GROUP BY c.id, o.id;
+
+--
+-- Name: organization_summaries _RETURN; Type: RULE; Schema: public; Owner: -
+--
+
+CREATE OR REPLACE VIEW public.organization_summaries AS
+ SELECT o.id,
+    o.organization_name,
+    o.mlid AS organization_mlid,
+    (count(DISTINCT
+        CASE
+            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN c.id
+            ELSE NULL::integer
+        END))::integer AS chapter_count,
+    (count(DISTINCT
+        CASE
+            WHEN ((g.id IS NOT NULL) AND (g.deleted_at IS NULL)) THEN g.id
+            ELSE NULL::integer
+        END))::integer AS group_count,
+    (count(DISTINCT
+        CASE
+            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN c.student_count
+            ELSE 0
+            WHEN ((s.id IS NOT NULL) AND (s.deleted_at IS NULL)) THEN s.id
+            ELSE NULL::integer
+        END))::integer AS student_count,
+    o.country,
+    o.updated_at,
+    o.created_at,
+    o.deleted_at
+   FROM (((public.organizations o
+     LEFT JOIN public.chapters c ON ((c.organization_id = o.id)))
+     LEFT JOIN public.groups g ON ((g.chapter_id = c.id)))
+     LEFT JOIN public.students s ON ((s.organization_id = o.id)))
+  GROUP BY o.id;
 
 
 --

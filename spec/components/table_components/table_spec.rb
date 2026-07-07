@@ -20,16 +20,23 @@ RSpec.describe TableComponents::Table, type: :component do
   let(:row_component) { StubTableRow }
 
   context 'when rows is empty' do
+    it 'renders the default empty message when no empty_message option is provided' do
+      render_inline(described_class.new(rows: [], row_component: row_component))
+
+      expect(page).to have_text(I18n.t(:no_results_found))
+    end
+
     it 'renders the empty message when the empty_message option is provided' do
       render_inline(described_class.new(rows: [], row_component: row_component, options: { empty_message: 'No items found' }))
 
       expect(page).to have_text('No items found')
     end
 
-    it 'does not render an empty message when no empty_message option is provided' do
-      render_inline(described_class.new(rows: [], row_component: row_component))
+    it 'does not render an empty message when empty_message is false' do
+      render_inline(described_class.new(rows: [], row_component: row_component, options: { empty_message: false }))
 
-      expect(page).not_to have_css('[style*="grid-column: 1/-1"]')
+      expect(page).not_to have_text(I18n.t(:no_results_found))
+      expect(page).not_to have_text('No items found')
     end
   end
 

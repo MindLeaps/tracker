@@ -361,6 +361,7 @@ en:
   no_groups_found: "No Groups found"
   no_chapters_found: "No Chapters found"
   no_organizations_found: "No Organizations found"
+  no_results_found: No results found
 
   confirm: Confirm
   import: Import

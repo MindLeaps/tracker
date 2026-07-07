@@ -3,10 +3,9 @@ default: &default
   pool: 5
   timeout: 5000
   host: <%= ENV['DATABASE_HOST'] || 'localhost' %>
-  port: <%= ENV['DATABASE_PORT'] || 5432 %>
   username: <%= ENV['DATABASE_USER'] || 'tracker' %>
   password: <%= ENV['DATABASE_PASSWORD'] || 'tracker' %>
-
+  port: 5433
 development:
   <<: *default
   database: tracker_development
