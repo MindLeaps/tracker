@@ -5,7 +5,7 @@ default: &default
   host: <%= ENV['DATABASE_HOST'] || 'localhost' %>
   username: <%= ENV['DATABASE_USER'] || 'tracker' %>
   password: <%= ENV['DATABASE_PASSWORD'] || 'tracker' %>
-  port: 5433
+
 development:
   <<: *default
   database: tracker_development
