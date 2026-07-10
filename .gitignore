@@ -53,4 +53,3 @@ yarn-debug.log*
 
 /app/assets/builds/*
 !/app/assets/builds/.keep
-./prod_db.sql
