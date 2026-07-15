@@ -1,6 +1,7 @@
 ## Unreleased
 
 - Added a message to search results when no results are found
+- added clear search icon and removed student performance view
 - Added ability for multiple student selection in subject analytics
 - Fixed scoping issue in analytics
 - Handled duplicate lesson uploads by returning a `409` Conflict
