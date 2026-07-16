@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Added a clear icon to search input and removed dead student performance view
 - Added a message to search results when no results are found
 - Added ability for multiple student selection in subject analytics
 - Fixed scoping issue in analytics
