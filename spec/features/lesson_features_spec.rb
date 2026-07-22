@@ -24,9 +24,9 @@ RSpec.describe 'User interacts with lessons' do
       @group = create :group
       @subject = create :subject, subject_name: 'Feature Testing II'
       create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
-      @lesson = create :lesson, subject: @subject, group: @group
+      @lesson = create :lesson, subject: @subject, group: @group, date: 5.days.ago
       previous_date = @lesson.date
-      new_date = Time.zone.now.to_date
+      new_date = 1.day.ago.to_date
 
       visit '/'
       click_link 'Lessons'
@@ -37,7 +37,7 @@ RSpec.describe 'User interacts with lessons' do
       expect(page).to have_field 'lesson_subject_id', disabled: true
 
       find('#lesson_date').click
-      find('td.is-today').click
+      find("td[data-day='#{new_date.day}']").click
       click_button 'Update Lesson'
 
       expect(page).to have_content 'Lesson updated'

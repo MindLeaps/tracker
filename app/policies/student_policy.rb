@@ -3,14 +3,6 @@ class StudentPolicy < ApplicationPolicy
     true
   end
 
-  def performance?
-    show?
-  end
-
-  def details?
-    show?
-  end
-
   def create?
     user.administrator?(record&.organization) || user.is_teacher_of?(record&.organization)
   end

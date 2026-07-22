@@ -14,12 +14,14 @@ class TableComponents::Table < ViewComponent::Base
       <div class="overflow-x-scroll bg-white">
         <div id="<%= @options[:turbo_id] %>" class="grid" style="<%= grid_columns %>">
           <%= render TableComponents::Column.with_collection(@row_component::columns(**@column_arguments), order_scope_name: @order_scope_name) %>
-          <% if @options[:turbo_id] %> <div id="turbo-separator" class='h-px' style="grid-column: 1/-1;"></div> <% end %>
+          <% if @options[:turbo_id] %> <div id="turbo-separator" class='h-px col-span-full'></div> <% end %>
           <%= render @row_component.with_collection(@rows, pagy: @pagy, **@row_arguments) %>
+            <% if @rows.empty? && empty_message %>
+              <div class="py-8 text-center text-gray-500 col-span-full"><%= empty_message %></div>
+          <% end %>
         </div>
       </div>
   ERB
-
   # rubocop:disable Metrics/ParameterLists
   def initialize(row_component:, rows:, column_arguments: {}, row_arguments: {}, order_scope_name: :table_order, pagy: nil, options: {})
     @row_component = row_component
@@ -34,5 +36,11 @@ class TableComponents::Table < ViewComponent::Base
 
   def grid_columns
     "grid-template-columns: repeat(#{@row_component.columns(**@column_arguments).count}, #{@options[:wrap] ? 'minmax(max-content, auto)' : 'auto'})"
+  end
+
+  def empty_message
+    return if @options[:empty_message] == false
+
+    @options[:empty_message] || I18n.t(:no_results_found)
   end
 end

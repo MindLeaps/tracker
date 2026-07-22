@@ -277,6 +277,7 @@ en:
   next_lesson: Next Lesson
   name_unknown: Unknown
   create_api_token: Create API Token
+  clear_search: Clear search
   show_deleted: Show Deleted
   show_deleted_students_tooltip: Click to show deleted students
   hide_deleted_students_tooltip: Click to hide deleted students
@@ -357,6 +358,11 @@ en:
   health_insurance: Health Insurance
   health_issues: Health Issues
   hiv_tested: HIV Tested
+  no_students_found: No Students found
+  no_groups_found: No Groups found
+  no_chapters_found: No Chapters found
+  no_organizations_found: No Organizations found
+  no_results_found: No results found
 
   confirm: Confirm
   import: Import
@@ -450,7 +456,6 @@ en:
         mlid:
           one: MLID
           other: MLID
-
 
   errors:
     messages:
