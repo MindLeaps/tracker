@@ -133,6 +133,35 @@ RSpec.describe GroupsController, type: :controller do
 
       it { should respond_with 200 }
     end
+
+    context 'skill growth' do
+      before :each do
+        subject = create :subject_with_skills, skill_names: %w[Memorization Grit], organization: @group.chapter.organization
+        create :lesson_with_grades, group: @group, subject:, date: 2.days.ago,
+                                    student_grades: { @student1.id => { 'Memorization' => 1, 'Grit' => 3 } }
+        create :lesson_with_grades, group: @group, subject:, date: 1.day.ago,
+                                    student_grades: { @student1.id => { 'Memorization' => 3, 'Grit' => 6 } }
+
+        get :show, params: { id: @group.id }
+      end
+
+      it 'assigns the most and least improved skill based on first vs last average' do
+        expect(assigns(:most_improved_skill)[:skill_name]).to eq 'Grit'
+        expect(assigns(:least_improved_skill)[:skill_name]).to eq 'Memorization'
+      end
+    end
+
+    context 'when no lessons have been graded yet' do
+      before :each do
+        @ungraded_group = create :group
+        get :show, params: { id: @ungraded_group.id }
+      end
+
+      it 'assigns nil for the skill growth statistics' do
+        expect(assigns(:most_improved_skill)).to be_nil
+        expect(assigns(:least_improved_skill)).to be_nil
+      end
+    end
   end
 
   describe '#edit' do

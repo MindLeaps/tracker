@@ -222,6 +222,45 @@ RSpec.describe StudentsController, type: :controller do
         expect(averages[1][:average]).to be_within(0.01).of 2.0
       end
 
+      it 'assigns the number of lessons the student was present for' do
+        expect(assigns[:nr_of_lessons_present]).to eq 3
+      end
+
+      it 'assigns the most and least improved skill based on first vs last grade received' do
+        expect(assigns[:most_improved_skill][:skill_name]).to eq 'Grit'
+        expect(assigns[:least_improved_skill][:skill_name]).to eq 'Memorization'
+      end
+
+      it 'assigns the total average score across all skills' do
+        expect(assigns[:total_average_score]).to be_within(0.01).of 3.34
+      end
+
+      context 'when the student has not been graded' do
+        before :each do
+          @student = create :enrolled_student
+          get :show, params: { id: @student.id }
+        end
+
+        it 'assigns nil for the lesson-based statistics' do
+          expect(assigns[:nr_of_lessons_present]).to eq 0
+          expect(assigns[:most_improved_skill]).to be_nil
+          expect(assigns[:least_improved_skill]).to be_nil
+          expect(assigns[:total_average_score]).to be_nil
+        end
+      end
+    end
+
+    describe '#performance' do
+      before :each do
+        @student = create :graded_student, grades: {
+          'Memorization' => [1, 2, 3],
+          'Grit' => [3, 5, 6]
+        }
+        get :show, params: { id: @student.id }
+      end
+
+      it { should respond_with 200 }
+
       it 'assigns the correct marks in skills by lesson' do
         lessons = assigns[:student_lessons_details_by_subject].values.first.sort_by(&:date)
         expect(lessons[0].skill_marks.values.map { |l| l.slice('skill_name', 'mark') }).to eq [

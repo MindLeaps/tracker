@@ -17,12 +17,22 @@ end %>
 
 <div class="overflow-auto">
   <section>
-    <div class="w-1/2">
-       <%= render CommonComponents::Card.new(title: t(:average_performance_for_last_30_lessons).capitalize) do |card| %>
-         <% card.with_card_content do %>
-           <div id="student-chart" class="ct-chart ct-octave bg-white full-width"></div>
+    <div class="flex gap-4">
+      <div class="w-1/2">
+         <%= render CommonComponents::Card.new(title: t(:average_performance_for_last_30_lessons).capitalize) do |card| %>
+           <% card.with_card_content do %>
+             <div id="student-chart" class="ct-chart ct-octave bg-white full-width"></div>
+           <% end %>
          <% end %>
-       <% end %>
+      </div>
+      <div class="w-1/2">
+        <dl class="mt-14 grid grid-cols-2 gap-5">
+          <%= render CommonComponents::StatCard.new(title: t(:nr_of_lessons_present), value: @nr_of_lessons_present) %>
+          <%= render CommonComponents::StatCard.new(title: t(:total_average_score), value: @total_average_score&.round(2) || t(:student_not_graded)) %>
+          <%= render CommonComponents::StatCard.new(title: t(:most_improved_skill), value: @most_improved_skill&.dig(:skill_name) || t(:student_not_graded)) %>
+          <%= render CommonComponents::StatCard.new(title: t(:least_improved_skill), value: @least_improved_skill&.dig(:skill_name) || t(:student_not_graded)) %>
+        </dl>
+      </div>
     </div>
       <%= render CommonComponents::Card.new(title: t(:student_details)) do |card| %>
         <% card.with_card_content do %>
