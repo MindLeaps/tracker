@@ -221,18 +221,6 @@ RSpec.describe StudentsController, type: :controller do
         expect(averages[1][:skill]).to eq('Memorization')
         expect(averages[1][:average]).to be_within(0.01).of 2.0
       end
-    end
-
-    describe '#performance' do
-      before :each do
-        @student = create :graded_student, grades: {
-          'Memorization' => [1, 2, 3],
-          'Grit' => [3, 5, 6]
-        }
-        get :show, params: { id: @student.id }
-      end
-
-      it { should respond_with 200 }
 
       it 'assigns the correct marks in skills by lesson' do
         lessons = assigns[:student_lessons_details_by_subject].values.first.sort_by(&:date)

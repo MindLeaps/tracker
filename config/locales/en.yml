@@ -277,6 +277,7 @@ en:
   next_lesson: Next Lesson
   name_unknown: Unknown
   create_api_token: Create API Token
+  clear_search: Clear search
   show_deleted: Show Deleted
   show_deleted_students_tooltip: Click to show deleted students
   hide_deleted_students_tooltip: Click to hide deleted students
