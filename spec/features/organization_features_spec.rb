@@ -35,6 +35,16 @@ RSpec.describe 'Interaction with Organizations' do
       @chapters.each { |c| expect(page).to have_content c.chapter_name }
     end
 
+    it 'displays the organization overview statistics' do
+      expect(page).to have_content 'Number of active Chapters:'
+      expect(page).to have_content 'Number of active Groups:'
+      expect(page).to have_content 'Number of active Students:'
+      expect(page).to have_content 'Number of users with a role within the organization:'
+
+      overview_values = all('dl.mt-12.mb-4 dd')
+      expect(overview_values.map(&:text)).to eq(%w[3 3 1 4])
+    end
+
     it 'does not display the organization\'s statistics when there is no data' do
       expect(page).to have_content 'No data for the selected date'
       expect(page).to have_content 'Statistics'

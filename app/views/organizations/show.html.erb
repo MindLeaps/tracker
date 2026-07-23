@@ -40,6 +40,12 @@ end %>
       <% end %>
     </section>
     <section class="flex-1 pr-2">
+      <dl class="grid grid-cols-2 gap-5 mt-12 mb-4">
+        <%= render CommonComponents::StatCard.new(title: t(:nr_of_active_chapters), value: @organization_summary.chapter_count) %>
+        <%= render CommonComponents::StatCard.new(title: t(:nr_of_active_groups), value: @organization_summary.group_count) %>
+        <%= render CommonComponents::StatCard.new(title: t(:nr_of_active_students), value: @organization_summary.student_count) %>
+        <%= render CommonComponents::StatCard.new(title: t(:nr_of_users_with_role), value: @pagy_users.count) %>
+      </dl>
       <%= render CommonComponents::Card.new(title: t(:members).capitalize) do |card| %>
         <% card.with_card_content do %>
           <%= render TableComponents::Table.new(pagy: @pagy_users, rows: @members, row_component: TableComponents::OrganizationMemberRow, order_scope_name: :table_order_members) %>
