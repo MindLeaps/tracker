@@ -407,8 +407,6 @@ en:
   nr_of_active_groups: Number of active Groups
   nr_of_active_students: Number of active Students
   nr_of_users_with_role: Number of users with a role within the organization
-  best_skill: Best skill
-  worst_skill: Worst skill
   nr_of_lessons_present: Number of lessons present
   total_average_score: Total average score
   most_improved_skill: Most improved skill

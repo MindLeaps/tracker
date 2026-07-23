@@ -26,13 +26,24 @@ end %>
 <% end %>
 
 <section>
-   <div class="w-1/2">
-       <%= render CommonComponents::Card.new(title: t(:average_performance_for_last_30_lessons).capitalize) do |card| %>
-             <% card.with_card_content do %>
-               <div id="group-chart" class="ct-chart ct-octave bg-white full-width"></div>
-             <% end %>
-       <% end %>
+  <div class="flex gap-4">
+    <div class="w-1/2">
+        <%= render CommonComponents::Card.new(title: t(:average_performance_for_last_30_lessons).capitalize) do |card| %>
+              <% card.with_card_content do %>
+                <div id="group-chart" class="ct-chart ct-octave bg-white full-width"></div>
+              <% end %>
+        <% end %>
     </div>
+    <div class="w-1/2">
+      <%# TODO: these two StatCards still show placeholder values, not real data - see student/organization show pages for the pattern to wire them up %>
+      <dl class="mt-14 grid grid-cols-2 gap-5">
+        <%= render CommonComponents::StatCard.new(title: t(:nr_of_active_students), value: '18') %>
+        <%= render CommonComponents::StatCard.new(title: t(:current_average_score_for_group), value: '3.8') %>
+        <%= render CommonComponents::StatCard.new(title: t(:most_improved_skill), value: @most_improved_skill&.dig(:skill_name) || t(:student_not_graded)) %>
+        <%= render CommonComponents::StatCard.new(title: t(:least_improved_skill), value: @least_improved_skill&.dig(:skill_name) || t(:student_not_graded)) %>
+      </dl>
+    </div>
+  </div>
 </section>
 <turbo-frame id="students-table">
   <%= render GroupEnrolledStudentsComponent.new(students: @group.students, group: @group, students_with_invalid_grades: @students_with_invalid_grades) %>

@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class GroupsController < HtmlController
   include Pagy::Method
 
@@ -22,6 +23,7 @@ class GroupsController < HtmlController
         lesson_url: lesson_path(Lesson.find_by(id: summary.lesson_id))
       }
     end
+    populate_skill_growth
   end
 
   def new
@@ -107,6 +109,17 @@ class GroupsController < HtmlController
 
   private
 
+  def populate_skill_growth
+    marks_by_skill = Hash.new { |hash, key| hash[key] = [] }
+    PerformancePerGroupPerSkillPerLesson.where(group_id: @group.id).order(date: :asc).each do |performance|
+      marks_by_skill[performance.skill_name] << performance.mark
+    end
+
+    growths = marks_by_skill.map { |skill_name, marks| { skill_name:, growth: marks.last - marks.first } }
+    @most_improved_skill = growths.max_by { |g| g[:growth] }
+    @least_improved_skill = growths.min_by { |g| g[:growth] }
+  end
+
   def group_params
     params.require(:group).permit :group_name, :mlid, :chapter_id
   end
@@ -121,3 +134,4 @@ class GroupsController < HtmlController
     params.permit :chapter_id
   end
 end
+# rubocop:enable Metrics/ClassLength
