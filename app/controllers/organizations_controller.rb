@@ -114,6 +114,7 @@ class OrganizationsController < HtmlController
   def initialize_organization(id)
     @pagy_chapters, @chapters = pagy apply_scopes(ChapterSummary.where(organization_id: id), chapter_order_scope)
     @pagy_users, @members = pagy apply_scopes(@organization.members, member_order_scope)
+    @organization_summary = OrganizationSummary.find(id)
     @new_member = User.new
     @roles = Role::LOCAL_ROLES.keys
 

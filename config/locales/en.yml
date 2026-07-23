@@ -403,6 +403,15 @@ en:
   average_attendance_across_groups: Average attendance across groups
   nr_of_absent_students: Nr. of absent students
   total_nr_of_students: Total nr. of students
+  nr_of_active_chapters: Number of active Chapters
+  nr_of_active_groups: Number of active Groups
+  nr_of_active_students: Number of active Students
+  nr_of_users_with_role: Number of users with a role within the organization
+  best_skill: Best skill
+  worst_skill: Worst skill
+  nr_of_lessons_present: Number of lessons present
+  total_average_score: Total average score
+  current_average_score_for_group: The current average score for the group
   frequency_perc: Frequency %
   above_regression: Above average performance
   below_regression: Below average performance
