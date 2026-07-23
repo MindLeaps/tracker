@@ -410,6 +410,8 @@ en:
   worst_skill: Worst skill
   nr_of_lessons_present: Number of lessons present
   total_average_score: Total average score
+  most_improved_skill: Most improved skill
+  least_improved_skill: Least improved skill
   current_average_score_for_group: The current average score for the group
   frequency_perc: Frequency %
   above_regression: Above average performance
