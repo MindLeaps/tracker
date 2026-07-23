@@ -4,7 +4,6 @@ class StudentsController < HtmlController
   include CollectionHelper
 
   has_scope :exclude_deleted, only: :index, type: :boolean, default: true
-  has_scope :exclude_empty, only: :performance, type: :boolean, default: true
   has_scope :table_order, only: [:index], type: :hash, default: { key: :created_at, order: :desc }
   has_scope :student_lesson_order, only: [:show], type: :hash, default: { key: :date, order: :desc } do |_controller, scope, value|
     scope.table_order value

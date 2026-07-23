@@ -1,6 +1,10 @@
 ## Unreleased
-
+- added stat cards to the student view
+- Added a clear icon to search input and removed dead student performance view
 - Added a message to search results when no results are found
+
+## 0.42.0
+
 - Added ability for multiple student selection in subject analytics
 - Fixed scoping issue in analytics
 - Handled duplicate lesson uploads by returning a `409` Conflict
