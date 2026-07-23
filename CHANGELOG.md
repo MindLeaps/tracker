@@ -1,5 +1,5 @@
 ## Unreleased
-
+- added stat cards to organization view
 - Added a message to search results when no results are found
 - Added ability for multiple student selection in subject analytics
 - Fixed scoping issue in analytics
