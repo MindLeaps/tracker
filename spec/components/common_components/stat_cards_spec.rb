@@ -2,10 +2,7 @@ require 'rails_helper'
 
 RSpec.describe CommonComponents::StatCards, type: :component do
   it 'renders a stat card for each stat' do
-    render_inline(CommonComponents::StatCards.new(columns: 2, stats: [
-                                                     { title: 'Number of active Chapters', value: 5 },
-                                                     { title: 'Number of active Groups', value: 2 }
-                                                   ]))
+    render_inline(CommonComponents::StatCards.new(columns: 2, stats: [{ title: 'Number of active Chapters', value: 5 }, { title: 'Number of active Groups', value: 2 }]))
 
     expect(page).to have_text('Number of active Chapters:')
     expect(page).to have_text('5')
