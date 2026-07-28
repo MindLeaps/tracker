@@ -403,6 +403,12 @@ en:
   average_attendance_across_groups: Average attendance across groups
   nr_of_absent_students: Nr. of absent students
   total_nr_of_students: Total nr. of students
+  nr_of_active_chapters: Number of active Chapters
+  nr_of_active_groups: Number of active Groups
+  nr_of_active_students: Number of active Students
+  nr_of_users_with_role: Number of users with a role within the Organization
+  overview: Overview
+  student_statistics: Student Statistics
   frequency_perc: Frequency %
   above_regression: Above average performance
   below_regression: Below average performance
