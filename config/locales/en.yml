@@ -414,6 +414,8 @@ en:
   most_improved_skill: Most improved skill
   least_improved_skill: Least improved skill
   current_average_score_for_group: The current average score for the group
+  overview: Overview
+  student_statistics: Student Statistics
   frequency_perc: Frequency %
   above_regression: Above average performance
   below_regression: Below average performance

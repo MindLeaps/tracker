@@ -36,13 +36,16 @@ RSpec.describe 'Interaction with Organizations' do
     end
 
     it 'displays the organization overview statistics' do
-      expect(page).to have_content 'Number of active Chapters:'
-      expect(page).to have_content 'Number of active Groups:'
-      expect(page).to have_content 'Number of active Students:'
-      expect(page).to have_content 'Number of users with a role within the organization:'
+      within('section[aria-label="Organization overview"]') do
+        expect(page).to have_content 'Overview'
+        expect(page).to have_content 'Number of active Chapters:'
+        expect(page).to have_content 'Number of active Groups:'
+        expect(page).to have_content 'Number of active Students:'
+        expect(page).to have_content 'Number of users with a role within the Organization:'
 
-      overview_values = all('dl.mt-12.mb-4 dd')
-      expect(overview_values.map(&:text)).to eq(%w[3 3 1 4])
+        overview_values = all('dd')
+        expect(overview_values.map(&:text)).to eq(%w[3 3 1 4])
+      end
     end
 
     it 'does not display the organization\'s statistics when there is no data' do
