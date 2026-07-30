@@ -2,9 +2,11 @@ class CommonComponents::OrganizationStatistics < ViewComponent::Base
   include ApplicationHelper
   include CollectionHelper
 
-  def initialize(group_lesson_summaries, selected_date = Time.zone.today)
+  def initialize(group_lesson_summaries, selected_date:, available_lesson_dates: [], used_default_date: false)
     @lesson_summaries = group_lesson_summaries
     @selected_date = selected_date
+    @available_lesson_dates = available_lesson_dates
+    @used_default_date = used_default_date
     @number_of_lessons = @lesson_summaries.count
     @total_data_points = @lesson_summaries.sum(&:grade_count)
   end
@@ -12,13 +14,18 @@ class CommonComponents::OrganizationStatistics < ViewComponent::Base
   erb_template <<~ERB
     <div>
       <div class="flex align-center justify-between w-full p-2">
-        <%= render Datepicker.new(date: @selected_date, target: 'selected_date') do |picker| %>
-          <% picker.with_input_field do %>
-            <input id="select_date" data-datepicker-target="picker" value="<%= @selected_date %>"  class="mt-1 rounded-md border-purple-500 text-sm focus:border-green-600 focus:outline-hidden focus:ring-green-600"
-             data-action="change->datepicker#updateFilter"/>
-            <%= render CommonComponents::ButtonComponent.new(label: t(:filter), options: { 'data-datepicker-target' => 'anchor' })%>
+        <div>
+          <%= render Datepicker.new(date: @selected_date, target: 'selected_date', enabled_dates: @available_lesson_dates.map(&:to_s)) do |picker| %>
+            <% picker.with_input_field do %>
+              <input id="select_date" data-datepicker-target="picker" value="<%= @selected_date %>"  class="mt-1 rounded-md border-purple-500 text-sm focus:border-green-600 focus:outline-hidden focus:ring-green-600"
+               data-action="change->datepicker#updateFilter"/>
+              <%= render CommonComponents::ButtonComponent.new(label: t(:filter), options: { 'data-datepicker-target' => 'anchor' })%>
+            <% end %>
           <% end %>
-        <% end %>
+          <% if @used_default_date && @available_lesson_dates.any? %>
+            <p class="text-xs text-gray-500 mt-1"><%= t(:showing_data_for_last_lessons) %></p>
+          <% end %>
+        </div>
       </div>
       <% if @lesson_summaries.any? %>
         <dl class="mt-6 grid grid-cols-2 gap-5 sm:grid-cols-2">
@@ -40,7 +47,7 @@ class CommonComponents::OrganizationStatistics < ViewComponent::Base
           </div>
         </dl>
       <% else %>
-        <h1 class="text-center text-xxl font-bold text-gray-500"> No data for the selected date </h1>
+        <h1 class="text-center text-xxl font-bold text-gray-500"> <%= t(:no_lessons_data_exists) %> </h1>
       <% end %>
     </div>
   ERB

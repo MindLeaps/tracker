@@ -31,10 +31,10 @@ end %>
           <% end %>
         <% end %>
       <% end %>
-      <%= render CommonComponents::Card.new(title: "Statistics".capitalize) do |card| %>
+      <%= render CommonComponents::Card.new(title: t(:lesson_activity)) do |card| %>
         <% card.with_card_content do %>
           <div class="bg-white py-1 px-4 pb-8">
-            <%= render CommonComponents::OrganizationStatistics.new(@lesson_summaries, @selected_date) %>
+            <%= render CommonComponents::OrganizationStatistics.new(@lesson_summaries, selected_date: @selected_date, available_lesson_dates: @available_lesson_dates, used_default_date: @used_default_date) %>
           </div>
           <% end %>
       <% end %>

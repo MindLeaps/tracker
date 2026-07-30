@@ -395,6 +395,9 @@ en:
 
   groups_with_lessons: Groups with Lessons
   performance_change: Performance change
+  lesson_activity: Lesson Activity
+  showing_data_for_last_lessons: Showing data for last lessons
+  no_lessons_data_exists: No lessons data exists
   nr_of_lessons: Nr. of Lessons
   nr_of_assessments: Nr. of Assessments
   nr_of_graded_students: Nr. of Graded students

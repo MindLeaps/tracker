@@ -118,8 +118,7 @@ class OrganizationsController < HtmlController
     @new_member = User.new
     @roles = Role::LOCAL_ROLES.keys
 
-    @selected_date = params[:selected_date] || Time.zone.today
-    @lesson_summaries = GroupLessonSummary.where(chapter_id: @organization.chapters, lesson_date: @selected_date)
+    populate_lesson_activity
   end
 
   def chapter_order_scope
@@ -170,6 +169,13 @@ class OrganizationsController < HtmlController
   end
 
   private
+
+  def populate_lesson_activity
+    @available_lesson_dates = GroupLessonSummary.where(chapter_id: @organization.chapters).distinct.pluck(:lesson_date).sort
+    @used_default_date = params[:selected_date].blank?
+    @selected_date = params[:selected_date].presence || @available_lesson_dates.last || Time.zone.today
+    @lesson_summaries = GroupLessonSummary.where(chapter_id: @organization.chapters, lesson_date: @selected_date)
+  end
 
   def file_is_csv?(content_type)
     %w[text/csv text/x-csv application/vnd.ms-excel application/csv application/x-csv].include? content_type
