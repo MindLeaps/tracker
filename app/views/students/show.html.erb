@@ -26,12 +26,18 @@ end %>
          <% end %>
       </div>
       <div class="w-1/2">
-        <dl class="mt-14 grid grid-cols-2 gap-5">
-          <%= render CommonComponents::StatCard.new(title: t(:nr_of_lessons_present), value: @nr_of_lessons_present) %>
-          <%= render CommonComponents::StatCard.new(title: t(:total_average_score), value: @total_average_score&.round(2) || t(:student_not_graded)) %>
-          <%= render CommonComponents::StatCard.new(title: t(:most_improved_skill), value: @most_improved_skill&.dig(:skill_name) || t(:student_not_graded)) %>
-          <%= render CommonComponents::StatCard.new(title: t(:least_improved_skill), value: @least_improved_skill&.dig(:skill_name) || t(:student_not_graded)) %>
-        </dl>
+        <div class="mt-6">
+          <%= render CommonComponents::StatCards.new(
+            columns: 2,
+            label: t(:student_statistics),
+            stats: [
+              { title: t(:nr_of_lessons_present), value: @nr_of_lessons_present },
+              { title: t(:total_average_score), value: @total_average_score&.round(2) || t(:student_not_graded) },
+              { title: t(:most_improved_skill), value: @most_improved_skill&.dig(:skill_name) || t(:student_not_graded) },
+              { title: t(:least_improved_skill), value: @least_improved_skill&.dig(:skill_name) || t(:student_not_graded) }
+            ]
+          ) %>
+        </div>
       </div>
     </div>
       <%= render CommonComponents::Card.new(title: t(:student_details)) do |card| %>
