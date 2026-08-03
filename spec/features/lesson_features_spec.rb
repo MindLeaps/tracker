@@ -37,7 +37,8 @@ RSpec.describe 'User interacts with lessons' do
       expect(page).to have_field 'lesson_subject_id', disabled: true
 
       find('#lesson_date').click
-      find("td[data-day='#{new_date.day}']").click
+      find('button.pika-next').click unless new_date.month == previous_date.month
+      find("button[data-pika-year='#{new_date.year}'][data-pika-month='#{new_date.month - 1}'][data-pika-day='#{new_date.day}']").click
       click_button 'Update Lesson'
 
       expect(page).to have_content 'Lesson updated'
