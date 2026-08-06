@@ -13,6 +13,8 @@ module CollectionHelper
   end
 
   def average_from_array(arr)
+    return if arr.empty?
+
     arr.sum.to_f / arr.size
   end
 

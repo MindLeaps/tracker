@@ -21,5 +21,13 @@ RSpec.describe CollectionHelper, type: :helper do
 
       expect(middle_from_rel(ordered_groups).group_name).to eq 'B'
     end
+
+    it 'returns the average of an array' do
+      expect(average_from_array([1, 2, 3])).to eq 2.0
+    end
+
+    it 'returns nil for an empty array instead of raising or returning NaN' do
+      expect(average_from_array([])).to be_nil
+    end
   end
 end

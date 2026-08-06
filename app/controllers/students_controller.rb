@@ -31,13 +31,14 @@ class StudentsController < HtmlController
   def show
     @student = Student.includes(:profile_image, :organization).find params.require(:id)
     authorize @student
-    @student_lessons_details_by_subject = apply_scopes(StudentLessonDetail.where(student_id: @student.id)).all.group_by(&:subject_id)
+    lesson_details = apply_scopes(StudentLessonDetail.where(student_id: @student.id)).to_a
+    @student_lessons_details_by_subject = lesson_details.group_by(&:subject_id)
     @subjects = policy_scope(Subject).includes(:skills).where(id: @student_lessons_details_by_subject.keys)
-    @lesson_summaries = graded_lesson_summaries.order(lesson_date: :asc).last(30).map { |s| lesson_summary(s) }
-    @nr_of_lessons_present = graded_lesson_summaries.count
-    @skill_averages = {}
+    graded_lessons = graded_lesson_details(lesson_details)
+    @lesson_summaries = graded_lessons.last(30).map { |lesson| lesson_summary(lesson) }
+    @nr_of_lessons_present = graded_lessons.size
     populate_skill_averages
-    populate_skill_growth
+    populate_skill_growth(graded_lessons)
   end
 
   def new
@@ -120,32 +121,47 @@ class StudentsController < HtmlController
 
   private
 
-  def lesson_summary(summary)
-    { lesson_date: summary.lesson_date, average_mark: summary.average_mark, lesson_url: lesson_path(summary.lesson_id) }
+  def lesson_summary(detail)
+    { lesson_date: detail.date, average_mark: detail.average_mark, lesson_url: lesson_path(detail.lesson_id) }
   end
 
-  def graded_lesson_summaries
-    StudentLessonSummary.where(student_id: @student.id).where.not(average_mark: nil)
+  def graded_lesson_details(lesson_details)
+    lesson_details.reject { |lesson| lesson.average_mark.nil? }.sort_by(&:date)
   end
 
   def populate_skill_averages
-    student_averages = StudentAverage.where(student_id: @student.id).load
-    student_averages.each do |average|
-      @skill_averages[average[:subject_name].to_s] = [] unless @skill_averages[average[:subject_name].to_s]
-      @skill_averages[average[:subject_name].to_s].push({ skill: average[:skill_name], average: average[:average_mark] })
-    end
-    @total_average_score = student_averages.sum(&:average_mark) / student_averages.size if student_averages.any?
+    student_averages = StudentAverage.where(student_id: @student.id).to_a
+
+    @skill_averages = student_averages
+                      .group_by(&:subject_name)
+                      .transform_values do |averages|
+                        averages.map do |average|
+                          { skill: average.skill_name, average: average.average_mark }
+                        end
+                      end
+
+    scores = student_averages.map(&:average_mark)
+    @total_average_score = average_from_array(scores) if scores.any?
   end
 
-  def populate_skill_growth
-    marks_by_skill = Hash.new { |hash, key| hash[key] = [] }
-    @student_lessons_details_by_subject.values.flatten.sort_by(&:date).each do |detail|
-      detail.skill_marks.each_value { |mark_info| marks_by_skill[mark_info['skill_name']] << mark_info['mark'] }
-    end
+  def populate_skill_growth(graded_lessons)
+    skills_with_enough_grades = marks_by_skill_id(graded_lessons).values.select { |skill| skill[:marks].size >= 2 }
+    growths = skills_with_enough_grades.map { |skill| { skill_name: skill[:name], growth: skill[:marks].last - skill[:marks].first } }
 
-    growths = marks_by_skill.map { |skill_name, marks| { skill_name:, growth: marks.last - marks.first } }
     @most_improved_skill = growths.max_by { |g| g[:growth] }
     @least_improved_skill = growths.min_by { |g| g[:growth] }
+  end
+
+  def marks_by_skill_id(graded_lessons)
+    marks = Hash.new { |hash, key| hash[key] = { name: nil, marks: [] } }
+    graded_lessons.each do |detail|
+      detail.skill_marks.each do |skill_id, mark_info|
+        skill = marks[skill_id]
+        skill[:name] = mark_info['skill_name']
+        skill[:marks] << mark_info['mark']
+      end
+    end
+    marks
   end
 
   def student_params

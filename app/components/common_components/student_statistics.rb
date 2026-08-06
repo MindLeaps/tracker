@@ -11,25 +11,17 @@ class CommonComponents::StudentStatistics < ViewComponent::Base
   end
 
   erb_template <<~ERB
-    <div>
-      <dl class="mt-14 grid grid-cols-2 gap-5 sm:grid-cols-2">
-      <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow-sm sm:p-6">
-        <dt class="truncate text-sm font-medium text-gray-500"><%= t(:total_nr_of_students) %>:</dt>
-        <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900"><%= @total_students %></dd>
-      </div>
-      <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow-sm sm:p-6">
-        <dt class="truncate text-sm font-medium text-gray-500"><%= t(:nr_of_graded_students) %>:</dt>
-        <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900"><%= @total_attending_students %></dd>
-      </div>
-      <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow-sm sm:p-6">
-        <dt class="truncate text-sm font-medium text-gray-500"><%= t(:nr_of_absent_students) %>:</dt>
-        <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900"><%= @absent_students%></dd>
-      </div>
-      <div class="overflow-hidden rounded-lg bg-white px-4 py-5 shadow-sm sm:p-6">
-        <dt class="truncate text-sm font-medium text-gray-500"><%= t(:average_mark_across_students) %>:</dt>
-        <dd class="mt-1 text-3xl font-semibold tracking-tight text-gray-900"><%= @average_mark_across_students %></dd>
-      </div>
-      </dl>
+    <div class="mt-6">
+      <%= render CommonComponents::StatCards.new(
+        label: t(:student_statistics),
+        columns: 2,
+        stats: [
+          { title: t(:total_nr_of_students), value: @total_students },
+          { title: t(:nr_of_graded_students), value: @total_attending_students },
+          { title: t(:nr_of_absent_students), value: @absent_students },
+          { title: t(:average_mark_across_students), value: @average_mark_across_students }
+        ]
+      ) %>
     </div>
   ERB
 end
