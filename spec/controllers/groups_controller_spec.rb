@@ -151,6 +151,34 @@ RSpec.describe GroupsController, type: :controller do
       end
     end
 
+    context 'skill growth across multiple students' do
+      before :each do
+        subject = create :subject_with_skills, skill_names: %w[Discipline Grit], organization: @group.chapter.organization
+        @student3 = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
+        @student4 = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
+        @student5 = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
+
+        # 3 students each improve a little in Discipline; 2 students each improve a lot in Grit.
+        create :lesson_with_grades, group: @group, subject:, date: 2.days.ago,
+                                    student_grades: {
+                                      @student1.id => { 'Discipline' => 2 }, @student2.id => { 'Discipline' => 2 }, @student3.id => { 'Discipline' => 2 },
+                                      @student4.id => { 'Grit' => 1 }, @student5.id => { 'Grit' => 1 }
+                                    }
+        create :lesson_with_grades, group: @group, subject:, date: 1.day.ago,
+                                    student_grades: {
+                                      @student1.id => { 'Discipline' => 3 }, @student2.id => { 'Discipline' => 3 }, @student3.id => { 'Discipline' => 3 },
+                                      @student4.id => { 'Grit' => 7 }, @student5.id => { 'Grit' => 7 }
+                                    }
+
+        get :show, params: { id: @group.id }
+      end
+
+      it 'picks the skill with the biggest average improvement, not the one most students individually led in' do
+        expect(assigns(:most_improved_skill)[:skill_name]).to eq 'Grit'
+        expect(assigns(:least_improved_skill)[:skill_name]).to eq 'Discipline'
+      end
+    end
+
     context 'when no lessons have been graded yet' do
       before :each do
         @ungraded_group = create :group

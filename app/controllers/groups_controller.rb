@@ -110,14 +110,31 @@ class GroupsController < HtmlController
   private
 
   def populate_skill_growth
-    marks_by_skill = Hash.new { |hash, key| hash[key] = [] }
-    PerformancePerGroupPerSkillPerLesson.where(group_id: @group.id).order(date: :asc).each do |performance|
-      marks_by_skill[performance.skill_name] << performance.mark
-    end
-
-    growths = marks_by_skill.map { |skill_name, marks| { skill_name:, growth: marks.last - marks.first } }
+    growths = average_growth_per_skill
     @most_improved_skill = growths.max_by { |g| g[:growth] }
     @least_improved_skill = growths.min_by { |g| g[:growth] }
+  end
+
+  # For each skill, averages every student's own (last mark - first mark) so the skill with the
+  # largest real improvement wins, rather than whichever skill the most students happened to lead in.
+  def average_growth_per_skill
+    deltas_by_skill = Hash.new { |hash, key| hash[key] = [] }
+    marks_by_student_and_skill.each do |(_student_id, skill_name), marks|
+      deltas_by_skill[skill_name] << (marks.last - marks.first)
+    end
+
+    deltas_by_skill.map { |skill_name, deltas| { skill_name:, growth: deltas.sum.to_f / deltas.size } }
+  end
+
+  def marks_by_student_and_skill
+    marks = Hash.new { |hash, key| hash[key] = [] }
+    Grade.joins(:lesson, :skill)
+         .where(deleted_at: nil)
+         .where(lessons: { group_id: @group.id, deleted_at: nil })
+         .order('lessons.date ASC')
+         .pluck(:student_id, 'skills.skill_name', :mark)
+         .each { |student_id, skill_name, mark| marks[[student_id, skill_name]] << mark }
+    marks
   end
 
   def group_params
