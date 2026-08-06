@@ -235,6 +235,46 @@ RSpec.describe StudentsController, type: :controller do
         expect(assigns[:total_average_score]).to be_within(0.01).of 3.34
       end
 
+      it 'excludes skills with fewer than two grades from most/least improved consideration' do
+        single_grade_student = create :graded_student, grades: {
+          'Memorization' => [1, 2, 3],
+          'Grit' => [3, 5, 6],
+          'Creativity' => [5]
+        }
+
+        get :show, params: { id: single_grade_student.id }
+
+        expect(assigns[:most_improved_skill][:skill_name]).to eq 'Grit'
+        expect(assigns[:least_improved_skill][:skill_name]).to eq 'Memorization'
+      end
+
+      it 'tracks growth per skill id so same-named skills in different subjects are not merged' do
+        organization = create :organization
+        chapter = create :chapter, organization: organization
+        group = create :group, chapter: chapter
+        subject_a = create :subject_with_skills, skill_names: ['Creativity'], organization: organization
+        subject_b = create :subject_with_skills, skill_names: ['Creativity'], organization: organization
+        student = create :enrolled_student, organization: organization, groups: [group]
+
+        skill_a = subject_a.skills.find_by(skill_name: 'Creativity')
+        skill_b = subject_b.skills.find_by(skill_name: 'Creativity')
+
+        grade_student = lambda do |subject, skill, date, mark|
+          lesson = create :lesson, group: group, subject: subject, date: date
+          create :grade, student: student, lesson: lesson, grade_descriptor: GradeDescriptor.find_by(skill: skill, mark: mark)
+        end
+
+        grade_student.call(subject_b, skill_b, 4.days.ago, 7)
+        grade_student.call(subject_a, skill_a, 3.days.ago, 1)
+        grade_student.call(subject_b, skill_b, 2.days.ago, 1)
+        grade_student.call(subject_a, skill_a, 1.day.ago, 3)
+
+        get :show, params: { id: student.id }
+
+        expect(assigns[:most_improved_skill][:growth]).to eq 2
+        expect(assigns[:least_improved_skill][:growth]).to eq(-6)
+      end
+
       context 'when the student has not been graded' do
         before :each do
           @student = create :enrolled_student
