@@ -171,10 +171,13 @@ class OrganizationsController < HtmlController
   private
 
   def populate_lesson_activity
-    @available_lesson_dates = GroupLessonSummary.where(chapter_id: @organization.chapters).distinct.pluck(:lesson_date).sort
+    lesson_summaries_for_organization = GroupLessonSummary.where(chapter_id: @organization.chapters)
+    @available_lesson_dates = lesson_summaries_for_organization.distinct.pluck(:lesson_date).sort
     @used_default_date = params[:selected_date].blank?
     @selected_date = params[:selected_date].presence || @available_lesson_dates.last || Time.zone.today
-    @lesson_summaries = GroupLessonSummary.where(chapter_id: @organization.chapters, lesson_date: @selected_date)
+    @lesson_summaries = lesson_summaries_for_organization.where(lesson_date: @selected_date).to_a
+    @number_of_lessons = @lesson_summaries.count
+    @total_data_points = @lesson_summaries.sum(&:grade_count)
   end
 
   def file_is_csv?(content_type)

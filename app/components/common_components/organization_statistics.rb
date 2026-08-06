@@ -2,14 +2,16 @@ class CommonComponents::OrganizationStatistics < ViewComponent::Base
   include ApplicationHelper
   include CollectionHelper
 
-  def initialize(group_lesson_summaries, selected_date:, available_lesson_dates: [], used_default_date: false)
-    @lesson_summaries = group_lesson_summaries
+  # rubocop:disable Metrics/ParameterLists
+  def initialize(lesson_summaries, number_of_lessons:, total_data_points:, selected_date:, available_lesson_dates: [], used_default_date: false)
+    @lesson_summaries = lesson_summaries
+    @number_of_lessons = number_of_lessons
+    @total_data_points = total_data_points
     @selected_date = selected_date
     @available_lesson_dates = available_lesson_dates
     @used_default_date = used_default_date
-    @number_of_lessons = @lesson_summaries.count
-    @total_data_points = @lesson_summaries.sum(&:grade_count)
   end
+  # rubocop:enable Metrics/ParameterLists
 
   erb_template <<~ERB
     <div>

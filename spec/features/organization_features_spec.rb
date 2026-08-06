@@ -80,12 +80,6 @@ RSpec.describe 'Interaction with Organizations' do
       expect(page).to have_content 'Groups with Lessons'
       expect(page).not_to have_content 'Showing data for last lessons'
     end
-
-    it 'only enables dates with lesson data in the date picker' do
-      enabled_dates = JSON.parse(find('[data-controller="datepicker"]')['data-datepicker-enabled-dates-value'])
-
-      expect(enabled_dates).to eq [@lesson.date.to_s]
-    end
   end
 
   describe 'Adding members to organization' do

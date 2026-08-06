@@ -23,7 +23,7 @@ export default class extends Controller {
            const parts = [date.getFullYear(), ('0'+(date.getMonth()+1)).slice(-2), ('0'+date.getDate()).slice(-2)];
            return parts.join("-");
        }
-       const enabledDates = this.hasEnabledDatesValue && this.enabledDatesValue.length > 0 ? new Set(this.enabledDatesValue) : null
+       const enabledDates = this.hasEnabledDatesValue ? new Set(this.enabledDatesValue) : null
 
        const picker = new Pikaday({
            field: this.pickerTarget,
