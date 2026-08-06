@@ -409,6 +409,7 @@ en:
   nr_of_users_with_role: Number of users with a role within the Organization
   nr_of_lessons_present: Number of lessons present
   total_average_score: Total average score
+  current_average_score_for_group: Current average score for group
   most_improved_skill: Most improved skill
   least_improved_skill: Least improved skill
   overview: Overview
