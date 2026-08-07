@@ -38,6 +38,30 @@ RSpec.describe Enrollment, type: :model do
     end
   end
 
+  describe 'callbacks' do
+    before :each do
+      @organization = create :organization
+      @chapter = create :chapter, organization: @organization
+      @group = create :group, chapter: @chapter
+      @tag = create :tag, organization: @organization
+      @group.tag_ids = [@tag.id]
+      @group.save!
+      @student = create :student, organization: @organization, tags: []
+    end
+
+    it "applies the group's tags to the student when an open enrollment is created" do
+      create :enrollment, student: @student, group: @group, active_since: Time.zone.now
+
+      expect(@student.reload.tags).to include @tag
+    end
+
+    it 'does not apply the tags when the enrollment is created already closed' do
+      create :enrollment, student: @student, group: @group, active_since: 1.year.ago, inactive_since: 1.month.ago
+
+      expect(@student.reload.tags).not_to include @tag
+    end
+  end
+
   describe 'validations' do
     before :each do
       @org = create :organization

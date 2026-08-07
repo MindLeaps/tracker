@@ -27,6 +27,26 @@
   </div>
   <div class="bg-white px-4 py-5 shadow-sm sm:p-4">
     <div class="md:grid md:grid-cols-4 md:gap-6">
+      <div class="md:col-span-1">
+        <h3 class="text-lg font-medium leading-6 text-gray-900"><%= t(:group_tags) %></h3>
+        <p class="mt-1 text-sm text-gray-500"><%= t(:group_tags_explanation) %></p>
+      </div>
+      <div class="mt-5 md:col-span-3 md:mt-0">
+        <div data-controller="student-tag" data-student-tag-delete-image-url-value="<%= image_url "delete_forever.svg" %>">
+          <div id="tag-container" data-student-tag-target="container"></div>
+          <div class="grid grid-cols-6 gap-4">
+            <div class="col-span-6 lg:col-span-2">
+              <label for="group_tags" class="block text-sm font-medium text-gray-700"><%= t(:group_tags) %></label>
+              <%= f.collection_select :tag_ids, @permitted_tags, :id, :tag_name, { }, class: 'hidden', id: 'tags-field', multiple: true, 'data-student-tag-target' => 'tags' %>
+              <%= f.text_field :tags_autocomplete, id: 'tag-autocomplete', 'data-student-tag-target' => 'autocomplete', class: 'mt-1 block w-full rounded-md border-purple-500 shadow-sm focus:border-green-600 focus:ring-green-600 sm:text-sm', role:'combobox', 'aria-controls' => 'options', 'aria-expanded' => false %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="bg-white px-4 py-5 shadow-sm sm:p-4">
+    <div class="md:grid md:grid-cols-4 md:gap-6">
       <div class="md:col-span-1"></div>
       <div class="mt-5 md:col-span-3 md:mt-0">
         <div class="grid grid-cols-6 gap-4">

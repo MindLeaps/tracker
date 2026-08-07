@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class GroupsController < HtmlController
   include Pagy::Method
 
@@ -40,6 +41,7 @@ class GroupsController < HtmlController
 
   def create
     @group = Group.new group_params
+    @group.tag_ids = permitted_tag_ids(@group)
     if @group.valid? && @group.save
       authorize @group
       success(title: t(:group_added), text: t(:group_with_name_added, group: @group.group_name))
@@ -51,8 +53,11 @@ class GroupsController < HtmlController
 
   def update
     @group = Group.find params.require :id
-    if @group.valid? && @group.update(group_params)
+    @group.assign_attributes group_params
+    previous_tag_ids = assign_tag_ids(@group)
+    if @group.valid? && @group.save
       authorize @group
+      @group.sync_tags_to_active_students(previous_tag_ids)
       success title: t(:group_updated), text: t(:group_name_updated, group: @group.group_name)
       return redirect_to(flash[:redirect] || group_path(@group))
     end
@@ -111,6 +116,19 @@ class GroupsController < HtmlController
     params.require(:group).permit :group_name, :mlid, :chapter_id
   end
 
+  def assign_tag_ids(group)
+    previous_tag_ids = group.tag_ids
+    group.tag_ids = permitted_tag_ids(group)
+    previous_tag_ids
+  end
+
+  def permitted_tag_ids(group)
+    return [] unless group.chapter
+
+    requested_ids = params.dig(:group, :tag_ids) || []
+    TagPolicy::Scope.new(current_user, Tag).resolve_for_organization_id(group.chapter.organization_id).where(id: requested_ids).ids
+  end
+
   def populate_new_group
     group = Group.new
     group.chapter = Chapter.find(new_params[:chapter_id]) if new_params[:chapter_id]
@@ -121,3 +139,4 @@ class GroupsController < HtmlController
     params.permit :chapter_id
   end
 end
+# rubocop:enable Metrics/ClassLength

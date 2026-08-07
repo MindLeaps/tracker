@@ -51,6 +51,23 @@ RSpec.describe GroupsController, type: :controller do
 
       it { should render_template :new }
     end
+
+    context 'with tags' do
+      before :each do
+        @own_tag = create :tag, organization: kigali_chapter.organization, shared: false
+        @shared_tag = create :tag, organization: create(:organization), shared: true
+        @foreign_tag = create :tag, organization: create(:organization), shared: false
+
+        post :create, params: { group: { group_name: 'Tagged Group', mlid: 'g1', chapter_id: kigali_chapter.id, tag_ids: [@own_tag.id, @shared_tag.id, @foreign_tag.id] } }
+      end
+
+      it "only assigns tags permitted for the group's organization" do
+        group = Group.find_by(group_name: 'Tagged Group')
+
+        expect(group.tags).to include @own_tag, @shared_tag
+        expect(group.tags).not_to include @foreign_tag
+      end
+    end
   end
 
   describe '#index' do
@@ -180,6 +197,35 @@ RSpec.describe GroupsController, type: :controller do
 
       it { should respond_with 422 }
       it { should render_template :edit }
+    end
+
+    context 'tags' do
+      before :each do
+        @organization = @chapter1.organization
+        @kept_tag = create :tag, organization: @organization
+        @removed_tag = create :tag, organization: @organization
+        @added_tag = create :tag, organization: @organization
+        @foreign_tag = create :tag, organization: create(:organization), shared: false
+
+        @group.tag_ids = [@kept_tag.id, @removed_tag.id]
+        @group.save!
+
+        @active_student = create :enrolled_student, organization: @organization, groups: [@group], tags: []
+        create :student_tag, student: @active_student, tag: @kept_tag
+        create :student_tag, student: @active_student, tag: @removed_tag
+
+        post :update, params: { id: @group.id, group: { group_name: @group.group_name, mlid: @group.mlid, chapter_id: @chapter1.id, tag_ids: [@kept_tag.id, @added_tag.id, @foreign_tag.id] } }
+      end
+
+      it "updates the group's tags, excluding a tag from a different non-shared organization" do
+        expect(@group.reload.tags).to include @kept_tag, @added_tag
+        expect(@group.reload.tags).not_to include @removed_tag, @foreign_tag
+      end
+
+      it 'syncs the tag changes to active students in the group' do
+        expect(@active_student.reload.tags).to include @kept_tag, @added_tag
+        expect(@active_student.reload.tags).not_to include @removed_tag
+      end
     end
   end
 

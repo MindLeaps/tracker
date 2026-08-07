@@ -19,6 +19,8 @@ RSpec.describe Tag, type: :model do
   describe 'relationships' do
     it { should have_many :student_tags }
     it { should have_many :students }
+    it { should have_many :group_tags }
+    it { should have_many :groups }
     it { should belong_to :organization }
   end
 
@@ -51,6 +53,13 @@ RSpec.describe Tag, type: :model do
 
       it 'should return false when the tag has students associated with it' do
         expect(@used_tag.can_delete?).to be false
+      end
+
+      it 'should return false when the tag is associated with a group' do
+        group_tag = create :tag, tag_name: 'Group tag', organization: @org
+        create :group_tag, tag: group_tag, group: @group
+
+        expect(group_tag.can_delete?).to be false
       end
     end
   end

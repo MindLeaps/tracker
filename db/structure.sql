@@ -514,6 +514,18 @@ SELECT
 
 
 --
+-- Name: group_tags; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.group_tags (
+    group_id bigint NOT NULL,
+    tag_id uuid NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
 -- Name: groups; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1588,6 +1600,20 @@ CREATE INDEX index_groups_on_chapter_id ON public.groups USING btree (chapter_id
 
 
 --
+-- Name: index_group_tags_on_group_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_group_tags_on_group_id ON public.group_tags USING btree (group_id);
+
+
+--
+-- Name: index_group_tags_on_tag_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_group_tags_on_tag_id ON public.group_tags USING btree (tag_id);
+
+
+--
 -- Name: index_lessons_on_group_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2096,6 +2122,22 @@ ALTER TABLE ONLY public.authentication_tokens
 
 
 --
+-- Name: group_tags fk_rails_c402d50fa2; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.group_tags
+    ADD CONSTRAINT fk_rails_c402d50fa2 FOREIGN KEY (group_id) REFERENCES public.groups(id);
+
+
+--
+-- Name: group_tags fk_rails_c901033b5e; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.group_tags
+    ADD CONSTRAINT fk_rails_c901033b5e FOREIGN KEY (tag_id) REFERENCES public.tags(id);
+
+
+--
 -- Name: enrollments fk_rails_f01c555e06; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2214,6 +2256,7 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260807120000'),
 ('20260415100001'),
 ('20260415100000'),
 ('20260414100000'),

@@ -22,6 +22,11 @@
 require 'rails_helper'
 
 RSpec.describe Group, type: :model do
+  describe 'relationships' do
+    it { should have_many :group_tags }
+    it { should have_many :tags }
+  end
+
   describe 'validations' do
     it { should validate_presence_of :group_name }
     it { should validate_presence_of :mlid }
@@ -115,6 +120,59 @@ RSpec.describe Group, type: :model do
 
       it 'does not remove the previously deleted dependents of the group\'s deleted timestamp' do
         expect(@deleted_lesson.reload.deleted_at).to_not be_nil
+      end
+    end
+
+    describe '#active_students' do
+      before :each do
+        @group = create :group
+        @active_student = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
+        @formerly_enrolled_student = create :student, organization: @group.chapter.organization
+        create :enrollment, group: @group, student: @formerly_enrolled_student, active_since: 1.year.ago, inactive_since: 1.month.ago
+        @deleted_student = create :enrolled_student, organization: @group.chapter.organization, groups: [@group], deleted_at: Time.zone.now
+      end
+
+      it 'returns only non-deleted students with an open enrollment in the group' do
+        expect(@group.active_students).to contain_exactly @active_student
+      end
+    end
+
+    describe '#sync_tags_to_active_students' do
+      before :each do
+        @group = create :group
+        @kept_tag = create :tag, organization: @group.chapter.organization
+        @removed_tag = create :tag, organization: @group.chapter.organization
+        @added_tag = create :tag, organization: @group.chapter.organization
+
+        @active_student = create :enrolled_student, organization: @group.chapter.organization, groups: [@group], tags: []
+        @inactive_student = create :student, organization: @group.chapter.organization, tags: []
+        create :enrollment, group: @group, student: @inactive_student, active_since: 1.year.ago, inactive_since: 1.month.ago
+
+        create :student_tag, student: @active_student, tag: @kept_tag
+        create :student_tag, student: @active_student, tag: @removed_tag
+        create :student_tag, student: @inactive_student, tag: @removed_tag
+
+        previous_tag_ids = [@kept_tag.id, @removed_tag.id]
+        @group.tag_ids = [@kept_tag.id, @added_tag.id]
+        @group.save!
+
+        @group.sync_tags_to_active_students(previous_tag_ids)
+      end
+
+      it 'adds newly added group tags to active students' do
+        expect(@active_student.reload.tags).to include @added_tag
+      end
+
+      it 'removes tags no longer on the group from active students' do
+        expect(@active_student.reload.tags).not_to include @removed_tag
+      end
+
+      it 'leaves tags that remain on the group untouched' do
+        expect(@active_student.reload.tags).to include @kept_tag
+      end
+
+      it 'does not affect students who are not currently active in the group' do
+        expect(@inactive_student.reload.tags).to include @removed_tag
       end
     end
 
