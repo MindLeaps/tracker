@@ -194,6 +194,18 @@
 </div>
 
 <script>
+  const handlePrint = () => {
+    Object.values(Chart.instances).forEach(chart => {
+        chart.resize()
+    })
+
+    setTimeout(() => {
+      window.print()
+    }, 1000)
+
+    document.removeEventListener('DOMContentLoaded', handlePrint)
+  }
+
   window.onChartsLoad = function () {
     let groupedSummaries = <%= @grouped_student_summaries.to_json.html_safe %>;
     let performancePerSkill = <%= @performance_per_skill.to_json.html_safe %>;
@@ -205,6 +217,8 @@
       yTitle: "Performance",
       regressionOrder: 3
     })
+
+    document.addEventListener('DOMContentLoaded', handlePrint)
   }
 </script>
 <%= javascript_include_tag "new_charts", onload: 'window.onChartsLoad && window.onChartsLoad()' %>
