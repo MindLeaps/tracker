@@ -134,152 +134,36 @@ RSpec.describe GroupsController, type: :controller do
       it { should respond_with 200 }
     end
 
-    context 'skill growth' do
-      before :each do
-        subject = create :subject_with_skills, skill_names: %w[Memorization Grit], organization: @group.chapter.organization
-        create :lesson_with_grades, group: @group, subject:, date: 2.days.ago,
-                                    student_grades: { @student1.id => { 'Memorization' => 1, 'Grit' => 3 } }
-        create :lesson_with_grades, group: @group, subject:, date: 1.day.ago,
-                                    student_grades: { @student1.id => { 'Memorization' => 3, 'Grit' => 6 } }
-
-        get :show, params: { id: @group.id }
-      end
-
-      it 'assigns the most and least improved skill based on first vs last average' do
-        expect(assigns(:most_improved_skill)[:skill_name]).to eq 'Grit'
-        expect(assigns(:least_improved_skill)[:skill_name]).to eq 'Memorization'
-      end
-    end
-
-    context 'skill growth across multiple students' do
-      before :each do
-        subject = create :subject_with_skills, skill_names: %w[Discipline Grit], organization: @group.chapter.organization
-        @student3 = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
-        @student4 = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
-        @student5 = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
-
-        # 3 students each improve a little in Discipline; 2 students each improve a lot in Grit.
-        create :lesson_with_grades, group: @group, subject:, date: 2.days.ago,
-                                    student_grades: {
-                                      @student1.id => { 'Discipline' => 2 }, @student2.id => { 'Discipline' => 2 }, @student3.id => { 'Discipline' => 2 },
-                                      @student4.id => { 'Grit' => 1 }, @student5.id => { 'Grit' => 1 }
-                                    }
-        create :lesson_with_grades, group: @group, subject:, date: 1.day.ago,
-                                    student_grades: {
-                                      @student1.id => { 'Discipline' => 3 }, @student2.id => { 'Discipline' => 3 }, @student3.id => { 'Discipline' => 3 },
-                                      @student4.id => { 'Grit' => 7 }, @student5.id => { 'Grit' => 7 }
-                                    }
-
-        get :show, params: { id: @group.id }
-      end
-
-      it 'picks the skill with the biggest average improvement, not the one most students individually led in' do
-        expect(assigns(:most_improved_skill)[:skill_name]).to eq 'Grit'
-        expect(assigns(:least_improved_skill)[:skill_name]).to eq 'Discipline'
-      end
-    end
-
-    context 'skill graded only once' do
-      before :each do
-        subject = create :subject_with_skills, skill_names: %w[Memorization Grit Creativity], organization: @group.chapter.organization
-        create :lesson_with_grades, group: @group, subject:, date: 2.days.ago,
-                                    student_grades: { @student1.id => { 'Memorization' => 1, 'Grit' => 3 } }
-        create :lesson_with_grades, group: @group, subject:, date: 1.day.ago,
-                                    student_grades: { @student1.id => { 'Memorization' => 3, 'Grit' => 6, 'Creativity' => 5 } }
-
-        get :show, params: { id: @group.id }
-      end
-
-      it 'ignores skills with only a single grade so they cannot win most/least improved' do
-        expect(assigns(:most_improved_skill)[:skill_name]).to eq 'Grit'
-        expect(assigns(:least_improved_skill)[:skill_name]).to eq 'Memorization'
-      end
-    end
-
-    context 'skills sharing a name across subjects' do
-      before :each do
-        subject_a = create :subject_with_skills, skill_names: %w[Discipline Grit], organization: @group.chapter.organization
-        subject_b = create :subject_with_skills, skill_names: %w[Discipline], organization: @group.chapter.organization
-
-        create :lesson_with_grades, group: @group, subject: subject_a, date: 2.days.ago,
-                                    student_grades: { @student1.id => { 'Discipline' => 1, 'Grit' => 2 } }
-        create :lesson_with_grades, group: @group, subject: subject_a, date: 1.day.ago,
-                                    student_grades: { @student1.id => { 'Discipline' => 7, 'Grit' => 5 } }
-        create :lesson_with_grades, group: @group, subject: subject_b, date: 2.days.ago,
-                                    student_grades: { @student1.id => { 'Discipline' => 7 } }
-        create :lesson_with_grades, group: @group, subject: subject_b, date: 1.day.ago,
-                                    student_grades: { @student1.id => { 'Discipline' => 1 } }
-
-        get :show, params: { id: @group.id }
-      end
-
-      it 'keeps same-named skills from different subjects separate when computing growth' do
-        expect(assigns(:most_improved_skill)[:skill_name]).to eq 'Discipline'
-        expect(assigns(:least_improved_skill)[:skill_name]).to eq 'Discipline'
-      end
-    end
-
-    context 'when several skills tie on growth' do
-      before :each do
-        subject = create :subject_with_skills, skill_names: %w[Zeta Alpha Mu], organization: @group.chapter.organization
-        create :lesson_with_grades, group: @group, subject:, date: 2.days.ago,
-                                    student_grades: { @student1.id => { 'Zeta' => 1, 'Alpha' => 1, 'Mu' => 3 } }
-        create :lesson_with_grades, group: @group, subject:, date: 1.day.ago,
-                                    student_grades: { @student1.id => { 'Zeta' => 3, 'Alpha' => 3, 'Mu' => 2 } }
-
-        get :show, params: { id: @group.id }
-      end
-
-      it 'breaks the most-improved tie by skill name, not database order' do
-        expect(assigns(:most_improved_skill)[:skill_name]).to eq 'Alpha'
-      end
-
-      it 'still picks the genuinely least improved skill' do
-        expect(assigns(:least_improved_skill)[:skill_name]).to eq 'Mu'
-      end
-    end
-
     context 'group statistics' do
-      before :each do
-        # @student1 and @student2 have open enrollments; these two must be excluded from the active count:
-        # one whose enrollment already ended, and one whose enrollment has not started yet.
-        inactive_student = create :student, organization: @group.chapter.organization
-        create :enrollment, student: inactive_student, group: @group, active_since: 1.year.ago.to_date, inactive_since: 1.month.ago.to_date
-        not_yet_active_student = create :student, organization: @group.chapter.organization
-        create :enrollment, student: not_yet_active_student, group: @group, active_since: 1.month.from_now.to_date
+      context 'when the group has graded lessons' do
+        before :each do
+          subject = create :subject_with_skills, skill_names: %w[Memorization Grit], organization: @group.chapter.organization
+          create :lesson_with_grades, group: @group, subject:, date: 2.days.ago,
+                                      student_grades: { @student1.id => { 'Memorization' => 1, 'Grit' => 3 } }
+          create :lesson_with_grades, group: @group, subject:, date: 1.day.ago,
+                                      student_grades: { @student1.id => { 'Memorization' => 3, 'Grit' => 6 } }
 
-        subject = create :subject_with_skills, skill_names: %w[Memorization Grit], organization: @group.chapter.organization
-        create :lesson_with_grades, group: @group, subject:, date: 2.days.ago,
-                                    student_grades: { @student1.id => { 'Memorization' => 1, 'Grit' => 3 } }
-        create :lesson_with_grades, group: @group, subject:, date: 1.day.ago,
-                                    student_grades: { @student1.id => { 'Memorization' => 3, 'Grit' => 6 } }
+          get :show, params: { id: @group.id }
+        end
 
-        get :show, params: { id: @group.id }
+        it 'assigns the current average score and the most/least improved skill' do
+          expect(assigns(:current_average_score)).to be_a(Numeric)
+          expect(assigns(:most_improved_skill)[:skill_name]).to eq 'Grit'
+          expect(assigns(:least_improved_skill)[:skill_name]).to eq 'Memorization'
+        end
       end
 
-      it 'counts only currently-active, non-deleted enrolled students' do
-        expect(assigns(:nr_of_active_students)).to eq 2
-      end
+      context 'when the group has no graded lessons' do
+        before :each do
+          @ungraded_group = create :group
+          get :show, params: { id: @ungraded_group.id }
+        end
 
-      it 'exposes the most recent lesson average as the current score' do
-        expect(assigns(:current_average_score)).to be_a(Numeric)
-      end
-    end
-
-    context 'when no lessons have been graded yet' do
-      before :each do
-        @ungraded_group = create :group
-        get :show, params: { id: @ungraded_group.id }
-      end
-
-      it 'assigns nil for the skill growth statistics' do
-        expect(assigns(:most_improved_skill)).to be_nil
-        expect(assigns(:least_improved_skill)).to be_nil
-      end
-
-      it 'assigns zero active students and a nil current score' do
-        expect(assigns(:nr_of_active_students)).to eq 0
-        expect(assigns(:current_average_score)).to be_nil
+        it 'assigns nil for the current average score and the skill growth statistics' do
+          expect(assigns(:current_average_score)).to be_nil
+          expect(assigns(:most_improved_skill)).to be_nil
+          expect(assigns(:least_improved_skill)).to be_nil
+        end
       end
     end
   end

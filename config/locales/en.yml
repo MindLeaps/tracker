@@ -228,7 +228,7 @@ en:
   student_grades: Student Grades
   student_graded: Student graded.
   student_graded_text: Student %{student} graded.
-  student_not_graded: Not Graded
+  not_graded: Not Graded
   add_grade: Add Grade
   graded_vs_students_in_group: Graded / Students in Group
   back_to_subjects: Back to All Subjects

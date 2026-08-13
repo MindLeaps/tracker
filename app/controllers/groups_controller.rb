@@ -23,7 +23,6 @@ class GroupsController < HtmlController
         lesson_url: lesson_path(Lesson.find_by(id: summary.lesson_id))
       }
     end
-    @nr_of_active_students = active_student_count
     @current_average_score = @group_summaries.last&.dig(:average_mark)
     populate_skill_growth
   end
@@ -111,15 +110,6 @@ class GroupsController < HtmlController
 
   private
 
-  def active_student_count
-    @group.enrollments
-          .active
-          .joins(:student)
-          .where(students: { deleted_at: nil })
-          .distinct
-          .count(:student_id)
-  end
-
   def populate_skill_growth
     growths = average_growth_per_skill
     @most_improved_skill = growths.min_by { |g| [-g[:growth], g[:skill_name], g[:skill_id]] }
@@ -139,12 +129,13 @@ class GroupsController < HtmlController
 
   def marks_by_student_and_skill
     marks = Hash.new { |hash, key| hash[key] = [] }
-    Grade.joins(:lesson, :skill)
-         .where(deleted_at: nil)
-         .where(lessons: { group_id: @group.id, deleted_at: nil })
-         .order('lessons.date ASC')
-         .pluck(:student_id, 'skills.id', 'skills.skill_name', :mark)
-         .each { |student_id, skill_id, skill_name, mark| marks[[student_id, skill_id, skill_name]] << mark }
+    active_student_ids = @group.active_students.pluck(:id)
+    @group.valid_grades
+          .where(student_id: active_student_ids)
+          .joins(:skill)
+          .order('lessons.date ASC')
+          .pluck(:student_id, 'skills.id', 'skills.skill_name', :mark)
+          .each { |student_id, skill_id, skill_name, mark| marks[[student_id, skill_id, skill_name]] << mark }
     marks
   end
 

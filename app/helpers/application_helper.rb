@@ -63,7 +63,7 @@ module ApplicationHelper
   end
 
   def lesson_student_average_grade
-    t :student_not_graded
+    t :not_graded
   end
 
   def student_mini_thumbnail(student)

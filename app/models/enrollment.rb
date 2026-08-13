@@ -28,8 +28,6 @@ class Enrollment < ApplicationRecord
 
   scope :by_student, ->(student_id) { where student_id: }
   scope :by_group, ->(group_id) { where group_id: }
-  # Enrollments that are open at `as_of`: started on/before it and not yet ended (inactive_since is
-  # exclusive, matching Student#active_enrollment? and Student.unenrolled_for_organization).
   scope :active, ->(as_of = Time.zone.now) { where('active_since <= ? AND (inactive_since IS NULL OR inactive_since > ?)', as_of, as_of) }
 
   validates :active_since, presence: true
