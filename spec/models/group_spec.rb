@@ -129,10 +129,12 @@ RSpec.describe Group, type: :model do
         @active_student = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
         @formerly_enrolled_student = create :student, organization: @group.chapter.organization
         create :enrollment, group: @group, student: @formerly_enrolled_student, active_since: 1.year.ago, inactive_since: 1.month.ago
+        @not_yet_active_student = create :student, organization: @group.chapter.organization
+        create :enrollment, group: @group, student: @not_yet_active_student, active_since: 1.month.from_now.to_date
         @deleted_student = create :enrolled_student, organization: @group.chapter.organization, groups: [@group], deleted_at: Time.zone.now
       end
 
-      it 'returns only non-deleted students with an open enrollment in the group' do
+      it 'returns only non-deleted students with an open enrollment that has already started' do
         expect(@group.active_students).to contain_exactly @active_student
       end
     end

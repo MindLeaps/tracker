@@ -77,7 +77,7 @@ class Group < ApplicationRecord
   end
 
   def active_students
-    students.where(deleted_at: nil, enrollments: { inactive_since: nil })
+    students.where(deleted_at: nil, enrollments: { inactive_since: nil, active_since: ..Time.zone.today })
   end
 
   def sync_tags_to_active_students(previous_tag_ids)
