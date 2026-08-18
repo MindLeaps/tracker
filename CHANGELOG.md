@@ -1,4 +1,6 @@
 ## Unreleased
+
+- Added stat cards to the group view
 - Added stat cards to the student view
 - Added stat cards to organization view
 - Added a clear icon to search input and removed dead student performance view

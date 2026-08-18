@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class GroupsController < HtmlController
   include Pagy::Method
 
@@ -19,9 +20,11 @@ class GroupsController < HtmlController
       {
         lesson_date: summary.lesson_date,
         average_mark: summary.average_mark,
-        lesson_url: lesson_path(Lesson.find_by(id: summary.lesson_id))
+        lesson_url: lesson_path(summary.lesson_id)
       }
     end
+    @current_average_score = @group_summaries.last&.dig(:average_mark)
+    populate_skill_growth
   end
 
   def new
@@ -107,6 +110,35 @@ class GroupsController < HtmlController
 
   private
 
+  def populate_skill_growth
+    growths = average_growth_per_skill
+    @most_improved_skill = growths.min_by { |g| [-g[:growth], g[:skill_name], g[:skill_id]] }
+    @least_improved_skill = growths.min_by { |g| [g[:growth], g[:skill_name], g[:skill_id]] }
+  end
+
+  def average_growth_per_skill
+    deltas_by_skill = Hash.new { |hash, key| hash[key] = [] }
+    marks_by_student_and_skill.each do |(_student_id, skill_id, skill_name), marks|
+      next if marks.size < 2
+
+      deltas_by_skill[[skill_id, skill_name]] << (marks.last - marks.first)
+    end
+
+    deltas_by_skill.map { |(skill_id, skill_name), deltas| { skill_id:, skill_name:, growth: deltas.sum.to_f / deltas.size } }
+  end
+
+  def marks_by_student_and_skill
+    marks = Hash.new { |hash, key| hash[key] = [] }
+    active_student_ids = @group.active_students.pluck(:id)
+    @group.valid_grades
+          .where(student_id: active_student_ids)
+          .joins(:skill)
+          .order('lessons.date ASC')
+          .pluck(:student_id, 'skills.id', 'skills.skill_name', :mark)
+          .each { |student_id, skill_id, skill_name, mark| marks[[student_id, skill_id, skill_name]] << mark }
+    marks
+  end
+
   def group_params
     params.require(:group).permit :group_name, :mlid, :chapter_id
   end
@@ -121,3 +153,4 @@ class GroupsController < HtmlController
     params.permit :chapter_id
   end
 end
+# rubocop:enable Metrics/ClassLength
