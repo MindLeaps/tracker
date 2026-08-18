@@ -20,7 +20,7 @@ class GroupsController < HtmlController
       {
         lesson_date: summary.lesson_date,
         average_mark: summary.average_mark,
-        lesson_url: lesson_path(Lesson.find_by(id: summary.lesson_id))
+        lesson_url: lesson_path(summary.lesson_id)
       }
     end
     @current_average_score = @group_summaries.last&.dig(:average_mark)
