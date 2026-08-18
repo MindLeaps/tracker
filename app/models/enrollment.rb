@@ -29,7 +29,7 @@ class Enrollment < ApplicationRecord
   scope :by_student, ->(student_id) { where student_id: }
   scope :by_group, ->(group_id) { where group_id: }
 
-  after_create :apply_group_tags_to_student, if: :open?
+  after_create :apply_group_tags_to_student, if: -> { open? && active_since <= Time.zone.today }
 
   validates :active_since, presence: true
   validates :inactive_since, comparison: { greater_than: :active_since, message: I18n.t(:enrollment_end_before_start) }, allow_nil: true

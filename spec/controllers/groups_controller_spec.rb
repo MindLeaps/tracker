@@ -302,7 +302,7 @@ RSpec.describe GroupsController, type: :controller do
 
     describe '#enroll_students' do
       before :each do
-        get :enroll_students, format: :turbo_stream,  params: { id: @group.id }
+        get :enroll_students, format: :turbo_stream, params: { id: @group.id }
       end
 
       it { should respond_with 200 }
