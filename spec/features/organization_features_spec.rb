@@ -48,17 +48,9 @@ RSpec.describe 'Interaction with Organizations' do
       end
     end
 
-    it 'does not display the organization\'s statistics when there is no data' do
-      expect(page).to have_content 'No data for the selected date'
-      expect(page).to have_content 'Statistics'
-    end
-
-    it 'does display the organization\'s statistics when there is data' do
-      expect(page).to have_content 'Statistics'
-
-      fill_in 'select_date', with: @lesson.date
-      click_link 'Filter'
-
+    it 'defaults to the most recent lesson date and shows lesson activity immediately' do
+      expect(page).to have_content 'Lesson Activity'
+      expect(page).to have_content 'Showing data for last lessons'
       expect(page).to have_content 'Nr. of Lessons'
       expect(page).to have_content 'Nr. of Assessments'
       expect(page).to have_content 'Groups with Lessons'
@@ -68,6 +60,25 @@ RSpec.describe 'Interaction with Organizations' do
       expect(statistic_components[0]).to have_content 1
       expect(statistic_components[1]).to have_content 3
       expect(statistic_components[2]).to have_content @groups.first.group_chapter_name
+    end
+
+    it 'shows a clear message when the selected date has no lesson data' do
+      empty_date = @lesson.date - 100
+
+      visit organization_path(@organization, selected_date: empty_date)
+
+      expect(page).to have_content 'No lessons data exists'
+      expect(page).not_to have_content 'Showing data for last lessons'
+    end
+
+    it 'still shows lesson activity when explicitly filtering to a date with data' do
+      fill_in 'select_date', with: @lesson.date
+      click_link 'Filter'
+
+      expect(page).to have_content 'Nr. of Lessons'
+      expect(page).to have_content 'Nr. of Assessments'
+      expect(page).to have_content 'Groups with Lessons'
+      expect(page).not_to have_content 'Showing data for last lessons'
     end
   end
 

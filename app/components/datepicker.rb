@@ -2,7 +2,7 @@ class Datepicker < ViewComponent::Base
   renders_one :input_field
 
   erb_template <<~ERB
-    <div class="inline-block" data-controller="datepicker" data-datepicker-date-value=<%= @date %> >
+    <div class="inline-block" data-controller="datepicker" data-datepicker-date-value=<%= @date %><% if @enabled_dates %> data-datepicker-enabled-dates-value='<%= @enabled_dates.to_json %>'<% end %>>
       <% if @form %>
         <%= @form.text_field @target, data: { 'datepicker-target' => 'picker' },
          class: @custom_class || 'rounded-md border-purple-500 text-sm focus:border-green-600 focus:outline-hidden focus:ring-green-600', autocomplete: 'disabled' %>
@@ -15,11 +15,14 @@ class Datepicker < ViewComponent::Base
     </div>
   ERB
 
-  def initialize(date:, target:, form: nil, custom_name: nil, custom_class: nil)
+  # rubocop:disable Metrics/ParameterLists
+  def initialize(date:, target:, form: nil, custom_name: nil, custom_class: nil, enabled_dates: nil)
     @date = date
     @target = target
     @form = form
     @custom_name = custom_name
     @custom_class = custom_class
+    @enabled_dates = enabled_dates
   end
+  # rubocop:enable Metrics/ParameterLists
 end
