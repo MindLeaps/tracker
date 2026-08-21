@@ -74,10 +74,6 @@ class Group < ApplicationRecord
     end
   end
 
-  def active_students
-    students.where(deleted_at: nil, enrollments: { inactive_since: nil, active_since: ..Time.zone.today })
-  end
-
   def assign_tags_to_active_students(tags)
     count = 0
     active_students.find_each do |student|
@@ -100,5 +96,29 @@ class Group < ApplicationRecord
                 )
               SQL
             )
+  end
+
+  def active_students(as_of: Time.zone.today)
+    Student
+      .joins(:enrollments)
+      .merge(enrollments.active(as_of))
+      .where(enrollments: { group_id: id }, students: { deleted_at: nil })
+      .distinct
+  end
+
+  def valid_grades
+    Grade.joins(:lesson)
+         .where(deleted_at: nil, lessons: { group_id: id, deleted_at: nil })
+         .where(
+           <<~SQL.squish
+             EXISTS (
+               SELECT 1
+               FROM enrollments e
+               WHERE e.student_id = grades.student_id
+                 AND e.group_id = lessons.group_id
+                 AND lessons.date BETWEEN e.active_since AND COALESCE(e.inactive_since, 'infinity')
+             )
+           SQL
+         )
   end
 end

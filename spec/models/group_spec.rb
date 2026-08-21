@@ -118,22 +118,6 @@ RSpec.describe Group, type: :model do
       end
     end
 
-    describe '#active_students' do
-      before :each do
-        @group = create :group
-        @active_student = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
-        @formerly_enrolled_student = create :student, organization: @group.chapter.organization
-        create :enrollment, group: @group, student: @formerly_enrolled_student, active_since: 1.year.ago, inactive_since: 1.month.ago
-        @not_yet_active_student = create :student, organization: @group.chapter.organization
-        create :enrollment, group: @group, student: @not_yet_active_student, active_since: 1.month.from_now.to_date
-        @deleted_student = create :enrolled_student, organization: @group.chapter.organization, groups: [@group], deleted_at: Time.zone.now
-      end
-
-      it 'returns only non-deleted students with an open enrollment that has already started' do
-        expect(@group.active_students).to contain_exactly @active_student
-      end
-    end
-
     describe '#assign_tags_to_active_students' do
       before :each do
         @group = create :group
@@ -185,6 +169,35 @@ RSpec.describe Group, type: :model do
 
         expect(result).to include @students[0], @students[1], @students[2], @students[3]
         expect(result).not_to include @students[4]
+      end
+    end
+
+    describe '#active_students' do
+      before :each do
+        @group = create :group
+        @currently_enrolled = create :student, organization: @group.chapter.organization
+        create :enrollment, group: @group, student: @currently_enrolled, active_since: 1.week.ago
+
+        @already_left = create :student, organization: @group.chapter.organization
+        create :enrollment, group: @group, student: @already_left, active_since: 1.year.ago.to_date, inactive_since: 1.month.ago.to_date
+
+        @not_yet_started = create :student, organization: @group.chapter.organization
+        create :enrollment, group: @group, student: @not_yet_started, active_since: 1.month.from_now.to_date
+
+        @deleted_student = create :student, organization: @group.chapter.organization, deleted_at: Time.zone.now
+        create :enrollment, group: @group, student: @deleted_student, active_since: 1.week.ago
+      end
+
+      it 'returns only students with an open enrollment covering the given date who are not deleted' do
+        result = @group.active_students
+
+        expect(result).to contain_exactly @currently_enrolled
+      end
+
+      it 'accepts an as_of date to check enrollment at a different point in time' do
+        result = @group.active_students(as_of: 6.months.ago)
+
+        expect(result).to contain_exactly @already_left
       end
     end
   end

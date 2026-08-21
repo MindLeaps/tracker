@@ -234,7 +234,7 @@ en:
   student_grades: Student Grades
   student_graded: Student graded.
   student_graded_text: Student %{student} graded.
-  student_not_graded: Not Graded
+  not_graded: Not Graded
   add_grade: Add Grade
   graded_vs_students_in_group: Graded / Students in Group
   back_to_subjects: Back to All Subjects
@@ -401,6 +401,9 @@ en:
 
   groups_with_lessons: Groups with Lessons
   performance_change: Performance change
+  lesson_activity: Lesson Activity
+  showing_data_for_last_lessons: Showing data for last lessons
+  no_lessons_data_exists: No lessons data exists
   nr_of_lessons: Nr. of Lessons
   nr_of_assessments: Nr. of Assessments
   nr_of_graded_students: Nr. of Graded students
@@ -415,6 +418,7 @@ en:
   nr_of_users_with_role: Number of users with a role within the Organization
   nr_of_lessons_present: Number of lessons present
   total_average_score: Total average score
+  current_average_score_for_group: Current average score for group
   most_improved_skill: Most improved skill
   least_improved_skill: Least improved skill
   overview: Overview
