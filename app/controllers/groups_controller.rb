@@ -108,6 +108,26 @@ class GroupsController < HtmlController
     redirect_to group_path(@group)
   end
 
+  def assign_tags
+    @group = Group.find params.require :id
+    authorize @group
+
+    @permitted_tags = tags_for_organization(@group.chapter.organization_id)
+    @active_student_count = @group.active_students.count
+    respond_to(&:turbo_stream)
+  end
+
+  def confirm_tag_assignment
+    @group = Group.find params.require :id
+    authorize @group
+
+    tags = tags_for_organization(@group.chapter.organization_id).where(id: params[:tag_ids] || [])
+    count = @group.assign_tags_to_active_students(tags)
+
+    success(title: t(:tags_assigned), text: t(:tags_assigned_to_group_text, count: count, group: @group.group_name))
+    redirect_to group_path(@group)
+  end
+
   private
 
   def populate_skill_growth
@@ -141,6 +161,10 @@ class GroupsController < HtmlController
 
   def group_params
     params.require(:group).permit :group_name, :mlid, :chapter_id
+  end
+
+  def tags_for_organization(organization_id)
+    TagPolicy::Scope.new(current_user, Tag).resolve_for_organization_id(organization_id)
   end
 
   def populate_new_group

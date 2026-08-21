@@ -56,6 +56,12 @@ en:
   student_deleted_at: Student deleted %{time} ago
   students_enrolled: Students enrolled
   students_enrolled_in_group_text: Successfully enrolled %{count} students in group "%{group}".
+  assign_tags_to_students: Assign Tags to Students
+  assign_tags_to_group_explanation: "Applies the selected tags once to the %{count} student(s) currently active in this group."
+  assign: Assign
+  tags_assigned: Tags assigned
+  tags_assigned_to_group_text: Successfully assigned tags to %{count} students in group "%{group}".
+  no_active_students_to_tag: No active students to tag in this group
   students_graded_outside_enrollment: Students graded outside enrollment
   students_graded_outside_enrollment_alert: Some students have grades outside their enrollment, please review them below
   graded_before_enrollment_text: Student graded before enrollment. Enrolled since "%{enrollment_date}" but has grades for "%{grade_date}"

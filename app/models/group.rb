@@ -74,6 +74,15 @@ class Group < ApplicationRecord
     end
   end
 
+  def assign_tags_to_active_students(tags)
+    count = 0
+    active_students.find_each do |student|
+      tags.each { |tag| student.student_tags.find_or_create_by(tag: tag) }
+      count += 1
+    end
+    count
+  end
+
   def students_with_grades_outside_enrollment
     students.joins(grades: :lesson).where(grades: { deleted_at: nil }, lessons: { group_id: id })
             .where.not(

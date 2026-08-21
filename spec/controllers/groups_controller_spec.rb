@@ -289,7 +289,7 @@ RSpec.describe GroupsController, type: :controller do
 
     describe '#enroll_students' do
       before :each do
-        get :enroll_students, format: :turbo_stream,  params: { id: @group.id }
+        get :enroll_students, format: :turbo_stream, params: { id: @group.id }
       end
 
       it { should respond_with 200 }
@@ -312,6 +312,51 @@ RSpec.describe GroupsController, type: :controller do
         expect(@group.students.count).to eq 1
         expect(student.enrollments.count).to eq 1
         expect(student.enrollments.first.active_since).to eq 5.days.ago.to_date
+      end
+    end
+  end
+
+  describe 'tag assignment' do
+    before :each do
+      @group = create :group
+      @organization = @group.chapter.organization
+    end
+
+    describe '#assign_tags' do
+      before :each do
+        get :assign_tags, format: :turbo_stream, params: { id: @group.id }
+      end
+
+      it { should respond_with 200 }
+      it { should render_template :assign_tags }
+    end
+
+    describe '#confirm_tag_assignment' do
+      before :each do
+        @own_tag = create :tag, organization: @organization, shared: false
+        @shared_tag = create :tag, organization: create(:organization), shared: true
+        @foreign_tag = create :tag, organization: create(:organization), shared: false
+
+        @active_student = create :enrolled_student, organization: @organization, groups: [@group], tags: []
+        @inactive_student = create :student, organization: @organization, tags: []
+        create :enrollment, group: @group, student: @inactive_student, active_since: 1.year.ago, inactive_since: 1.month.ago
+
+        post :confirm_tag_assignment, params: { id: @group.id, tag_ids: [@own_tag.id, @shared_tag.id, @foreign_tag.id] }
+      end
+
+      it { should redirect_to group_path(@group) }
+      it { should set_flash[:success_notice] }
+
+      it 'assigns permitted tags to every active student in the group' do
+        expect(@active_student.reload.tags).to include @own_tag, @shared_tag
+      end
+
+      it 'excludes a tag from a different, non-shared organization' do
+        expect(@active_student.reload.tags).not_to include @foreign_tag
+      end
+
+      it 'does not affect students who are not currently active in the group' do
+        expect(@inactive_student.reload.tags).to be_empty
       end
     end
   end

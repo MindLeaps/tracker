@@ -118,6 +118,38 @@ RSpec.describe Group, type: :model do
       end
     end
 
+    describe '#assign_tags_to_active_students' do
+      before :each do
+        @group = create :group
+        @tag_to_assign = create :tag, organization: @group.chapter.organization
+        @already_present_tag = create :tag, organization: @group.chapter.organization
+
+        @active_student = create :enrolled_student, organization: @group.chapter.organization, groups: [@group], tags: []
+        create :student_tag, student: @active_student, tag: @already_present_tag
+
+        @inactive_student = create :student, organization: @group.chapter.organization, tags: []
+        create :enrollment, group: @group, student: @inactive_student, active_since: 1.year.ago, inactive_since: 1.month.ago
+
+        @count = @group.assign_tags_to_active_students(Tag.where(id: [@tag_to_assign.id, @already_present_tag.id]))
+      end
+
+      it 'applies the given tags to every active student in the group' do
+        expect(@active_student.reload.tags).to include @tag_to_assign, @already_present_tag
+      end
+
+      it 'does not duplicate a tag the student already has' do
+        expect(@active_student.reload.student_tags.where(tag: @already_present_tag).count).to eq 1
+      end
+
+      it 'does not affect students who are not currently active in the group' do
+        expect(@inactive_student.reload.tags).to be_empty
+      end
+
+      it 'returns the number of students the tags were applied to' do
+        expect(@count).to eq 1
+      end
+    end
+
     describe '#students_with_grades_outside_enrollment' do
       before :each do
         @group = create :group

@@ -64,6 +64,8 @@ Rails.application.routes.draw do
     member { post :undelete }
     member { get :enroll_students }
     member { post :confirm_enrollments }
+    member { get :assign_tags }
+    member { post :confirm_tag_assignment }
 
     resources :students, controller: :group_students, only: %i[new create edit update] do
       member { post :cancel_edit }
