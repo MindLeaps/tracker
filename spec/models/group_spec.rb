@@ -22,11 +22,6 @@
 require 'rails_helper'
 
 RSpec.describe Group, type: :model do
-  describe 'relationships' do
-    it { should have_many :group_tags }
-    it { should have_many :tags }
-  end
-
   describe 'validations' do
     it { should validate_presence_of :group_name }
     it { should validate_presence_of :mlid }
@@ -139,42 +134,35 @@ RSpec.describe Group, type: :model do
       end
     end
 
-    describe '#sync_tags_to_active_students' do
+    describe '#assign_tags_to_active_students' do
       before :each do
         @group = create :group
-        @kept_tag = create :tag, organization: @group.chapter.organization
-        @removed_tag = create :tag, organization: @group.chapter.organization
-        @added_tag = create :tag, organization: @group.chapter.organization
+        @tag_to_assign = create :tag, organization: @group.chapter.organization
+        @already_present_tag = create :tag, organization: @group.chapter.organization
 
         @active_student = create :enrolled_student, organization: @group.chapter.organization, groups: [@group], tags: []
+        create :student_tag, student: @active_student, tag: @already_present_tag
+
         @inactive_student = create :student, organization: @group.chapter.organization, tags: []
         create :enrollment, group: @group, student: @inactive_student, active_since: 1.year.ago, inactive_since: 1.month.ago
 
-        create :student_tag, student: @active_student, tag: @kept_tag
-        create :student_tag, student: @active_student, tag: @removed_tag
-        create :student_tag, student: @inactive_student, tag: @removed_tag
-
-        previous_tag_ids = [@kept_tag.id, @removed_tag.id]
-        @group.tag_ids = [@kept_tag.id, @added_tag.id]
-        @group.save!
-
-        @group.sync_tags_to_active_students(previous_tag_ids)
+        @count = @group.assign_tags_to_active_students(Tag.where(id: [@tag_to_assign.id, @already_present_tag.id]))
       end
 
-      it 'adds newly added group tags to active students' do
-        expect(@active_student.reload.tags).to include @added_tag
+      it 'applies the given tags to every active student in the group' do
+        expect(@active_student.reload.tags).to include @tag_to_assign, @already_present_tag
       end
 
-      it 'removes tags no longer on the group from active students' do
-        expect(@active_student.reload.tags).not_to include @removed_tag
-      end
-
-      it 'leaves tags that remain on the group untouched' do
-        expect(@active_student.reload.tags).to include @kept_tag
+      it 'does not duplicate a tag the student already has' do
+        expect(@active_student.reload.student_tags.where(tag: @already_present_tag).count).to eq 1
       end
 
       it 'does not affect students who are not currently active in the group' do
-        expect(@inactive_student.reload.tags).to include @removed_tag
+        expect(@inactive_student.reload.tags).to be_empty
+      end
+
+      it 'returns the number of students the tags were applied to' do
+        expect(@count).to eq 1
       end
     end
 

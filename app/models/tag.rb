@@ -16,8 +16,6 @@
 class Tag < ApplicationRecord
   has_many :student_tags, dependent: :destroy
   has_many :students, through: :student_tags
-  has_many :group_tags, dependent: :destroy
-  has_many :groups, through: :group_tags
   belongs_to :organization
 
   validates :tag_name, presence: true
@@ -29,6 +27,6 @@ class Tag < ApplicationRecord
   }
 
   def can_delete?
-    students.none? && groups.none?
+    students.none?
   end
 end

@@ -33,8 +33,6 @@ class Group < ApplicationRecord
   has_many :enrollments, dependent: :restrict_with_error
   has_many :students, through: :enrollments
   has_many :lessons, dependent: :restrict_with_error
-  has_many :group_tags, dependent: :destroy
-  has_many :tags, through: :group_tags
 
   delegate :chapter_name, to: :chapter, allow_nil: true
 
@@ -80,14 +78,13 @@ class Group < ApplicationRecord
     students.where(deleted_at: nil, enrollments: { inactive_since: nil, active_since: ..Time.zone.today })
   end
 
-  def sync_tags_to_active_students(previous_tag_ids)
-    added_tags = Tag.where(id: tag_ids - previous_tag_ids)
-    removed_tags = Tag.where(id: previous_tag_ids - tag_ids)
-
+  def assign_tags_to_active_students(tags)
+    count = 0
     active_students.find_each do |student|
-      added_tags.each { |tag| student.student_tags.find_or_create_by(tag: tag) }
-      removed_tags.each { |tag| student.student_tags.where(tag: tag).delete_all }
+      tags.each { |tag| student.student_tags.find_or_create_by(tag: tag) }
+      count += 1
     end
+    count
   end
 
   def students_with_grades_outside_enrollment

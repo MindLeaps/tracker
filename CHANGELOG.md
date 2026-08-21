@@ -1,6 +1,6 @@
 ## Unreleased
 
-- Added ability to assign tags to a whole group
+- Added ability to assign tags to all active students in a group at once
 - Added stat cards to the student view
 - Added stat cards to organization view
 - Added a clear icon to search input and removed dead student performance view

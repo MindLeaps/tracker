@@ -4,6 +4,11 @@ class GroupEnrolledStudentsComponent < ViewComponent::Base
   erb_template <<~ERB
     <%= render CommonComponents::Card.new(title: t(:students_in_group).capitalize) do |card| %>
       <% card.with_card_content do %>
+        <% if @group.students.any? && helpers.policy(@group).update? %>
+          <div class="p-2 flex justify-end bg-white border-b border-gray-200">
+            <%= render CommonComponents::ButtonComponent.new(label: t(:assign_tags_to_students), href: assign_tags_group_path(@group), options: { data: { turbo_stream: true } }) %>
+          </div>
+        <% end %>
         <%= render StudentTableForm.new(student: @new_student, group: @group, is_edit: false) if helpers.policy(@new_student).create? %>
         <% if @group.students.any? %>
           <%= render TableComponents::Table.new(pagy: @pagy, options: { no_pagination: true, turbo_id: 'students' }, rows: @students, row_component: TableComponents::StudentTurboRow,

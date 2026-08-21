@@ -1,5 +1,5 @@
 class GroupFormComponent < ViewComponent::Base
-  attr_reader :org_chapters, :permitted_tags
+  attr_reader :org_chapters
 
   class OrganizationChapters
     attr_reader :chapters, :org_display
@@ -15,7 +15,6 @@ class GroupFormComponent < ViewComponent::Base
     @action = action
     permitted_chapters = ChapterPolicy::Scope.new(current_user, Chapter.includes(:organization)).resolve
     @org_chapters = structure_chapters(permitted_chapters)
-    @permitted_tags = tags_for_group(current_user, group)
     @cancel = cancel
   end
 
@@ -23,11 +22,5 @@ class GroupFormComponent < ViewComponent::Base
     permitted_chapters.map(&:organization).uniq.sort_by(&:organization_name).map do |org|
       OrganizationChapters.new(org, permitted_chapters)
     end
-  end
-
-  def tags_for_group(current_user, group)
-    scope = TagPolicy::Scope.new(current_user, Tag)
-    tags = group.chapter ? scope.resolve_for_organization_id(group.chapter.organization_id) : scope.resolve
-    tags.order(:tag_name)
   end
 end

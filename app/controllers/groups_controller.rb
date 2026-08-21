@@ -41,7 +41,6 @@ class GroupsController < HtmlController
 
   def create
     @group = Group.new group_params
-    @group.tag_ids = permitted_tag_ids(@group)
     if @group.valid? && @group.save
       authorize @group
       success(title: t(:group_added), text: t(:group_with_name_added, group: @group.group_name))
@@ -53,11 +52,8 @@ class GroupsController < HtmlController
 
   def update
     @group = Group.find params.require :id
-    @group.assign_attributes group_params
-    previous_tag_ids = assign_tag_ids(@group)
-    if @group.valid? && @group.save
+    if @group.valid? && @group.update(group_params)
       authorize @group
-      @group.sync_tags_to_active_students(previous_tag_ids)
       success title: t(:group_updated), text: t(:group_name_updated, group: @group.group_name)
       return redirect_to(flash[:redirect] || group_path(@group))
     end
@@ -110,23 +106,34 @@ class GroupsController < HtmlController
     redirect_to group_path(@group)
   end
 
+  def assign_tags
+    @group = Group.find params.require :id
+    authorize @group
+
+    @permitted_tags = tags_for_organization(@group.chapter.organization_id)
+    @active_student_count = @group.active_students.count
+    respond_to(&:turbo_stream)
+  end
+
+  def confirm_tag_assignment
+    @group = Group.find params.require :id
+    authorize @group
+
+    tags = tags_for_organization(@group.chapter.organization_id).where(id: params[:tag_ids] || [])
+    count = @group.assign_tags_to_active_students(tags)
+
+    success(title: t(:tags_assigned), text: t(:tags_assigned_to_group_text, count: count, group: @group.group_name))
+    redirect_to group_path(@group)
+  end
+
   private
 
   def group_params
     params.require(:group).permit :group_name, :mlid, :chapter_id
   end
 
-  def assign_tag_ids(group)
-    previous_tag_ids = group.tag_ids
-    group.tag_ids = permitted_tag_ids(group)
-    previous_tag_ids
-  end
-
-  def permitted_tag_ids(group)
-    return [] unless group.chapter
-
-    requested_ids = params.dig(:group, :tag_ids) || []
-    TagPolicy::Scope.new(current_user, Tag).resolve_for_organization_id(group.chapter.organization_id).where(id: requested_ids).ids
+  def tags_for_organization(organization_id)
+    TagPolicy::Scope.new(current_user, Tag).resolve_for_organization_id(organization_id)
   end
 
   def populate_new_group

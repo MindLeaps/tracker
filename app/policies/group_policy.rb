@@ -23,6 +23,14 @@ class GroupPolicy < ApplicationPolicy
     enroll_students?
   end
 
+  def assign_tags?
+    update?
+  end
+
+  def confirm_tag_assignment?
+    assign_tags?
+  end
+
   class Scope
     attr_reader :user, :scope
 

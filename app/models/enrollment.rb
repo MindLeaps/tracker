@@ -29,8 +29,6 @@ class Enrollment < ApplicationRecord
   scope :by_student, ->(student_id) { where student_id: }
   scope :by_group, ->(group_id) { where group_id: }
 
-  after_create :apply_group_tags_to_student, if: -> { open? && active_since <= Time.zone.today }
-
   validates :active_since, presence: true
   validates :inactive_since, comparison: { greater_than: :active_since, message: I18n.t(:enrollment_end_before_start) }, allow_nil: true
   validates :student, uniqueness: { scope: [:group_id, :inactive_since], message: I18n.t(:enrollment_duplicate), if: :open? }
@@ -99,10 +97,6 @@ class Enrollment < ApplicationRecord
   end
 
   private
-
-  def apply_group_tags_to_student
-    group.tags.each { |tag| student.student_tags.find_or_create_by(tag: tag) }
-  end
 
   # rubocop:disable Metrics/AbcSize
   def overlapping_enrollment?
