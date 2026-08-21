@@ -73,7 +73,11 @@ Rails.application.routes.draw do
   resources :students, only: %i[index new create show edit update destroy] do
     member { post :undelete }
 
-    collection { get '/mlid/:organization_id', to: 'students#mlid' }
+    collection do
+      get '/mlid/:organization_id', to: 'students#mlid'
+      get :bulk_tag_assignment
+      post :confirm_bulk_tag_assignment
+    end
 
     resources :student_images, only: %i[create destroy]
   end

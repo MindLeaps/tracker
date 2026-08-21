@@ -440,6 +440,14 @@ en:
   tag_deleted_text: Tag "%{tag_name}" deleted.
   unable_to_delete_tag: Unable to delete tag
   tag_not_deleted_because_students: Tag not deleted because it has students associated with it. Remove it from the students before deleting.
+  assign_tags: Assign Tags
+  back_to_students: Back to Students
+  select_tags: Select Tags
+  assign: Assign
+  tags_assigned: Tags Assigned
+  tags_assigned_text: Successfully assigned tags "%{tags}" to %{count} students.
+  no_tags_selected: No Tags Selected
+  select_at_least_one_tag: Please select at least one tag to assign.
 
   lesson_date: Lesson Date
   grades_per_skill: Grades Per Skill

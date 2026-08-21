@@ -3,12 +3,12 @@ class StudentsController < HtmlController
   include Pagy::Method
   include CollectionHelper
 
-  has_scope :exclude_deleted, only: :index, type: :boolean, default: true
+  has_scope :exclude_deleted, only: [:index, :bulk_tag_assignment], type: :boolean, default: true
   has_scope :table_order, only: [:index], type: :hash, default: { key: :created_at, order: :desc }
   has_scope :student_lesson_order, only: [:show], type: :hash, default: { key: :date, order: :desc } do |_controller, scope, value|
     scope.table_order value
   end
-  has_scope :search, only: :index
+  has_scope :search, only: [:index, :bulk_tag_assignment]
 
   # rubocop:disable Metrics/AbcSize
   def index
@@ -123,7 +123,67 @@ class StudentsController < HtmlController
     redirect_to student_path
   end
 
+  def bulk_tag_assignment
+    authorize Student, :new?
+    @pagy, students = pagy apply_scopes(policy_scope(Student.includes(:tags)))
+    @students = students.to_a
+    @tags = TagPolicy::Scope.new(current_user, Tag).resolve.order(:tag_name)
+  end
+
+  def confirm_bulk_tag_assignment
+    authorize Student, :new?
+    tags = TagPolicy::Scope.new(current_user, Tag).resolve.where(id: Array(params[:tag_ids]).compact_blank).to_a
+
+    if tags.empty?
+      failure title: t(:no_tags_selected), text: t(:select_at_least_one_tag)
+      return redirect_to students_path
+    end
+
+    student_count = perform_bulk_tag_assignment(tags)
+
+    success title: t(:tags_assigned), text: t(:tags_assigned_text, count: student_count, tags: tags.map(&:tag_name).join(', '))
+    redirect_to students_path
+  end
+
   private
+
+  def perform_bulk_tag_assignment(tags)
+    student_ids = policy_scope(Student).where(id: selected_student_ids).pluck(:id)
+    assign_tags_to_students(student_ids, tags.map(&:id))
+    student_ids.size
+  end
+
+  def selected_student_ids
+    params.require(:students).filter_map { |s| s[:id] if s[:to_tag] }
+  end
+
+  # Bulk-inserts the missing (student, tag) pairs in a single query instead of issuing a
+  # find_or_create_by per student per tag, which would otherwise be O(students * tags) queries.
+  def assign_tags_to_students(student_ids, tag_ids)
+    return if student_ids.empty? || tag_ids.empty?
+
+    ActiveRecord::Base.transaction do
+      rows = missing_student_tag_rows(student_ids, tag_ids)
+      next if rows.empty?
+
+      # rubocop:disable Rails/SkipsModelValidations
+      StudentTag.insert_all(rows)
+      # rubocop:enable Rails/SkipsModelValidations
+    end
+  end
+
+  def missing_student_tag_rows(student_ids, tag_ids)
+    existing_pairs = StudentTag.where(student_id: student_ids, tag_id: tag_ids).pluck(:student_id, :tag_id).to_set
+    now = Time.current
+
+    student_ids.flat_map do |student_id|
+      tag_ids.filter_map do |tag_id|
+        next if existing_pairs.include?([student_id, tag_id])
+
+        { student_id: student_id, tag_id: tag_id, created_at: now, updated_at: now }
+      end
+    end
+  end
 
   def lesson_summary(summary)
     { lesson_date: summary.lesson_date, average_mark: summary.average_mark, lesson_url: lesson_path(summary.lesson_id) }

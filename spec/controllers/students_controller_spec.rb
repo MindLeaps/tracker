@@ -332,5 +332,67 @@ RSpec.describe StudentsController, type: :controller do
         expect(@student.reload.deleted_at).to be_nil
       end
     end
+
+    describe 'bulk tag assignment' do
+      before :each do
+        @tag = create :tag, organization: organization
+        @students = create_list :student, 2, organization: organization
+        @other_student = create :student, organization: organization
+      end
+
+      describe '#bulk_tag_assignment' do
+        before :each do
+          get :bulk_tag_assignment
+        end
+
+        it { should respond_with 200 }
+        it { should render_template :bulk_tag_assignment }
+      end
+
+      describe '#confirm_bulk_tag_assignment' do
+        before :each do
+          first_student = { id: @students[0].id, to_tag: true }
+          second_student = { id: @students[1].id, to_tag: true }
+          third_student = { id: @other_student.id }
+          post :confirm_bulk_tag_assignment, params: { tag_ids: [@tag.id], students: [first_student, second_student, third_student] }
+        end
+
+        it { should redirect_to students_path }
+        it { should set_flash[:success_notice] }
+
+        it 'assigns the tag to checked students only' do
+          expect(@students[0].reload.tags).to include @tag
+          expect(@students[1].reload.tags).to include @tag
+          expect(@other_student.reload.tags).not_to include @tag
+        end
+
+        it 'does not duplicate an existing tag assignment' do
+          post :confirm_bulk_tag_assignment, params: { tag_ids: [@tag.id], students: [{ id: @students[0].id, to_tag: true }] }
+
+          expect(@students[0].reload.student_tags.where(tag: @tag).count).to eq 1
+        end
+
+        it 'assigns multiple tags to multiple students in a single request' do
+          other_tag = create :tag, organization: organization
+          post :confirm_bulk_tag_assignment, params: { tag_ids: [@tag.id, other_tag.id], students: [{ id: @students[0].id, to_tag: true }, { id: @students[1].id, to_tag: true }] }
+
+          expect(@students[0].reload.tags).to include(@tag, other_tag)
+          expect(@students[1].reload.tags).to include(@tag, other_tag)
+        end
+      end
+
+      describe '#confirm_bulk_tag_assignment when no tags are selected' do
+        before :each do
+          post :confirm_bulk_tag_assignment, params: { tag_ids: [], students: [{ id: @other_student.id, to_tag: true }] }
+        end
+
+        it { should redirect_to students_path }
+        it { should set_flash[:failure_notice] }
+
+        it 'does not assign the tag' do
+          expect(@other_student.reload.tags).not_to include @tag
+        end
+      end
+    end
   end
 end

@@ -4,7 +4,8 @@
   {title: CommonComponents::TagLabel.new(label: t(:students).capitalize, img_src: 'student.svg'), href: '' },
   {title: CommonComponents::TagLabel.new(label: t(:student_tags), img_src: 'tag.svg'), href: student_tags_url }
 ], buttons: [
-  (CommonComponents::ButtonComponent.new(label: t(:add_student), href: new_student_path) if policy(Student).new?)
+  (CommonComponents::ButtonComponent.new(label: t(:add_student), href: new_student_path) if policy(Student).new?),
+  (CommonComponents::ButtonComponent.new(label: t(:assign_tags), href: bulk_tag_assignment_students_path(search: params[:search])) if policy(Student).new?)
 ].compact) %>
 
 <%= render TableComponents::Table.new(pagy: @pagy, rows: @student_rows, row_component: TableComponents::StudentRow, options: { empty_message: t(:no_students_found) }) do |t|
