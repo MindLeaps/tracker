@@ -120,8 +120,13 @@ class GroupsController < HtmlController
   def confirm_tag_assignment
     @group = Group.find params.require :id
     authorize @group
+    tags = selected_tags(@group)
 
-    tags = tags_for_organization(@group.chapter.organization_id).where(id: params[:tag_ids] || [])
+    if tags.none?
+      failure title: t(:no_tags_selected), text: t(:select_at_least_one_tag)
+      return redirect_to group_path(@group)
+    end
+
     count = @group.assign_tags_to_active_students(tags)
 
     success(title: t(:tags_assigned), text: t(:tags_assigned_to_group_text, count: count, group: @group.group_name))
@@ -165,6 +170,10 @@ class GroupsController < HtmlController
 
   def tags_for_organization(organization_id)
     TagPolicy::Scope.new(current_user, Tag).resolve_for_organization_id(organization_id)
+  end
+
+  def selected_tags(group)
+    tags_for_organization(group.chapter.organization_id).where(id: Array(params[:tag_ids]).compact_blank)
   end
 
   def populate_new_group

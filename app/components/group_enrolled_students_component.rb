@@ -4,8 +4,8 @@ class GroupEnrolledStudentsComponent < ViewComponent::Base
   erb_template <<~ERB
     <%= render CommonComponents::Card.new(title: t(:students_in_group).capitalize) do |card| %>
       <% card.with_card_content do %>
-        <% if @group.students.any? && helpers.policy(@group).update? %>
-          <div class="p-2 flex justify-end bg-white border-b border-gray-200">
+        <% if @group.active_students.any? && helpers.policy(@group).update? %>
+          <div class="p-2 flex justify-end border-b border-gray-200">
             <%= render CommonComponents::ButtonComponent.new(label: t(:assign_tags_to_students), href: assign_tags_group_path(@group), options: { data: { turbo_stream: true } }) %>
           </div>
         <% end %>

@@ -359,5 +359,20 @@ RSpec.describe GroupsController, type: :controller do
         expect(@inactive_student.reload.tags).to be_empty
       end
     end
+
+    describe '#confirm_tag_assignment when no tags are selected' do
+      before :each do
+        @active_student = create :enrolled_student, organization: @organization, groups: [@group], tags: []
+
+        post :confirm_tag_assignment, params: { id: @group.id, tag_ids: [] }
+      end
+
+      it { should redirect_to group_path(@group) }
+      it { should set_flash[:failure_notice] }
+
+      it 'does not assign any tags' do
+        expect(@active_student.reload.tags).to be_empty
+      end
+    end
   end
 end

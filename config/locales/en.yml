@@ -61,7 +61,8 @@ en:
   assign: Assign
   tags_assigned: Tags assigned
   tags_assigned_to_group_text: Successfully assigned tags to %{count} students in group "%{group}".
-  no_active_students_to_tag: No active students to tag in this group
+  no_tags_selected: No tags selected
+  select_at_least_one_tag: Please select at least one tag to assign.
   students_graded_outside_enrollment: Students graded outside enrollment
   students_graded_outside_enrollment_alert: Some students have grades outside their enrollment, please review them below
   graded_before_enrollment_text: Student graded before enrollment. Enrolled since "%{enrollment_date}" but has grades for "%{grade_date}"
