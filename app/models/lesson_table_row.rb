@@ -25,21 +25,26 @@ class LessonTableRow < ApplicationRecord
 
   def self.build_for(lessons)
     lesson_ids = lessons.map(&:id)
-    stats_by_lesson_id = StudentLessonSummary
-                         .where(lesson_id: lesson_ids, deleted_at: nil)
-                         .group(:lesson_id)
-                         .pluck(
-                           :lesson_id,
-                           Arel.sql('COUNT(*)'),
-                           Arel.sql('COUNT(*) FILTER (WHERE grade_count > 0)'),
-                           Arel.sql('ROUND(AVG(average_mark)::numeric, 2)')
-                         ).to_h { |lesson_id, group_count, graded_count, avg_mark| [lesson_id, [group_count, graded_count, avg_mark]] }
+    stats_by_lesson_id = statistics_for(lesson_ids)
 
     lessons.map do |lesson|
-      group_student_count, graded_student_count, average_mark = stats_by_lesson_id[lesson.id] || [0, 0, nil]
+      build_row(lesson, stats_by_lesson_id[lesson.id] || [0, 0, nil])
+    end
+  end
 
-      new(
-        id: lesson.id,
+  def self.statistics_for(lesson_ids)
+    return {} if lesson_ids.empty?
+
+    sql = sanitize_sql_array([Sql.lesson_table_row_statistics, { lesson_ids: }])
+
+    connection.select_rows(sql).to_h do |lesson_id, group_count, graded_count, average_mark|
+      [lesson_id, [group_count, graded_count, average_mark]]
+    end
+  end
+
+  def self.build_row(lesson, statistics)
+    group_student_count, graded_student_count, average_mark = statistics
+    new(id: lesson.id,
         date: lesson.date,
         group_id: lesson.group_id,
         group_name: lesson.group.group_name,
@@ -47,8 +52,9 @@ class LessonTableRow < ApplicationRecord
         subject_name: lesson.subject.subject_name,
         group_student_count:,
         graded_student_count:,
-        average_mark:
-      )
-    end
+        average_mark:)
   end
+
+  private_class_method :statistics_for
+  private_class_method :build_row
 end

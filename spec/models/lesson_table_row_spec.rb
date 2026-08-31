@@ -19,6 +19,8 @@ RSpec.describe LessonTableRow, type: :model do
       @second_grade = create :grade, student: @first_student, lesson: @lesson, skill: @second_skill, mark: 5
       @third_grade = create :grade, student: @second_student, lesson: @lesson, skill: @first_skill, mark: 1
 
+      create :grade, student: @second_student, lesson: @lesson, skill: @second_skill, mark: 5, deleted_at: Time.zone.now
+
       # A grade for the deleted student, to prove it's excluded from every aggregate below.
       create :grade, student: @deleted_student, lesson: @lesson, skill: @first_skill, mark: 5
     end
@@ -80,7 +82,7 @@ RSpec.describe LessonTableRow, type: :model do
 
       queries = []
       subscriber = ActiveSupport::Notifications.subscribe('sql.active_record') do |*, payload|
-        queries << payload[:sql] if payload[:sql].include?('student_lesson_summaries')
+        queries << payload[:sql] if payload[:sql].include?('WITH selected_lessons AS')
       end
 
       LessonTableRow.build_for([@lesson] + other_lessons)

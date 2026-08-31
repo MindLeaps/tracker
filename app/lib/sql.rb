@@ -1,4 +1,39 @@
 class Sql
+  def self.lesson_table_row_statistics
+    <<~SQL.squish
+      WITH selected_lessons AS (
+        SELECT id, group_id, date
+        FROM lessons
+        WHERE id IN (:lesson_ids)
+      ),
+      grade_stats AS (
+        SELECT grades.lesson_id,
+               grades.student_id,
+               ROUND(AVG(grades.mark), 2) AS average_mark
+        FROM grades
+        JOIN selected_lessons ON selected_lessons.id = grades.lesson_id
+        WHERE grades.deleted_at IS NULL
+        GROUP BY grades.lesson_id, grades.student_id
+      )
+      SELECT selected_lessons.id AS lesson_id,
+             COUNT(students.id) AS group_student_count,
+             COUNT(grade_stats.student_id) AS graded_student_count,
+             ROUND(AVG(grade_stats.average_mark)::numeric, 2) AS average_mark
+      FROM selected_lessons
+      JOIN enrollments
+        ON enrollments.group_id = selected_lessons.group_id
+       AND enrollments.active_since <= selected_lessons.date
+       AND (enrollments.inactive_since IS NULL OR enrollments.inactive_since >= selected_lessons.date)
+      JOIN students
+        ON students.id = enrollments.student_id
+       AND students.deleted_at IS NULL
+      LEFT JOIN grade_stats
+        ON grade_stats.lesson_id = selected_lessons.id
+       AND grade_stats.student_id = students.id
+      GROUP BY selected_lessons.id
+    SQL
+  end
+
   def self.performance_per_skill_in_lessons_per_student_query_with_dates(student_ids)
     <<~SQL.squish
       select
