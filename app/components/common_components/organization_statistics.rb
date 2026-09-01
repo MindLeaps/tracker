@@ -2,7 +2,7 @@ class CommonComponents::OrganizationStatistics < ViewComponent::Base
   include ApplicationHelper
   include CollectionHelper
 
-  # rubocop:disable Metrics/ParameterLists
+  # rubocop:disable-next Metrics/ParameterLists
   def initialize(lesson_summaries, number_of_lessons:, total_data_points:, selected_date:, available_lesson_dates: [], used_default_date: false)
     @lesson_summaries = lesson_summaries
     @number_of_lessons = number_of_lessons
@@ -11,7 +11,6 @@ class CommonComponents::OrganizationStatistics < ViewComponent::Base
     @available_lesson_dates = available_lesson_dates
     @used_default_date = used_default_date
   end
-  # rubocop:enable Metrics/ParameterLists
 
   erb_template <<~ERB
     <div>

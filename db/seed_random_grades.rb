@@ -2,9 +2,8 @@ def seed_group_random_grades(group, subject)
   current_date = 6.months.ago
 
   60.times do
-    # rubocop:disable Rails/Output
+    # rubocop:disable-next Rails/Output
     puts("Lesson: #{current_date} - Chapter: #{group.chapter.chapter_name} - Group: #{group.group_name}")
-    # rubocop:enable Rails/Output
     lesson = Lesson.create(subject:, date: current_date, group:)
 
     group.students.each do |student|

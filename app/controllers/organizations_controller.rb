@@ -1,4 +1,4 @@
-# rubocop:disable Metrics/ClassLength
+# rubocop:disable-next Metrics/ClassLength
 class OrganizationsController < HtmlController
   include Pagy::Method
 
@@ -90,7 +90,7 @@ class OrganizationsController < HtmlController
     end
   end
 
-  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable-next Metrics/MethodLength
   def confirm_import
     @organization = Organization.find params.require :id
     authorize @organization
@@ -109,7 +109,6 @@ class OrganizationsController < HtmlController
       render :import_students, status: :unprocessable_content
     end
   end
-  # rubocop:enable Metrics/MethodLength
 
   def initialize_organization(id)
     @pagy_chapters, @chapters = pagy apply_scopes(ChapterSummary.where(organization_id: id), chapter_order_scope)
@@ -216,4 +215,3 @@ class OrganizationsController < HtmlController
     render :show, status: :conflict
   end
 end
-# rubocop:enable Metrics/ClassLength
