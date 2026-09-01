@@ -22,7 +22,7 @@ class StudentReportsController < HtmlController
     ActiveRecord::Base.connection.exec_query(sql).to_a.map(&:symbolize_keys)
   end
 
-  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable-next Metrics/MethodLength
   def skill_average_summaries
     grouped = {}
 
@@ -47,7 +47,6 @@ class StudentReportsController < HtmlController
       }
     end
   end
-  # rubocop:enable Metrics/MethodLength
 
   def group_summaries
     groups_by_id = Group.where(id: @summaries.filter_map(&:group_id).uniq).index_by(&:id)

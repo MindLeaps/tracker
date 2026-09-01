@@ -1,4 +1,4 @@
-# rubocop:disable Metrics/ClassLength
+# rubocop:disable-next Metrics/ClassLength
 class StudentsController < HtmlController
   include Pagy::Method
   include CollectionHelper
@@ -10,7 +10,7 @@ class StudentsController < HtmlController
   end
   has_scope :search, only: :index
 
-  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable-next Metrics/AbcSize
   def index
     authorize Student
     respond_to do |format|
@@ -26,7 +26,6 @@ class StudentsController < HtmlController
       end
     end
   end
-  # rubocop:enable Metrics/AbcSize
 
   def show
     @student = Student.includes(:profile_image, :organization).find params.require(:id)
@@ -189,4 +188,3 @@ class StudentsController < HtmlController
     params.permit :group_id
   end
 end
-# rubocop:enable Metrics/ClassLength

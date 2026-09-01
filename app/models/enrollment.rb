@@ -99,12 +99,11 @@ class Enrollment < ApplicationRecord
 
   private
 
-  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable-next Metrics/AbcSize
   def overlapping_enrollment?
     Enrollment.excluding(self).exists?(student_id: student.id, group_id: group.id, active_since: active_since..inactive_since) ||
       Enrollment.excluding(self).exists?(student_id: student.id, group_id: group.id, inactive_since: active_since..inactive_since) ||
       (inactive_since.present? && Enrollment.excluding(self).exists?(student_id: student.id, group_id: group.id, active_since: ..active_since, inactive_since: inactive_since..)) ||
       Enrollment.excluding(self).exists?(student_id: student.id, group_id: group.id, active_since: ..active_since, inactive_since: nil)
   end
-  # rubocop:enable Metrics/AbcSize
 end

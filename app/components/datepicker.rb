@@ -15,7 +15,7 @@ class Datepicker < ViewComponent::Base
     </div>
   ERB
 
-  # rubocop:disable Metrics/ParameterLists
+  # rubocop:disable-next Metrics/ParameterLists
   def initialize(date:, target:, form: nil, custom_name: nil, custom_class: nil, enabled_dates: nil)
     @date = date
     @target = target
@@ -24,5 +24,4 @@ class Datepicker < ViewComponent::Base
     @custom_class = custom_class
     @enabled_dates = enabled_dates
   end
-  # rubocop:enable Metrics/ParameterLists
 end
