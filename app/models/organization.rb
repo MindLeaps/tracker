@@ -91,7 +91,7 @@ class Organization < ApplicationRecord
     # rubocop:enable Rails/SkipsModelValidations
   end
 
-  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable-next Metrics/MethodLength
   def create_and_assign_students?(students)
     errors = []
     ActiveRecord::Base.transaction do
@@ -112,7 +112,6 @@ class Organization < ApplicationRecord
 
     false
   end
-  # rubocop:enable Metrics/MethodLength
 
   def members
     OrganizationMember.where(organization_id: id)

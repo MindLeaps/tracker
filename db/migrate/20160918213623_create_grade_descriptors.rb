@@ -1,6 +1,6 @@
 class CreateGradeDescriptors < ActiveRecord::Migration[5.0]
   def change
-    # rubocop:disable Rails/CreateTableWithTimestamps
+    # rubocop:disable-next Rails/CreateTableWithTimestamps
     create_table :grade_descriptors do |t|
       t.integer :mark, null: false
       t.string :grade_description
@@ -8,6 +8,5 @@ class CreateGradeDescriptors < ActiveRecord::Migration[5.0]
 
       t.index %i[mark skill_id], unique: true
     end
-    # rubocop:enable Rails/CreateTableWithTimestamps
   end
 end

@@ -1,4 +1,4 @@
-# rubocop:disable Metrics/ClassLength
+# rubocop:disable-next Metrics/ClassLength
 class GroupsController < HtmlController
   include Pagy::Method
 
@@ -186,4 +186,3 @@ class GroupsController < HtmlController
     params.permit :chapter_id
   end
 end
-# rubocop:enable Metrics/ClassLength
