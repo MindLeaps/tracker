@@ -1553,6 +1553,13 @@ CREATE UNIQUE INDEX index_grade_descriptors_on_skill_id_and_mark ON public.grade
 
 
 --
+-- Name: index_active_grades_on_lesson_and_student_for_statistics; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_active_grades_on_lesson_and_student_for_statistics ON public.grades USING btree (lesson_id, student_id) INCLUDE (mark, skill_id) WHERE (deleted_at IS NULL);
+
+
+--
 -- Name: index_grades_on_grade_descriptor_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1798,25 +1805,150 @@ CREATE OR REPLACE VIEW public.student_averages AS
 --
 
 CREATE OR REPLACE VIEW public.group_lesson_summaries AS
- SELECT slu.lesson_id,
-    slu.lesson_date,
-    gr.id AS group_id,
-    gr.chapter_id,
-    slu.subject_id,
-    concat(gr.group_name, ' - ', c.chapter_name) AS group_chapter_name,
-    (round(avg(slu.average_mark), 2))::double precision AS average_mark,
-    (sum(slu.grade_count))::bigint AS grade_count,
-    (round((((sum(
-        CASE
-            WHEN (slu.grade_count = 0) THEN 0
-            ELSE 1
-        END))::numeric / (count(slu.*))::numeric) * (100)::numeric), 2))::double precision AS attendance
-   FROM ((public.student_lesson_summaries slu
-     JOIN public.groups gr ON ((slu.group_id = gr.id)))
-     JOIN public.chapters c ON ((gr.chapter_id = c.id)))
-  WHERE (slu.deleted_at IS NULL)
-  GROUP BY slu.lesson_id, gr.id, c.id, slu.subject_id, slu.lesson_date
-  ORDER BY slu.lesson_date;
+WITH lesson_enrollment_stats AS (
+    SELECT l.group_id,
+           l.id AS lesson_id,
+           COUNT(DISTINCT s.id) AS student_count
+    FROM public.lessons l
+        JOIN public.enrollments en
+          ON en.group_id = l.group_id
+         AND en.active_since <= l.date
+         AND (en.inactive_since IS NULL OR en.inactive_since >= l.date)
+        JOIN public.students s
+          ON s.id = en.student_id
+         AND s.deleted_at IS NULL
+    GROUP BY l.group_id, l.id
+),
+student_grade_stats AS (
+    SELECT l.group_id,
+           l.id AS lesson_id,
+           gr.student_id,
+           ROUND(AVG(gr.mark), 2) AS average_mark,
+           COUNT(gr.mark) AS grade_count
+    FROM public.lessons l
+        JOIN public.grades gr
+          ON gr.lesson_id = l.id
+         AND gr.deleted_at IS NULL
+        JOIN public.students s
+          ON s.id = gr.student_id
+         AND s.deleted_at IS NULL
+    WHERE EXISTS (
+        SELECT 1
+        FROM public.enrollments en
+        WHERE en.group_id = l.group_id
+          AND en.student_id = gr.student_id
+          AND en.active_since <= l.date
+          AND (en.inactive_since IS NULL OR en.inactive_since >= l.date)
+    )
+    GROUP BY l.group_id, l.id, gr.student_id
+),
+lesson_grade_stats AS (
+    SELECT group_id,
+           lesson_id,
+           ROUND(AVG(average_mark)::NUMERIC, 2)::FLOAT AS average_mark,
+           SUM(grade_count)::BIGINT AS grade_count,
+           COUNT(*) AS graded_student_count
+    FROM student_grade_stats
+    GROUP BY group_id, lesson_id
+)
+SELECT l.id AS lesson_id,
+       l.date AS lesson_date,
+       gr.id AS group_id,
+       gr.chapter_id,
+       l.subject_id,
+       CONCAT(gr.group_name, ' - ', c.chapter_name) AS group_chapter_name,
+       lgs.average_mark,
+       COALESCE(lgs.grade_count, 0)::BIGINT AS grade_count,
+       ROUND(
+           COALESCE(lgs.graded_student_count, 0)::NUMERIC / les.student_count * 100,
+           2
+       )::FLOAT AS attendance
+FROM public.lessons l
+    JOIN public.groups gr ON gr.id = l.group_id
+    JOIN public.chapters c ON c.id = gr.chapter_id
+    JOIN lesson_enrollment_stats les
+      ON les.lesson_id = l.id
+     AND les.group_id = gr.id
+    LEFT JOIN lesson_grade_stats lgs
+      ON lgs.lesson_id = l.id
+     AND lgs.group_id = gr.id;
+
+--
+-- Name: group_skill_growths; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.group_skill_growths AS
+WITH eligible_grades AS (
+    SELECT l.group_id,
+           gr.student_id,
+           gr.skill_id,
+           sk.skill_name,
+           gr.mark,
+           l.date AS lesson_date,
+           l.id AS lesson_id,
+           gr.id AS grade_id
+    FROM public.grades gr
+        JOIN public.lessons l
+          ON l.id = gr.lesson_id
+         AND l.deleted_at IS NULL
+        JOIN public.students s
+          ON s.id = gr.student_id
+         AND s.deleted_at IS NULL
+        JOIN public.skills sk ON sk.id = gr.skill_id
+    WHERE gr.deleted_at IS NULL
+      AND EXISTS (
+          SELECT 1
+          FROM public.enrollments current_enrollment
+          WHERE current_enrollment.group_id = l.group_id
+            AND current_enrollment.student_id = gr.student_id
+            AND current_enrollment.active_since <= CURRENT_DATE
+            AND (
+                current_enrollment.inactive_since IS NULL
+                OR current_enrollment.inactive_since > CURRENT_DATE
+            )
+      )
+      AND EXISTS (
+          SELECT 1
+          FROM public.enrollments grade_enrollment
+          WHERE grade_enrollment.group_id = l.group_id
+            AND grade_enrollment.student_id = gr.student_id
+            AND grade_enrollment.active_since <= l.date
+            AND (
+                grade_enrollment.inactive_since IS NULL
+                OR grade_enrollment.inactive_since >= l.date
+            )
+      )
+),
+ranked_grades AS (
+    SELECT eligible_grades.*,
+           ROW_NUMBER() OVER (
+               PARTITION BY group_id, student_id, skill_id
+               ORDER BY lesson_date, lesson_id, grade_id
+           ) AS first_rank,
+           ROW_NUMBER() OVER (
+               PARTITION BY group_id, student_id, skill_id
+               ORDER BY lesson_date DESC, lesson_id DESC, grade_id DESC
+           ) AS last_rank
+    FROM eligible_grades
+),
+student_skill_growths AS (
+    SELECT group_id,
+           student_id,
+           skill_id,
+           MAX(skill_name) AS skill_name,
+           MAX(mark) FILTER (WHERE first_rank = 1) AS first_mark,
+           MAX(mark) FILTER (WHERE last_rank = 1) AS last_mark,
+           COUNT(*) AS grade_count
+    FROM ranked_grades
+    GROUP BY group_id, student_id, skill_id
+)
+SELECT group_id,
+       skill_id,
+       MAX(skill_name) AS skill_name,
+       AVG((last_mark - first_mark)::NUMERIC) AS growth
+FROM student_skill_growths
+WHERE grade_count >= 2
+GROUP BY group_id, skill_id;
 
 --
 -- Name: student_lesson_summaries _RETURN; Type: RULE; Schema: public; Owner: -
@@ -1984,35 +2116,39 @@ CREATE OR REPLACE VIEW public.chapter_summaries AS
 --
 
 CREATE OR REPLACE VIEW public.organization_summaries AS
- SELECT o.id,
-    o.organization_name,
-    o.mlid AS organization_mlid,
-    (count(DISTINCT
-        CASE
-            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN c.id
-            ELSE NULL::integer
-        END))::integer AS chapter_count,
-    (count(DISTINCT
-        CASE
-            WHEN ((g.id IS NOT NULL) AND (g.deleted_at IS NULL)) THEN g.id
-            ELSE NULL::integer
-        END))::integer AS group_count,
-    (count(DISTINCT
-        CASE
-            WHEN ((c.id IS NOT NULL) AND (c.deleted_at IS NULL)) THEN c.student_count
-            ELSE 0
-            WHEN ((s.id IS NOT NULL) AND (s.deleted_at IS NULL)) THEN s.id
-            ELSE NULL::integer
-        END))::integer AS student_count,
-    o.country,
-    o.updated_at,
-    o.created_at,
-    o.deleted_at
-   FROM (((public.organizations o
-     LEFT JOIN public.chapters c ON ((c.organization_id = o.id)))
-     LEFT JOIN public.groups g ON ((g.chapter_id = c.id)))
-     LEFT JOIN public.students s ON ((s.organization_id = o.id)))
-  GROUP BY o.id;
+WITH chapter_counts AS (
+    SELECT organization_id,
+           COUNT(*) FILTER (WHERE deleted_at IS NULL)::INT AS chapter_count
+    FROM public.chapters
+    GROUP BY organization_id
+),
+group_counts AS (
+    SELECT c.organization_id,
+           COUNT(*) FILTER (WHERE g.id IS NOT NULL AND g.deleted_at IS NULL)::INT AS group_count
+    FROM public.chapters c
+        LEFT JOIN public.groups g ON g.chapter_id = c.id
+    GROUP BY c.organization_id
+),
+student_counts AS (
+    SELECT organization_id,
+           COUNT(*) FILTER (WHERE deleted_at IS NULL)::INT AS student_count
+    FROM public.students
+    GROUP BY organization_id
+)
+SELECT o.id,
+       o.organization_name,
+       o.mlid AS organization_mlid,
+       COALESCE(cc.chapter_count, 0)::INT AS chapter_count,
+       COALESCE(gc.group_count, 0)::INT AS group_count,
+       COALESCE(sc.student_count, 0)::INT AS student_count,
+       o.country,
+       o.updated_at,
+       o.created_at,
+       o.deleted_at
+FROM public.organizations o
+    LEFT JOIN chapter_counts cc ON cc.organization_id = o.id
+    LEFT JOIN group_counts gc ON gc.organization_id = o.id
+    LEFT JOIN student_counts sc ON sc.organization_id = o.id;
 
 
 --
@@ -2214,6 +2350,8 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260901000001'),
+('20260901000000'),
 ('20260415100001'),
 ('20260415100000'),
 ('20260414100000'),
@@ -2362,4 +2500,3 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20151221020928'),
 ('20151220030058'),
 ('20151101232844');
-

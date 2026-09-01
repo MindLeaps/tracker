@@ -20,6 +20,30 @@ RSpec.describe OrganizationsController, type: :controller do
     end
   end
 
+  describe '#show' do
+    it 'loads distinct lesson dates directly and honors an explicitly selected empty date' do
+      organization = create :organization
+      group = create :group, chapter: create(:chapter, organization:)
+      create :enrolled_student, organization:, groups: [group]
+      lesson_date = 2.days.ago.to_date
+      create :lesson, group:, date: lesson_date
+      create :lesson, group:, date: lesson_date
+      selected_date = lesson_date - 10.days
+      queries = []
+      subscriber = ActiveSupport::Notifications.subscribe('sql.active_record') do |*, payload|
+        queries << payload[:sql]
+      end
+
+      get :show, params: { id: organization.id, selected_date: }
+
+      ActiveSupport::Notifications.unsubscribe(subscriber)
+      expect(assigns(:available_lesson_dates)).to eq [lesson_date]
+      expect(assigns(:selected_date)).to eq selected_date.to_s
+      expect(assigns(:lesson_summaries)).to be_empty
+      expect(queries).not_to include(a_string_including('student_lesson_summaries'))
+    end
+  end
+
   describe '#new' do
     before :each do
       get :new

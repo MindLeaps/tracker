@@ -171,13 +171,35 @@ class OrganizationsController < HtmlController
   private
 
   def populate_lesson_activity
-    organization_groups = Group.where(chapter_id: @organization.chapters)
-    @available_lesson_dates = StudentLessonSummary.where(group_id: organization_groups, deleted_at: nil).distinct.pluck(:lesson_date).sort
+    @available_lesson_dates = available_lesson_dates
     @used_default_date = params[:selected_date].blank?
     @selected_date = params[:selected_date].presence || @available_lesson_dates.last || Time.zone.today
     @lesson_summaries = GroupLessonSummary.where(chapter_id: @organization.chapters, lesson_date: @selected_date).to_a
     @number_of_lessons = @lesson_summaries.count
     @total_data_points = @lesson_summaries.sum(&:grade_count)
+  end
+
+  def available_lesson_dates
+    Lesson
+      .joins(group: :chapter)
+      .where(chapters: { organization_id: @organization.id })
+      .where(lesson_has_enrolled_students)
+      .distinct
+      .order(:date)
+      .pluck(:date)
+  end
+
+  def lesson_has_enrolled_students
+    <<~SQL.squish
+      EXISTS (
+        SELECT 1 FROM enrollments
+        JOIN students ON students.id = enrollments.student_id
+        WHERE enrollments.group_id = lessons.group_id
+          AND enrollments.active_since <= lessons.date
+          AND (enrollments.inactive_since IS NULL OR enrollments.inactive_since >= lessons.date)
+          AND students.deleted_at IS NULL
+      )
+    SQL
   end
 
   def file_is_csv?(content_type)

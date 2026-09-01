@@ -151,6 +151,19 @@ RSpec.describe GroupsController, type: :controller do
           expect(assigns(:most_improved_skill)[:skill_name]).to eq 'Grit'
           expect(assigns(:least_improved_skill)[:skill_name]).to eq 'Memorization'
         end
+
+        it 'loads the skill growth aggregate instead of materializing grade marks' do
+          queries = []
+          subscriber = ActiveSupport::Notifications.subscribe('sql.active_record') do |*, payload|
+            queries << payload[:sql]
+          end
+
+          get :show, params: { id: @group.id }
+
+          ActiveSupport::Notifications.unsubscribe(subscriber)
+          expect(queries).to include(a_string_including('group_skill_growths'))
+          expect(queries).not_to include(a_string_matching(/SELECT .*grades.*student_id.*skills.*mark/i))
+        end
       end
 
       context 'when the group has no graded lessons' do
