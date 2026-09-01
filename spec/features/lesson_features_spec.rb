@@ -24,9 +24,10 @@ RSpec.describe 'User interacts with lessons' do
       @group = create :group
       @subject = create :subject, subject_name: 'Feature Testing II'
       create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
-      @lesson = create :lesson, subject: @subject, group: @group, date: 5.days.ago
+      today = Date.current
+      @lesson = create :lesson, subject: @subject, group: @group, date: today - 5
       previous_date = @lesson.date
-      new_date = 1.day.ago.to_date
+      new_date = today - 1
 
       visit '/'
       click_link 'Lessons'
@@ -36,9 +37,7 @@ RSpec.describe 'User interacts with lessons' do
       expect(page).to have_field 'lesson_group_id', disabled: true
       expect(page).to have_field 'lesson_subject_id', disabled: true
 
-      find('#lesson_date').click
-      find('button.pika-next').click unless new_date.month == previous_date.month
-      find("button[data-pika-year='#{new_date.year}'][data-pika-month='#{new_date.month - 1}'][data-pika-day='#{new_date.day}']").click
+      select_datepicker_date('lesson_date', new_date)
       click_button 'Update Lesson'
 
       expect(page).to have_content 'Lesson updated'

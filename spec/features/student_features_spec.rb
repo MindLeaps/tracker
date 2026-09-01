@@ -163,6 +163,5 @@ end
 def add_and_select_group(chapter_group_name, group_index)
   click_button 'Add Group'
   select chapter_group_name, from: "student_enrollments_attributes_#{group_index}_group_id"
-  find("input#student_enrollments_attributes_#{group_index}_active_since").click
-  find('td.is-today').click
+  select_datepicker_date("student_enrollments_attributes_#{group_index}_active_since", Date.current)
 end
