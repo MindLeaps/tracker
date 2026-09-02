@@ -666,6 +666,33 @@ CREATE VIEW public.lesson_table_rows AS
 
 
 --
+-- Name: organization_lesson_summaries; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW public.organization_lesson_summaries AS
+ SELECT l.id AS lesson_id,
+    l.date AS lesson_date,
+    gr.id AS group_id,
+    gr.chapter_id,
+    c.organization_id,
+    l.subject_id,
+    concat(gr.group_name, ' - ', c.chapter_name) AS group_chapter_name,
+    ( SELECT count(g.mark) AS count
+           FROM (public.grades g
+             JOIN public.students s ON (((s.id = g.student_id) AND (s.deleted_at IS NULL))))
+          WHERE ((g.lesson_id = l.id) AND (g.deleted_at IS NULL) AND (EXISTS ( SELECT 1
+                   FROM public.enrollments en
+                  WHERE ((en.group_id = l.group_id) AND (en.student_id = g.student_id) AND (en.active_since <= l.date) AND ((en.inactive_since IS NULL) OR (en.inactive_since >= l.date))))))) AS grade_count
+   FROM ((public.lessons l
+     JOIN public.groups gr ON ((gr.id = l.group_id)))
+     JOIN public.chapters c ON ((c.id = gr.chapter_id)))
+  WHERE (EXISTS ( SELECT 1
+           FROM (public.enrollments en
+             JOIN public.students s ON (((s.id = en.student_id) AND (s.deleted_at IS NULL))))
+          WHERE ((en.group_id = l.group_id) AND (en.active_since <= l.date) AND ((en.inactive_since IS NULL) OR (en.inactive_since >= l.date)))));
+
+
+--
 -- Name: roles; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2350,6 +2377,7 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20260902000000'),
 ('20260901000001'),
 ('20260901000000'),
 ('20260415100001'),

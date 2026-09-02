@@ -173,7 +173,7 @@ class OrganizationsController < HtmlController
     @available_lesson_dates = available_lesson_dates
     @used_default_date = params[:selected_date].blank?
     @selected_date = params[:selected_date].presence || @available_lesson_dates.last || Time.zone.today
-    @lesson_summaries = GroupLessonSummary.where(chapter_id: @organization.chapters, lesson_date: @selected_date).to_a
+    @lesson_summaries = OrganizationLessonSummary.where(organization_id: @organization.id, lesson_date: @selected_date).to_a
     @number_of_lessons = @lesson_summaries.count
     @total_data_points = @lesson_summaries.sum(&:grade_count)
   end

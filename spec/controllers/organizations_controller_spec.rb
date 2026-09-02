@@ -40,6 +40,8 @@ RSpec.describe OrganizationsController, type: :controller do
       expect(assigns(:available_lesson_dates)).to eq [lesson_date]
       expect(assigns(:selected_date)).to eq selected_date.to_s
       expect(assigns(:lesson_summaries)).to be_empty
+      expect(queries).to include(a_string_including('organization_lesson_summaries'))
+      expect(queries).not_to include(a_string_including('group_lesson_summaries'))
       expect(queries).not_to include(a_string_including('student_lesson_summaries'))
     end
   end
