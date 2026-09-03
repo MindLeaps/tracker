@@ -28,6 +28,7 @@ RSpec.describe 'Interaction with Organizations' do
 
       visit '/organizations'
       find('div.table-cell', text: @organization.organization_name).click
+      expect(page).to have_content 'Edit Organization'
     end
 
     it 'displays the organization\'s members and chapters' do

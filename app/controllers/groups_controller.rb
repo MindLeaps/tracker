@@ -136,32 +136,11 @@ class GroupsController < HtmlController
   private
 
   def populate_skill_growth
-    growths = average_growth_per_skill
-    @most_improved_skill = growths.min_by { |g| [-g[:growth], g[:skill_name], g[:skill_id]] }
-    @least_improved_skill = growths.min_by { |g| [g[:growth], g[:skill_name], g[:skill_id]] }
-  end
-
-  def average_growth_per_skill
-    deltas_by_skill = Hash.new { |hash, key| hash[key] = [] }
-    marks_by_student_and_skill.each do |(_student_id, skill_id, skill_name), marks|
-      next if marks.size < 2
-
-      deltas_by_skill[[skill_id, skill_name]] << (marks.last - marks.first)
+    growths = GroupSkillGrowth.where(group_id: @group.id).map do |growth|
+      { skill_id: growth.skill_id, skill_name: growth.skill_name, growth: growth.growth }
     end
-
-    deltas_by_skill.map { |(skill_id, skill_name), deltas| { skill_id:, skill_name:, growth: deltas.sum.to_f / deltas.size } }
-  end
-
-  def marks_by_student_and_skill
-    marks = Hash.new { |hash, key| hash[key] = [] }
-    active_student_ids = @group.active_students.pluck(:id)
-    @group.valid_grades
-          .where(student_id: active_student_ids)
-          .joins(:skill)
-          .order('lessons.date ASC')
-          .pluck(:student_id, 'skills.id', 'skills.skill_name', :mark)
-          .each { |student_id, skill_id, skill_name, mark| marks[[student_id, skill_id, skill_name]] << mark }
-    marks
+    @most_improved_skill = growths.min_by { |growth| [-growth[:growth], growth[:skill_name], growth[:skill_id]] }
+    @least_improved_skill = growths.min_by { |growth| [growth[:growth], growth[:skill_name], growth[:skill_id]] }
   end
 
   def group_params
