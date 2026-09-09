@@ -66,7 +66,7 @@ module Analytics
       [{ name: t(:frequency_perc), data: res }]
     end
 
-    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable-next Metrics/MethodLength
     def assessments_per_month
       conn = ActiveRecord::Base.connection.raw_connection
       group_ids = @selected_students.map(&:enrolled_group_ids).flatten.uniq
@@ -93,7 +93,6 @@ module Analytics
         series: [{ name: t(:nr_of_assessments), data: res.pluck(1) }]
       }
     end
-    # rubocop:enable Metrics/MethodLength
 
     def average_performance_per_group_by_lesson
       groups = Array(groups_for_average_performance)

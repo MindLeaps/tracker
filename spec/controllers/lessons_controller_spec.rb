@@ -12,8 +12,12 @@ RSpec.describe LessonsController, type: :controller do
       before :each do
         @group = create :group
         @active_student1 = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
+        @active_student2 = create :enrolled_student, organization: @group.chapter.organization, groups: [@group]
         @lesson1 = create :lesson, group: @group
         @lesson2 = create :lesson, group: @group
+
+        gd1 = create :grade_descriptor, skill: @lesson1.subject.skills[0], mark: 4
+        create :grade, lesson: @lesson1, student: @active_student1, grade_descriptor: gd1
 
         get :index
       end
@@ -23,6 +27,19 @@ RSpec.describe LessonsController, type: :controller do
 
       it 'Lists existing lessons' do
         expect(assigns(:lesson_rows).map(&:id)).to include @lesson1.reload.id, @lesson2.reload.id
+      end
+
+      it 'builds each row with its group size, graded count and average mark' do
+        row1 = assigns(:lesson_rows).find { |row| row.id == @lesson1.id }
+        row2 = assigns(:lesson_rows).find { |row| row.id == @lesson2.id }
+
+        expect(row1.group_student_count).to eq 2
+        expect(row1.graded_student_count).to eq 1
+        expect(row1.average_mark).to eq 4
+
+        expect(row2.group_student_count).to eq 2
+        expect(row2.graded_student_count).to eq 0
+        expect(row2.average_mark).to be_nil
       end
     end
 

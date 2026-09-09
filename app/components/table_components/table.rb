@@ -22,7 +22,7 @@ class TableComponents::Table < ViewComponent::Base
         </div>
       </div>
   ERB
-  # rubocop:disable Metrics/ParameterLists
+  # rubocop:disable-next Metrics/ParameterLists
   def initialize(row_component:, rows:, column_arguments: {}, row_arguments: {}, order_scope_name: :table_order, pagy: nil, options: {})
     @row_component = row_component
     @rows = rows
@@ -32,7 +32,6 @@ class TableComponents::Table < ViewComponent::Base
     @order_scope_name = order_scope_name
     @options = options
   end
-  # rubocop:enable Metrics/ParameterLists
 
   def grid_columns
     "grid-template-columns: repeat(#{@row_component.columns(**@column_arguments).count}, #{@options[:wrap] ? 'minmax(max-content, auto)' : 'auto'})"

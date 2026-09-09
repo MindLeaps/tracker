@@ -1,7 +1,7 @@
 import { Controller } from '@hotwired/stimulus'
 
 export default class extends Controller {
-  static targets = ['tags', 'autocomplete', 'container']
+  static targets = ['tags', 'autocomplete', 'container', 'submit']
   static values = { deleteImageUrl: String }
   autocomplete = null
 
@@ -65,6 +65,13 @@ export default class extends Controller {
     });
 
     this.updateAutocomplete();
+    this.updateSubmitState(tags.length);
+  }
+
+  updateSubmitState(selectedCount) {
+    if (!this.hasSubmitTarget) return;
+
+    this.submitTarget.disabled = selectedCount === 0;
   }
 
   connect() {

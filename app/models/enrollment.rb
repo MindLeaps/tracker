@@ -28,6 +28,7 @@ class Enrollment < ApplicationRecord
 
   scope :by_student, ->(student_id) { where student_id: }
   scope :by_group, ->(group_id) { where group_id: }
+  scope :active, ->(as_of = Time.zone.now) { where('active_since <= ? AND (inactive_since IS NULL OR inactive_since > ?)', as_of, as_of) }
 
   validates :active_since, presence: true
   validates :inactive_since, comparison: { greater_than: :active_since, message: I18n.t(:enrollment_end_before_start) }, allow_nil: true
@@ -98,12 +99,11 @@ class Enrollment < ApplicationRecord
 
   private
 
-  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable-next Metrics/AbcSize
   def overlapping_enrollment?
     Enrollment.excluding(self).exists?(student_id: student.id, group_id: group.id, active_since: active_since..inactive_since) ||
       Enrollment.excluding(self).exists?(student_id: student.id, group_id: group.id, inactive_since: active_since..inactive_since) ||
       (inactive_since.present? && Enrollment.excluding(self).exists?(student_id: student.id, group_id: group.id, active_since: ..active_since, inactive_since: inactive_since..)) ||
       Enrollment.excluding(self).exists?(student_id: student.id, group_id: group.id, active_since: ..active_since, inactive_since: nil)
   end
-  # rubocop:enable Metrics/AbcSize
 end

@@ -4,7 +4,7 @@ require_relative 'seed_csv_grades'
 
 ActiveRecord::Base.logger = Logger.new($stdout)
 
-# rubocop:disable Metrics/BlockLength
+# rubocop:disable-next Metrics/BlockLength
 Organization.transaction do
   mindleaps = Organization.create!({ organization_name: 'MindLeaps', mlid: 'ML1' })
   mindleaps.chapters.create!([
@@ -68,4 +68,3 @@ Organization.transaction do
   CSVDataSeeder.new('./db/seed_data/rwanda_data.csv').seed_data mindleaps.chapters[1], subjects[0]
   # CSVDataSeeder.new('./db/seed_data/uganda_data.csv').seed_data mindleaps.chapters[2], subjects[0]
 end
-# rubocop:enable Metrics/BlockLength

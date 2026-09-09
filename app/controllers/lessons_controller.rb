@@ -8,7 +8,8 @@ class LessonsController < HtmlController
 
   def index
     authorize Lesson
-    @pagy, @lesson_rows = pagy apply_scopes(policy_scope(LessonTableRow, policy_scope_class: LessonPolicy::Scope))
+    @pagy, @lessons = pagy apply_scopes(policy_scope(Lesson).includes(:subject, group: :chapter))
+    @lesson_rows = LessonTableRow.build_for(@lessons)
   end
 
   def show

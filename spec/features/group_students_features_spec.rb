@@ -5,8 +5,11 @@ RSpec.describe 'User interacts with students in Group', js: true do
 
   describe 'Student creation and editing' do
     before :each do
+      today = Date.current
+      @lesson_date = today - 2
+      @updated_enrollment_date = today - 10
       @group = create :group, group_name: 'Group One'
-      create :lesson, group: @group, date: 2.days.ago
+      create :lesson, group: @group, date: @lesson_date
     end
 
     it 'renders error messages when student form is incomplete' do
@@ -27,7 +30,7 @@ RSpec.describe 'User interacts with students in Group', js: true do
       fill_in 'student_first_name', with: 'New'
       find('#student_gender_nb').click
       fill_in 'student_dob', with: '2024-01-01'
-      fill_in 'student_enrollment_start_date', with: 2.days.ago.to_date.to_s
+      select_datepicker_date('student_enrollment_start_date', @lesson_date)
       click_button 'Create Student'
 
       expect(page).to have_content '12345678'
@@ -38,22 +41,22 @@ RSpec.describe 'User interacts with students in Group', js: true do
       student = Student.find_by! first_name: 'New', last_name: 'Student'
       expect(student.gender).to eq 'NB'
       expect(student.dob).to eq Date.parse('2024-01-01')
-      expect(student.enrollments.last.active_since.to_date).to eql 2.days.ago.to_date
+      expect(student.enrollments.last.active_since.to_date).to eql @lesson_date
 
       click_link 'Edit'
       find("#student_#{student.id} #student_first_name").fill_in with: 'Updated'
-      fill_in 'student_enrollments_attributes_0_active_since', with: 10.days.ago.to_date.to_s
+      select_datepicker_date('student_enrollments_attributes_0_active_since', @updated_enrollment_date)
       find("#student_#{student.id} #student_gender_m").click
       click_button 'Update Student'
 
       expect(page).to have_content 'Updated'
       expect(page).to have_content 'M'
-      expect(page).to have_content 10.days.ago.to_date.to_s
+      expect(page).to have_content @updated_enrollment_date.to_s
 
       student.reload
       expect(student.first_name).to eq('Updated')
       expect(student.gender).to eq('M')
-      expect(student.enrollments.last.active_since.to_date).to eql 10.days.ago.to_date
+      expect(student.enrollments.last.active_since.to_date).to eql @updated_enrollment_date
     end
   end
 end

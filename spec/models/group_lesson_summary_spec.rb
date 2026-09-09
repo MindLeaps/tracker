@@ -41,7 +41,7 @@ RSpec.describe GroupLessonSummary, type: :model do
     end
 
     it 'returns group lesson summaries with average marks and grade count and attendance' do
-      result = GroupLessonSummary.all
+      result = GroupLessonSummary.order(:lesson_date)
       expect(result.size).to eq 3
 
       expect(result[0].grade_count).to eq 2

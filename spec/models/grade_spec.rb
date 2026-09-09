@@ -14,10 +14,11 @@
 #
 # Indexes
 #
-#  index_grades_on_grade_descriptor_id  (grade_descriptor_id)
-#  index_grades_on_lesson_id            (lesson_id)
-#  index_grades_on_skill_id             (skill_id)
-#  index_grades_on_student_id           (student_id)
+#  index_active_grades_on_lesson_and_student_for_statistics  (lesson_id,student_id) WHERE (deleted_at IS NULL)
+#  index_grades_on_grade_descriptor_id                       (grade_descriptor_id)
+#  index_grades_on_lesson_id                                 (lesson_id)
+#  index_grades_on_skill_id                                  (skill_id)
+#  index_grades_on_student_id                                (student_id)
 #
 # Foreign Keys
 #

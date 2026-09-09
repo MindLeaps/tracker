@@ -239,4 +239,36 @@ RSpec.describe 'User interacts with Groups' do
       expect(page).to have_selector('span.group > .tooltip', visible: :all, text: expected_alert_text)
     end
   end
+
+  describe 'Group statistics' do
+    it 'shows active student count, current average, and most/least improved skill for the current roster only' do
+      group = create :group, group_name: 'Growth Stats Group'
+      subject = create :subject_with_skills, skill_names: %w[Memorization Grit], organization: group.chapter.organization
+
+      active_student = create :student, organization: group.chapter.organization
+      create :enrollment, student: active_student, group: group, active_since: 1.month.ago.to_date
+      second_active_student = create :student, organization: group.chapter.organization
+      create :enrollment, student: second_active_student, group: group, active_since: 1.month.ago.to_date
+
+      # This student already left the group. Their grades were valid while they were enrolled, and show a huge
+      # improvement in Memorization -- if they were wrongly counted, that swing would hijack "most improved".
+      left_student = create :student, organization: group.chapter.organization
+      create :enrollment, student: left_student, group: group, active_since: 1.year.ago.to_date, inactive_since: 1.month.ago.to_date
+      create :lesson_with_grades, group: group, subject:, date: 11.months.ago, student_grades: { left_student.id => { 'Memorization' => 1 } }
+      create :lesson_with_grades, group: group, subject:, date: 10.months.ago, student_grades: { left_student.id => { 'Memorization' => 7 } }
+
+      create :lesson_with_grades, group: group, subject:, date: 2.days.ago,
+                                  student_grades: { active_student.id => { 'Memorization' => 1 }, second_active_student.id => { 'Grit' => 1 } }
+      create :lesson_with_grades, group: group, subject:, date: 1.day.ago,
+                                  student_grades: { active_student.id => { 'Memorization' => 2 }, second_active_student.id => { 'Grit' => 3 } }
+
+      visit "/groups/#{group.id}"
+
+      stat_values = all('dd.tracking-tight').map(&:text)
+      expect(stat_values[0]).to eq '2' # active students: left_student excluded
+      expect(stat_values[1]).to eq '2.5' # average of the two active students' marks on the most recent lesson
+      expect(stat_values[2]).to eq 'Grit' # most improved, among active students only (delta +2, vs Memorization's +1)
+      expect(stat_values[3]).to eq 'Memorization' # would lose to Memorization's +6 if left_student were wrongly counted
+    end
+  end
 end

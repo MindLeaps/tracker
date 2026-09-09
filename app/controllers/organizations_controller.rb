@@ -1,4 +1,4 @@
-# rubocop:disable Metrics/ClassLength
+# rubocop:disable-next Metrics/ClassLength
 class OrganizationsController < HtmlController
   include Pagy::Method
 
@@ -90,7 +90,7 @@ class OrganizationsController < HtmlController
     end
   end
 
-  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable-next Metrics/MethodLength
   def confirm_import
     @organization = Organization.find params.require :id
     authorize @organization
@@ -109,7 +109,6 @@ class OrganizationsController < HtmlController
       render :import_students, status: :unprocessable_content
     end
   end
-  # rubocop:enable Metrics/MethodLength
 
   def initialize_organization(id)
     @pagy_chapters, @chapters = pagy apply_scopes(ChapterSummary.where(organization_id: id), chapter_order_scope)
@@ -118,8 +117,7 @@ class OrganizationsController < HtmlController
     @new_member = User.new
     @roles = Role::LOCAL_ROLES.keys
 
-    @selected_date = params[:selected_date] || Time.zone.today
-    @lesson_summaries = GroupLessonSummary.where(chapter_id: @organization.chapters, lesson_date: @selected_date)
+    populate_lesson_activity
   end
 
   def chapter_order_scope
@@ -171,6 +169,38 @@ class OrganizationsController < HtmlController
 
   private
 
+  def populate_lesson_activity
+    @available_lesson_dates = available_lesson_dates
+    @used_default_date = params[:selected_date].blank?
+    @selected_date = params[:selected_date].presence || @available_lesson_dates.last || Time.zone.today
+    @lesson_summaries = OrganizationLessonSummary.where(organization_id: @organization.id, lesson_date: @selected_date).to_a
+    @number_of_lessons = @lesson_summaries.count
+    @total_data_points = @lesson_summaries.sum(&:grade_count)
+  end
+
+  def available_lesson_dates
+    Lesson
+      .joins(group: :chapter)
+      .where(chapters: { organization_id: @organization.id })
+      .where(lesson_has_enrolled_students)
+      .distinct
+      .order(:date)
+      .pluck(:date)
+  end
+
+  def lesson_has_enrolled_students
+    <<~SQL.squish
+      EXISTS (
+        SELECT 1 FROM enrollments
+        JOIN students ON students.id = enrollments.student_id
+        WHERE enrollments.group_id = lessons.group_id
+          AND enrollments.active_since <= lessons.date
+          AND (enrollments.inactive_since IS NULL OR enrollments.inactive_since >= lessons.date)
+          AND students.deleted_at IS NULL
+      )
+    SQL
+  end
+
   def file_is_csv?(content_type)
     %w[text/csv text/x-csv application/vnd.ms-excel application/csv application/x-csv].include? content_type
   end
@@ -185,4 +215,3 @@ class OrganizationsController < HtmlController
     render :show, status: :conflict
   end
 end
-# rubocop:enable Metrics/ClassLength

@@ -5,7 +5,7 @@ module Analytics
       @group_series = performance_per_group_by_lesson
     end
 
-    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable-next Metrics/MethodLength
     def performance_per_group_by_lesson
       selected_groups = if @selected_group_ids.present?
                           policy_scope(Group).where(id: @selected_group_ids, deleted_at: nil)
@@ -34,7 +34,6 @@ module Analytics
         }
       end
     end
-    # rubocop:enable Metrics/MethodLength
 
     def format_point_data(data)
       data.map do |e|

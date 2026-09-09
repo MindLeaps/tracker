@@ -56,6 +56,13 @@ en:
   student_deleted_at: Student deleted %{time} ago
   students_enrolled: Students enrolled
   students_enrolled_in_group_text: Successfully enrolled %{count} students in group "%{group}".
+  assign_tags_to_students: Assign Tags to Students
+  assign_tags_to_group_explanation: "Applies the selected tags once to the %{count} student(s) currently active in this group."
+  assign: Assign
+  tags_assigned: Tags assigned
+  tags_assigned_to_group_text: Successfully assigned tags to %{count} students in group "%{group}".
+  no_tags_selected: No tags selected
+  select_at_least_one_tag: Please select at least one tag to assign.
   students_graded_outside_enrollment: Students graded outside enrollment
   students_graded_outside_enrollment_alert: Some students have grades outside their enrollment, please review them below
   graded_before_enrollment_text: Student graded before enrollment. Enrolled since "%{enrollment_date}" but has grades for "%{grade_date}"
@@ -228,7 +235,7 @@ en:
   student_grades: Student Grades
   student_graded: Student graded.
   student_graded_text: Student %{student} graded.
-  student_not_graded: Not Graded
+  not_graded: Not Graded
   add_grade: Add Grade
   graded_vs_students_in_group: Graded / Students in Group
   back_to_subjects: Back to All Subjects
@@ -395,6 +402,9 @@ en:
 
   groups_with_lessons: Groups with Lessons
   performance_change: Performance change
+  lesson_activity: Lesson Activity
+  showing_data_for_last_lessons: Showing data for last lessons
+  no_lessons_data_exists: No lessons data exists
   nr_of_lessons: Nr. of Lessons
   nr_of_assessments: Nr. of Assessments
   nr_of_graded_students: Nr. of Graded students
@@ -407,6 +417,11 @@ en:
   nr_of_active_groups: Number of active Groups
   nr_of_active_students: Number of active Students
   nr_of_users_with_role: Number of users with a role within the Organization
+  nr_of_lessons_present: Number of lessons present
+  total_average_score: Total average score
+  current_average_score_for_group: Current average score for group
+  most_improved_skill: Most improved skill
+  least_improved_skill: Least improved skill
   overview: Overview
   student_statistics: Student Statistics
   frequency_perc: Frequency %

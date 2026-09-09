@@ -1,3 +1,4 @@
+# rubocop:disable-next Metrics/ClassLength
 class GroupsController < HtmlController
   include Pagy::Method
 
@@ -19,9 +20,11 @@ class GroupsController < HtmlController
       {
         lesson_date: summary.lesson_date,
         average_mark: summary.average_mark,
-        lesson_url: lesson_path(Lesson.find_by(id: summary.lesson_id))
+        lesson_url: lesson_path(summary.lesson_id)
       }
     end
+    @current_average_score = @group_summaries.last&.dig(:average_mark)
+    populate_skill_growth
   end
 
   def new
@@ -105,10 +108,51 @@ class GroupsController < HtmlController
     redirect_to group_path(@group)
   end
 
+  def assign_tags
+    @group = Group.find params.require :id
+    authorize @group
+
+    @permitted_tags = tags_for_organization(@group.chapter.organization_id)
+    @active_student_count = @group.active_students.count
+    respond_to(&:turbo_stream)
+  end
+
+  def confirm_tag_assignment
+    @group = Group.find params.require :id
+    authorize @group
+    tags = selected_tags(@group)
+
+    if tags.none?
+      failure title: t(:no_tags_selected), text: t(:select_at_least_one_tag)
+      return redirect_to group_path(@group)
+    end
+
+    count = @group.assign_tags_to_active_students(tags)
+
+    success(title: t(:tags_assigned), text: t(:tags_assigned_to_group_text, count: count, group: @group.group_name))
+    redirect_to group_path(@group)
+  end
+
   private
+
+  def populate_skill_growth
+    growths = GroupSkillGrowth.where(group_id: @group.id).map do |growth|
+      { skill_id: growth.skill_id, skill_name: growth.skill_name, growth: growth.growth }
+    end
+    @most_improved_skill = growths.min_by { |growth| [-growth[:growth], growth[:skill_name], growth[:skill_id]] }
+    @least_improved_skill = growths.min_by { |growth| [growth[:growth], growth[:skill_name], growth[:skill_id]] }
+  end
 
   def group_params
     params.require(:group).permit :group_name, :mlid, :chapter_id
+  end
+
+  def tags_for_organization(organization_id)
+    TagPolicy::Scope.new(current_user, Tag).resolve_for_organization_id(organization_id)
+  end
+
+  def selected_tags(group)
+    tags_for_organization(group.chapter.organization_id).where(id: Array(params[:tag_ids]).compact_blank)
   end
 
   def populate_new_group

@@ -63,10 +63,9 @@ class CSVDataSeeder
 
   def create_lesson(group, date)
     d = parse_date(date)
-    # rubocop:disable Rails/Output
+    # rubocop:disable-next Rails/Output
     @lessons[:"#{group.id}-#{date}"] ||=
       puts("Lesson: #{d} - Chapter: #{group.chapter.chapter_name} - Group: #{group.group_name}") || Lesson.create(group:, date: d, subject: @subject)
-    # rubocop:enable Rails/Output
   end
 
   def parse_date(date_string)

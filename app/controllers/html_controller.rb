@@ -4,9 +4,8 @@ class HtmlController < ApplicationController
   protect_from_forgery with: :exception
   before_action :better_errors_hack, if: -> { Rails.env.development? } # Hack to make better errors work with Puma
   after_action :verify_authorized, unless: :devise_controller?
-  # rubocop:disable Rails/LexicallyScopedActionFilter
+  # rubocop:disable-next Rails/LexicallyScopedActionFilter
   after_action :verify_policy_scoped, only: :index
-  # rubocop:enable Rails/LexicallyScopedActionFilter
   around_action :switch_locale
 
   def switch_locale(&)

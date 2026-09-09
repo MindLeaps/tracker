@@ -1329,7 +1329,7 @@ function displayMarkAveragesChart(containerId, data, opts = {}) {
 function displayStudentReportPerformanceByGroupChart(containerId, groupedData, opts = {}) {
     if (!chartJsPresent()) return
 
-    const canvas = ensureCanvasIsPresent(containerId, { heightPx: opts.heightPx || 500 })
+    const canvas = ensureCanvasIsPresent(containerId, { heightPx: opts.heightPx || 1100 })
     if (!canvas) return
 
     destroyIfExists(canvas)
@@ -1346,8 +1346,8 @@ function displayStudentReportPerformanceByGroupChart(containerId, groupedData, o
                 legend: {
                     display: true,
                     labels: {
-                        padding: 10,
-                        font: { size: 12 }
+                        padding: 18,
+                        font: { size: 18 }
                     }
                 },
                 tooltip: {
@@ -1387,20 +1387,24 @@ function displayStudentReportPerformanceByGroupChart(containerId, groupedData, o
                     type: "linear",
                     title: {
                         display: true,
-                        text: opts.xTitle || "Lesson date"
+                        text: opts.xTitle || "Lesson date",
+                        font: { size: 20 }
                     },
                     ticks: {
+                        font: { size: 16 },
                         callback: (value) => toUSdateFormat(Number(value))
                     }
                 },
                 y: {
                     title: {
                         display: true,
-                        text: opts.yTitle || "Performance"
+                        text: opts.yTitle || "Performance",
+                        font: { size: 20 }
                     },
                     min: 1,
                     max: 7,
                     ticks: {
+                        font: { size: 16 },
                         precision: 0
                     }
                 }
@@ -1427,7 +1431,7 @@ function displayStudentReportPerformanceByGroupChart(containerId, groupedData, o
 function displayStudentSkillRegressionChart(containerId, skillSeriesJson, opts = {}) {
     if (!chartJsPresent()) return
 
-    const canvas = ensureCanvasIsPresent(containerId, { heightPx: opts.heightPx || 500 })
+    const canvas = ensureCanvasIsPresent(containerId, { heightPx: opts.heightPx || 1100 })
     if (!canvas) return
     destroyIfExists(canvas)
 
@@ -1443,15 +1447,15 @@ function displayStudentSkillRegressionChart(containerId, skillSeriesJson, opts =
                 title: {
                     display: true,
                     text: opts.title || "Student progress by skill",
-                    font: { size: 20 }
+                    font: { size: 28 }
                 },
                 legend: {
                     display: true,
                     labels: {
-                        padding: 10,
-                        font: { size: 11 },
-                        boxHeight: 10,
-                        boxWidth: 10
+                        padding: 18,
+                        font: { size: 16 },
+                        boxHeight: 14,
+                        boxWidth: 14
                     }
                 },
                 tooltip: {
@@ -1476,14 +1480,14 @@ function displayStudentSkillRegressionChart(containerId, skillSeriesJson, opts =
                 x: {
                     type: "linear",
                     min: 1,
-                    title: { display: true, text: opts.xTitle || "Nr. of lessons" },
-                    ticks: { precision: 0 }
+                    title: { display: true, text: opts.xTitle || "Nr. of lessons", font: { size: 20 } },
+                    ticks: { font: { size: 16 }, precision: 0 }
                 },
                 y: {
                     min: 1,
                     max: 7,
-                    title: { display: true, text: opts.yTitle || "Performance" },
-                    ticks: { precision: 0 }
+                    title: { display: true, text: opts.yTitle || "Performance", font: { size: 20 } },
+                    ticks: { font: { size: 16 }, precision: 0 }
                 }
             },
             onHover: function (event) {

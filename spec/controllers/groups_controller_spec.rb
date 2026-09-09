@@ -133,6 +133,52 @@ RSpec.describe GroupsController, type: :controller do
 
       it { should respond_with 200 }
     end
+
+    context 'group statistics' do
+      context 'when the group has graded lessons' do
+        before :each do
+          subject = create :subject_with_skills, skill_names: %w[Memorization Grit], organization: @group.chapter.organization
+          create :lesson_with_grades, group: @group, subject:, date: 2.days.ago,
+                                      student_grades: { @student1.id => { 'Memorization' => 1, 'Grit' => 3 } }
+          create :lesson_with_grades, group: @group, subject:, date: 1.day.ago,
+                                      student_grades: { @student1.id => { 'Memorization' => 3, 'Grit' => 6 } }
+
+          get :show, params: { id: @group.id }
+        end
+
+        it 'assigns the current average score and the most/least improved skill' do
+          expect(assigns(:current_average_score)).to be_a(Numeric)
+          expect(assigns(:most_improved_skill)[:skill_name]).to eq 'Grit'
+          expect(assigns(:least_improved_skill)[:skill_name]).to eq 'Memorization'
+        end
+
+        it 'loads the skill growth aggregate instead of materializing grade marks' do
+          queries = []
+          subscriber = ActiveSupport::Notifications.subscribe('sql.active_record') do |*, payload|
+            queries << payload[:sql]
+          end
+
+          get :show, params: { id: @group.id }
+
+          ActiveSupport::Notifications.unsubscribe(subscriber)
+          expect(queries).to include(a_string_including('group_skill_growths'))
+          expect(queries).not_to include(a_string_matching(/SELECT .*grades.*student_id.*skills.*mark/i))
+        end
+      end
+
+      context 'when the group has no graded lessons' do
+        before :each do
+          @ungraded_group = create :group
+          get :show, params: { id: @ungraded_group.id }
+        end
+
+        it 'assigns nil for the current average score and the skill growth statistics' do
+          expect(assigns(:current_average_score)).to be_nil
+          expect(assigns(:most_improved_skill)).to be_nil
+          expect(assigns(:least_improved_skill)).to be_nil
+        end
+      end
+    end
   end
 
   describe '#edit' do
@@ -256,7 +302,7 @@ RSpec.describe GroupsController, type: :controller do
 
     describe '#enroll_students' do
       before :each do
-        get :enroll_students, format: :turbo_stream,  params: { id: @group.id }
+        get :enroll_students, format: :turbo_stream, params: { id: @group.id }
       end
 
       it { should respond_with 200 }
@@ -279,6 +325,66 @@ RSpec.describe GroupsController, type: :controller do
         expect(@group.students.count).to eq 1
         expect(student.enrollments.count).to eq 1
         expect(student.enrollments.first.active_since).to eq 5.days.ago.to_date
+      end
+    end
+  end
+
+  describe 'tag assignment' do
+    before :each do
+      @group = create :group
+      @organization = @group.chapter.organization
+    end
+
+    describe '#assign_tags' do
+      before :each do
+        get :assign_tags, format: :turbo_stream, params: { id: @group.id }
+      end
+
+      it { should respond_with 200 }
+      it { should render_template :assign_tags }
+    end
+
+    describe '#confirm_tag_assignment' do
+      before :each do
+        @own_tag = create :tag, organization: @organization, shared: false
+        @shared_tag = create :tag, organization: create(:organization), shared: true
+        @foreign_tag = create :tag, organization: create(:organization), shared: false
+
+        @active_student = create :enrolled_student, organization: @organization, groups: [@group], tags: []
+        @inactive_student = create :student, organization: @organization, tags: []
+        create :enrollment, group: @group, student: @inactive_student, active_since: 1.year.ago, inactive_since: 1.month.ago
+
+        post :confirm_tag_assignment, params: { id: @group.id, tag_ids: [@own_tag.id, @shared_tag.id, @foreign_tag.id] }
+      end
+
+      it { should redirect_to group_path(@group) }
+      it { should set_flash[:success_notice] }
+
+      it 'assigns permitted tags to every active student in the group' do
+        expect(@active_student.reload.tags).to include @own_tag, @shared_tag
+      end
+
+      it 'excludes a tag from a different, non-shared organization' do
+        expect(@active_student.reload.tags).not_to include @foreign_tag
+      end
+
+      it 'does not affect students who are not currently active in the group' do
+        expect(@inactive_student.reload.tags).to be_empty
+      end
+    end
+
+    describe '#confirm_tag_assignment when no tags are selected' do
+      before :each do
+        @active_student = create :enrolled_student, organization: @organization, groups: [@group], tags: []
+
+        post :confirm_tag_assignment, params: { id: @group.id, tag_ids: [] }
+      end
+
+      it { should redirect_to group_path(@group) }
+      it { should set_flash[:failure_notice] }
+
+      it 'does not assign any tags' do
+        expect(@active_student.reload.tags).to be_empty
       end
     end
   end

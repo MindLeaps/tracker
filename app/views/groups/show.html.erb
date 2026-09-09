@@ -26,13 +26,29 @@ end %>
 <% end %>
 
 <section>
-   <div class="w-1/2">
-       <%= render CommonComponents::Card.new(title: t(:average_performance_for_last_30_lessons).capitalize) do |card| %>
-             <% card.with_card_content do %>
-               <div id="group-chart" class="ct-chart ct-octave bg-white full-width"></div>
-             <% end %>
-       <% end %>
+  <div class="flex gap-4">
+    <div class="w-1/2">
+        <%= render CommonComponents::Card.new(title: t(:average_performance_for_last_30_lessons).capitalize) do |card| %>
+              <% card.with_card_content do %>
+                <div id="group-chart" class="ct-chart ct-octave bg-white full-width"></div>
+              <% end %>
+        <% end %>
     </div>
+    <div class="w-1/2">
+      <div class="mt-6">
+        <%= render CommonComponents::StatCards.new(
+          label: t(:overview).capitalize,
+          columns: 2,
+          stats: [
+            { title: t(:nr_of_active_students), value: @group.active_students.count },
+            { title: t(:current_average_score_for_group), value: @current_average_score&.round(2) || t(:not_graded) },
+            { title: t(:most_improved_skill), value: @most_improved_skill&.dig(:skill_name) || t(:not_graded) },
+            { title: t(:least_improved_skill), value: @least_improved_skill&.dig(:skill_name) || t(:not_graded) }
+          ]
+        ) %>
+      </div>
+    </div>
+  </div>
 </section>
 <turbo-frame id="students-table">
   <%= render GroupEnrolledStudentsComponent.new(students: @group.students, group: @group, students_with_invalid_grades: @students_with_invalid_grades) %>

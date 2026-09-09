@@ -50,5 +50,12 @@ RSpec.describe OrganizationSummary, type: :model do
     it 'calculates the correct number of groups, excluding deleted ones' do
       expect(OrganizationSummary.find(organizations[0].id).group_count).to eq 2
     end
+
+    it 'calculates active students without multiplying them by chapters or groups' do
+      create_list :student, 3, organization: organizations[0]
+      create :student, organization: organizations[0], deleted_at: Time.zone.now
+
+      expect(OrganizationSummary.find(organizations[0].id).student_count).to eq 3
+    end
   end
 end
