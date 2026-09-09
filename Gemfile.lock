@@ -158,7 +158,7 @@ GEM
     drb (2.2.3)
     enum_help (0.0.20)
       activesupport (>= 3.0.0)
-    erb (6.0.6)
+    erb (6.0.7)
     erubi (1.13.1)
     excon (1.7.1)
       logger
@@ -381,7 +381,7 @@ GEM
     rails-i18n (7.0.10)
       i18n (>= 0.7, < 2)
       railties (>= 6.0.0, < 8)
-    rails_semantic_logger (5.1.0)
+    rails_semantic_logger (5.2.0)
       rack
       railties (>= 7.2)
       semantic_logger (>= 5.1)
@@ -397,7 +397,7 @@ GEM
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
     rake (13.4.2)
-    rbs (4.1.1)
+    rbs (4.2.0)
       logger
       prism (>= 1.6.0)
       tsort
@@ -539,7 +539,7 @@ GEM
     xpath (3.2.0)
       nokogiri (~> 1.8)
     yaml (0.4.0)
-    zeitwerk (2.8.2)
+    zeitwerk (2.8.3)
 
 PLATFORMS
   ruby
