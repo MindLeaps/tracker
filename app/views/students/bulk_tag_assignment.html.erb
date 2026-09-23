@@ -1,0 +1,45 @@
+<%- content_for :title, t(:assign_tags) %>
+
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  {title: CommonComponents::TagLabel.new(label: t(:assign_tags), img_src: 'tag.svg'), href: '' }
+], buttons: [
+  CommonComponents::ButtonComponent.new(label: t(:back_to_students), href: students_path)
+]) %>
+
+<div class="bg-white px-4 py-3 border-b border-gray-200">
+  <%= render SearchFormComponent.new(search: { term: params[:search] }, query_parameters: request.query_parameters) %>
+</div>
+
+<% if @students.any? %>
+  <%# The search form above renders its own <form> tag, so it must stay outside this one -- %>
+  <%# nesting <form> elements is invalid HTML and browsers close the outer form early when %>
+  <%# they hit the inner form's closing tag, orphaning the checkboxes/submit button below it. %>
+  <%= form_with url: confirm_bulk_tag_assignment_students_path, html: { method: :post, name: 'students[]' } do %>
+    <div class="bg-white px-4 py-5 shadow-sm sm:p-4">
+      <div class="md:grid md:grid-cols-4 md:gap-6">
+        <div class="md:col-span-1">
+          <label class="block text-sm font-medium text-gray-700"><%= t(:tags) %></label>
+        </div>
+        <div class="md:col-span-3">
+          <div class="grid grid-cols-6 gap-4">
+            <div class="col-span-6 lg:col-span-2">
+              <%= render CommonComponents::MultiselectComponent.new(label: t(:select_tags), target: 'tag_ids[]', options: @tags.map { |tag| { id: tag.id, label: tag.tag_name } }) %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%= render TableComponents::Table.new(pagy: @pagy, rows: @students, row_component: TableComponents::BulkTagStudentRow) %>
+
+    <div class="p-4">
+      <%= submit_tag t(:confirm), class: 'button normal-button' %>
+      <%= link_to t(:cancel), students_path, class: 'dangerous-button' %>
+    </div>
+  <% end %>
+<% else %>
+  <div class="p-4 bg-white flex items-center gap-2">
+    <span class="text-md font-medium text-gray-700"><%= t(:no_students_found) %></span>
+    <%= link_to t(:cancel), students_path, class: 'dangerous-button' %>
+  </div>
+<% end %>
