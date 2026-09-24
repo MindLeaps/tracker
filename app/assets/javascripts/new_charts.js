@@ -107,10 +107,39 @@ function withAlpha(hex, a) {
     return `rgba(${r}, ${g}, ${b}, ${a})`
 }
 
-function dynamicPointRadius(len, { min = 1, max = 4 } = {}) {
+function dynamicPointRadius(len, { min = 2, max = 7, scale = 24 } = {}) {
     if (!len || len <= 0) return max
-    const r = 12 / Math.sqrt(len)
+    const r = scale / Math.sqrt(len)
     return Math.max(min, Math.min(max, r))
+}
+
+const visiblePointCountCache = new WeakMap()
+
+function visiblePointCount(chart) {
+    const signature = chart.data.datasets.map((dataset, index) => {
+        if (!dataset.dynamicPointSizing || !chart.isDatasetVisible(index)) return ""
+        return `${index}:${dataset.data?.length || 0}`
+    }).join("|")
+
+    const cached = visiblePointCountCache.get(chart)
+    if (cached?.signature === signature) return cached.count
+
+    const count = chart.data.datasets.reduce((total, dataset, index) => {
+        if (!dataset.dynamicPointSizing || !chart.isDatasetVisible(index)) return total
+        return total + (dataset.data?.length || 0)
+    }, 0)
+
+    visiblePointCountCache.set(chart, { signature, count })
+    return count
+}
+
+function dynamicPointRadiusForContext(context, opts = {}) {
+    return dynamicPointRadius(visiblePointCount(context.chart), opts)
+}
+
+function dynamicPointHoverRadiusForContext(context, opts = {}) {
+    const radius = dynamicPointRadiusForContext(context, opts)
+    return Math.min(opts.hoverMax || 10, radius + (opts.hoverIncrease || 2))
 }
 
 function polynomialLineForGroup(group, order = 4) {
@@ -163,13 +192,15 @@ function buildDatasetsForGroups(groups) {
             label: g.name,
             type: "scatter",
             groupKey: g.id,
+            dynamicPointSizing: true,
             data: (g.data || []).map(p => ({
                 x: p.x,
                 y: p.y,
                 lesson_url: p.lesson_url,
                 date: p.date
             })),
-            pointRadius: 2,
+            pointRadius: (context) => dynamicPointRadiusForContext(context),
+            pointHoverRadius: (context) => dynamicPointHoverRadiusForContext(context),
             backgroundColor: color,
             borderColor: color
         })
@@ -224,6 +255,7 @@ function buildDatasetsForStudentReportByGroups(groupedData) {
             label: firstRow.group_name || `Group ${groupId}`,
             groupKey: groupId,
             type: "line",
+            dynamicPointSizing: true,
             data: points,
             parsing: false,
             borderColor: color,
@@ -231,8 +263,8 @@ function buildDatasetsForStudentReportByGroups(groupedData) {
             borderWidth: 3,
             tension: 0.15,
             spanGaps: false,
-            pointRadius: 3,
-            pointHoverRadius: 5
+            pointRadius: (context) => dynamicPointRadiusForContext(context),
+            pointHoverRadius: (context) => dynamicPointHoverRadiusForContext(context)
         })
     })
 
@@ -467,12 +499,13 @@ function displayAveragesChart(containerId, data) {
         type: "line",
         data: {
             datasets: [{
+                dynamicPointSizing: true,
                 data: points,
                 parsing: false,
                 borderColor: '#9C27B0',
                 tension: 0.125,
-                pointRadius: dynamicPointRadius(points.length, { min: 3, max: 6 }),
-                pointHoverRadius: dynamicPointRadius(points.length, { min: 5, max: 10 })
+                pointRadius: (context) => dynamicPointRadiusForContext(context),
+                pointHoverRadius: (context) => dynamicPointHoverRadiusForContext(context)
             }]
         },
         options: {
@@ -749,6 +782,7 @@ function displayLessonChart(containerId, lessonId, data) {
         type: "line",
         data: {
             datasets: [{
+                dynamicPointSizing: true,
                 data: points,
                 parsing: false,
                 borderColor: " #9C27B0",
@@ -759,8 +793,9 @@ function displayLessonChart(containerId, lessonId, data) {
                 // highlight the requested lesson
                 pointRadius: (ctx) => {
                     const raw = ctx.raw
-                    if (!raw) return 3
-                    return raw.lesson_id === lessonId ? 6 : 3
+                    const radius = dynamicPointRadiusForContext(ctx)
+                    if (!raw) return radius
+                    return raw.lesson_id === lessonId ? Math.min(10, radius + 3) : radius
                 },
                 pointBackgroundColor: (ctx) => {
                     const raw = ctx.raw
@@ -772,7 +807,7 @@ function displayLessonChart(containerId, lessonId, data) {
                     if (!raw) return "#9C27B0"
                     return raw.lesson_id === lessonId ? "#4CAF50" : " #9C27B0"
                 },
-                pointHoverRadius: 5
+                pointHoverRadius: (context) => dynamicPointHoverRadiusForContext(context)
             }]
         },
         options: {
