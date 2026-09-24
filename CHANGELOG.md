@@ -1,5 +1,6 @@
 ## Unreleased
 
+- Handled missing DOB fields during student import
 - Increased chart point sizing and made it dynamic
 
 ## 0.43.0
