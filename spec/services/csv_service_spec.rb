@@ -23,7 +23,13 @@ RSpec.describe CsvService do
 
       expect(first_date).to eq(Date.new(1999, 4, 30))
       expect(second_date).to eq(Date.new(1943, 1, 23))
-      expect(incorrect_date).to eq Time.zone.today
+      expect(incorrect_date).to be_nil
+    end
+
+    it 'leaves missing dates blank for correction in the import preview' do
+      expect(CsvService.safe_parse_date(nil)).to be_nil
+      expect(CsvService.safe_parse_date('')).to be_nil
+      expect(CsvService.safe_parse_date('   ')).to be_nil
     end
   end
 end
