@@ -79,9 +79,7 @@ class OrganizationsController < HtmlController
 
     if file.present? && file_is_csv?(file.content_type)
       @students_to_import = CsvService.deserialize_students(file)
-      @new_students = @students_to_import.map do |student|
-        Student.build(student)
-      end
+      @new_students = @students_to_import.map { |student| build_import_student(student) }
 
       render :import_students
     else
@@ -168,6 +166,12 @@ class OrganizationsController < HtmlController
   end
 
   private
+
+  def build_import_student(attributes)
+    Student.build(attributes).tap do |student|
+      student.errors.add(:dob, :blank) if student.dob.nil?
+    end
+  end
 
   def populate_lesson_activity
     @available_lesson_dates = available_lesson_dates

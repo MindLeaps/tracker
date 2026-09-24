@@ -2,7 +2,7 @@ class Datepicker < ViewComponent::Base
   renders_one :input_field
 
   erb_template <<~ERB
-    <div class="inline-block" data-controller="datepicker" data-datepicker-date-value=<%= @date %><% if @enabled_dates %> data-datepicker-enabled-dates-value='<%= @enabled_dates.to_json %>'<% end %>>
+    <div class="inline-block" data-controller="datepicker" data-datepicker-date-value="<%= @date %>"<% if @enabled_dates %> data-datepicker-enabled-dates-value='<%= @enabled_dates.to_json %>'<% end %>>
       <% if @form %>
         <%= @form.text_field @target, data: { 'datepicker-target' => 'picker' },
          class: @custom_class || 'rounded-md border-purple-500 text-sm focus:border-green-600 focus:outline-hidden focus:ring-green-600', autocomplete: 'disabled' %>

@@ -50,9 +50,9 @@ class CsvService
     end
 
     def safe_parse_date(date_text)
-      date_text.present? ? Date.parse(date_text) : Time.zone.today
+      Date.parse(date_text) if date_text.present?
     rescue Date::Error
-      Time.zone.today
+      nil
     end
 
     def safe_parse_gender(gender)

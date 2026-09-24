@@ -319,4 +319,50 @@ RSpec.describe OrganizationsController, type: :controller do
       end
     end
   end
+
+  describe 'importing students with missing or invalid birth dates' do
+    render_views
+
+    let(:organization) { create :organization }
+
+    it 'shows blank date fields and validation errors in the preview' do
+      file = file_fixture_upload('students_with_invalid_birth_dates.csv', 'text/csv')
+      post :import_students, format: :turbo_stream, params: { id: organization.id, file: }
+
+      expect(response).to have_http_status(:ok)
+      expect(assigns(:new_students).map(&:dob)).to eq([nil, nil])
+      assigns(:new_students).each do |student|
+        expect(student.errors.of_kind?(:dob, :blank)).to be true
+      end
+      document = Nokogiri::HTML(response.parsed_body)
+      fields = document.css('input[name$="[dob]"]')
+      expect(fields.size).to eq(2)
+      expect(fields.map { |field| field['value'].to_s }).to eq(['', ''])
+    end
+
+    it 'rejects the entire import until missing dates are corrected' do
+      students = {
+        '0' => { first_name: 'Valid', last_name: 'Student', gender: 'F', dob: '2010-04-30' },
+        '1' => { first_name: 'Missing', last_name: 'Date', gender: 'M', dob: '' }
+      }
+
+      expect do
+        post :confirm_import, format: :turbo_stream, params: { id: organization.id, students: }
+      end.not_to change(Student, :count)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(assigns(:new_students).last.errors.of_kind?(:dob, :blank)).to be true
+    end
+
+    it 'imports a student once their birth date is corrected' do
+      students = { '0' => { first_name: 'Corrected', last_name: 'Date', gender: 'F', dob: '2010-04-30' } }
+
+      expect do
+        post :confirm_import, format: :turbo_stream, params: { id: organization.id, students: }
+      end.to change(Student, :count).by(1)
+
+      expect(response).to redirect_to(organization_path(organization))
+      expect(organization.students.last.dob).to eq(Date.new(2010, 4, 30))
+    end
+  end
 end

@@ -21,7 +21,7 @@
   </div>
 </div>
 <div class="<%= 'shaded-cell' if index.even? %> table-cell flex justify-start gap-4 items-center">
-  <%= render Datepicker.new(date: student[:dob] || Date.new(Date.current.year, 1, 1), target: 'dob', custom_name: "students[#{index}][dob]",
+  <%= render Datepicker.new(date: student[:dob], target: 'dob', custom_name: "students[#{index}][dob]",
                             custom_class: 'w-fit rounded-md border-purple-500 focus:border-green-600 focus:outline-hidden focus:ring-green-600 text-xs') %>
   <%= render ValidationErrorComponent.new(model: student, key: :dob) %>
 </div>
