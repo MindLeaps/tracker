@@ -1,3 +1,7 @@
+## Unreleased
+
+- Increased chart point sizing and made it dynamic
+
 ## 0.43.0
 
 - Added ability to assign tags to all active students in a group at once
