@@ -12,7 +12,7 @@ RSpec.describe Users::SessionsController, type: :controller do
     context 'with a valid Google id_token' do
       before :each do
         stub_request(:get, "#{Rails.configuration.google_token_info_url}?id_token=#{@valid_token}")
-          .to_return(status: 200, body: JSON.unparse(email: @user_email), headers: { content_type: 'application/json' })
+          .to_return(status: 200, body: JSON.generate({ email: @user_email }), headers: { content_type: 'application/json' })
       end
 
       context 'User exists' do
@@ -42,7 +42,7 @@ RSpec.describe Users::SessionsController, type: :controller do
     context 'with an invalid Google id_token' do
       before :each do
         stub_request(:get, "#{Rails.configuration.google_token_info_url}?id_token=#{@invalid_token}")
-          .to_return(status: 500, body: JSON.unparse(error_description: 'Invalid Value'), headers: { content_type: 'application/json' })
+          .to_return(status: 500, body: JSON.generate({ error_description: 'Invalid Value' }), headers: { content_type: 'application/json' })
 
         post :token_signin, params: { id_token: @invalid_token }
       end
