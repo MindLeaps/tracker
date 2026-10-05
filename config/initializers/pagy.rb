@@ -10,8 +10,8 @@
 # Pagy.options[:client_max_limit] = 100   # The client can request a limit up to 100
 # Pagy.options[:max_pages] = 200          # Allow only 200 pages
 # Pagy.options[:jsonapi] = true           # Use JSON:API compliant URLs
-Pagy.options[:limit] = 50
-Pagy.options[:overflow] = :last_page # (other options: :last_page, :empty_page and :exception)
+Pagy::OPTIONS[:limit] = 50
+Pagy::OPTIONS[:overflow] = :last_page # (other options: :last_page, :empty_page and :exception)
 
 ############ JavaScript ####################################################################
 # See https://ddnexus.github.io/pagy/resources/javascript/ for details.

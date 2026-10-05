@@ -33,7 +33,7 @@ RSpec.describe User, type: :model do
     context 'user has a lowercase Google email address' do
       it 'returns a user identified by the email' do
         stub_request(:get, "#{Rails.configuration.google_token_info_url}?id_token=#{id_token}")
-          .to_return(status: 200, body: JSON.unparse(email: @user.email), headers: { content_type: 'application/json' })
+          .to_return(status: 200, body: JSON.generate({ email: @user.email }), headers: { content_type: 'application/json' })
 
         expect(User.from_id_token(id_token)).to eq @user
       end
@@ -42,7 +42,7 @@ RSpec.describe User, type: :model do
     context 'user has a mixed case Google email address' do
       it 'returns a user identified by the email' do
         stub_request(:get, "#{Rails.configuration.google_token_info_url}?id_token=#{id_token}")
-          .to_return(status: 200, body: JSON.unparse(email: @user.email.capitalize), headers: { content_type: 'application/json' })
+          .to_return(status: 200, body: JSON.generate({ email: @user.email.capitalize }), headers: { content_type: 'application/json' })
 
         expect(User.from_id_token(id_token)).to eq @user
       end
