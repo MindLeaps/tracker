@@ -198,7 +198,7 @@ GEM
       reline
     globalid (1.4.0)
       activesupport (>= 6.1)
-    google-protobuf (4.36.1)
+    google-protobuf (4.36.2)
       bigdecimal
       rake (~> 13.3)
     has_scope (0.9.0)
@@ -315,7 +315,7 @@ GEM
       ast (~> 2.4.1)
       racc
     pg (1.6.3)
-    pg_query (6.2.3)
+    pg_query (6.2.5)
       google-protobuf (>= 4.34.0)
     pg_search (2.3.8)
       activerecord (>= 7.2)
