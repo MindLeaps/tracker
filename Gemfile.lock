@@ -306,7 +306,7 @@ GEM
       actionpack (>= 4.2)
       omniauth (~> 2.0)
     orm_adapter (0.5.0)
-    pagy (43.7.0)
+    pagy (43.7.1)
       json
       uri
       yaml
@@ -515,7 +515,7 @@ GEM
     unicode-emoji (4.3.0)
     unicode_utils (1.4.0)
     uniform_notifier (1.18.1)
-    uri (1.1.1)
+    uri (1.1.2)
     useragent (0.16.11)
     version_gem (1.1.15)
     view_component (4.15.0)
