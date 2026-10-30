@@ -15,6 +15,10 @@ class UserPolicy < ApplicationPolicy
     user.id == record.id
   end
 
+  def profile?
+    user.id == record.id
+  end
+
   def destroy?
     create? && user.global_role_level > record.global_role_level
   end

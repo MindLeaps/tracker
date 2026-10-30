@@ -272,6 +272,16 @@ en:
   mobile_app: Mobile App
   user_added: User added
   profile_image: Profile Image
+  my_profile: My profile
+  working_chapter: Working chapter
+  profile_description: Select the chapter you work with to personalize your dashboard.
+  profile_selection_hint: You can change your working chapter at any time.
+  profile_no_chapter: No chapter preference
+  profile_no_chapters: No working chapters are available for your account. Ask your administrator to check your organization membership.
+  save_profile_preferences: Save preferences
+  profile_saved: Preferences saved
+  profile_saved_text: Your working chapter has been updated.
+  profile_invalid_chapter: Select a chapter currently available to your account. Your preference has not been changed.
   delete_user: Delete User
   delete_user_confirmation_text: Are you sure you want to delete this user? This action cannot be undone.
   user_deleted: User Deleted

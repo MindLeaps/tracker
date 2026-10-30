@@ -26,6 +26,7 @@ class User < ApplicationRecord
   pg_search_scope :search, against: [:name, :email], using: { tsearch: { prefix: true } }
 
   has_many :authentication_tokens, dependent: :destroy
+  belongs_to :preferred_chapter, class_name: 'Chapter', optional: true
   rolify before_add: :before_add_role, strict: true
   validates :email, presence: true
   validate :email_has_at_character

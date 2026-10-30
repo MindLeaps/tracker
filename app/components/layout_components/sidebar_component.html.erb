@@ -15,6 +15,7 @@
           <%= render LayoutComponents::NavItemComponent.new name: t(:reports), svg_icon: 'reports.svg', url: reports_path %>
         </div>
         <div class="space-y-1">
+          <%= render LayoutComponents::NavItemComponent.new name: t(:my_profile), svg_icon: 'identification.svg', url: profile_path %>
           <%= render LayoutComponents::NavItemComponent.new name: t(:mobile_app), svg_icon: 'mobile.svg', url: 'https://releases.mindleaps.app/latest' %>
           <%= render LayoutComponents::NavItemComponent.new name: t(:logout), svg_icon: 'logout.svg', url: destroy_user_session_path %>
         </div>

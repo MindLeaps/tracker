@@ -723,7 +723,8 @@ CREATE TABLE public.users (
     current_sign_in_ip character varying,
     last_sign_in_ip character varying,
     provider character varying,
-    image character varying
+    image character varying,
+    preferred_chapter_id integer
 );
 
 
@@ -1727,6 +1728,13 @@ CREATE INDEX index_tags_on_organization_id ON public.tags USING btree (organizat
 
 
 --
+-- Name: index_users_on_preferred_chapter_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_preferred_chapter_id ON public.users USING btree (preferred_chapter_id);
+
+
+--
 -- Name: index_users_on_email; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2355,6 +2363,14 @@ ALTER TABLE ONLY public.subjects
 
 
 --
+-- Name: users fk_rails_584c77cf0b; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT fk_rails_584c77cf0b FOREIGN KEY (preferred_chapter_id) REFERENCES public.chapters(id) ON DELETE SET NULL;
+
+
+--
 -- Name: users_roles users_roles_role_id_fk; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -2377,6 +2393,7 @@ ALTER TABLE ONLY public.users_roles
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20261029100000'),
 ('20260902000000'),
 ('20260901000001'),
 ('20260901000000'),

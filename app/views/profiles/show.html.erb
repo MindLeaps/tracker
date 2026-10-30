@@ -1,0 +1,57 @@
+<% content_for :title, t(:my_profile) %>
+
+<%= render LayoutComponents::HeaderComponent.new(current_user: current_user, tabs: [
+  { title: t(:my_profile), href: '' }
+], buttons: []) %>
+
+<div class="mx-auto w-full max-w-3xl px-4 pb-8 sm:px-6">
+  <%= render CommonComponents::Card.new(title: t(:profile_image).capitalize) do |card| %>
+    <% card.with_card_content do %>
+      <div class="bg-white p-4">
+        <%= image_tag user_image(@user, 128), size: '150x150', class: 'm-auto rounded-full object-cover' %>
+        <ul>
+          <% if @user.name.present? %>
+            <li><%= t(:name) %>: <%= @user.name %></li>
+          <% end %>
+          <li><%= t(:email) %>: <%= @user.email %></li>
+        </ul>
+      </div>
+    <% end %>
+  <% end %>
+
+  <%= render CommonComponents::Card.new(title: t(:working_chapter)) do |card| %>
+    <% card.with_card_content do %>
+      <%= form_with scope: :profile, url: profile_path, method: :patch, class: 'bg-white p-6' do |form| %>
+        <p class="text-gray-900"><%= t(:profile_description) %></p>
+        <p id="chapter-preference-hint" class="mt-2 text-sm text-gray-600"><%= t(:profile_selection_hint) %></p>
+
+        <% if @user.errors.any? %>
+          <div role="alert" class="mt-4 rounded-md bg-red-50 p-4 text-red-800">
+            <% @user.errors.full_messages.each do |message| %>
+              <p><%= message %></p>
+            <% end %>
+          </div>
+        <% end %>
+
+        <div class="mt-6">
+          <%= form.label :preferred_chapter_id, t(:chapter), class: 'block text-sm font-medium text-gray-700' %>
+          <%= form.select :preferred_chapter_id,
+                options_for_select([[t(:profile_no_chapter), '']], @selected_chapter_id || '') +
+                grouped_options_for_select(@available_chapters.group_by(&:organization).map { |organization, chapters|
+                  [organization.organization_name, chapters.map { |chapter| [chapter.chapter_name, chapter.id] }]
+                }, @selected_chapter_id),
+                {},
+                class: 'mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md',
+                aria: { describedby: 'chapter-preference-hint' } %>
+        </div>
+        <% if @available_chapters.empty? %>
+          <p class="mt-4 rounded-md bg-gray-100 p-4 text-gray-700"><%= t(:profile_no_chapters) %></p>
+        <% end %>
+
+        <div class="mt-6 border-t border-gray-200 pt-4">
+          <%= form.submit t(:save_profile_preferences), class: 'normal-button' %>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>
