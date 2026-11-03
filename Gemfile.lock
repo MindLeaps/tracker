@@ -162,8 +162,7 @@ GEM
       activesupport (>= 3.0.0)
     erb (6.0.7)
     erubi (1.13.1)
-    excon (1.7.2)
-      logger
+    excon (1.10.0)
     factory_bot (6.5.5)
       activesupport (>= 6.1.0)
     factory_bot_rails (6.5.1)
@@ -178,7 +177,7 @@ GEM
     faraday-net_http (3.4.4)
       net-http (~> 0.5)
     fastimage (2.2.4)
-    fog-aws (3.33.4)
+    fog-aws (3.33.5)
       base64 (>= 0.2, < 0.4)
       fog-core (~> 2.6)
       fog-json (~> 1.1)
@@ -253,7 +252,7 @@ GEM
     mime-types (3.7.0)
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
-    mime-types-data (3.2026.0929)
+    mime-types-data (3.2026.1027)
     mini_magick (5.4.0)
       logger
     mini_mime (1.1.5)
@@ -276,7 +275,7 @@ GEM
     newrelic_rpm (10.9.1)
       logger
     nio4r (2.7.5)
-    nokogiri (1.19.6)
+    nokogiri (1.19.7)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     oauth2 (2.0.25)
