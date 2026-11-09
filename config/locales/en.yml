@@ -273,6 +273,43 @@ en:
   user_added: User added
   profile_image: Profile Image
   my_profile: My profile
+  dashboard: Dashboard
+  dashboard_welcome: Your chapter dashboard
+  dashboard_setup: Choose your working chapter in My profile to see local activity and student learning highlights.
+  dashboard_choose_chapter: Choose my chapter
+  dashboard_change_chapter: Change working chapter
+  dashboard_heading: Your week in %{chapter}
+  dashboard_weekly_activity: Activity in the last seven days
+  dashboard_lessons: Lessons recorded
+  dashboard_students: Students assessed
+  dashboard_groups: Groups with activity
+  dashboard_comparison: "%{previous} in the preceding seven days · change %{change}"
+  dashboard_daily_lessons: Lessons recorded each day
+  dashboard_closer_look: Students worth a closer look
+  dashboard_celebrate: Progress worth celebrating
+  dashboard_score_increase:
+    one: "+%{count} point"
+    other: "+%{count} points"
+  dashboard_score_decrease:
+    one: "−%{count} point"
+    other: "−%{count} points"
+  dashboard_chapter_patterns: "Across %{chapter} · %{period}"
+  dashboard_no_declines: No repeated declines found in the available assessments.
+  dashboard_no_improvements: No repeated improvements found in the available assessments yet.
+  dashboard_pattern_explanation: Three successive comparable scores, with the latest assessment in the last seven days. These observations are a starting point for review.
+  dashboard_skill_snapshot: Skill snapshot
+  dashboard_snapshot_explanation: "Each student contributes their latest score per skill within %{period}. The filters below affect only this snapshot."
+  dashboard_update_snapshot: Update snapshot
+  dashboard_snapshot_students:
+    one: "%{count} student assessed"
+    other: "%{count} students assessed"
+  dashboard_snapshot_average: "Average %{average} · configured range %{minimum}–%{maximum}"
+  dashboard_not_enough_assessments: Not enough assessments. At least three students are needed.
+  dashboard_no_skills: No active skills are available for this group and subject.
+  dashboard_group_overview: Groups in your chapter
+  dashboard_latest_lesson: Latest recorded lesson
+  dashboard_no_recorded_lessons: No recorded lessons
+  dashboard_no_groups: No active groups are available in this chapter.
   working_chapter: Working chapter
   profile_description: Select the chapter you work with to personalize your dashboard.
   profile_selection_hint: You can change your working chapter at any time.

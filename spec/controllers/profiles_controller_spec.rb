@@ -27,7 +27,7 @@ RSpec.describe ProfilesController, type: :controller do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(user.email, organization.organization_name, chapter.chapter_name)
       expect(response.body).to have_css("select#profile_preferred_chapter_id option[value='#{chapter.id}'][selected]")
-      expect(response.body).to have_css("img.rounded-full[src*='unknown_user'][width='128'][height='128']")
+      expect(response.body).to have_css("img.rounded-full[src*='unknown_user'][width='150'][height='150']")
       expect(response.body).to have_css('nav a[disabled]', text: 'My profile')
     end
 

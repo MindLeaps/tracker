@@ -1285,6 +1285,40 @@ function displaySubjectSkillCharts(datasets, opts = {}) {
     })
 }
 
+// ---------- Dashboard Activity and Skill Snapshot Charts ----------
+function displayDashboardCharts() {
+    if (!chartJsPresent()) return
+
+    document.querySelectorAll('[data-dashboard-chart]').forEach(element => {
+        const canvas = ensureCanvasIsPresent(`#${element.id}`)
+        if (!canvas) return
+
+        destroyIfExists(canvas)
+        const skill = canvas.dataset.dashboardChart === 'skill'
+        const values = JSON.parse(canvas.dataset.chartValues)
+        canvas.closest('[data-dashboard-chart-wrapper]').classList.remove('hidden')
+        canvas.__chart = new Chart(canvas.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: skill ? [canvas.dataset.chartLabel] : JSON.parse(canvas.dataset.chartLabels),
+                datasets: [{ label: canvas.dataset.chartLabel, data: values, backgroundColor: '#7e22ce', borderRadius: 4 }]
+            },
+            options: {
+                indexAxis: skill ? 'y' : 'x', responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false }, whiteBackground: { color: 'white' } },
+                scales: skill ? {
+                    x: { min: Number(canvas.dataset.chartMin), max: Number(canvas.dataset.chartMax) },
+                    y: { display: false }
+                } : {
+                    y: { beginAtZero: true, ticks: { precision: 0 } },
+                    x: { grid: { display: false } }
+                }
+            },
+            plugins: [whiteBackgroundPlugin()]
+        })
+    })
+}
+
 // ---------- Mark Averages Chart ----------
 function displayMarkAveragesChart(containerId, data, opts = {}) {
     if (!chartJsPresent()) return

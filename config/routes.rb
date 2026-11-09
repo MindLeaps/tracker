@@ -50,6 +50,7 @@ Rails.application.routes.draw do
     end
   end
   resource :profile, only: %i[show update]
+  resource :dashboard, only: :show
   resources :organizations, only: %i[index new create show edit update destroy] do
     member { post :add_member }
     member { post :undelete }

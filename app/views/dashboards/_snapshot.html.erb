@@ -1,0 +1,44 @@
+<section class="mt-6 rounded-lg bg-white p-5 shadow-sm" aria-labelledby="skill-snapshot-title">
+  <h2 id="skill-snapshot-title" class="text-lg font-semibold text-purple-900"><%= t(:dashboard_skill_snapshot) %></h2>
+  <p class="mt-2 text-sm text-gray-600"><%= t(:dashboard_snapshot_explanation, period: dashboard_date_range(@dashboard.history_period)) %></p>
+  <%= form_with url: dashboard_path, method: :get, class: 'mt-4 flex flex-wrap items-end gap-4' do |form| %>
+    <div class="w-full sm:w-auto sm:min-w-48">
+      <%= form.label :group_id, t(:group), class: 'block text-sm font-medium text-gray-700' %>
+      <%= form.collection_select :group_id, @dashboard.groups, :id, :group_name, { selected: @dashboard.selected_group&.id },
+            class: 'mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm' %>
+    </div>
+    <div class="w-full sm:w-auto sm:min-w-48">
+      <%= form.label :subject_id, t(:subject), class: 'block text-sm font-medium text-gray-700' %>
+      <%= form.collection_select :subject_id, @dashboard.subjects, :id, :subject_name, { selected: @dashboard.selected_subject&.id },
+            class: 'mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm' %>
+    </div>
+    <%= form.submit t(:dashboard_update_snapshot), class: 'normal-button' %>
+  <% end %>
+  <% snapshot = @dashboard.snapshot %>
+  <% if snapshot.empty? %>
+    <p class="mt-5 text-gray-600"><%= t(:dashboard_no_skills) %></p>
+  <% else %>
+    <ul class="mt-5 divide-y divide-gray-200">
+      <% snapshot.each do |entry| %>
+        <li class="py-4">
+          <div class="flex flex-wrap justify-between gap-2">
+            <h3 class="font-medium text-gray-900"><%= entry[:skill].skill_name %></h3>
+            <p class="text-sm text-gray-600"><%= t(:dashboard_snapshot_students, count: entry[:count]) %></p>
+          </div>
+          <% if entry[:average] %>
+            <p class="mt-1 text-sm text-gray-700"><%= t(:dashboard_snapshot_average, average: entry[:average], minimum: entry[:minimum], maximum: entry[:maximum]) %></p>
+            <% if entry[:minimum] && entry[:maximum] && entry[:minimum] < entry[:maximum] %>
+              <div class="mt-2 hidden h-16" data-dashboard-chart-wrapper>
+                <canvas id="dashboard-skill-<%= entry[:skill].id %>" data-dashboard-chart="skill" data-chart-label="<%= entry[:skill].skill_name %>"
+                        data-chart-values="<%= [entry[:average]].to_json %>" data-chart-min="<%= entry[:minimum] %>" data-chart-max="<%= entry[:maximum] %>"
+                        role="img" aria-label="<%= t(:dashboard_snapshot_average, average: entry[:average], minimum: entry[:minimum], maximum: entry[:maximum]) %>"></canvas>
+              </div>
+            <% end %>
+          <% else %>
+            <p class="mt-1 text-sm text-gray-600"><%= t(:dashboard_not_enough_assessments) %></p>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+</section>
