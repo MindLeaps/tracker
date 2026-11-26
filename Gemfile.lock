@@ -473,7 +473,7 @@ GEM
     shoulda-matchers (8.0.1)
       activesupport (>= 7.2)
     simple_po_parser (1.1.6)
-    skylight (7.1.1)
+    skylight (7.2.0)
       activesupport (>= 7.2.0)
     smarter_csv (1.19.0)
       bigdecimal
